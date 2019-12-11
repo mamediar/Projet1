@@ -1,0 +1,131 @@
+<!--
+  @Component Name     : PVRecuperaDatiPostvendita.cmp
+  @Description        : 
+  @Author             : Andrea Vanelli
+  @Group              : 
+  @Last Modified By   : Andrea Vanelli
+  @Last Modified On   : 10/10/2019, 12:52:33
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    5/8/2019, 16:36:29   Andrea Vanelli     Initial Version
+-->
+<aura:component controller="PVRecuperaDatiPostvenditaController" implements="flexipage:availableForAllPageTypes"
+    access="global">
+    <!--
+  Per implementare logiche sulla selezione di account o pratica:
+   aggiungere nel container <aura:handler name="change" value="{!v.nomeAttributo}" action="{!c.attrChange}"/>
+   dove name è obbligatoriamente settato a "change";
+
+  Per mostrare o nascondere le pratiche del cliente selezionato:
+  settare l'attributo "showPratiche" dal container.
+  Per mostrare o nascondere l'elenco dei clienti:
+  settare l'attributo "showClienti" dal container
+
+  Per applicare un filtro alla lista delle pratiche:
+  creare una classe APEx che implementa "OCSRecuperaDatiPVFiltroPraticheInterface",
+  implementare a piacimento il metodo filtraPratiche,
+  settare l'attributo "filtroPratiche" con il nome della suddetta classe
+ -->
+
+    <aura:method name="resetRicerca" action="{!c.resetRicerca}" description="Metodo richiamato per pulire tutto">
+    </aura:method>
+    <aura:attribute name="parent" type="Aura.Component" required="true"
+        description="componente padre per accedere ai metodi comuni" />
+
+    <aura:attribute name="filtroClassName" type="string" description="Nome della classe che filtra i risultati" />
+    <aura:attribute name="filtroParametriMap" type="Map" description="Parametri e valori da applicare come filtro" />
+    
+    <aura:attribute name="cognomeCliente" type="string" />
+    <aura:attribute name="nomeCliente" type="string" />
+    <aura:attribute name="dataNascitaCliente" type="string" />
+    <aura:attribute name="codFiscaleCliente" type="string" />
+    <aura:attribute name="numPratica" type="string" />
+    <aura:attribute name="codCliente" type="String" />
+    <aura:attribute name="pan" type="string" />
+    <aura:attribute name="filtroPratiche" type="string" default="" />
+    <aura:attribute name="showPratiche" type="Boolean" />
+    <aura:attribute name="showClienti" type="Boolean" default="true" />
+    <aura:attribute name="filtroTipoPratica" type="String" default="" />
+    <aura:attribute name="numPraticheSelezionabili" type="String" default="1" />
+
+
+    <aura:attribute name="inputOCSCliente" type="string" />
+    <!--se arrivo da altra parte con codice ocs cliente -->
+    <aura:attribute name="inputOCSPratica" type="string" />
+    <!--se arrivo da altra parte con codice pratica -->
+
+
+    <aura:attribute name="OCSClienti" type="OCSCliente[]" />
+    <aura:attribute name="OCSClienteSelezionato" type="OCSCliente" />
+    <aura:attribute name="idOCSClienteSelezionato" type="List" />
+    <aura:attribute name="OCSColunms" type="List" default="[{label: 'Nominativo', fieldName: 'denominazioneAzienda', type: 'text', initialWidth: 200},
+                             {label: 'Data di nascita', fieldName: 'dataNascitaItaliana', type: 'text' },
+                             {label: 'Luogo di Nascita', fieldName: 'luogoNascita', type: 'text'},
+                             {label: 'Codice Fiscale', fieldName: 'codFiscale', type: 'text', initialWidth: 200 },
+                             {label: 'Codice Cliente', fieldName: 'codCliente', type: 'text'}]" />
+    <aura:attribute name="praticheList" type="OCSPratica[]" />
+    <aura:attribute name="praticaSelezionata" type="OCSPratica" />
+    <aura:attribute name="praticheTableColumns" type="List" default="[{label: 'Numero Pratica', fieldName: 'numPratica', type: 'text'},
+                             {label: 'Tipologia', fieldName: 'tipoPratica', type: 'text' },
+                             {label: 'Stato', fieldName: 'statoPratica', type: 'text'},
+                             {label: 'Prodotto', fieldName: 'prodotto', type: 'text'},
+                             {label: 'Modalità Pagamento', fieldName: 'tipoPagamento', type: 'text'},
+                             {label: 'Dealer', fieldName: 'dealerCode', type: 'text'},
+                             {label: 'Canale', fieldName: 'canale', type: 'text'}]" />
+
+    <aura:attribute name="onChange" type="String" />
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+
+
+    <!--INIZIO TABELLA DI RICERCA-->
+
+    <div class="slds-grid slds-gutters slds-m-bottom--medium" onkeypress="{!c.keyCheckRicerca}">
+        <div class="slds-col">
+            <lightning:input type="string" label="Cognome" name="cognomeCliente" value="{!v.cognomeCliente}" />
+            <lightning:input type="string" label="Nome" name="nomeCliente" value="{!v.nomeCliente}" />
+            <lightning:input type="string" label="PAN" name="pan" value="{!v.pan}" />
+        </div>
+        <div class="slds-col">
+            <lightning:input type="string" label="Codice Fiscale" name="codFiscaleCliente"
+                value="{!v.codFiscaleCliente}" />
+            <lightning:input type="String" label="Codice Cliente" name="codCliente" value="{!v.codCliente}" />
+        </div>
+        <div class="slds-col">
+            <lightning:input type="Date" label="Data di nascita" name="dataNascitaCliente"
+                value="{!v.dataNascitaCliente}" />
+            <lightning:input type="string" label="Numero Pratica" name="numPratica" value="{!v.numPratica}" />
+
+            <lightning:button label="Cerca" class="slds-m-top--medium" variant="destructive" onclick="{!c.doRicerca}" />
+            <div class="slds-float--right">
+            <lightning:button label="Azzera" class="slds-m-top--medium" variant="neutral" onclick="{!c.resetRicerca}" />
+            </div>
+        </div>
+
+
+    </div>
+    <!--FINE TABELLA DI RICERCA-->
+
+
+    <aura:if isTrue="{!v.showClienti}">
+        <aura:if isTrue="{!v.OCSClienti.length>0}">
+            <div 
+            class="slds-box slds-box_xx-small slds-text-align_center  slds-theme_info slds-text-heading_small">
+            CLIENTI</div>
+            <lightning:datatable class="table-pv" data="{!v.OCSClienti}" columns="{!v.OCSColunms}" keyField="codCliente"
+                maxRowSelection="1" selectedRows="{!v.idOCSClienteSelezionato}" onrowselection="{!c.selectCliente}"
+                showRowNumberColumn="false" />
+        </aura:if>
+    </aura:if>
+
+    <aura:if isTrue="{!v.showPratiche}">
+        <aura:if isTrue="{!v.praticheList.length>0}">
+            <div
+                class="slds-m-top_small slds-box slds-box_xx-small slds-text-align_center  slds-theme_info slds-text-heading_small">
+                PRATICHE</div>
+            <lightning:datatable class="table-pv"  data="{!v.praticheList}" columns="{!v.praticheTableColumns}" keyField="numPratica"
+                maxRowSelection="{!v.numPraticheSelezionabili}" onrowselection="{!c.selectPratica}" />
+        </aura:if>
+    </aura:if>
+</aura:component>

@@ -1,0 +1,106 @@
+<aura:component controller="SFAConvenz2DossierAccolloSedeCtrller" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome">
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="caseId" type="String" />
+    <aura:attribute name="dealerId" type="String" />
+    <aura:attribute name="MasterDealerId" type="String" />
+    <aura:attribute name="tipoIntermediario" type="String" />
+    <aura:attribute name="dossierId" type="String" />
+    <aura:attribute name="OCSExternalDealer" type="String" />
+    <aura:attribute name="documentiList" type="Object"/>
+    <aura:attribute name="columnsDocumenti" type="List"/> 
+    <aura:attribute name="messageNonLavorazione" type="String"/> 
+    <aura:attribute name="note" type="String"/> 
+    <aura:attribute name="OcsExtId" type="String"/> 
+    <aura:attribute name="TipoSelez" type="String"/>
+    <aura:attribute name="titolo" type="String"/>
+    
+    <aura:attribute name="dossierURL" type="String"/> 
+    
+	<aura:attribute name="spinnerCounter" type="Integer" default="0"/>
+    <aura:attribute name="Tipo" type="Object[]" />
+    
+    <aura:handler name="init" value="{! this }" action="{! c.doInit }" /> 
+     
+<aura:if isTrue="{!v.dossierURL==''}">   
+    <lightning:card variant="Narrow"  title="Creazione di un nuovo Dossier/Accollo"  footer=" ">
+        	<p class="slds-p-horizontal_small">
+  
+                <div class="slds-col slds-size_2-of-12"><span class="value title"></span>
+                    <lightning:select onchange="{!c.TipoChange}" aura:id ="Tipo" label="Tipo" required="true">
+                        <aura:iteration items="{!v.Tipo}" var="Tipo">
+                            <option  value="{!Tipo.value}">{!Tipo.label}</option>
+                      </aura:iteration>    
+                    </lightning:select>  
+     			
+                <lightning:input name="Codice OCS" value="{! v.OcsExtId }" label="Codice OCS" required="true"/>
+
+
+  
+              </div>
+              <div class="slds-col slds-size_6-of-12">  
+               <lightning:textarea aura:id="noteTextarea" 
+                                label="Note"
+                                value="{!v.note}"
+                                required="false"
+                                maxlength="5000"/> 
+              </div>
+                
+              <lightning:button label="Crea e Stampa Cover"  
+                                  variant="destructive"
+                                  class="slds-m-top_medium "
+                                  onclick="{!c.GeneraCover}"/>  
+               
+              
+               
+     		</p>
+   	</lightning:card>  
+    </aura:if>
+    <aura:if isTrue="{!v.dossierURL!=''}">
+        <div class="slds-grid">
+       <b> <lightning:card variant="Narrow"  title="{!v.titolo}" >
+            
+		
+             
+        <div class="slds-col slds-size_1-of-12 tx-right "></div>
+        <div class="slds-col slds-size_12-of-12 ">
+            
+            
+        	<p class="slds-p-horizontal_medium">
+                
+              	<div class="slds-m-top_medium slds-m-bottom_small">
+                
+                </div>
+                <div></div>
+                 <div class="slds-m-top_medium slds-m-bottom_large">
+                    <span class="message">
+                	Assicurarsi di stampare la cover creata prima di procedere con altre operazioni.
+            		</span>
+                    <div class="slds-p-right_medium">
+              		<a id="a" href="{!v.dossierURL}" target="_blank">
+                    <lightning:button aura:id="dossierButton"
+                                       variant="destructive"
+                                    label="Visualizza Cover " 
+                                    title="Visualizza Cover " 
+                                    class="slds-button slds-button_brand buttonPage slds-m-top_large"
+                                   />
+                                
+                	</a>
+                    
+                    {!'   '}     
+                    <lightning:button label="Nuovo Dossier/Accollo"  
+                                      variant="destructive"
+                                      class="slds-button slds-button_brand buttonPage slds-m-top_large"
+                                      onclick="{!c.CreaNuovo}"/>  
+                    </div>
+                </div>
+        	
+   	
+                </p>
+            
+           </div>
+            </lightning:card> </b>
+            </div>
+            
+                </aura:if>  
+     
+</aura:component>

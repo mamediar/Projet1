@@ -1,0 +1,94 @@
+<aura:component controller="VenditaAssicurazioniController" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes">
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="codCliente" type="String" />
+    <aura:attribute name="formattedProfileName" type="String" />
+    <aura:attribute name="client" type="Account" />
+    <aura:attribute name="textBadge" type="String"/>
+    <aura:attribute name="statusBadge" type="Boolean" />
+    <aura:attribute name="statusNext" type="Boolean" />
+    <aura:attribute name="isUserEnabled" type="Boolean" />
+    <aura:attribute name="flagPianificazioneVenditaContainer" type="Boolean" />
+    <aura:attribute name="interestOptions" type="List" />
+    <aura:attribute name="permissionOptions" type="List" />
+    <aura:attribute name="dataPreferenceOptions" type="List" />
+    <aura:attribute name="interestValue" type="String" /> 
+    <aura:attribute name="dataPreferenceValue" type="String" />
+    <aura:attribute name="today" type="DateTime"/>    
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}" /> 
+    
+    <lightning:navigation aura:id="navService"/>
+    
+    <lightning:messages />
+    <lightning:card title="Vendita Assicurazioni Standalone" iconName="custom:custom14"> 
+        <aura:if isTrue="{!v.flagPianificazioneVenditaContainer}">
+            <div aura:id="PianificazioneVenditaContainer" class="toggle-content is-visible" style="overflow:visible;">            
+                
+                <lightning:badge label="{!v.textBadge}" class="{! 'slds-theme_' + (v.statusBadge ? 'success' : 'error')}" /> 
+                <aura:if isTrue="{!v.statusBadge}" >
+                    <p class="slds-m-top_medium"><b>Sig/Sig.ra {!v.client.LastName}&nbsp;{!v.client.FirstName}, colgo l'occasione per informarLa che Compass, in collaborazione con un importante compagnia assicurativa, le offre la possibilità di usufruire di pacchetti assicurativi per la tutela della Sua abitazione. <br/>Per maggiori informazion, posso, farLa ricontrattare da un consulente dedicato nell'orario che preferisce? </b></p>                                            
+                    
+                    <div class="slds-grid slds-m-top_small">
+                        <lightning:combobox aura:id="interest" variant="label-hidden" class="slds-col interest slds-dropdown-trigger slds-size_1-of-3" options="{!v.interestOptions}" placeholder="Il cliente è interessato?" value="{!v.interestValue}" onchange="{!c.interestChanged}"/>           
+                        <div aura:id="interestOutcome" class="side-content"><p class=" slds-col slds-m-left_small slds-text-heading_medium slds-text-color_success" style="font-weight: bold; margin-top: 4px;">RICHIESTA INSERITA</p></div>
+                    </div>
+                    
+                    
+                    <p class="slds-m-top_small">Se interessato chiedere il consenso alla privacy e scegliere una fascia di ricontatto.</p>
+                    <p>Se non interessato premere Continua.</p>
+                    
+                    <lightning:recordEditForm recordId="{!v.client.Id}" objectApiName="Account">                        
+                        <div class="toggle-content" aura:id="dataGathering">                                
+                            <p class="slds-m-top_small">Sig/Sig.ra {!v.client.LastName}&nbsp;{!v.client.FirstName}, ci autorizza ad utilizzare il suo numero di cellulare e l'indirizzo e-mail per comunicarLe lo stato di gestione e di evasione della ricerca?</p>
+                            <div class="slds-grid slds-m-bottom_xx-small">
+                                <div class="slds-col slds-size_1-of-3"><lightning:inputField fieldName="PersonMobilePhone" /></div>
+                                <div class="slds-col slds-size_1-of-3 slds-m-left_small"><lightning:inputField fieldName="PersonEmail" /></div>
+                            </div>
+                            
+                            <lightning:radioGroup name="permissionRadio" options="{! v.permissionOptions }" type="button"  value="acconsento"/>
+                            <p class="slds-m-top_small slds-text-title">Il cliente preferisce iniziare subito il processo di vendita o preferisce essere ricontattato?</p>
+                            <lightning:radioGroup aura:id="dataPreference" 
+                                                  name="dataPreferenceRadio" 
+                                                  options="{! v.dataPreferenceOptions }" 
+                                                  value="{!v.dataPreferenceValue}"
+                                                  type="button" 
+                                                  class="slds-m-bottom_small" 
+                                                  onchange="{!c.checkData}" 
+                                                  messageWhenValueMissing="Selezionare un campo per continuare"/>                	
+                            <div class="toggle-content slds-size_1-of-3 slds-m-bottom_small" aura:id="schedulingDateContainer" >
+                                <ui:inputDateTime aura:id="schedulingDate" 
+                                                  value="{!v.today}" 
+                                                  label="Selezionare Data e fascia oraria di ricontatto." 
+                                                  displayDatePicker="true"
+                                                  format="yyyy-MM-dd HH:mm:ss"/> 
+                                <!-- <p class="slds-text-title">Selezionare Data e fascia oraria di ricontatto.</p>
+                        <lightning:input class="slds-m-top_xx-small" type="datetime-local" variant="label-hidden" /> -->
+                            </div>
+                        </div>
+                        
+                        <p>Per completare la richiesta inserire qui eventuali note e premere Continua.</p>
+                        <lightning:textarea aura:id="note" label=" " placeholder="Note (opzionale)"  variant="label-hidden" class="slds-m-top_small"  />
+                        <div aura:id="continueButton" class="side-content visible">
+                            <lightning:button aura:id="next"
+                                              class="slds-m-top_small" 
+                                              label="Continua"
+                                              variant="destructive" 
+                                              iconName="utility:chevronright" 
+                                              iconPosition="right" 
+                                              type="submit"
+                                              onclick="{!c.next}"/>
+                        </div>
+                    </lightning:recordEditForm>                    
+                </aura:if>                
+            </div>
+            
+            <aura:set attribute="else">
+                <aura:if isTrue="{!v.formattedProfileName}">
+                    <div aura:id="VenditaProdottoContainer" class="toggle-content is-visible">
+                        <c:VenditaAssicurazioneGestioneRichiesta recordId="{!v.recordId}" codCliente="{!v.codCliente}" clientId="{!v.client.Id}" formattedProfileName="{!v.formattedProfileName}" />
+                    </div>
+                </aura:if>
+            </aura:set>
+        </aura:if>            
+    </lightning:card>        
+</aura:component>

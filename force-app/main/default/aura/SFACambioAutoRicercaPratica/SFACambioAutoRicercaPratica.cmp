@@ -1,0 +1,178 @@
+<aura:component controller="SFACambioAutoRicercaPraticaController" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes">
+
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="codiceEsitoDiProvenienza" type="String" />
+    <aura:attribute name="esitoDiProvenienza" type="String" />
+    
+    <aura:attribute name="isVisualizzaButtonShown" type="Boolean" default="false" />
+    <aura:attribute name="isDatiPraticaOpen" type="Boolean" default="false" />
+    <aura:attribute name="isDoppiaAttivita" type="Boolean" default="false"/>
+    <aura:attribute name="isNotaObbligatoria" type="Boolean" default="false"/>
+    <aura:attribute name="isProseguiButtonDisabled" type="Boolean" default="false"/>
+    
+    <aura:attribute name="numeroPratica" type="String" />
+    <aura:attribute name="dataLiquidazioneOcs" type="String" />
+    <aura:attribute name="isDataLiquidazioneOcsRed" type="Boolean" default="false"/>
+    <aura:attribute name="assicurazioneOcs" type="String" />
+    <aura:attribute name="isAssicurazioneOcsRed" type="Boolean" default="false"/>
+    <aura:attribute name="prodottoOcs" type="String" />
+    <aura:attribute name="clienteOcs" type="String" />
+    <aura:attribute name="descrizioneBeneOcs" type="String" />
+    <aura:attribute name="modelloOcs" type="String" />
+    <aura:attribute name="targaOcs" type="String" />
+    <aura:attribute name="telaioOcs" type="String" />
+    <aura:attribute name="valoreOcs" type="String" />
+    
+    <aura:attribute name="dataImmatricolazioneOcs" type="String" />
+    <aura:attribute name="targa" type="String" />
+    <aura:attribute name="telaio" type="String" />
+    <aura:attribute name="annoImmatricolazione" type="String" />
+    <aura:attribute name="meseImmatricolazione" type="String" />
+    <aura:attribute name="modello" type="String" />
+    <aura:attribute name="valore" type="String" />
+    <aura:attribute name="importoStorno" type="String" />
+    <aura:attribute name="nota" type="String" />
+
+
+    <aura:attribute name="listaEsiti" type="Object[]" />
+    <aura:attribute name="esitoSelezionato" type="String" />
+
+    <aura:attribute name="url" type="String"/>
+    <aura:attribute name="pageReference" type="Object"/>
+    <lightning:navigation aura:id="navService"/>
+
+    <aura:handler name="init" value="{! this }" action="{! c.doInit }"/>
+            
+    <table class="slds-m-top--medium">  
+        <tr>
+            <td class="slds-size_1-of-2 slds-p-right_small slds-p-bottom--medium">
+                <aura:if isTrue="{!and(v.esitoDiProvenienza != null, v.esitoDiProvenienza != undefined, v.esitoDiProvenienza != '')}">
+                    <lightning:input type="text" value="{!v.esitoDiProvenienza}" label="Azione di provenienza" disabled="true" />
+                <aura:set attribute="else">
+                    <lightning:input type="text" value="Inoltra richiesta" label="Azione di provenienza" disabled="true" />
+                </aura:set>
+                </aura:if>
+            </td>
+            <td class="slds-size_1-of-2 slds-align-bottom slds-p-bottom--medium">
+            </td>
+        </tr>
+        <tr>
+            <td class="slds-size_1-of-2 slds-p-right_small">
+                <lightning:input type="text" value="{!v.numeroPratica}" label="Pratica" />
+            </td>
+            <td class="slds-size_1-of-2 slds-align-bottom">
+                <aura:if isTrue="{!v.isVisualizzaButtonShown}">
+                    <lightning:button variant="destructive" label="Visualizza pratica" onclick="{!c.handleVisualizzaPratica}"/>
+                </aura:if>
+            </td>
+        </tr>
+    </table>
+    
+    <aura:if isTrue="{!v.isDatiPraticaOpen}">
+        <table class="slds-size_10-of-12 slds-m-top--medium">
+            <tr>
+                <td class="slds-size_1-of-2 slds-p-right_small">
+                    <aura:if isTrue="{!v.isDataLiquidazioneOcsRed}">
+                        <lightning:input type="text" value="{!v.dataLiquidazioneOcs}" label="Data liquidazione" disabled="true" class="red"/>
+                        <aura:set attribute="else">
+                            <lightning:input type="text" value="{!v.dataLiquidazioneOcs}" label="Data liquidazione" disabled="true"/>
+                        </aura:set>
+                    </aura:if>
+                </td>
+                <td class="slds-size_1-of-2">
+                    <aura:if isTrue="{!v.isAssicurazioneOcsRed}">
+                        <lightning:input type="text" value="{!v.assicurazioneOcs}" label="Assicurazione" disabled="true" class="red"/>
+                        <aura:set attribute="else">
+                            <lightning:input type="text" value="{!v.assicurazioneOcs}" label="Assicurazione" disabled="true"/>
+                        </aura:set>
+                    </aura:if>
+                </td>
+            </tr>
+            <tr>
+                <td class="slds-size_1-of-2 slds-p-right_small">
+                    <lightning:input type="text" value="{!v.prodottoOcs}" label="Prodotto" disabled="true"/>
+                </td>
+                <td class="slds-size_1-of-2">
+                    <lightning:input type="text" value="{!v.clienteOcs}" label="Cliente" disabled="true"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="slds-size_1-of-2 slds-p-right_small">
+                    <lightning:input type="text" value="{!v.descrizioneBeneOcs}" label="Descrizione bene" disabled="true"/>
+                </td>
+                <td class="slds-size_1-of-2">
+                    <lightning:input type="text" value="{!v.modelloOcs}" label="Modello" disabled="true"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="slds-size_1-of-2 slds-p-right_small">
+                    <lightning:input type="text" value="{!v.targaOcs}" label="Targa" disabled="true"/>
+                </td>
+                <td class="slds-size_1-of-2">
+                    <lightning:input type="text" value="{!v.telaioOcs}" label="Telaio" disabled="true"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="slds-size_1-of-2 slds-p-right_small">
+                    <lightning:input type="text" value="{!v.valoreOcs}" label="Valore" disabled="true"/>
+                </td>
+                <td class="slds-size_1-of-2">
+                    <lightning:input type="text" value="{!v.dataImmatricolazioneOcs}" label="Data immatricolazione" disabled="true"/>
+                </td>
+            </tr>
+        </table>
+    </aura:if>
+    
+    <table class="slds-m-top--medium">
+        <tr>
+            <td class="slds-size_1-of-2 slds-p-right_small">
+                <lightning:input type="text" value="{!v.targa}" label="Targa" />
+            </td>
+            <td class="slds-size_1-of-2">
+                <lightning:input type="text" value="{!v.telaio}" label="Telaio" />
+            </td>
+        </tr>
+        <tr>
+            <td class="slds-size_1-of-2 slds-p-right_small">
+                <td class="slds-size_7-of-12">
+                    <lightning:input type="text" value="{!v.annoImmatricolazione}" label="Anno di prima immatr." />
+                </td>
+                <td class="slds-size_1-of-12 slds-p-top_xx-small">
+                    <lightning:input type="text" value="/" disabled="true"/>
+                </td>
+                <td class="slds-size_4-of-12">
+                    <lightning:input type="text" value="{!v.meseImmatricolazione}" label="Mese di prima immatr." />
+            	</td>
+            </td>
+            <td class="slds-size_1-of-2">
+                <lightning:input type="text" value="{!v.modello}" label="Modello" />
+            </td>
+        </tr>
+        <tr>
+            <td class="slds-size_1-of-2 slds-p-right_small">
+                <lightning:input type="text" value="{!v.valore}" label="Valore" />
+            </td>
+        </tr>
+        <tr>
+            <td class="slds-size_1-of-2 slds-p-right_small">
+                <lightning:input type="text" value="{!v.importoStorno}" label="Importo da stornare" />
+            </td>
+        </tr>
+        <tr>
+            <td class="slds-size_1-of-2 slds-p-right_small">
+                <lightning:textarea aura:id="notaId" label="Note" value="{!v.nota}" maxlength="1000" />
+            </td>
+        </tr>
+    </table>
+
+    <div class="slds-size_1-of-3 slds-m-top--medium">
+        <ui:inputSelect aura:id="listaEsitiId" change="{!c.handleSelezionaEsito}">
+            <aura:iteration items="{!v.listaEsiti}" var="l">
+                <ui:inputSelectOption text="{!l.text}" label="{!l.label}" value="{!l.value}"/>
+            </aura:iteration>
+        </ui:inputSelect>
+    </div>
+
+    <lightning:button class="slds-m-top_medium" variant="brand" label="Prosegui" onclick="{! c.handleProseguiButton }" disabled="{!v.isProseguiButtonDisabled}"/>
+    
+</aura:component>

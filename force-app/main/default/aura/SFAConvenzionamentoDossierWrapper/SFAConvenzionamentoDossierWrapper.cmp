@@ -1,0 +1,22 @@
+<aura:component controller="SFAConvenzionamento" implements="flexipage:availableForAllPageTypes,force:hasRecordId">
+    
+	<aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="dispositionExternalId" type="String" />
+    
+    <aura:handler name="init" value="{! this }" action="{! c.doInit }" />
+    <aura:handler event="c:ChangeCaseStepEvent" action="{!c.handleChangeCaseStepEvent}"/>
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    
+    
+    <aura:if isTrue="{!v.dispositionExternalId=='DP1911'}" >   <!--Dossier – Disponibile (per IDM)-->
+    	<c:SFAConvenzionamentoIDMDossier aura:id="SFAConvenzionamentoIDMDossier" recordId="{!v.recordId}" />
+        <aura:set attribute="else">
+            <aura:if isTrue="{! !v.dispositionExternalId=='DP1909'}" >   <!--diverso da Dossier – Completo – In spedizione (quello per la filiale)-->
+				<c:SFAConvenzionamentoMDDossier aura:id="SFAConvenzGestioneDossier" recordId="{!v.recordId}" />
+            </aura:if>
+        </aura:set>    	
+    </aura:if>   
+    
+    
+
+</aura:component>

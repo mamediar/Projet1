@@ -1,0 +1,32 @@
+.THIS .dataTableWrap .slds-truncate {
+    text-overflow: inherit;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word; 
+}
+
+.THIS .textFidoOk {
+   color: green;   
+}
+ 
+
+.THIS table .textFidoOk .slds-icon{
+   fill: green;    
+   display: inline-block;
+   margin-bottom: 20%; 
+}
+
+
+.THIS .textFidoKo {
+   color: rgba(159, 32, 28, 1);    
+}
+
+.THIS table .textFidoKo .slds-icon{
+   fill: rgba(159, 32, 28, 1);    
+   display: inline-block;
+   margin-bottom: 20%;  
+}
+
+.THIS table .slds-th__action-button.slds-dropdown-trigger.slds-dropdown-trigger_click {
+    display : none;
+}

@@ -1,0 +1,8 @@
+<aura:component   implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+                access="global">
+     <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+     <aura:handler action="{!c.doInit}" event="c:eventNavigateToIntervista"/> 
+     <aura:handler action="{!c.navigateToIntervistaIntegrativoDetails}" event="c:eventNavigationIntervista"/>
+    
+    {!v.body}
+</aura:component>

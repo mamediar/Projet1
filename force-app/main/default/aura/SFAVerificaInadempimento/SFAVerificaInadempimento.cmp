@@ -1,0 +1,142 @@
+<aura:component controller="SFAVerificaInadempimentoController"
+    implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome" access="global">
+
+
+    <aura:attribute name="caseList" type="Object" />
+    <aura:attribute name="noteList" type="Object" />
+    <aura:attribute name="emailList" type="Object" />
+    <aura:attribute name="fileList" type="Object" />
+    <aura:attribute name="inadempimentiColumns" type="List" />
+    <aura:attribute name="noteColumns" type="List" />
+    <aura:attribute name="emailColumns" type="List" />
+    <aura:attribute name="fileColumns" type="List" />
+    <aura:attribute name="selectedCase" type="Case" />
+    <aura:attribute name="showSpinner" type="Boolean" default="false" />
+    <aura:attribute name="noteValue" type="String" />
+    <aura:attribute name="ownerId" type="String" />
+    <aura:attribute name="msg" type="String" />
+    <aura:attribute name="staticFileList" type="List" />
+    <aura:attribute name="allegatiOriginali" type="List" />
+    <aura:attribute name="isInserimento" type="Boolean" default="false"/>
+    <aura:attribute name="isSFA" type="Boolean" default="false"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+
+    <lightning:notificationsLibrary aura:id="notifLib" />
+
+    <aura:if isTrue="{!v.showSpinner}">
+        <lightning:spinner alternativeText="Loading" size="large" />
+    </aura:if>
+
+    <div class="slds-box slds-theme_default slds-p-around_large">
+        <lightning:datatable aura:id="inadempimenti-datatable" keyField="Id" maxRowSelection="1"
+            columns="{!v.inadempimentiColumns}" data="{!v.caseList}" onrowselection="{!c.setSelectedCase}" />
+
+        <aura:if isTrue="{!v.selectedCase}">
+            <br />
+            <br />
+            <lightning:layout multipleRows="true">
+                <lightning:layoutitem size="3" padding="around-medium">
+                    ALERT<br />
+                    <br />
+                    <b>Data Avviso</b>: <lightning:formattedDateTime value="{!v.selectedCase.CreatedDate}" year="2-digit" month="2-digit" day="2-digit" /><br />
+                    <b>Oggetto</b>: {!v.selectedCase.Subject} <br /> <br />
+                  
+                        DEALER<br />
+                    <br />
+                    <b>Codice OCS</b>: {!v.selectedCase.Dealer__r.OCS_External_Id__pc} <br />
+                    <b>Ragione sociale</b>: {!v.selectedCase.Dealer__r.RagioneSociale__pc} <br />
+                    <b>Stato dealer</b>: {!v.selectedCase.Dealer__r.status__pc} <br />
+                </lightning:layoutitem>
+                
+                <lightning:layoutitem size="3" padding="around-medium">
+                    COMUNICAZIONE<br />
+                    <br />
+                    <b>Tipo</b>: {!v.selectedCase.Tipo_Reclamo__c} <br />
+                    <b>Numero reclamo</b>: {!v.selectedCase.Numero_Reclamo__c} <br />
+                    <b>Stato</b>: {!v.selectedCase.Status} <br />
+                    <b>Inviato dal cliente il</b>: <lightning:formattedDateTime value="{!v.selectedCase.CreatedDate}" year="2-digit" month="2-digit" day="2-digit" /> <br />
+                    <b>Ricevuto il</b>: <lightning:formattedDateTime value="{!v.selectedCase.Data_Ricezione__c}" year="2-digit" month="2-digit" day="2-digit" /> <br />
+                    <b>Chiuso il</b>: <lightning:formattedDateTime value="{!v.selectedCase.ClosedDate}" year="2-digit" month="2-digit" day="2-digit" /> <br />
+                    <b>Categoria</b>: {!v.selectedCase.Categoria_Riferimento__r.Name} <br />
+                    <b>Coda</b>: {!v.selectedCase.Owner.Name} <br />
+                </lightning:layoutitem>
+                <lightning:layoutitem size="3" padding="around-medium">
+                    CLIENTE<br />
+                    <br />
+                    <b>Codice OCS</b>: {!v.selectedCase.Account.OCS_External_Id__c}<br />
+                    <b>Nome/Cognome</b>: {!v.selectedCase.Account.Name}<br />
+                    <b>Codice fiscale</b>: {!v.selectedCase.Account.Codice_Fiscale__pc}<br />
+
+                </lightning:layoutitem>
+                <lightning:layoutitem size="3" padding="around-medium">
+                    PRATICA<br />
+                    <br />
+                    <b>Codice OCS</b>: {!v.selectedCase.NumeroPratica__c} <br />
+                    <b>Società</b>: {!v.selectedCase.Referenced_Company__c} <br />
+                    <b>Prodotto</b>: <br />
+                    <b>Tipo</b>: {!v.selectedCase.Tipo_Pratica__c} <br />
+                    <b>Stato</b>: {!v.selectedCase.Stato_Pratica__c} <br />
+
+                </lightning:layoutitem>
+               
+            </lightning:layout>
+            
+              <lightning:layout multipleRows="true">
+                   <aura:if isTrue="{!(v.isInserimento)}">
+                 <lightning:layoutitem size="2" padding="around-medium">
+                       ESITA AVVISO<br />
+                     <lightning:select name="selectItem" label="Esito">
+                         <option value="Arhiviato">Archiviato</option>
+                     </lightning:select>
+                     
+                </lightning:layoutitem>
+                  </aura:if>
+                    <aura:if isTrue="{!not(v.isInserimento)}">
+                      <lightning:layoutitem size="4" padding="around-medium">
+                          
+                          <c:XCSGestioneAllegati fileList="{!v.staticFileList}"
+                                                 canDelete="false"
+                                                 showList="true"
+                                                 recordId="{!v.selectedcase.Id}"/>
+                      </lightning:layoutitem>
+                  </aura:if>
+                <lightning:layoutitem size="8" padding="around-medium">
+                    <aura:if isTrue="{!v.noteList.length > 0}">
+                        NOTE<br />
+                        <br />
+                        <lightning:datatable aura:id="note-datatable" hideCheckboxColumn="true" keyField="Id"
+                            columns="{!v.noteColumns}" data="{!v.noteList}" />
+
+
+                        <br />
+                        <br />
+                    </aura:if>
+                    <aura:if isTrue="{!v.emailList.length > 0}">
+                        EMAIL<br />
+                        <lightning:datatable aura:id="email-datatable" hideCheckboxColumn="true" keyField="Id"
+                            columns="{!v.emailColumns}" data="{!v.emailList}" />
+                    </aura:if>
+
+
+                </lightning:layoutitem>
+                <lightning:layoutitem size="6" padding="around-medium">
+                    <lightning:recordEditForm onload="{!c.handleLoad}" onsubmit="{!c.handleSubmit}" onsuccess="{!c.handleSuccess}" recordId="{!v.selectedCase.Id}"
+                        objectApiName="Case">
+                        <lightning:messages />
+                        <lightning:inputField aura:id="note-field" fieldName="Note__c" class="text-area" value="{!v.noteValue}" /><br />
+                        <aura:if isTrue="{!not(v.isInserimento)}">
+                            <lightning:button variant="brand" type="submit" name="save"  label="Invia valutazione" />
+                        <aura:set attribute="else">
+                            <lightning:button variant="brand" type="submit" name="save"  label="Esita Avviso" onclick="{!c.esita}" />
+                            </aura:set>
+                        </aura:if>
+                        
+                        </lightning:recordEditForm>
+                </lightning:layoutitem>
+            </lightning:layout>
+        </aura:if>
+    </div>
+
+
+</aura:component>

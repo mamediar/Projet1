@@ -1,0 +1,91 @@
+<aura:component controller="CRMReclamiGesInadContainerCtrl"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" 
+                access="global" 
+                >
+    
+    <aura:attribute name = "recordId" type="String"/>
+    <aura:attribute name = "valoriInadempimento" type="Object"/>
+    <aura:attribute name = "campiCase" type = "Object"/>
+    <aura:attribute name = "isLoading" type="Boolean" default="true"/>
+    <aura:attribute name = "stageInadempimentoList" type = "List"/>
+    <aura:attribute name = "reclamoCompletoSelection" type="String"/>
+    <aura:attribute name = "isReclamoCompletoOk" type="Boolean"/>
+    <aura:attribute name = "FTSent" type = "String"/>
+    <aura:attribute name = "FTReceived" type = "String"/>
+    <aura:attribute name = "filiale" type = "String"/>
+    <aura:attribute name="reclamoCompletoRadioGroup" type="Boolean"/>
+    <aura:attribute name="tabInadempimento" type="Boolean"/>
+    <aura:attribute name="stageInademOptions" type="List"/>
+    
+    <aura:attribute name="radioOptions" type="List"/>
+    
+    
+    <aura:attribute name="ReclamoCompletoValue" type="Boolean"/>
+    
+    <!--Output-->
+    <aura:attribute name = "gravitaDettagli" type = "String"/>
+    <aura:attribute name = "gravitaDettagliOld" type = "String"/>
+    <aura:attribute name = "stageInadempimento" type = "String" default=""/>
+    <aura:attribute name = "stageInadempimentoOld" type = "String"/>
+    <aura:attribute name = "reclamoCompletoOutput" type="Object"/>
+    <aura:attribute name="isOk" type="Boolean"/>
+    <aura:attribute name="errorMessage" type="String"/>
+    <aura:attribute name="output" type="Object"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    <aura:handler name="change" value="{!v.reclamoCompletoOutput}" action="{!c.handleChange}"/>
+    <aura:method name="salvaReclamoInadempimento" action="{!c.salvaReclamoInadempimento}" access="PUBLIC"/> 
+      <aura:method name="refresh" action="{!c.refreshComponent}" access="PUBLIC"/> 
+   
+    <lightning:layout>
+        <lightning:layoutItem size = "6">
+            
+            <lightning:select aura:id="gravita"
+                              label = "Si prega di confermare la gravità del reclamo:"
+                              value = "{!v.gravitaDettagli}"
+                              onchange = "{!c.handleChange}"
+                              >
+                <option value = "">* Selezionare Gravità *</option>
+                <option value = "DP2208">Uff. Legale – Grave</option>
+                <option value = "DP2209">Uff. Legale – Non Grave</option>    
+            </lightning:select>  
+            
+        </lightning:layoutItem>
+        <lightning:layoutItem size="6">
+            <div class="slds-p-left_x-small">
+                
+                <aura:if isTrue="{!v.isLoading}">
+                    <lightning:spinner alternativeText="Loading" />
+                    
+                    <aura:set attribute="else">
+                        
+
+                        <lightning:combobox aura:id = "stage-inadempimento"
+                                            label = "Stage Inadempimento:"
+                                            value = "{!v.stageInadempimento}"
+                                            onchange = "{!c.handleChange}"
+                                            options="{!v.stageInademOptions}"/>
+                    </aura:set>
+                </aura:if>
+                
+                <lightning:input label = "F&amp;T Sent:"
+                                 value = "{!v.FTSent}"
+                                 type = "text"
+                                
+                                 />
+                
+                <lightning:input label = "F&amp;T Received :"
+                                 value = "{!v.FTReceived}"
+                                 type = "text"
+                                 
+                                 />            
+                                
+                <lightning:input label = "Filiale:"
+                                 value = "{!v.campiCase.Branch__r.Name}"
+                                 type = "text"
+                                 readonly = "true"
+                                 />     
+            </div>
+        </lightning:layoutItem>
+    </lightning:layout>
+</aura:component>

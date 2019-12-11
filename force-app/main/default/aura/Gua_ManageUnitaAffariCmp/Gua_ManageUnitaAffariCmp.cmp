@@ -1,0 +1,98 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" access="global" controller="Gua_ManageUnitaAffariCnt">
+	 <aura:attribute
+                    type="Object"
+                    name="listZoneAndRegion"
+                    default="" />
+    <aura:attribute
+                    type="List"
+                    name="listQueus"
+                    default="" />
+    <aura:attribute
+                    type="List"
+                    name="listvalue"
+                    default="" />
+    <aura:attribute
+                    type="List"
+                    name="listZoneSelected"
+                    default=""/>
+    <aura:attribute name="openmodel"
+                    type="Boolean" 
+                    default="false"/>    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />                
+    <div class="slds-card slds-m-horizontal_x-large">
+        <div class="slds-grid slds-wrap slds-gutters">
+            <div class="slds-col slds-size_8-of-12">
+                <table  class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+            <tbody>
+                <aura:iteration items="{!v.listZoneAndRegion}" var="zoneAndRegion">
+                    <tr  class="slds-line-height_reset">
+                        <td>{!zoneAndRegion.Region}</td>
+                    </tr>
+                     	<tr class="slds-hint-parent">
+                            <div class="slds-checkbox" >
+                        	<lightning:checkboxGroup name="checkBoxList"
+                             						 type="checkbox"
+                             						 options="{!zoneAndRegion.listData}"
+                             						 value="{!v.listvalue}"
+                             						 onchange="{!c.handleChange}"/>
+                    </div>
+                    </tr>
+                </aura:iteration>
+                <div class="slds-select_container">
+                    <select id="queue" class="slds-select" required="true" >
+                    	<option value="" selected="false">--Unita Affari--</option>
+                        <aura:iteration items="{!v.listQueus}" var="queu" >
+                        	<option value="{!queu.Id}">{!queu.Name}</option>
+                        </aura:iteration>
+                    </select>
+                 </div>
+                <lightning:button disabled="disabled"
+                      variant="neutral"
+                      label="Cancella Tutto"
+                      onclick="{!c.methoCancella }"
+                      class="slds-float_left slds-m-top_small"
+                      />
+                <lightning:button disabled="disabled"
+                      variant="neutral"
+                      label="Assegna"
+                      onclick="{!c.methoAssegna }"
+                      class="slds-float_right slds-m-top_small"
+                      />
+            </tbody>
+        </table>
+            </div>
+            <div class="slds-col slds-size_4-of-12">
+                <aura:iteration items="{!v.listZoneSelected}" var="zone">
+                    <label>{!zone}</label>
+                </aura:iteration>
+                
+                <lightning:button disabled="true"
+                      variant="neutral"
+                      label="Conferma"
+                      onclick="{!c.methoConferma}"
+                      class="slds-float_right slds-m-top_small"
+                      />
+            </div>
+        </div>
+        <aura:if isTrue="{!v.openmodel==true}">
+        <div class="demo-only" style="height: 640px;">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">conferma zone</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <center><h2><b>conferma</b></h2>
+                        </center>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning:button class="slds-float_left" label="Cancel" variant="neutral" onclick="{!c.closeModal}"></lightning:button>
+                        <lightning:button class="slds-float_right" label="continua" variant="brand" onclick="{!c.validForm}"></lightning:button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+        </aura:if>
+    </div>
+</aura:component>

@@ -1,0 +1,135 @@
+<aura:component controller="CRMReclamiInsDettagliHeaderController"
+                implements="force:appHostable,flexipage:availableForAllPageTypes" 
+                access="global" 
+                > 
+    
+    <aura:attribute name="aziendaSelezionata" type="String"/>
+    <aura:attribute name="areaDettagli" type="String"/>
+    <aura:attribute name="listaValoriTipo" type="CRM_RCL_Tipologia_Reclamo__mdt[]"/>
+    <aura:attribute name="listaValoriTipoCache" type="CRM_RCL_Tipologia_Reclamo__mdt[]"/>
+    <aura:attribute name="tipoDettagli" type="String"/>
+    <aura:attribute name="isAssicurazione" type="Boolean"/>
+    <aura:attribute name="modalitaList" type="List"/>
+    <aura:attribute name="modalitaInvioDettagli" type="String"/>
+    <aura:attribute name="dataComunicazione" type="String"/>
+    <aura:attribute name="dataRicezione" type="String"/>
+    <aura:attribute name="dataRicezioneIDM" type="String"/>
+    <aura:attribute name="showDecisione" type="Boolean"/>
+    <aura:attribute name="dataDecisione" type="String"/>
+    <aura:attribute name="delegaPresente" type="Boolean"/>
+    <aura:attribute name="reclamoCompleto" type="Boolean"/>
+    <aura:attribute name="accessoDati" type="Boolean"/>
+    <aura:attribute name="categoriaDettagli" type="XCS_Categoria__c"/>
+    <aura:attribute name='descrizioneTipo' type='String'/>
+    <aura:attribute name="radioOptions" type="List" default="[{'label':'Si','value':'true'},
+                                                             {'label':'No','value':'false'}]"/>
+    <aura:attribute name="isOk" type="Boolean"/><!--var per riepilogo, vero se tutti i campi sono valorizzati-->
+    <aura:attribute name="errorMessage" type="String"/>
+    <aura:attribute name="isGrave" type="Boolean"/>
+    <aura:attribute name="today" type="String" default=""/>
+    <aura:attribute name="outputObj" type="Object"/>
+    
+    <aura:registerEvent name="aggiornaDettagli" type="c:CRMReclamiGestioneApprovazioneEvent"/>
+
+    
+    <aura:handler name="change" value="{!v.tipoDettagli}" action="{!c.handleChange}"/>
+     <aura:handler name="change" value="{!v.categoriaDettagli}" action="{!c.handleChange}"/>
+    <aura:handler name="change" value="{!v.isGrave}" action="{!c.handleChange}"/>
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    
+    <!--Picklist Area-->
+    <aura:if isTrue="{!v.aziendaSelezionata=='MBCredit Solutions'}">
+        <lightning:select label="Area"
+                          value="{!v.areaDettagli}"
+                          onchange="{!c.handleChange}"                             
+                          >
+            <option value="">Seleziona Area</option>
+            <option value="CM">CM</option>
+            <option value="NPL">NPL</option>
+        </lightning:select>
+    </aura:if>
+     
+    <!--Picklist Tipo-->
+
+    <lightning:select label="Tipo"
+                      value="{!v.tipoDettagli}"
+                      onchange="{!c.handleChange}" 
+                      ><!--aggiornaCoda-->
+        <option value="">Seleziona Tipo</option>
+        <aura:iteration items="{!v.listaValoriTipo}" var="val">
+            <option value="{!val.External_Id__c}">{!val.Descrizione__c}</option>
+        </aura:iteration>
+    </lightning:select>
+
+    <lightning:input label="Data Comunicazione:"
+                     type="Date"
+                     max="{!v.today}"
+                     value="{!v.dataComunicazione}"
+                     onchange="{!c.handleChange}"
+                     />
+    <lightning:input label="Data Ricezione:"
+                     type="Date"
+                     value="{!v.dataRicezione}"
+                     max="{!v.today}"
+                     min="{!v.dataComunicazione}"
+                     onchange="{!c.handleChange}"
+                     />
+    <lightning:input label="Data Ricezione IDM:"
+                     type="Date"
+                     max="{!v.today}"
+                     min="{!v.dataComunicazione}"
+                     value="{!v.dataRicezioneIDM}"
+                     onchange="{!c.handleChange}"
+                     />
+    <aura:if isTrue="{!v.showDecisione}">
+        <lightning:input label="Data Decisione:"
+                         type="Date"
+                         value="{!v.dataDecisione}"
+                         max="{!v.today}"
+                         onchange="{!c.handleChange}"
+                         />
+    </aura:if>
+    
+    <!--Picklist Mod invio-->
+    <lightning:select label="Modalità Invio:"
+                      value="{!v.modalitaInvioDettagli}"
+                      onchange="{!c.handleChange}"
+                      >
+        <option value="">Seleziona Modalità</option>
+        <aura:iteration items="{!v.modalitaList}" var="mod">
+            <option value="{!mod}">{!mod}</option>
+        </aura:iteration>
+    </lightning:select>
+    
+    <lightning:radioGroup label="Delega Presente:"
+                          options="{!v.radioOptions}"
+                          value="{!v.delegaPresente}"
+                          type="radio"
+                          class="customRadioCls"
+                          onchange="{!c.handleChange}"
+                          /><!--aggiornaCoda-->
+    <lightning:radioGroup label="Accesso ai Dati:"
+                          options="{!v.radioOptions}"
+                          value="{!v.accessoDati}"
+                          type="radio"
+                          class="customRadioCls"
+                          onchange="{!c.handleChange}"
+                          />
+    
+    <c:CRMReclamiInserimentoDettagliCategoria aziendaSelezionata="{!v.aziendaSelezionata}"
+                                              categoriaDettagli="{!v.categoriaDettagli}"
+                                              isGrave="{!v.isGrave}"
+                                              
+                                              />
+    
+    <aura:if isTrue="{!v.isGrave}">
+        <lightning:radioGroup label="Reclamo Completo:"
+                              options="{!v.radioOptions}"
+                              value="{!v.reclamoCompleto}"
+                              type="radio"
+                              class="customRadioCls"
+                              onchange="{!c.handleChange}"
+                              />
+    </aura:if>
+    
+</aura:component>

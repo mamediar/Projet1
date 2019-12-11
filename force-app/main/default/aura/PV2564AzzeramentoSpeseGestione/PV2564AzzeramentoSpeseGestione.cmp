@@ -1,0 +1,88 @@
+<!--
+  @Component Name     : PV2564AzzeramentoSpeseGestione.cmp
+  @Description        : 
+  @Author             : Andrea Vanelli
+  @Group              : 
+  @Last Modified By   : Andrea Vanelli
+  @Last Modified On   : 19/10/2019, 17:14:26
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    3/8/2019, 17:39:51   Andrea Vanelli     Initial Version
+-->
+<aura:component controller='PV2564AzzeramentoSpeseGestione' access='global'>
+    <aura:handler name='init' value='{!this}' action='{!c.doInit}' />
+    <aura:attribute name="parent" type="Aura.Component" required="true"
+        description="componente padre per accedere ai metodi comuni" />
+    <aura:method name="save" action="{!c.save}" description="Metodo richiamato dal bottone del componente padre">
+    </aura:method>
+
+    <!-- Attributi -->
+    <aura:attribute name="speseListSelezionate" type="OCSRecuperaSpeseAzzeraRecInvoker.SpesaRecuperoDTO[]" />
+    <aura:attribute name="praticaSelezionata" type="OCSPratica" />
+    <aura:attribute name="accettarifiutaValueOptions" type="List" default="[
+    {'label': 'Azzera spese selezionate', 'value': 'accetta'},
+    {'label': 'Rifiuta richiesta', 'value': 'rifiuta'}
+    ]" />
+    <aura:attribute name="accettarifiutaValue" type="String" default="" />
+
+
+    <!-- da parent -->
+    <aura:attribute name="theCase" type="Case" />
+    <aura:attribute name="dispositionSelezionato" type="XCS_Disposition__c" />
+    <aura:attribute name='note' type='String' />
+    <aura:attribute name="allegati" type="Attachment[]" />
+    <aura:attribute name="newStatus" type="String" />
+
+
+
+    <!-- main -->
+    <aura:if isTrue="{!v.theCase.Step_PV__c == '2'}">
+        <lightning:card class='slds-form_stacked'>
+            <c:PV2564AzzeramentoSpeseLista praticaSelezionata="{!v.praticaSelezionata}" aura:id="cmpListaSpese"
+                parent="{!v.parent}" speseListSelezionate="{!v.speseListSelezionate}" modalita="gestione"
+                caseId="{!v.theCase.Id}">
+            </c:PV2564AzzeramentoSpeseLista>
+
+        </lightning:card> <!-- /main -->
+
+
+        <lightning:radioGroup name="accettarifiuta" label="Accetta o rifiuta la richiesta di azzeramento"
+            options="{! v.accettarifiutaValueOptions }" value="{! v.accettarifiutaValue }" type="radio"
+            required="true" />
+        <aura:set attribute="else">
+                <br />
+                <b>La richiesta è stata rifiutata. Visionare le note per i dettagli.</b>
+            <br />
+            <br />
+        </aura:set>
+    </aura:if>
+
+    <br />
+    <!-- modal -->
+    <div class="slds">
+        <div aria-hidden="true" role="dialog" class="slds-modal slds-modal--prompt slds-fade-in-hide"
+            aura:id="modaldialog">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header slds-theme--info">
+                    <button class="slds-button slds-button--icon-inverse slds-notify__close" onclick="{!c.hidePopup}">
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 class="slds-text-heading--medium">Conferma azzeramento spese</h2>
+                </div>
+                <div class="slds-modal__content slds-p-around--medium">
+                    <div>
+                        <p>ciccia ciacci</p>
+                        <button class="slds-button slds-button--icon-inverse slds-notify__close"
+                            onclick="{!c.hidePopup}">
+                            <span class="slds-assistive-text">Conferma</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slds-backdrop slds-backdrop--hide" aura:id="backdrop">
+    </div>
+</aura:component>

@@ -1,0 +1,125 @@
+<!--
+  @Component Name     : PVDatiFinanziariCarta.cmp
+  @Description        : 
+  @Author             : Lorenzo Marzocchi
+  @Group              : 
+  @Last Modified By   : Lorenzo Marzocchi
+  @Last Modified On   : 2019-8-26 11:07:29
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    2019-6-26 15:29:27   Lorenzo Marzocchi     Initial Version
+-->
+<aura:component >
+    <aura:handler name='init' value='{!this}' action='{!c.init}' />
+    <aura:attribute name="cartaDatiFinanziariData" type="OCSCartaDatiFinanziariResponse.DatiCartaDatiFinanziariResponseDTO" />
+    
+    <lightning:card title="Dati Finanziari Carta di Credito" iconName="action:new_task">
+        <p>
+               <!-- <table class="slds-table slds-no-row-hover"> -->
+                <table class="slds-table slds-table_bordered slds-table_col-bordered">
+                <tbody>
+                    <tr class="slds-hint-parent">
+                        <td class="slds-cell-buffer_left"><div>NUMERO CARTA:		{!v.cartaDatiFinanziariData.numeroPratica}</div></td>
+                        <td class="slds-cell-buffer_left"><div>PRODOTTO: 		{!v.cartaDatiFinanziariData.codProdotto}-{!v.cartaDatiFinanziariData.desProdotto}</div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                        <td class="slds-cell-buffer_left"><div>EMETTITORE: 		{!v.cartaDatiFinanziariData.emettitore}</div></td>
+                        <td class="slds-cell-buffer_left"><div>PAN:          	{!v.cartaDatiFinanziariData.pan}</div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                        <td class="slds-cell-buffer_left"><div>DATA VALIDITA':   {!v.cartaDatiFinanziariData.dataValiditaSlashed}</div></td>
+                        <td class="slds-cell-buffer_left"><div>DATA SCADENZA:    {!v.cartaDatiFinanziariData.dataScadenzaSlashed}</div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                        <td class="slds-cell-buffer_left"><div>STATO CARTA:		{!v.cartaDatiFinanziariData.stato} - {!v.cartaDatiFinanziariData.statoCustom}</div></td>
+                        <td class="slds-cell-buffer_left"><div>STATO RINNOVO:    {!v.cartaDatiFinanziariData.statoRinnovoCustom}</div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                        <td class="slds-cell-buffer_left"><div>FIDO:	<lightning:formattedNumber value='{!v.cartaDatiFinanziariData.fidoTotale}' style="currency" currencyCode="EUR"/></div></td>
+                        <td class="slds-cell-buffer_left"><div>DISPONIBILITA':  <lightning:formattedNumber value='{!v.cartaDatiFinanziariData.dispTotale}' style="currency" currencyCode="EUR"/></div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+						<td colspan="2" class="slds-cell-buffer_left">RISERVE</td>                    
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <table class="slds-table slds-no-row-hover">
+                                <thead>
+                                    <tr class="slds-hint-parent">
+                                        <td class="slds-cell-buffer_left"><div></div></td>
+                                        <td class="slds-cell-buffer_left"><div>Affidamento</div></td>
+                                        <td class="slds-cell-buffer_left"><div>Disponibilità</div></td>
+                                        <td class="slds-cell-buffer_left"><div>Saldo</div></td>
+                                        <td class="slds-cell-buffer_left"><div>Sconfino</div></td>
+                                        <td class="slds-cell-buffer_left"><div>Overlimit</div></td>
+                                        <td class="slds-cell-buffer_left"><div>Disp.Teorica Max</div></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="slds-hint-parent">
+                                        <td class="slds-cell-buffer_left"><div><b>Principale</b></div></td> 
+                                        <td class="slds-cell-buffer_left"><div><lightning:formattedNumber value='{!v.cartaDatiFinanziariData.riservaPrincipaleFido}'    style="currency" currencyCode="EUR"/></div></td>
+                                        <td class="slds-cell-buffer_left"><div><lightning:formattedNumber value='{!v.cartaDatiFinanziariData.riservaPrincipaleDisp}'    style="currency" currencyCode="EUR"/></div></td>
+                                        <td class="slds-cell-buffer_left"><div><lightning:formattedNumber value='{!v.cartaDatiFinanziariData.riservaPrincipaleSaldo}'    style="currency" currencyCode="EUR"/></div></td>
+                                        <td class="slds-cell-buffer_left"><div><lightning:formattedNumber value='{!v.cartaDatiFinanziariData.riservaPrincipaleSconfino}' style="currency" currencyCode="EUR"/></div></td>
+                                        <td class="slds-cell-buffer_left"><div><lightning:formattedNumber value='{!v.cartaDatiFinanziariData.riservaPrincipaleOverlimit}'  style="currency" currencyCode="EUR"/></div></td>
+                                        <td class="slds-cell-buffer_left"><div><lightning:formattedNumber value='{!v.cartaDatiFinanziariData.riservaPrincipaleDispTeorMax}' style="currency" currencyCode="EUR"/></div></td>
+                                    </tr>
+                                    <tr class="slds-hint-parent">
+                                        <td class="slds-cell-buffer_left"><div><b>Salvadanaio</b></div></td>
+                                        <td class="slds-cell-buffer_left"><div><lightning:formattedNumber value='{!v.cartaDatiFinanziariData.riservaSalvadanaioFido}' style="currency" currencyCode="EUR"/></div></td>
+                                        <td class="slds-cell-buffer_left"><div><lightning:formattedNumber value='{!v.cartaDatiFinanziariData.riservaSalvadanaioDisp}' style="currency" currencyCode="EUR"/></div></td>
+                                        <td class="slds-cell-buffer_left"><div><lightning:formattedNumber value='{!v.cartaDatiFinanziariData.riservaSalvadanaioSaldo}' style="currency" currencyCode="EUR"/></div></td>
+                                        <td class="slds-cell-buffer_left"><div><lightning:formattedNumber value='{!v.cartaDatiFinanziariData.riservaSalvadanaioSconfino}' style="currency" currencyCode="EUR"/></div></td>
+                                        <td class="slds-cell-buffer_left"><div><lightning:formattedNumber value='{!v.cartaDatiFinanziariData.riservaSalvadanaioOverlimit}' style="currency" currencyCode="EUR"/></div></td>
+                                        <td class="slds-cell-buffer_left"><div><lightning:formattedNumber value='{!v.cartaDatiFinanziariData.riservaSalvadanaioDispTeorMax}' style="currency" currencyCode="EUR"/></div></td>
+                                    </tr>
+                                    <tr class="slds-hint-parent">
+                                        <td class="slds-cell-buffer_left"><div><b>Internet</b></div></td>
+                                        <td class="slds-cell-buffer_left"><div><lightning:formattedNumber value='{!v.cartaDatiFinanziariData.riservaInternetFido}' style="currency" currencyCode="EUR"/></div></td>
+                                        <td class="slds-cell-buffer_left"><div><lightning:formattedNumber value='{!v.cartaDatiFinanziariData.riservaInternetDisp}' style="currency" currencyCode="EUR"/></div></td>
+                                        <td class="slds-cell-buffer_left"><div><lightning:formattedNumber value='{!v.cartaDatiFinanziariData.riservaInternetSaldo}' style="currency" currencyCode="EUR"/></div></td>
+                                        <td class="slds-cell-buffer_left"><div><lightning:formattedNumber value='{!v.cartaDatiFinanziariData.riservaInternetSconfino}' style="currency" currencyCode="EUR"/></div></td>
+                                        <td class="slds-cell-buffer_left"><div><lightning:formattedNumber value='{!v.cartaDatiFinanziariData.riservaInternetOverlimit}' style="currency" currencyCode="EUR"/></div></td>
+                                        <td class="slds-cell-buffer_left"><div><lightning:formattedNumber value='{!v.cartaDatiFinanziariData.riservaInternetDispTeorMax}' style="currency" currencyCode="EUR"/></div></td>
+                                    </tr>
+                                    <tr class="slds-hint-parent">
+                                        <td class="slds-cell-buffer_left"><div><b>Multiconto</b></div></td>
+                                        <td class="slds-cell-buffer_left"><div><lightning:formattedNumber value='{!v.cartaDatiFinanziariData.riservaMulticontoFido}' style="currency" currencyCode="EUR"/></div></td>
+                                        <td class="slds-cell-buffer_left"><div><lightning:formattedNumber value='{!v.cartaDatiFinanziariData.riservaMulticontoDisp}' style="currency" currencyCode="EUR"/></div></td>
+                                        <td class="slds-cell-buffer_left"><div><lightning:formattedNumber value='{!v.cartaDatiFinanziariData.riservaMulticontoSaldo}' style="currency" currencyCode="EUR"/></div></td>
+                                        <td class="slds-cell-buffer_left"><div><lightning:formattedNumber value='{!v.cartaDatiFinanziariData.riservaMulticontoSconfino}' style="currency" currencyCode="EUR"/></div></td>
+                                        <td class="slds-cell-buffer_left"><div><lightning:formattedNumber value='{!v.cartaDatiFinanziariData.riservaMulticontoOverlimit}' style="currency" currencyCode="EUR"/></div></td>
+                                        <td class="slds-cell-buffer_left"><div><lightning:formattedNumber value='{!v.cartaDatiFinanziariData.riservaMulticontoDispTeorMax}' style="currency" currencyCode="EUR"/></div></td>
+                                    </tr>
+                                </tbody>
+                            </table>  
+                        </td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                            <td class="slds-cell-buffer_left"><div>TAN:  {!v.cartaDatiFinanziariData.tassoTan}</div></td>
+                            <td class="slds-cell-buffer_left"><div>TAEG: {!v.cartaDatiFinanziariData.tassoTaeg}</div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                        <td class="slds-cell-buffer_left"><div>MOD. PAGAMENTO: 	{!v.cartaDatiFinanziariData.pagamento}</div></td>
+                        <td class="slds-cell-buffer_left"><div>MOD CALCOLO RATA: {!v.cartaDatiFinanziariData.modCalcoloRata} - {!v.cartaDatiFinanziariData.modCalcoloRataCustom}</div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                        <td class="slds-cell-buffer_left"><div>ABI:        		{!v.cartaDatiFinanziariData.bancaCliAbi}</div></td>
+                        <td class="slds-cell-buffer_left"><div>CAB:          	{!v.cartaDatiFinanziariData.bancaCliCab}</div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                        <td class="slds-cell-buffer_left"><div>NUM CONTO:    	{!v.cartaDatiFinanziariData.contoCorrente}</div></td>
+                        <td class="slds-cell-buffer_left"><div>IBAN:     		{!v.cartaDatiFinanziariData.iban}</div></td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                            <td class="slds-cell-buffer_left"><div>RATA MINIMA:   	<lightning:formattedNumber value='{!v.cartaDatiFinanziariData.pagamentoMinimo}'    style="currency" currencyCode="EUR"/></div></td>
+                            <td class="slds-cell-buffer_left"><div>PERCENTUALE:     {!v.cartaDatiFinanziariData.pagamentoMinimoPerc}</div></td>
+                        </tr>
+                </tbody>
+            </table>            
+        </p>
+    </lightning:card>
+</aura:component>

@@ -1,0 +1,14 @@
+<aura:component controller="SFAOutboundCallRetFissAptController" implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId">
+	
+    <aura:attribute name="parentCase" type="case"/>
+    <aura:attribute name="currentTask" type="task"/>
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="seeComponent" type="Boolean" default="false" />
+    
+	<aura:handler name="init" value="{! this }" action="{! c.init }"/>    
+    <aura:handler event="c:EventToCreaAppuntamento" action="{!c.eventHandler}"/>
+    
+    <aura:if isTrue="{!v.seeComponent}">
+        <c:creaAppuntamento idCliente="{!v.currentTask.Customer__c}" filialeId="{!v.parentCase.Branch__c}" />
+    </aura:if>           
+</aura:component>

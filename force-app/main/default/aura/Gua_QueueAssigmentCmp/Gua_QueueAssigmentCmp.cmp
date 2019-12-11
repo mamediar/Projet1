@@ -1,0 +1,188 @@
+<aura:component controller="Gua_QueueAssigmentCnt" implements="force:appHostable,flexipage:availableForAllPageTypes">
+
+    <aura:attribute name="areasAffari" type="GUA_Queue_Assigment__c[]" />
+    <aura:attribute name="areaAffari" type="GUA_Queue_Assigment__c" default="{'SObjectype':'GUA_Queue_Assigment__c'}" />
+    <aura:attribute name="existedAreaAffari" type="GUA_Queue_Assigment__c" default="{'SObjectype':'GUA_Queue_Assigment__c'}" />
+
+    <!--Declare Event Handlers-->
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" description="Call doInit function on component load to get picklist values" />
+
+    <!--Declare Attributes-->
+    <aura:attribute name="region" type="String" default="" />
+    <aura:attribute name="unitaAffari" type="String" default="" />
+    <aura:attribute name="Q281" type="List" default="[]" />
+    <aura:attribute name="Q285" type="List" default="[]" />
+    <aura:attribute name="Q286" type="List" default="[]" />
+    <aura:attribute name="Q287" type="List" default="[]" />
+    <aura:attribute name="unitaAffarisSelected" type="List" default="[]" />
+
+
+    <aura:attribute name="regions" type="List" default="[]" />
+    <aura:attribute name="areaList" type="List" default="[]" />
+    <aura:attribute name="selectedAreaList" type="List" default="[]" />
+
+    <aura:attribute name="listAffari" type="List" />
+    <aura:attribute name="listZoneRO" type="List" />
+    <aura:attribute name="listZoneRE" type="List" />
+    <aura:attribute name="listZoneRC" type="List" />
+    <aura:attribute name="listZoneRA" type="List" />
+    <aura:attribute name="listZoneRT" type="List" />
+    <aura:attribute name="listZoneRS" type="List" />
+    <aura:attribute name="listZones" type="List" />
+
+
+    <lightning:card variant="base" class="slds-m-top_small slds-m-bottom_small">
+        <div class="slds-card__body_inner">
+            <lightning:layout>
+                <lightning:layoutItem size="3" class="slds-m-around_x-small">
+                    <lightning:select value="{!v.unitaAffari}" aura:id="unitaAffari" name="unitaAffari" label="Unita Affari" required="true" onchange="{!c.setQueue}">
+                        <option value=""></option>
+                        <aura:iteration items="{!v.listAffari}" var="affari">
+                            <option value="{!affari.value}">{!affari.label}</option>
+                        </aura:iteration>
+                    </lightning:select>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="3" class="slds-m-around_x-small">
+                    <lightning:select value="{!v.region}" aura:id="region" name="region" label="Regione" required="true" onchange="{!c.getAreas}">
+                        <option value=""></option>
+                        <aura:iteration items="{!v.regions}" var="region">
+                            <option value="{!region}">{!region}</option>
+                        </aura:iteration>
+                    </lightning:select>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="3" class="slds-m-around_x-small">
+                    <lightning:dualListbox aura:id="selectAreaQ281" name="Area" label="Seleziona Area" sourceLabel="Disponibile Area" selectedLabel="Aree Selezionate" options="{!v.listZones}" value="{!v.selectedAreaList}" onchange="{!c.selectArea}" />
+                </lightning:layoutItem>
+                <lightning:layoutItem size="3" class="slds-m-around_x-small">
+                    <lightning:button disabled="{!or(or( empty(v.region), empty(v.unitaAffari)), (v.selectedAreaList.length == 0) )}" class="slds-m-top_large" variant="brand" label="Aggiungi" onclick="{!c.addZoneToQueue}" />
+                </lightning:layoutItem>
+            </lightning:layout>
+        </div>
+    </lightning:card>
+
+    <lightning:card variant="base" class="slds-m-top_small slds-m-bottom_small">
+        <div class="slds-card__body_inner">
+            <lightning:layout>
+                <lightning:layoutItem size="6">
+                    <div class="slds-m-bottom_small slds-text-heading_medium">Area di interazione</div>
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="">Unita Affari</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="">Aree</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="slds-hint-parent">
+                                <td data-label="Affari e delibere 1">
+                                    <div class="slds-truncate" title="">Affari e delibere 1</div>
+                                </td>
+                                <td data-label="Area">
+                                    <aura:iteration items="{!v.Q281}" var="item">
+                                        <span class="slds-text-title cls-area">{!item}</span>
+                                    </aura:iteration>
+                                </td>
+                            </tr>
+                            <tr class="slds-hint-parent">
+                                <td data-label="Affari e delibere 2">
+                                    <div class="slds-truncate" title="">Affari e delibere 2</div>
+                                </td>
+                                <td data-label="Area">
+                                    <aura:iteration items="{!v.Q285}" var="item">
+                                        <span class="slds-text-title cls-area">{!item}</span>
+                                    </aura:iteration>
+                                </td>
+                            </tr>
+                            <tr class="slds-hint-parent">
+                                <td data-label="Affari e delibere 3">
+                                    <div class="slds-truncate" title="">Affari e delibere 3</div>
+                                </td>
+                                <td data-label="Area">
+                                    <aura:iteration items="{!v.Q286}" var="item">
+                                        <span class="slds-text-title cls-area">{!item}</span>
+                                    </aura:iteration>
+                                </td>
+                            </tr>
+                            <tr class="slds-hint-parent">
+                                <td data-label="Affari e delibere 4">
+                                    <div class="slds-truncate" title="">Affari e delibere 4</div>
+                                </td>
+                                <td data-label="Area">
+                                    <aura:iteration items="{!v.Q287}" var="item">
+                                        <span class="slds-text-title cls-area">{!item}</span>
+                                    </aura:iteration>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <aura:if isTrue="{! not(empty(v.areaAffari))}">
+                        <lightning:button class="slds-m-top_small" variant="brand" label="Conferma Assegnazioni" onclick="{!c.saveZoneToQueue}" />
+                    </aura:if>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="6">
+                    <div class="slds-m-bottom_small slds-text-heading_medium">Attuali Assegnazioni</div>
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="">Unita Affari</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="">Aree</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="slds-hint-parent">
+                                <td data-label="Affari e delibere 1">
+                                    <div class="slds-truncate" title="">Affari e delibere 1</div>
+                                </td>
+                                <td data-label="Area">
+                                    <aura:iteration items="{!v.existedAreaAffari.Q281__c}" var="item">
+                                        <span class="slds-text-title cls-area-ass">{!item}</span>
+                                    </aura:iteration>
+                                </td>
+                            </tr>
+                            <tr class="slds-hint-parent">
+                                <td data-label="Affari e delibere 2">
+                                    <div class="slds-truncate" title="">Affari e delibere 2</div>
+                                </td>
+                                <td data-label="Area">
+                                    <aura:iteration items="{!v.existedAreaAffari.Q285__c}" var="item">
+                                        <span class="slds-text-title cls-area">{!item}</span>
+                                    </aura:iteration>
+                                </td>
+                            </tr>
+                            <tr class="slds-hint-parent">
+                                <td data-label="Affari e delibere 3">
+                                    <div class="slds-truncate" title="">Affari e delibere 3</div>
+                                </td>
+                                <td data-label="Area">
+                                    <aura:iteration items="{!v.existedAreaAffari.Q286__c}" var="item">
+                                        <span class="slds-text-title cls-area">{!item}</span>
+                                    </aura:iteration>
+                                </td>
+                            </tr>
+                            <tr class="slds-hint-parent">
+                                <td data-label="Affari e delibere 4">
+                                    <div class="slds-truncate" title="">Affari e delibere 4</div>
+                                </td>
+                                <td data-label="Area">
+                                    <aura:iteration items="{!v.existedAreaAffari.Q287__c}" var="item">
+                                        <span class="slds-text-title cls-area">{!item}</span>
+                                    </aura:iteration>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </lightning:layoutItem>
+
+            </lightning:layout>
+        </div>
+    </lightning:card>
+</aura:component>

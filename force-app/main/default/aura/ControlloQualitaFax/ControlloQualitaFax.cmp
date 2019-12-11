@@ -1,0 +1,80 @@
+<aura:component controller="ControlloQualitaFaxController" implements="flexipage:availableForAllPageTypes,force:hasRecordId">
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="valutazioneOptions" type="Object[]" />
+    <aura:attribute name="identificazioneValue" type="String" />
+    <aura:attribute name="operativitaValue" type="String" />
+    <aura:attribute name="noteOCSValue" type="String" /> 
+    <aura:attribute name="archiviazioneValue" type="String" />
+    <aura:attribute name="slaValue" type="String" />
+    <aura:attribute name="note" type="String" default=" " />
+    
+    <aura:handler name="init" value="{! this }" action="{!c.init}"/>
+    <lightning:workspaceAPI aura:id="workspace"/>
+    
+    <lightning:card>
+        <lightning:layout>
+            <lightning:layoutItem size='3'>
+                <lightning:combobox aura:id="sla"
+                                    label="Sla"
+                                    placeholder="Selezionare un punteggio .."                                   
+                                    options="{! v.valutazioneOptions }"
+                                    value="{!v.slaValue}"                       
+                                    class="slds-m-right_medium, slds-m-left_medium"                                                         
+                                    onchange="{!c.checkValues}"/>
+                
+                <lightning:combobox aura:id="Identificazione"
+                                    label="Identificazione"
+                                    placeholder="Selezionare un punteggio .."                                   
+                                    options="{! v.valutazioneOptions }"
+                                    value="{!v.identificazioneValue}"                       
+                                    class="slds-m-right_medium, slds-m-left_medium"                                                         
+                                    onchange="{!c.checkValues}"/>
+                
+                <lightning:combobox aura:id="Operatività"
+                                    label="Operatività"
+                                    options="{! v.valutazioneOptions }"
+                                    value="{!v.operativitaValue}"
+                                    class="slds-m-right_medium, slds-m-left_medium"
+                                    placeholder="Selezionare un punteggio .." 
+                                    onchange="{!c.checkValues}"/>
+                
+                <lightning:combobox aura:id="NoteOCS"
+                                    label="Note OCS"
+                                    options="{! v.valutazioneOptions }"
+                                    value="{!v.noteOCSValue}"
+                                    class="slds-m-right_medium, slds-m-left_medium"
+                                    placeholder="Selezionare un punteggio .." 
+                                    onchange="{!c.checkValues}"/>
+                
+                <lightning:combobox aura:id="Archiviazione"
+                                    label="Archiviazione"
+                                    options="{! v.valutazioneOptions }"
+                                    value="{!v.archiviazioneValue}"
+                                    class="slds-m-right_medium, slds-m-left_medium"
+                                    placeholder="Selezionare un punteggio .." 
+                                    onchange="{!c.checkValues}"/>
+                
+            </lightning:layoutItem>
+        
+         <lightning:layoutItem size='1'>
+            </lightning:layoutItem>
+         <lightning:layoutItem size='6'>
+            <div class="slds-m-left_large">
+                <lightning:textarea aura:id="note" 
+                                    label="Note" 
+                                    placeholder="Note (opzionale)"                                     
+                                    value="{!v.note}"
+                                    /> 
+            </div>
+         </lightning:layoutItem>
+        </lightning:layout>
+        <div class="slds-m-top_large">
+            <lightning:button type='button'
+                              class="slds-m-right_small, slds-m-top_large, slds-m-left_small "
+                              label='Conferma'
+                              variant='destructive'
+                              onclick="{!c.confirmTask}"/>
+        </div>
+    </lightning:card>
+    
+</aura:component>

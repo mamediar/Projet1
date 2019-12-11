@@ -1,0 +1,73 @@
+<aura:component implements="flexipage:availableForAllPageTypes">
+  <aura:attribute  name="caseDealer" type="Case" />
+    <div class="slds-grid slds-gutters">
+            <div class="slds-col">
+                <span class="slds-text-title_caps" >Dati Produzione</span>
+                </div>
+    </div>
+
+    <div class="slds-grid slds-gutters">
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                    <thead>
+                      
+                    </thead>
+                    <tbody>
+                      <tr class="slds-hint-parent">
+                        <th data-label="Opportunity Name" scope="row">
+                                <div class="slds-truncate" title="Cloudhub">Macroarea : {!v.caseDealer.Macroarea__c}</div>
+                        </th>
+                        <td data-label="Account Name">
+                          <div class="slds-truncate" title="Cloudhub">Tipo Prod</div>
+                        </td>
+                       
+                      </tr>
+                      <tr class="slds-hint-parent">
+                            <th data-label="Opportunity Name" scope="row">
+                                    <div class="slds-truncate" title="Cloudhub">
+                                            No Lav
+                                    </div>
+                            </th>
+                            <td data-label="Account Name">
+                              <div class="slds-truncate" title="Cloudhub">Emap</div>
+                            </td>
+                           
+                          </tr>
+                          <tr class="slds-hint-parent">
+                                <th data-label="Opportunity Name" scope="row">
+                                        <div class="slds-truncate" title="Cloudhub">
+                                                Delta 3M %
+                                        </div>
+                                </th>
+                                <td data-label="Account Name">
+                                  <div class="slds-truncate" title="Cloudhub">Delta 3M in Euro</div>
+                                </td>
+                               
+                              </tr>
+                              <tr class="slds-hint-parent">
+                                    <th data-label="Opportunity Name" scope="row">
+                                            <div class="slds-truncate" title="Cloudhub">
+                                                    Su Dip
+                                            </div>
+                                    </th>
+                                    <td data-label="Account Name">
+                                      <div class="slds-truncate" title="Cloudhub">ISVAP</div>
+                                    </td>
+                                   
+                                  </tr>
+                                  <tr class="slds-hint-parent">
+                                        <th data-label="Opportunity Name" scope="row">
+                                          <div class="slds-truncate" title="Cloudhub">
+                                                Rating Precedente
+                                          </div>
+                                        </th>
+                                        <td data-label="Account Name">
+                                          <div class="slds-truncate" title="Cloudhub">Rating Attuale</div>
+                                        </td>
+                                       
+                                      </tr>
+                     
+                    </tbody>
+                  </table>
+    </div>
+
+</aura:component>

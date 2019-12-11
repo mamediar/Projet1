@@ -1,0 +1,34 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" 
+                access="global" 
+                >
+    
+    <aura:attribute name="fileList" type="Attachment[]"/>
+    <aura:attribute name="campiCase" type="Object" />
+    <aura:attribute name="categoriaDettagli" type="XCS_Categoria__c"/>
+    <aura:attribute name="profileLevel" type="String" />
+    <aura:attribute name="isAutorizzazioneOk" type="Boolean"/>
+    <aura:attribute name="clienteSelezionato" type="OCSCliente"/>
+    <aura:attribute name="praticaSelezionata" type="Object"/>
+    <aura:handler name="richiedoAutorizzazione" event="c:CRMReclamiGestioneApprovazioneEvent" action="{!c.getAutorizzazione}"  description="In caso di autorizazione positiva, rende visibili i bottoni relativi all'invio del messaggio"/> 
+    <aura:handler name="autorizza" event="c:CRMReclamiGestioneApprovazioneEvent" action="{!c.getAutorizzazione}"  description="In caso di autorizazione positiva, rende visibili i bottoni relativi all'invio del messaggio"/> 
+    <aura:method name="refresh" action="{!c.aggiorna}"/>
+    
+        <c:CRMReclamiGestioneRispostaApprovazione 
+                                                  campiCase="{!v.campiCase}"
+                                                  isAuthorizzed="{!v.isAutorizzazioneOk}"
+                                                  />
+        
+        <c:CRMReclamiGestioneRispostaLettera
+                                             aura:id="LetteraRispostaComponent"
+                                             campiCase="{!v.campiCase}"
+                                             aziendaSelezionata="{!v.campiCase.Referenced_Company__c}"
+                                             fileList="{!v.fileList}"
+                                             categoriaDettagli="{!v.categoriaDettagli}"
+                                             clienteSelezionato="{!v.clienteSelezionato}"
+                                             praticaSelezionata="{!v.praticaSelezionata}"
+                                             
+                                             />
+    
+                                             <!-- Evento authorized-->
+    
+</aura:component>

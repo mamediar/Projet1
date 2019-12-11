@@ -1,0 +1,41 @@
+<aura:component controller="EasyCMClass">
+    <aura:attribute name="buttonWrapperList" type="List"/>  
+    <aura:attribute name="wrapperButton" type="Object"/>
+    <aura:attribute name="datiCliente" type="Object"/>
+    <aura:attribute name="checkPop" type="String" default="false"/>
+    <aura:attribute name="account" type="Object"/>
+    <aura:attribute name="numTelefono" type="String"/>
+    <aura:attribute name="recordId" type="String"/>
+
+    <lightning:card class="slds-card_boundary" title="Post Vendita" >
+    <c:GenericPopUp class="smallPopUp" aura:id="theStaticModal" isDirectional="true" isLarge="false" hasCloseIcon="true">
+    <lightning:layout verticalAlign="center" multipleRows="true">
+        <aura:if isTrue="{!v.checkPop}">
+            Attenzione, procedendo con l'operazione stai confermando che il numero chiamante {!v.telephoneNumber} corrisponde al numero presente in anagrafica. <br/>
+            Vuoi procedere comunque?
+            <aura:set attribute="else">
+            Il numero del chiamante non corrisponde ai numeri presenti in anagrafica.<br/>
+            Per procedere con l'operazione {!v.wrapperButton.buttonLabel} è necessario procedere inviando la richiesta a mezzo FAX, al numero 02 48 244 153 <br/>
+            Vuoi procedere comunque?
+            </aura:set>
+        </aura:if> 
+    </lightning:layout>
+    <aura:set attribute="footer">
+        <lightning:button label="No" onclick="{!c.closeModal}"/>
+        <lightning:button variant="brand" label="Si" onclick="{!c.checkModify}"/>
+    </aura:set>
+    </c:GenericPopUp>
+        <aura:set attribute="actions">
+            <lightning:button variant="brand" label="Nuovo Post Vendita" onclick="{!c.clickNewPostVendita}"/>
+        </aura:set>
+        <lightning:layout multipleRows="true" >
+            <aura:iteration items="{!v.buttonWrapperList}" var="button" indexVar="index">
+                <lightning:layoutItem size="6" padding="around-small">
+                    <lightning:button variant="brand" label="{!button.buttonLabel}" class="buttonMaxWidth" title="{!button.buttonLabel}" onclick="{!c.clickPostVendita}"/>
+                </lightning:layoutItem>
+            </aura:iteration>
+        </lightning:layout>
+    </lightning:card>
+
+
+</aura:component>

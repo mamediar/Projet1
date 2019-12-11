@@ -1,0 +1,17 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId" access="global" >     
+<force:recordData aura:id="case" recordUpdated="{!c.init}" recordId="{!v.recordId}" fields="Account.Name, Account.getCodice_Cliente__c" targetFields="{!v.CaseRecord}" targetError="{!v.recordLoadError}"/>    
+<aura:attribute name="CaseRecord" type="Object" />
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="account" type="String"/>
+    <aura:attribute name="accountOCSid" type="String"/>
+    <lightning:card iconName="standard:account" title="Dettaglio Anagrafica">
+        <aura:set attribute="footer">
+            <c:CRMTelemarketingButtonAction aura:id="CRMTelemarketingButtonAction" recordId="{!v.recordId}"/>
+        </aura:set>
+        <p class="slds-p-horizontal_small">
+            <div class=".slds-dl_inline">OCS Id:  <b>{!v.accountOCSid}</b></div>
+            <div class=".slds-dl_inline">Nome Cliente:  <b>{!v.account}</b></div>   
+        </p>            
+    </lightning:card>
+
+</aura:component>

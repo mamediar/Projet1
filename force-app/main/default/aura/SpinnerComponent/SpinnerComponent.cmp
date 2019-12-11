@@ -1,0 +1,8 @@
+<aura:component>
+    <aura:attribute name="spinnerCounter" type="Integer" default="0"/>
+    <aura:method name="incrementCounter" action="{!c.incrementCounter}" description="Increment the spinner counter"/>
+    <aura:method name="decreaseCounter" action="{!c.decreaseCounter}" description="decrease the spinner counter"/>
+	<aura:if isTrue="{!v.spinnerCounter > 0}">
+        <lightning:spinner alternativeText="Caricamento in corso"/>
+    </aura:if>
+</aura:component>

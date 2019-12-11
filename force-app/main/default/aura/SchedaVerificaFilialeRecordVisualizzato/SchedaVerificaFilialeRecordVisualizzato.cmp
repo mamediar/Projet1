@@ -1,0 +1,25 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" 
+ access="global" controller="SchedaVerificaFilialeVisualizzatoCtrl">
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="currentUserId" type="String" />
+    <aura:attribute name="simpleRecord" type="Object"/>
+    <aura:attribute name="currentUser" type="User" />
+    <aura:attribute name="error" type="String" />
+    <aura:attribute name="recordError" type="String" />
+    <aura:attribute name="fields" type="String[]" default="['Ruolo_Creazione__c','Letta_Audit__c','Letta_Responsabile__c']"/>
+    <force:recordData aura:id="recordLoader2"
+        fields="UserRole.Name,Profile.Name"
+        recordId="{!$SObjectType.CurrentUser.Id}"
+        targetFields="{!v.currentUser}"
+        mode="EDIT"
+        targetError="{!v.recordError}"
+        recordUpdated="{!c.doInit}"
+    />
+    <force:recordData aura:id="recordLoader"
+        recordId="{!v.recordId}"
+        mode="EDIT"
+        fields="{!v.fields}"
+        targetFields="{!v.simpleRecord}"
+        targetError="{!v.error}"/>
+    <aura:handler name="render" action="{!c.doInit}" value="{!this}" />
+</aura:component>

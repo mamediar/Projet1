@@ -1,0 +1,129 @@
+<aura:component controller="CRMReclamiInsDettagliCampiAggiuntiviCtrl"
+                implements="force:appHostable,flexipage:availableForAllPageTypes" 
+                access="global" 
+                >
+    
+    <aura:attribute name="initAggiuntivi" type="Boolean"/>
+    <aura:attribute name="tipoDettagliContainerTipo" type="String"/>    
+    <aura:attribute name="campiCase" type="Case"/>
+    <aura:attribute name="trattabile" type="String"/>
+    <aura:attribute name="options" type="List" default="[{'label':'Trattabile','value':'Trattabile'},
+                                                        {'label':'Non Trattabile','value':'Non Trattabile'}]"
+                    />
+    <aura:attribute name="listaTipoProdottoVita" type="List"/>
+    <aura:attribute name="tipoProdottoVita" type="String"/>
+    <aura:attribute name="listaTipoProdottoDanni" type="List"/>
+    <aura:attribute name="tipoProdottoDanni" type="String"/>
+    <aura:attribute name="listaAreaAziendale" type="List"/>
+    <aura:attribute name="areaAziendale" type="String"/>
+    <aura:attribute name="listaTipoProponente" type="List"/>
+    <aura:attribute name="tipoProponente" type="String"/>
+    <aura:attribute name="listaAreaGeograficaProponente" type="List"/>
+    <aura:attribute name="areaGeograficaProponente" type="String"/>
+    <aura:attribute name="listaTipoReclamante" type="List"/>
+    <aura:attribute name="tipoReclamante" type="String"/>
+    
+    <aura:attribute name="output" type="Object"/>
+    <aura:attribute name="isOk" type="Boolean"/>
+    <aura:attribute name="errorMessage" type="String"/>
+    
+    <aura:handler name="change" value="{!v.trattabile}" action="{!c.handleChange}"/>
+    <aura:handler name="change" value="{!v.tipoProdottoVita}" action="{!c.handleChange}"/>
+    <aura:handler name="change" value="{!v.tipoProdottoDanni}" action="{!c.handleChange}"/>
+    <aura:handler name="change" value="{!v.areaAziendale}" action="{!c.handleChange}"/>
+    <aura:handler name="change" value="{!v.tipoProponente}" action="{!c.handleChange}"/>
+    <aura:handler name="change" value="{!v.areaGeograficaProponente}" action="{!c.handleChange}"/>
+    <aura:handler name="change" value="{!v.tipoReclamante}" action="{!c.handleChange}"/>
+    
+    <aura:attribute name="tipoProdottoVitaInit" type="String"/> 
+    <aura:attribute name="tipoProdottoDanniInit" type="String"/>
+    <aura:attribute name="tipoProdottoAreaInit" type="String"/> 
+    <aura:attribute name="tipoProponenteInit" type="String"/>
+    <aura:attribute name="tipoReclamanteInit" type="String"/>
+    <aura:attribute name="areaGeograficaProponenteInit" type="String"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    <aura:method name="salvaReclamoCampiAggiuntivi" action="{!c.salvaReclamoCampiAggiuntivi}" access="PUBLIC"/>
+    
+    <lightning:radioGroup label="Trattabile:"
+                          options="{!v.options}"
+                          value="{!v.trattabile}"
+                          type="radio"
+                          />
+    
+    <lightning:layout>
+        <lightning:layoutItem size="6">
+            <div style="width: 700px">
+                <lightning:select label="Tipo Prodotto Vita"
+                                  value="{!v.tipoProdottoVita}"
+                                  onfocus="{!c.deselProdottoVita}"
+                                  >
+                    <option value="">{!v.tipoProdottoVitaInit}</option>-->
+                    <aura:iteration items="{!v.listaTipoProdottoVita}" var="opt">
+                        <option value="{!opt}">{!opt}</option>
+                    </aura:iteration>
+                </lightning:select>
+            </div>
+            <div style="width: 700px">
+                <lightning:select label="Tipo Prodotto Danni"
+                                  value="{!v.tipoProdottoDanni}"
+                                  onfocus="{!c.deselProdottoDanni}"
+                                  >
+                    <option value="">{!v.tipoProdottoDanniInit}</option>-->
+                    <aura:iteration items="{!v.listaTipoProdottoDanni}" var="opt">
+                        <option value="{!opt}">{!opt}</option>
+                    </aura:iteration>
+                </lightning:select>
+            </div>
+            
+            <div style="width: 700px">
+                <lightning:select label="Area Aziendale"
+                                  value="{!v.areaAziendale}"
+                                  onfocus="{!c.deselProdottoArea}"
+                                  >
+                    <option value="">{!v.tipoProdottoAreaInit}</option>-->
+                    <aura:iteration items="{!v.listaAreaAziendale}" var="opt">
+                        <option value="{!opt}">{!opt}</option>
+                    </aura:iteration>
+                </lightning:select>
+                
+            </div>
+        </lightning:layoutItem>
+        <lightning:layoutItem>
+            <div style="width: 700px">
+                <lightning:select label="Tipo Proponente"
+                                  value="{!v.tipoProponente}"
+                                  onfocus="{!c.deselTipoProponente}"
+                                  >
+                    <option value="">{!v.tipoProponenteInit}</option>-->
+                    <aura:iteration items="{!v.listaTipoProponente}" var="opt">
+                        <option value="{!opt}">{!opt}</option>
+                    </aura:iteration>
+                </lightning:select>
+            </div>
+            
+            <div style="width: 700px">
+                <lightning:select label="Area Proponente"
+                                  value="{!v.areaGeograficaProponente}"
+                                  onfocus="{!c.deselareaGeograficaProponente}"
+                                  >
+                    <option value="">{!v.areaGeograficaProponenteInit}</option>-->
+                    <aura:iteration items="{!v.listaAreaGeograficaProponente}" var="opt">
+                        <option value="{!opt}">{!opt}</option>
+                    </aura:iteration>
+                </lightning:select>
+            </div>
+            <div style="width: 700px">
+                <lightning:select label="Tipo Reclamante"
+                                  value="{!v.tipoReclamante}"
+                                  onfocus="{!c.deselTipoReclamante}"
+                                  >       
+                    <option value="">{!v.tipoReclamanteInit}</option>-->
+                    <aura:iteration items="{!v.listaTipoReclamante}" var="opt">
+                        <option value="{!opt}">{!opt}</option>
+                    </aura:iteration>
+                </lightning:select>
+            </div>
+        </lightning:layoutItem>
+    </lightning:layout>
+</aura:component>

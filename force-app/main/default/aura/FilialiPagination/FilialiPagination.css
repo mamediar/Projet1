@@ -1,0 +1,107 @@
+.THIS body{
+margin: 0 !important;
+padding: 0 !important;
+background: #ffffff !important;
+font-family: "Arial", "Helvetica Neue","sans-serif" !important;
+font-weight: normal !important;
+color: #000000 !important;
+}
+.THIS .page-header{
+background-color: #0441bd;
+color: #ffffff;
+text-align:center;
+font-size: 1.75rem;
+width: 100%;
+padding: 1rem 0 1rem 0;
+}
+.THIS .page-footer{
+background-color: #0441bd;
+color: #ffffff;
+text-align:center;
+font-size: 0.75rem;
+width: 100%;
+padding: 1rem 0 1rem 0;
+}
+.THIS h2,
+.THIS h3{
+font-size: 1rem;
+font-weight: bold;
+}
+.THIS .blue {
+color: #0441bd;
+}
+.THIS .custom-bottom-border{
+text-decoration: none;
+border-bottom: 0.2rem solid #cdcdcd;
+}
+.THIS .custom-top-border  {
+border-top: 3px solid #0441bd;
+width: 100%;
+padding: .75rem;
+}
+.THIS .section-header  {
+background-color: #f6f6f6;
+padding: .50rem;
+}
+.THIS .button-blue{
+background-color: #0441bd !important;
+color: #ffffff !important;
+margin:5px;
+}
+.THIS .button-blue:hover{
+background-color: rgba(4,65,189,0.8) !important;
+}
+.THIS .button-white{
+background-color: #ffffff;
+color: #0441bd !important;
+margin:5px;
+}
+.THIS .button-white:hover{
+background-color: #f4f5f6;
+color: #0441bd !important;
+margin:5px;
+}
+.THIS .slds-form-element__label{
+font-size:14px !important;
+}
+
+.THIS .slds-modal__content{
+border-top-right-radius: 0.25rem !important;
+border-top-left-radius: 0.25rem !important;
+}
+
+.THIS .SelectPages{
+display:inline-block;
+}
+
+.THIS .buttonPage{
+    font-size: 13px;
+    border-radius: 5px;
+    height: 35px;
+    width: 107px;
+    text-align: center;
+}
+
+.THIS .arrow{
+    font-size: 13px;
+    float: left;
+    border-radius: 5px;
+    height: 33px;
+    width: 35px;
+
+}
+
+.THIS .stylePag{
+    font-size:14px;
+    margin-top: -5px;
+    float: center;
+    height: 50px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.THIS .slds-button{
+    padding: 0px !important;
+}

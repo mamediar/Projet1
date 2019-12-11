@@ -1,0 +1,15 @@
+<aura:component controller="SFAConvenz_NDA_FormVerificaAnagCtrller" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes,force:hasSObjectName">
+	
+    <lightning:tabset selectedTabId="one">
+        <lightning:tab label="Attività" id="one">
+            One Content !
+        </lightning:tab>
+        <lightning:tab label="Note" id="two">
+            Two Content !
+        </lightning:tab>
+        <lightning:tab label="Allegati" id="three">
+            Three Content !
+        </lightning:tab>
+    </lightning:tabset>
+    
+</aura:component>

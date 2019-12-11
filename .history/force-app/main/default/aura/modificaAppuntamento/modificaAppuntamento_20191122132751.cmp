@@ -1,0 +1,99 @@
+<aura:component implements="lightning:actionOverride,flexipage:availableForAllPageTypes,force:lightningQuickAction" controller="ModificaAppuntamentoController" access="global">
+
+<aura:registerEvent name="EventDetail" type="c:EventToDetail"/>
+
+<aura:attribute type="Event[]" name="listEvent" />
+<aura:attribute type="date" name="dateAppointment" default=""/>
+
+<div>
+    <div class="slds-grid slds-gutters slds-m-bottom_medium">
+        <lightning:input  type="date" label="" name="date" variant="label-hidden"
+            value="{!v.dateAppointment}" onchange="{!c.addScheduledDate}" class="slds-col slds-size_1-of-4"/>
+    </div>
+    <div>
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th style="text-align:center;background-color:#9f201c;color:#fff;"></th>
+                    <th class="" scope="col" style="text-align:center;background-color:#9f201c;color:#fff;">
+                        <div class="slds-truncate" title="Stato">Stato</div>
+                    </th>
+                    <th class="" scope="col" style="text-align:center;background-color:#9f201c;color:#fff;">
+                        <div class="slds-truncate" title="Data Ora">Data/Ora</div>
+                    </th>
+                    <th class="" scope="col" style="text-align:center;background-color:#9f201c;color:#fff;">
+                        <div class="slds-truncate" title="Tipologia">Tipologia</div>
+                    </th>
+                    <th class="" scope="col" style="text-align:center;background-color:#9f201c;color:#fff;">
+                        <div class="slds-truncate" title="Prodotto">Prodotto</div>
+                    </th>
+                    <th class="" scope="col" style="text-align:center;background-color:#9f201c;color:#fff;">
+                        <div class="slds-truncate" title="Dettagrio Prodotto">Dettaglio Prodotto</div>
+                    </th>
+                    <th class="" scope="col" style="text-align:center;background-color:#9f201c;color:#fff;">
+                        <div class="slds-truncate" title="Cognome">Cognome</div>
+                    </th>
+                    <th class="" scope="col" style="text-align:center;background-color:#9f201c;color:#fff;">
+                        <div class="slds-truncate" title="Nome">Nome</div>
+                    </th>
+                    <th class="" scope="col" style="text-align:center;background-color:#9f201c;color:#fff;">
+                        <div class="slds-truncate" title="Telefono">Telefono</div>
+                    </th>
+                    <th class="" scope="col" style="text-align:center;background-color:#9f201c;color:#fff;">
+                        <div class="slds-truncate" title="Telefono 2">Telefono 2</div>
+                    </th>
+                    <th class="" scope="col" style="text-align:center;background-color:#9f201c;color:#fff;">
+                        <div class="slds-truncate" title="Note">Note</div>
+                    </th>
+                    <th class="" scope="col" style="text-align:center;background-color:#9f201c;color:#fff;">
+                        <div class="slds-truncate" title="Evo">Evo</div>
+                    </th>
+                    <th class="" scope="col" style="text-align:center;background-color:#9f201c;color:#fff;">
+                        <div class="slds-truncate" title="Agente">Agente </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <aura:if isTrue="{!v.listEvent.length>0}">
+                    <aura:iteration items="{!v.listEvent}" var="oneEvent">
+                    <tr>
+                        <!--td class="slds-text-align_right" role="gridcell">
+                            <lightning:input type="radio" value="{!oneEvent.Id}" />
+                        </td-->
+                        <td class="slds-text-align_right" role="gridcell">
+                            <span class="slds-radio">
+                                <lightning:input type="radio" id="seledtedEvent" value="{!oneEvent}" name="options" tabindex="-1"
+                                    onchange="{!c.Eventselected}" aria-labelledby="radio-button-label-01 column-group-header" />
+                            </span>
+                        </td>
+                        <td>{!oneEvent.Stato_Azione__c }</td>
+                        <td>
+                            <lightning:formattedDateTime aura:id="dt"
+                                value="{!oneEvent.ActivityDateTime }"
+                                year="numeric" 
+                                month="numeric"
+                                day="numeric"
+                                hour="2-digit"
+                                minute="2-digit"
+                                hour12="false"
+                            />
+                        </td>
+                        <td>{!oneEvent.Type}</td>
+                        <td>{!oneEvent.Product__r.Name}</td>
+                        <td>{!oneEvent.Prodotto__c}</td>
+                        <td>{!oneEvent.Customer__r.LastName}</td>
+                        <td>{!oneEvent.Customer__r.FirstName }</td>
+                        <td>{!oneEvent.Customer__r.Phone}</td>
+                        <td>{!oneEvent.Customer__r.PersonMobilePhone}</td>
+                        <td>{!oneEvent.Note__c }</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    </aura:iteration>
+                </aura:if>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</aura:component>

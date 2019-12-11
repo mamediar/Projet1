@@ -1,0 +1,94 @@
+<aura:component controller="AssenzaProlungataController" implements="flexipage:availableForAllPageTypes">
+    <aura:attribute name="branchSel" type="String" />
+    <aura:attribute name="data" type="Object"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="branches" type="List"/>
+
+    <aura:attribute name="branch" type="Account"/>
+    
+    <aura:attribute name="branchOCSExternalId" type="String" />
+
+    <aura:attribute name="assenzePerFiliale" type="Map" />
+    <aura:attribute name="filialistiPerFiliale" type="Map" />
+    <aura:attribute name="filialistiList" type="List"/>
+    
+    <!-- attributi pop up -->
+    <aura:attribute name="isNew" type="Boolean"/>
+    <aura:attribute name="TypeSelectOptions" type="List"/>
+    <aura:attribute name="Today" type="Date"/>
+    <aura:attribute name="item" type="Object"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    <aura:handler name="change" value="{!v.branchSel}" action="{!c.init}"/>
+    
+    <lightning:card title="Lista Assenza Prolungata">
+        <c:SpinnerComponent aura:id="spinnerComponent"/>
+        <lightning:layout multipleRows="true">
+            <lightning:layoutItem size="12" padding="around-small"> 
+                <lightning:layout>
+                    <lightning:layoutItem size="3"> 
+                        <lightning:select name="utr" aura:id="utrId" value="{!v.branchOCSExternalId}"  label="Filiale" onchange="{!c.onChangeBranchSelect}">
+                            <aura:iteration items="{!v.branches}" var="branch">
+                                <option text="{!branch.Name + ' ('+branch.TypeLabel+')'}" value="{!branch.OCS_External_Id__c}" selected="{!v.branchOCSExternalId == branch.OCS_External_Id__c}" />
+                            </aura:iteration>  
+                        </lightning:select>
+                    </lightning:layoutItem>
+                </lightning:layout> 
+            </lightning:layoutItem>
+            <lightning:layoutItem size="12" padding="around-small">
+                <lightning:layout>
+                    <lightning:layoutItem size="12">
+                        <lightning:datatable
+                                keyField="Id"
+                                data="{!v.data}"
+                                columns="{!v.columns}"
+                                onrowaction="{!c.handleRowAction}"
+                                hideCheckboxColumn="true"
+                                suppressBottomBar ="false"/>
+                        </lightning:layoutItem>
+                </lightning:layout>
+            </lightning:layoutItem>
+        </lightning:layout>
+        <lightning:layoutItem padding="around-small">
+            <lightning:button variant="brand" label="Aggiungi" onclick="{!c.addAssenza}"/>
+        </lightning:layoutItem>
+    </lightning:card>
+
+    <c:GenericPopUp class="smallPopUp" aura:id="theStaticModal" title="Aggiornamento Assenza Prolungata" isDirectional="true" isLarge="false" hasCloseIcon="true">
+    <lightning:layout verticalAlign="center" multipleRows="true">
+        <lightning:layoutItem size="12">
+            <lightning:layout>    
+                    <lightning:select name="utr" aura:id="utrId" value="{!v.item.RisorsaFiliale__c}"  label="Risorsa di Filiale">
+                    <aura:iteration items="{!v.filialistiList}" var="filialista">
+                        <option text="{!filialista.Name}" value="{!filialista.Id}"  selected="{!filialista.Id == v.item.RisorsaFiliale__c}"/>
+                    </aura:iteration>  
+                    </lightning:select> 
+            </lightning:layout>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="12">
+            <lightning:layout>    
+                    <lightning:select name="utr" aura:id="utrId" value="{!v.item.MotivazioneAssenza__c}"  label="Motivo Assenza">
+                        <aura:iteration items="{!v.TypeSelectOptions}" var="option">
+                            <option text="{!option.label}" value="{!option.value}" selected="{!option.value == v.item.MotivazioneAssenza__c}"/>
+                        </aura:iteration>
+                    </lightning:select> 
+            </lightning:layout>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="12">
+            <lightning:layout>    
+                   <lightning:input aura:id ="inputDate" type="date" name="startDate" required="true" value="{!v.item.StartDate__c}" label="Data Inizio" />  
+            </lightning:layout>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="12">
+            <lightning:layout>    
+                   <lightning:input aura:id ="inputDate" type="date" name="endDate" required="true" value="{!v.item.EndDate__c}" label="Data Fine" />  
+            </lightning:layout>
+        </lightning:layoutItem>
+    </lightning:layout>
+    <aura:set attribute="footer">
+        <lightning:button label="Annulla" onclick="{!c.closePopUp}"/>
+        <lightning:button variant="brand" label="Salva" onclick="{!c.saveAssenza}"/>
+    </aura:set>
+    </c:GenericPopUp>
+
+</aura:component>

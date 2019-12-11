@@ -1,0 +1,21 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" 
+                access="global" 
+                >
+    
+    <aura:attribute name="options" type="List"/>
+    <aura:attribute name="value" type="String"/>
+    <aura:attribute name="label" type="String"/>
+    <aura:attribute name="valueInit" type="String"/>
+    
+    
+    
+    <lightning:select label="{!v.label}"
+                      value="{!v.value}"
+                      onchange="{!c.selectValue}"
+                      >
+        <option value="{!v.valueInit}">{!v.valueInit}</option>-->
+        <aura:iteration items="{!v.options}" var="opt">
+        	<option value="{!opt}">{!opt}</option>
+        </aura:iteration>
+    </lightning:select>
+</aura:component>

@@ -1,0 +1,81 @@
+<aura:component controller="SFATargheMancantiScadenziarioController" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes">
+
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="isCasePending" type="Boolean" default="false"/>
+
+    <aura:attribute name="inizioDecade1" type="Integer" />
+    <aura:attribute name="fineDecade1" type="Integer" />
+    <aura:attribute name="inizioDecade2" type="Integer" />
+    <aura:attribute name="fineDecade2" type="Integer" />
+    <aura:attribute name="inizioDecade3" type="Integer" />
+    <aura:attribute name="fineDecade3" type="Integer" />
+
+
+    <aura:attribute name="dataCaricamento" type="Date" />
+
+    <aura:attribute name="dataTermineLavoro" type="Date" />
+
+    <aura:attribute name="dataTermineScadenziarioDecade1" type="Date" />
+    <aura:attribute name="dataTermineScadenziarioDecade2" type="Date" />
+    <aura:attribute name="dataTermineScadenziarioDecade3" type="Date" />
+
+    <aura:handler name="init" value="{! this }" action="{! c.doInit }"/>
+
+    <aura:set attribute="title">
+            <lightning:icon iconName="standard:case" size="small"/>
+            <b style="margin-left:10px;">Gestione Scadenziario</b>
+    </aura:set>
+
+    <aura:if isTrue="{!!v.isCasePending}">
+
+        <div class="slds-m-top--medium">Scadenziario del file caricato il: <ui:outputDate value="{!v.dataCaricamento}" format="dd/MM/yyyy" /></div>
+        <div>con data termine: <ui:outputDate value="{!v.dataTermineLavoro}" format="dd/MM/yyyy" /></div>
+
+        <table class="slds-m-top--medium">
+            <tr>
+                <th class="slds-size_1-of-3">Decade da</th>
+                <th class="slds-size_1-of-3">Decade a</th>
+                <th class="slds-size_1-of-3">Data limite</th>
+            </tr>
+            <tr>
+                <td class="slds-size_1-of-3 slds-p-right_small">
+                        <lightning:input type="number" value="{!v.inizioDecade1}"/>
+                </td>
+                <td class="slds-size_1-of-3 slds-p-right_small">
+                        <lightning:input type="number" value="{!v.fineDecade1}"/>
+                </td>
+                <td class="slds-size_1-of-3">
+                    <ui:inputDate aura:id="dataScadenzaDecade1" value="{!v.dataTermineScadenziarioDecade1}" displayDatePicker="true" format="dd/MM/yyyy" class="slds-m-top_medium"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="slds-size_1-of-3 slds-p-right_small">
+                        <lightning:input type="number" value="{!v.inizioDecade2}"/>
+                </td>
+                <td class="slds-size_1-of-3 slds-p-right_small">
+                        <lightning:input type="number" value="{!v.fineDecade2}"/>
+                </td>
+                <td class="slds-size_1-of-3">
+                    <ui:inputDate aura:id="dataScadenzaDecade2" value="{!v.dataTermineScadenziarioDecade2}" displayDatePicker="true" format="dd/MM/yyyy" class="slds-m-top_medium"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="slds-size_1-of-3 slds-p-right_small">
+                        <lightning:input type="number" value="{!v.inizioDecade3}"/>
+                </td>
+                <td class="slds-size_1-of-3 slds-p-right_small">
+                        <lightning:input type="number" value="{!v.fineDecade3}"/>
+                </td>
+                <td class="slds-size_1-of-3">
+                    <ui:inputDate aura:id="dataScadenzaDecade3" value="{!v.dataTermineScadenziarioDecade3}" displayDatePicker="true" format="dd/MM/yyyy" class="slds-m-top_medium"/>
+                </td>
+            </tr>
+        </table>
+
+        <div class="slds-m-top--medium">
+            <lightning:button aura:id="aggiornaScadenzeButtonId" label="Aggiorna scadenze" variant="destructive" onclick="{!c.callUpdateScadenze}" />
+        </div>
+
+    </aura:if>
+
+</aura:component>

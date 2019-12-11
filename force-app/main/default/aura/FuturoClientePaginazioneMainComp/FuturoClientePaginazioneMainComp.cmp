@@ -1,0 +1,51 @@
+<!-- @component : FuturoClientePaginazione
+       @description: contiene le pratiche del cliente
+       @author: Mady COLY
+       @dateCreated: 16/05/2019
+       @dateLastModification: 06/03/2019 -->
+<aura:component  controller="CommodityFuturoCnt" implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+                access="global">
+     <!--Attributti--> 
+     <aura:attribute name="keyMonth" type="String" default=''/>
+     <aura:attribute name="keyYear" type="String" default=''/>
+     <aura:attribute name="keyTotal" type="String" default=''/>
+     <aura:attribute name="keyTotalAgente" type="String" default=''/>
+     <aura:attribute name="pratiche" type="String" default=''/>
+     <aura:attribute name="mostraConttati" type="String" default=''/>
+ <aura:attribute name="dataSurveyList" type="Com_Commodity_Survey__c[]" default='[]'/> 
+ <aura:attribute name="dataSurveyGlobalList" type="Com_Commodity_Survey__c[]" default='[]'/> 
+             
+     <!--fine Attributti--> 
+      
+      <!-- Handler--> 
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/> 
+    <aura:handler name="praticheCliente" event="c:eventGetPraticheCliente" action="{!c.getButton}"/>
+    <aura:handler name="mostraConttati" event="c:eventGetMostraContattiSource" action="{!c.getButton}"/>
+    <aura:handler name="heure" event="c:eventFromAdministrationToClient" action="{!c.getMonth}"/>
+    <aura:handler action="{!c.navigateToFuturoImpaginazioneComp}" event="c:eventFuturoClientePaginazione"/>
+    <aura:handler action="{!c.navigateToAdministrationAgente}" event="c:eventFuturoAmministrazionneAgente"/>
+    <aura:handler action="{!c.navigateToFuturoImpaginazioneComp}" event="c:eventFuturoClientePaginazione" />
+    <aura:handler action="{!c.doInit}" event="c:eventNavigateToFuturo"/>
+    <aura:handler action="{!c.navigateToAdministration}" event="c:eventNavigatetoAmministrazione"/>
+    <aura:handler action="{!c.navigateToCommunityServey}" event="c:eventNavigationToCommunityServey"/>
+    <aura:handler event="c:eventNavigateToFuturoImpaginazioneCompByAgente" action="{!c.navigateToFuturoImpaginazioneCompByAgente}"/>
+    <!--fine Handler--> 
+    <div class="slds-grid slds-wrap">
+      <div class="slds-m-top_large slds-m-left_xx-large slds-col slds-size_1-of-1">
+            <button class="slds-button slds-m-around_xxx-small slds-float_left slds-button_brand" onclick="{!c.doInit}" 
+                     style="background-color:#6a89e5;border:1px solid #6a89e5" >
+                 Lista Contatti
+             </button>
+       <div>
+        <button  class="slds-button slds-m-around_xxx-small slds-float_left slds-button_brand" 
+          onclick="{! c.navigateToAdministration}" style="background-color:#6a89e5;border:1px solid #6a89e5">
+          Amministrazione
+        </button>
+      </div>
+    </div>
+    <!--Body --> 
+    <div class="slds-m-around_large slds-col slds-size_1-of-1">
+      {!v.body}
+    </div>
+  </div>  
+</aura:component>

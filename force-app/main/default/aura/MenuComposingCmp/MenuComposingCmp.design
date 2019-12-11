@@ -1,0 +1,4 @@
+<design:component>
+	<design:attribute name="menuItem" label="Menu Item" />
+    <design:attribute name="viewName" label="Nome Vista" />
+</design:component>

@@ -1,0 +1,34 @@
+<aura:component controller="SFAConvenzionamento" implements="flexipage:availableForAllPageTypes,force:hasRecordId">
+    
+	<aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="categoria" type="String" />
+    <aura:attribute name="stepLavorazione" type="String" />
+    
+    <aura:handler name="init" value="{! this }" action="{! c.doInit }" />
+    <aura:handler event="c:ChangeCaseStepEvent" action="{!c.handleChangeCaseStepEvent}"/>
+    <lightning:notificationsLibrary aura:id="notifLib"/>    
+    
+    <aura:if isTrue="{!v.stepLavorazione=='NewDealerAcquisition_CompletaInfoEControlli1' &amp;&amp; v.categoria=='3128'}" >
+    	<c:SFAConvenzionamentoNewDealerAcquisitionForm aura:id="SFAConvenzionamentoNewDealerAcquisitionForm" recordId="{!v.recordId}" />
+    </aura:if>    
+    <aura:if isTrue="{!v.stepLavorazione=='NewDealerAcquisition_VerificaAnagraficaECollegati' &amp;&amp; v.categoria=='3128'}" >
+    	<c:SFAConvenzNewDealerAcquisitionFormVerificaAnagrafica aura:id="SFAConvenzNewDealerAcquisitionFormVerificaAnagrafica" recordId="{!v.recordId}" />
+    </aura:if>    
+    <aura:if isTrue="{!v.stepLavorazione=='NewDealerAcquisition_InteseEDocumenti' &amp;&amp; v.categoria=='3128'}" >
+    	<c:SFAConvenzNewDealerAcquisitionRecuperaIntese aura:id="SFAConvenzNewDealerAcquisitionRecuperaIntese" recordId="{!v.recordId}" />
+    </aura:if>
+    <aura:if isTrue="{!v.stepLavorazione=='NewDealerAcquisition_VerificaAnagraficaECollegatiNO_TIT' &amp;&amp; v.categoria=='3128'}" >
+    	<c:SFAConvenzNewDealerAcquisitionRecuperaInserisciTitolare aura:id="SFAConvenzNewDealerAcquisitionRecuperaInserisciTitolare" recordId="{!v.recordId}" />
+    </aura:if>    
+    <!--aura:if isTrue="{!v.stepLavorazione=='NewDealerAcquisition_CondizioniCommercialiEAngraficaDealer' &amp;&amp; v.categoria=='3128'}" >
+    	<c:SFAConvenzNewDealerAcquisitionMetodoAccredito aura:id="SFAConvenzNewDealerAcquisitionMetodoAccredito" recordId="{!v.recordId}" />
+    </aura:if-->
+    <aura:if isTrue="{!v.stepLavorazione=='NewDealerAcquisition_VerificaAnagraficaECollegatiVisualizzaTIT' &amp;&amp; v.categoria=='3128'}" >
+    	<c:SFAConvenzionamentoVisualizzaTitolare aura:id="SFAConvenzionamentoVisualizzaTitolare" recordId="{!v.recordId}" />
+    </aura:if>
+    <aura:if isTrue="{!v.stepLavorazione=='NewDealerAcquisition_VerificaAnagraficaECollegatiIBAN' &amp;&amp; v.categoria=='3128'}" >
+    	<c:SFAConvenzNewDealerAcquisitionMetodoAccredito aura:id="SFAConvenzNewDealerAcquisitionMetodoAccredito" recordId="{!v.recordId}" />
+    </aura:if>  
+    
+    
+</aura:component>

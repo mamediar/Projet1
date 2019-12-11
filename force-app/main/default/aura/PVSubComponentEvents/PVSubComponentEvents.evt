@@ -1,0 +1,4 @@
+<aura:event type="COMPONENT" description="Eventi dei componeneti PV figli" > 
+<aura:attribute name="method" type="String"/> 
+<aura:attribute name="arguments" type="Object"/> 
+</aura:event>

@@ -1,0 +1,4 @@
+"DeveloperName__c","MailBox__c","Queue_CSI__c","Queue_Outsourcer__c","Fax_to_check__c","Max_Number__c","Min_Number__c","type__c"
+"Q900","gestionefaxsales@gmail.com","Q274","Q315","44","45","5","Fax"
+"Q966","gestionefaxsales@gmail.com","Q111","Q888","50","100","1","Fax"
+"Q999","gestionefaxsales@gmail.com","Q888","Q666","66","10","40","Fax"

@@ -1,0 +1,4 @@
+.THIS .slds-table--cell-buffer tr>td:first-child,
+.THIS .slds-table--cell-buffer tr>th:first-child {
+    padding-left: 0;
+}

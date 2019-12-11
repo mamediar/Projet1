@@ -1,0 +1,54 @@
+<aura:component controller="tableScriptForCampaignController"  implements="flexipage:availableForAllPageTypes,force:hasRecordId" access="global">
+    <force:recordData aura:id="campagna" recordUpdated="{!c.campa}" recordId="{!v.recordId}" fields="ProductCode__c, TMKProductCode__c,ActionCode__c, ProductCode__r.Name, RecordType.Name, ProductCode__r.RSS_External_Id__c,StartDate, EndDate,ProductCode__r.Name,TMKTarget__c,ProductCode__r.Parent__r.RSS_External_Id__c" targetFields="{!v.CampaignRecord}" targetError="{!v.recordLoadError}"/>
+    <aura:attribute name="CampaignRecord" type="Object"/> 
+    
+    <aura:attribute name="modal" type="boolean"/>
+    <lightning:navigation aura:id="navService"/>
+    <aura:attribute name="recordtype" type="String"/>
+    <aura:attribute name="pageReference" type="Object"/>
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="showButtonforNew" type="boolean"/> 
+    <aura:attribute name="data" type="String[]"/> 
+    <aura:attribute name="ubottonvisibile" type="boolean"/>
+    <aura:attribute name="newDate" type="boolean"/>
+    <aura:attribute name="oldDate" type="boolean"/>
+    <aura:attribute name="showActionCode" type="Boolean"/>
+    <aura:attribute name="idscript" type="String"/>
+    <aura:attribute name="codiceAzione" type="String" default="{!(v.CampaignRecord.RecordType.Name=='PP') ?v.CampaignRecord.ActionCode__c:v.CampaignRecord.TMKTarget__c}"/>
+    <aura:attribute name="codiceTMK" type="String" default="{!v.CampaignRecord.TMKProductCode__c }"/>
+    <aura:attribute name="codiceProdotto" type="String" default="{!v.CampaignRecord.ProductCode__r.RSS_External_Id__c}"/>
+    <aura:attribute name="codiceProdottoLvl2" type="String" default="{!v.CampaignRecord.ProductCode__r.Parent__r.RSS_External_Id__c}"/>
+    <aura:attribute name="startDate" type="String" default="{!v.CampaignRecord.StartDate}"/>
+    <aura:attribute name="endDate" type="String" default="{!v.CampaignRecord.EndDate}"/>
+    <aura:attribute name="tipocampagna" type="String" default="{!v.CampaignRecord.RecordType.Name}"/>
+    <aura:attribute name="DescrizioneProdotto" type="String" default="{!v.CampaignRecord.ProductCode__r.Name}"/>
+    <aura:attribute name="columns" type="List"/> 
+    <div style="max-height: 300px">
+    <h1 class="slds-text-body_regular" ><b>Lista Script Associati a questa Campagna</b></h1>
+        <lightning:datatable columns="{! v.columns }" 
+                             data="{! v.data }" 
+                             keyField="id" 
+                             hideCheckboxColumn="true"
+                             onrowaction="{! c.redirect }"
+                            /> 
+        
+    </div>
+    <aura:if isTrue="{!v.modal}">
+    <c:CRMTelemarketingScriptEdit   openModaleScriptEdit="{!v.modal}" 
+                                    idScript="{!v.idscript}" 
+                                    actioncode="{!v.codiceAzione}" 
+                                    actioncodelvl2="{!v.codiceTMK}"
+                                    codprodlvl2="{!v.codiceProdotto}"
+                                    codprod="{!v.codiceProdottoLvl2}"
+                                    startdate="{!v.startDate}"
+                                    endDate="{!v.endDate}"
+                                    showNewDate="{!v.newDate}"
+                                    showOldDate="{!v.oldDate}"
+                                  	showActionCode="{!v.showActionCode}"
+                                    tipocampagna="{!v.tipocampagna}"
+                                    DescrizioneProdotto="{!v.DescrizioneProdotto}"/>
+    </aura:if>
+    <aura:if isTrue="{!v.showButtonforNew}">
+        <lightning:button  variant="destructive" label="Crea Nuova Associazione" onclick="{!c.createNewScript}"/>
+    </aura:if>
+</aura:component>

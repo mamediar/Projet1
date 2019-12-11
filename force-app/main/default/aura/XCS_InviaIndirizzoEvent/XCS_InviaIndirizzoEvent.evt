@@ -1,0 +1,4 @@
+<aura:event type="APPLICATION">
+    <aura:attribute name="indirizzoInput" type="XCS_Indirizzo" />    
+    <aura:attribute name="showAlwaysModale" type="Boolean" default="false"/>
+</aura:event>

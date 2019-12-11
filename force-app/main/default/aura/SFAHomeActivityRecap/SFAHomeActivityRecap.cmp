@@ -1,0 +1,59 @@
+<aura:component controller="SFAHomeActivityRecapController" 
+    implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" 
+                access="global" >
+    
+    <aura:attribute name="ActivityList" type="List" />
+    <aura:attribute name="ActivityComplete" type="List" />
+    <aura:attribute name="ActivityReduced" type="List" />
+    <aura:attribute name="loadingCounter" type="Integer" default="0" />
+    <aura:attribute name="showMore" type="Boolean" default="false" />
+    
+    <aura:attribute name="title" type="String" default="Titolo Della Sezione" />
+    <aura:attribute name="total" type="String" />
+
+    <aura:attribute name="configurationName" type="String"/>
+    <aura:attribute name="rowsNumber" type="Integer" default="15" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <lightning:card title="{!v.title}">
+        <div class="slds-p-around_medium">
+            
+            <lightning:layout  horizontalAlign="spread"  multipleRows="true">
+                <aura:if isTrue="{!v.loadingCounter!= 0}">
+                    <lightning:spinner alternativeText="Loading"/>
+                </aura:if>
+                <aura:iteration items="{!v.ActivityList}" var="obj" indexVar="index">
+                    <!--<p><a onclick="{!c.gotoList}">{!obj.number}     {!obj.Subject}</a></p>-->
+                    
+                        <lightning:layoutItem size="12" flexibility="grow" >
+                            <a id="{!obj.listViewId}" onclick="{!c.gotoList}">
+                                <lightning:layout multipleRows="false" >
+                                    <lightning:layoutItem size="1" flexibility="grow">
+                                        {!obj.count} 
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="11" flexibility="grow" >
+                                        {!obj.label}
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+                            </a>
+                        </lightning:layoutItem>
+                    
+                </aura:iteration>
+                <lightning:layoutItem alignmentBump="left" >
+                    <span class="slds-p-horizontal_medium">Totale: {!v.total}</span>
+                    
+                    <aura:if isTrue="{!v.showMore}">
+                        	<lightning:buttonIcon iconName="utility:up" variant="bare" alternativeText="Mostra Meno" onclick="{!c.showLess}"/>
+                        <aura:set attribute="else">
+                        	<lightning:buttonIcon iconName="utility:down" variant="bare" alternativeText="Mostra Altro" onclick="{!c.showMore}" disabled="{! v.ActivityComplete.length lt 16}"/>
+                        </aura:set>
+                    </aura:if> 
+                    <lightning:buttonIcon iconName="utility:refresh" variant="bare" alternativeText="Refresh" onclick="{!c.refresh}"/>
+                </lightning:layoutItem>
+            </lightning:layout>
+            
+            
+        </div>
+    </lightning:card>
+</aura:component>

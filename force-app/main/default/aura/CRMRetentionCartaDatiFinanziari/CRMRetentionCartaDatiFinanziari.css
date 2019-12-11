@@ -1,0 +1,29 @@
+.THIS .box-height{
+    height: 40px;
+}
+.THIS .txt-left {
+   	text-align : left;
+}
+
+.THIS .txt-center {
+   	text-align : center;
+}
+
+.THIS .txt-right {
+	text-align : right;
+}
+
+.THIS .redTextColor {
+   color: Red;
+}
+.THIS td {
+    padding:3px;
+}
+
+.THIS .leftFloat{
+    float:left;
+}																																
+
+.THIS .rightFloat{
+    float:right;
+}

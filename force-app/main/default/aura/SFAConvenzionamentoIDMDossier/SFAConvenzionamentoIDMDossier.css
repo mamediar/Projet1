@@ -1,0 +1,11 @@
+.THIS .hidelabel .slds-form-element__label{
+    display: none; 
+    visibility: hidden;
+}
+
+.THIS .slds-file-selector__dropzone .slds-file-selector__text{ 
+    display: none;
+}
+.THIS .slds-file-selector__dropzone{ 
+    border: none;
+}

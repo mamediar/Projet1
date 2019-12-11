@@ -1,0 +1,194 @@
+<!--
+ - Created by Mamadou Lamine CAMARA  on 27/03/2019.
+ - Modified by Mamadou Lamine CAMARA on 08/04/2019, to controle the CIN Z field.
+ - Modified by Mamadou Lamine CAMARA on 10/04/2019, to add the new fields on Risposte__c sObject(D6,D7,D8).
+ -->
+
+ <aura:component description="AssicurativoPerche"
+ implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+ access="global">
+ <aura:attribute type="string" name="quezione" />
+ <aura:attribute type="string" name="quezione1" />
+ <aura:attribute type="string" name="quezione2" />
+ <aura:attribute type="string" name="stringAssicurazione" />
+ <aura:attribute name="isOpen" type="Boolean" default="false" />
+ <aura:attribute type="boolean" name="assicurativoTracciaturaRecesso" default="false" />
+ <aura:attribute name="risposta" type="Risposte__c" />
+ <aura:attribute name="FlussoDomanda" type="String" default=''/>
+ <aura:attribute name="indexFlag" type="boolean" default="false"/>
+
+ <aura:attribute type="Risposte__c" name="rispondeQuezione" default="{'sobjectype':'Risposte__c',
+                                                                         'D0__c':'',
+                                                                         'D1__c':'',
+                                                                         'D2__c':'',
+                                                                         'D3__c':'',
+                                                                         'D4__c':'',
+                                                                         'D5__c':'',
+                                                                         'D6__c':'',
+                                                                         'D7__c':'',
+                                                                         'D8__c':'',
+                                                                         'Intervista__c':''
+                                                                     }" />
+ <aura:attribute name="nuovaIntervista" type="COM_Intervista__c" default="{'sobjectype':'COM_Intervista__c',
+                                                                             'COM_NomeCliente__c':'',
+                                                                             'Name':'',
+                                                                             'COM_N_Telefono_Cel__c':'',
+                                                                             'COM_NTelefono1__c':'',
+                                                                             'COM_CSER_Descrizione1__c':'',
+                                                                             'COM_CSER_Descrizione3__c':'',
+                                                                             'COM_Data_Scadenza_Recesso__c':'',
+                                                                             'COM_Esito__c':'',
+                                                                             'COM_cin_z_calc__c':'',
+                                                                             'COM_CRMRichiamare_il__c':'',
+                                                                             'COM_Filiale__c':'',
+                                                                             'COM_D_Carico__c':'',
+                                                                             'COM_Stato_Avanzamento_IntervistaASS__c':'',
+                                                                             'COM_N_Telefono2__c':'',
+                                                                             'COM_CSER_Descrizione2__c':'',
+                                                                             'COM_CSER_Descrizione4__c':'',
+                                                                             'COM_Data_Esito__c':'',
+                                                                             'COM_D_liquid__c':'',
+                                                                             'COM_C_Serv1__c':'',
+                                                                             'COM_C_Serv2__c':'',
+                                                                             'COM_C_Serv3__c':'',
+                                                                             'COM_C_Serv4__c':'',
+                                                                             'COM_C_Serv5__c':'',
+                                                                             'COM_Durata_Sanitarie__c ':''
+                                                                             }" />
+ <aura:attribute type="COM_CRMComodity_Check_Asc_Desc__c[]" name="comodityCheklist" />
+ <div>
+
+     <div class="slds-align--absolute-center">
+         <p>{!v.quezione}</p>
+     </div>
+     <div class="slds-table--header-fixed_container" style="width:100%;">
+         <div class="slds-scrollable_y slds-scrollable--x">
+             <div class="slds-tile__detail slds-large slds-size--1-of-2">
+             </div>
+             <aura:if isTrue="{!(v.comodityCheklist.length>0)}">
+                 <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                     <thead>
+                         <tr class="slds-text-heading--label slds-line-height_reset">
+                             <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                                 <span class="slds-truncate" title="Cliente">Tipo Polizza</span>
+                             </th>
+                             <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                                 <span class="slds-truncate" title="Cliente">Definizione</span>
+                             </th>
+                             <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                                 <span class="slds-truncate" title="Cliente">Descrizione</span>
+                             </th>
+                             <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                                 <span class="slds-truncate" title="Cliente">Recesso</span>
+                             </th>
+                             <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                                 <span class="slds-truncate" title="Cliente">Estinzione Anticipata</span>
+                             </th>
+                             <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                                 <span class="slds-truncate" title="Cliente">CIN Z</span>
+                             </th>
+                         </tr>
+                     </thead>
+                     <tbody>
+                         <aura:iteration items="{!v.comodityCheklist}" var="comodityChek" indexVar="i">
+                             <tr class="valueOnTable">
+                                 <td scope="row">
+                                     <div class="slds-truncate " value="{!comodityChek.Id}" id="" title="">
+                                         {!comodityChek.COM_CRMTipo__c}
+                                     </div>
+                                 </td>
+                                 <td scope="row">
+                                     <div class="slds-truncate" value="{!comodityChek.Id}" id="" title="">
+                                         {!comodityChek.COM_CRMDefinizione__c}
+                                     </div>
+                                 </td>
+                                 <td scope="row">
+                                     <div class="slds-truncate" value="{!comodityChek.Id}" id="" title="">
+                                         {!comodityChek.Descrizione__c}
+                                     </div>
+                                 </td>
+                                 <td scope="row">
+                                     <div class="slds-truncate" value="{!comodityChek.Id}" id="" title="">
+                                         {!comodityChek.COM_CRMTermini_Recesso__c}
+                                     </div>
+                                 </td>
+                                 <td scope="row">
+                                     <div class="slds-truncate" value="{!comodityChek.Id}" id="" title="">
+                                         {!comodityChek.COM_CRMEstinzione__c}
+                                     </div>
+                                 </td>
+                                 <aura:if isTrue="{!v.nuovaIntervista.COM_cin_z_calc__c=='G'}">
+                                     <td scope="row" style="background-color: yellow;">
+                                         <div class="slds-truncate" value="{!comodityChek.Id}" id="" title=""
+                                             style="background-color: yellow;">
+                                             <span>{!v.nuovaIntervista.COM_cin_z_calc__c}</span>
+                                         </div>
+                                     </td>
+                                 </aura:if>
+                                 <aura:if isTrue="{!v.nuovaIntervista.COM_cin_z_calc__c=='R'}">
+                                     <td scope="row" style="background-color: red;">
+                                         <div class="slds-truncate" value="{!comodityChek.Id}" id="" title=""
+                                             style="background-color: red;">
+                                             <span>{!v.nuovaIntervista.COM_cin_z_calc__c}</span>
+                                         </div>
+                                     </td>
+                                 </aura:if>
+                                 <aura:if
+                                     isTrue="{!or(v.nuovaIntervista.COM_cin_z_calc__c=='EV', v.nuovaIntervista.COM_cin_z_calc__c=='V')}">
+                                     <td scope="row" style="background-color: green;">
+                                         <div class="slds-truncate" value="{!comodityChek.Id}" id="" title=""
+                                             style="background-color: green;">
+                                             <span>{!v.nuovaIntervista.COM_cin_z_calc__c}</span>
+                                         </div>
+                                     </td>
+                                 </aura:if>
+                             </tr>
+                         </aura:iteration>
+                     </tbody>
+                 </table>
+                 <aura:set attribute="else">
+                     <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                         <thead>
+                            <tr class="slds-text-heading--label slds-line-height_reset">
+                                <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                                    <span class="slds-truncate" title="Cliente">Tipo Polizza</span>
+                                </th>
+                                <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                                    <span class="slds-truncate" title="Cliente">Definizione</span>
+                                </th>
+                                <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                                    <span class="slds-truncate" title="Cliente">Descrizione</span>
+                                </th>
+                                <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                                    <span class="slds-truncate" title="Cliente">Recesso</span>
+                                </th>
+                                <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                                    <span class="slds-truncate" title="Cliente">Estinzione Anticipata</span>
+                                </th>
+                                <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                                    <span class="slds-truncate" title="Cliente">CIN Z</span>
+                                </th>
+                            </tr>
+                         </thead>
+                         <tbody>
+                            L'assicurazione {!v.stringAssicurazione} del cliente non è presente a sistema CRM.
+                         </tbody>
+                     </table>
+                   </aura:set>
+             </aura:if>
+         </div>
+
+     </div>
+     
+     <aura:if isTrue="{!v.assicurativoTracciaturaRecesso}">
+         <c:AssicurativoTracciaturaRecesso quezione1="{!v.quezione1}" 
+                                           risposta="{!v.risposta}"
+                                           nuovaIntervista="{!v.nuovaIntervista}" 
+                                           isOpen ="{!v.isOpen}" FlagFinanzPolizza = "true"
+                                           quezione2 = "{!v.quezione2}"
+                                           FlussoDomanda="{!v.FlussoDomanda}"
+                                           indexFlagTracc = "{!v.indexFlag}"
+                                            />
+     </aura:if> 
+ </div>
+</aura:component>

@@ -1,0 +1,87 @@
+<!--
+  @Component Name     : PV3260AumentoFido.cmp
+  @Description        : 
+  @Author             : Lorenzo Marzocchi
+  @Group              : 
+  @Last Modified By   : Lorenzo Marzocchi
+  @Last Modified On   : 2019-8-26 10:28:49
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    2019-6-26 11:23:40   Lorenzo Marzocchi     Initial Version
+-->
+<aura:component extends="c:PVSubComponentBase" access='global' controller='PV3260AumentoFidoInserimento'>
+
+    <!-- Attributi del PV -->
+    <aura:attribute name='isPraticaAttiva' type='Boolean' />
+
+    <!-- Attributi del PV in maschera -->
+    <aura:attribute name="riservaPrincipale" type="String" />
+    <aura:attribute name="riservaSalvadanaio" type="String" />
+    <aura:attribute name="rataModificabile" type="String" />
+
+    <aura:attribute name="StepAbbinati" type="String" />
+    <aura:attribute name="nuovoFidoDaAbbinare" type="String" />
+    <aura:attribute name="FAXRequired" type="Boolean" />
+
+    <!-- main -->
+    <lightning:card class='slds-form_stacked'>
+        <table class="slds-table slds-table_bordered slds-table_col-bordered">
+            <tbody>
+                <tr class="slds-hint-parent">
+                    <td colspan="3" class="slds-cell-buffer_left">
+                        <p class="slds-p-horizontal_small slds-text-color_error slds-text-title_bold">
+                            Se la carta non ha riserve inserire il fido totale.
+                        </p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+        <!-- FORM DA COMPILARE -->
+        <lightning:layout class="slds-wrap" multipleRows="true">
+            <lightning:layoutItem size="6" padding="horizontal-small">
+                <lightning:input name="riservaPrincipale" aura:id="riservaPrincipale" value='{!v.riservaPrincipale}'
+                     required="true"
+                    label='Riserva Principale' type="number" formatter="currency" step="0.01" />
+                <lightning:input name="riservaSalvadanaio" value='{!v.riservaSalvadanaio}'
+                     aura:id="riservaSalvadanaio"
+                    required="true" label='Riserva Salvadanaio' type="number" formatter="currency" step="0.01" />
+            </lightning:layoutItem>
+
+
+
+            <lightning:layoutItem size="6" padding="horizontal-small">
+                <lightning:input name="rataModificabile" value='{!v.rataModificabile}'
+                     aura:id="rataModificabile"
+                    required="true" label="{!'Rata Minima: '+ v.cartaDatiFinanziariData.pagamentoMinimo }" type="number"
+                    formatter="currency" step="0.01" />
+                <lightning:input name="nuovoFidoDaAbbinare" value='{!v.nuovoFidoDaAbbinare}' placeholder="0"
+                    aura:id="nuovoFidoDaAbbinare" disabled="true" label="Fido da Abbinare" />
+            </lightning:layoutItem>
+
+
+
+            <lightning:layoutItem size="12" padding="horizontal-small">
+                <lightning:input name="StepAbbinati" value='{!v.StepAbbinati}' placeholder='{!v.StepAbbinati}'
+                    aura:id="StepAbbinati" disabled="true" label="Step Abbinati" />
+            </lightning:layoutItem>
+        </lightning:layout>
+
+        <aura:if isTrue="{!v.FAXRequired}">
+            <lightning:card title="Conferma Ricezione FAX" iconName="action:approval" variant="base">
+                <p>E' richiesto l'invio di un fax. Se il fax non è stato ricevuto non sarà possibile proseguire. </p><br />
+                <lightning:layout class="slds-wrap" multipleRows="true">
+                    <lightning:layoutItem size="6" padding="horizontal-small">
+                        <lightning:input type="checkbox" aura:id='FAXcheckbox' label='Il FAX è stato ricevuto?'
+                            name='FAXcheckbox' />
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </lightning:card>
+        </aura:if>
+        
+    </lightning:card> <!-- /main -->
+
+</aura:component>

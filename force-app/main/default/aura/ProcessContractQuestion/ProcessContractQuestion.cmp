@@ -1,0 +1,75 @@
+<aura:component implements="force:lightningQuickAction,force:hasRecordId,lightning:availableForFlowScreens">
+    <aura:attribute name="contratto" type="Contract"/>
+    <aura:attribute name="barcodeCartella" type="String"/>
+    <aura:attribute name="options" type="List" default="[
+   			 {'label': 'SI', 'value': 'SI'},
+   			 {'label': 'NO', 'value': 'NO'}
+   					 ]"/>
+    <aura:attribute name="ifFirstTrue" type="Boolean" default="false"/>
+    <aura:attribute name="ifSecondTrue" type="Boolean" default="false"/>
+    <aura:attribute name="barcodeContratto" type="String"/>
+    <aura:attribute name="options2" type="List" default="[
+             {'label': 'SI', 'value': 'SI'},
+             {'label': 'SI,Ma Fotocopiate', 'value': 'SI,Ma Fotocopiate'},
+             {'label': 'NO', 'value': 'NO'}
+                     ]"/>
+    <aura:attribute name="firstQ" type="String" default=""/>
+    <aura:attribute name="secondQ" type="String" default="NO"/>
+    <aura:attribute name="thirdQ" type="String" default="NO"/>
+    <aura:attribute name="accountName" type="String" />
+    <aura:attribute name="lotto" type="SFALotto__c" />
+    <aura:attribute name="conto" type="Integer" />
+    <aura:attribute name="contoprocessati" type="Integer" />
+    <aura:attribute name="messaggio" type="String"/>
+    <aura:handler name="barCodeEvent" event="c:BarCodeReady" action="{!c.controlContract}"/>     
+    <div class="slds-m-bottom--x-small">Acquisire il bar code dei contratti.</div>		
+    <div class="slds-grid slds-gutters">        
+        	<div class="slds-col slds-size_6-of-12">
+                <div class="slds-m-bottom--x-small"><b>Branch:</b></div>
+                <div class="slds-m-bottom--x-small"><b>OCS Lot ID:</b></div>
+                <div class="slds-m-bottom--x-small"><b>Total Contracts in Lot:</b></div>                
+                <div class="slds-m-bottom--x-small"><b>Processed Contracts:</b></div>                
+        	</div>
+        	<div class="slds-col slds-size_6-of-12">
+                <div class="slds-m-bottom--x-small">{!v.accountName}</div>
+                <div class="slds-m-bottom--x-small">{!v.lotto.OCSLottoId__c}</div>
+                <div class="slds-m-bottom--x-small">{!v.conto}</div>                
+        		<div class="slds-m-bottom--x-small">{!v.contoprocessati}</div>                
+        	</div>
+    </div>
+    <ui:message title="Attenzione" severity="warning" closable="false">                    
+    	Pratica {!v.contratto.Barcode__c} in stato {!v.contratto.Status}                         
+    </ui:message>
+   	    <c:BarCode placeholder="Scannerizza il barcode"
+              length="14"
+              label="Posizionarsi con il cursore sul campo e acquisire il barcode del contratto:"/>
+    	
+    	<lightning:radioGroup name="firstQuestion"
+                          label="Il contratto è presente ?"
+                          options="{! v.options}"
+                          value="{! v.firstQ }"
+                          type="radio"
+                          required="true"
+                          onchange="{! c.visibility }"
+                              />   
+        <aura:if isTrue="{!v.ifFirstTrue}">           
+        <lightning:radioGroup name="secondQuestion"
+                          label="Il barcode è identico a quello della cover ?"
+                          options="{! v.options}"
+                          value="{! v.secondQ }"
+                          type="radio"
+                          required="true"
+                          onchange="{! c.visibility }"    
+                              />   
+    	</aura:if>
+        <aura:if isTrue="{!v.ifSecondTrue}">           
+    	<lightning:radioGroup name="thirdQuestion"
+                          label="Sono presenti le firme obbligatorie ?"
+                          options="{! v.options2}"
+                          value="{! v.thirdQ }"
+                          type="radio"
+                          required="true"
+                              />   
+    	</aura:if>
+    	<lightning:button variant="destructive" label="Next" title="avanti" onclick="{! c.nextflow }"/>
+</aura:component>

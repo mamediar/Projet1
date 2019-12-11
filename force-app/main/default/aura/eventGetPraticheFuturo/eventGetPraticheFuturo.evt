@@ -1,0 +1,4 @@
+<aura:event type="APPLICATION" description="Event template" >
+    <aura:attribute type="String" name="codeFiliale" description="code filiale"/>
+    <aura:attribute type="Boolean" name="loadData" description="Loading data" default="true"/>
+</aura:event>

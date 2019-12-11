@@ -1,0 +1,284 @@
+<!--
+  @Component Name     : PV1763VariazioneAnagrafica.cmp
+  @Description        : 
+  @Author             : Andrea Vanelli
+  @Group              : 
+  @Last Modified By   : sabrina vitali
+  @Last Modified On   : 10/9/2019, 15:53:22
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    2019-6-19 14:47:15   Andrea Vanelli     Initial Version
+-->
+<aura:component extends="c:PVSubComponentBase" controller="PV1763VariazioneAnagraficaInserimento">
+    <aura:handler name="init" value="{! this }" action="{! c.init }" />
+
+    <!-- Attributi -->
+    <!-- popolamento combo -->
+    <aura:attribute name="optionsTipoDocumento" type="List" default="[                                                                                                              
+                                                                     {'label': 'Carta d identita', 'value': 'CAR'},                                                                 
+                                                                     {'label': 'Passaporto', 'value': 'PAS'},                                                                       
+                                                                     {'label': 'Patente', 'value': 'PAT'},                                                                          
+                                                                     {'label': 'Tessera ministeriale', 'value': 'TSM'},                                                             
+                                                                     ]" />
+    <aura:attribute name="optionsTipoAnagrafica" type="List" default="[                                                                                                             
+                                                                     {'label': 'Privato', 'value': 'P'},                                                                            
+                                                                     {'label': 'Persona Fisica', 'value': 'F'},                                                                     
+                                                                     {'label': 'Persona Giuridica', 'value': 'G'},                                                                  
+                                                                     {'label': 'Altro', 'value': 'A'},                                                                              
+                                                                     ]" />
+    <aura:attribute name="ruoloTipoAnagrafica" type="String" />
+    <aura:attribute name="optionsRuoloTipoAnag" type="List" default="[                                                                                                              
+                                                                     {'label': 'Cliente', 'value': 'Cliente'},                                                                      
+                                                                     {'label': 'Garante', 'value': 'Garante'},                                                                      
+                                                                     {'label': 'Coobbligato', 'value': 'Coobbligato'},                                                              
+                                                                     {'label': 'Delegato', 'value': 'Delegato'},                                                                    
+                                                                     ]" />
+    <aura:attribute name="optionsSesso" type="List" default="[                                                                                                                      
+                                                                     {'label': 'F', 'value': 'F'},                                                                                  
+                                                                     {'label': 'M', 'value': 'M'},                                                                                  
+                                                             ]" />
+
+    <!-- Gestione componenti data -->
+    <aura:attribute name="viewScadenza" type="Boolean" access="Global" />
+    <aura:attribute name="today" type="Date" />
+    <aura:attribute name="todayPlus15Y" type="Date" />
+
+    <!-- valori originali di confronto -->
+    <aura:attribute name="denominazioneAziendaOrig" type="String" />
+    <aura:attribute name="formaGiuridicaOrig" type="String" />
+    <aura:attribute name="cognomeOrig" type="String" />
+    <aura:attribute name="nomeOrig" type="String" />
+    <aura:attribute name="codFiscaleOrig" type="String" />
+    <aura:attribute name="sessoOrig" type="String" />
+    <aura:attribute name="dataNascitaOrig" type="Date" />
+    <aura:attribute name="provNascitaOrig" type="String" />
+    <aura:attribute name="luogoNascitaOrig" type="String" />
+    <aura:attribute name="pivaOrig" type="String" />
+    <aura:attribute name="tipoAnagraficaOrig" type="String" />
+    <aura:attribute name="tipoDocumentoOrig" type="String" />
+    <aura:attribute name="numDocumentoOrig" type="String" />
+    <aura:attribute name="dataRilascioOrig" type="Date" />
+    <aura:attribute name="dataScadenzaOrig" type="Date" />
+    <aura:attribute name="provRilascioOrig" type="String" />
+    <aura:attribute name="luogoRilascioOrig" type="String" />
+
+    <!-- dati di preparazione del form -->
+    <aura:attribute name="modificheAUI" type="String" />
+    <aura:attribute name="ritiroCarte" type="String" />
+    <aura:attribute name="variazioni" type="String" />
+
+
+    <aura:if isTrue="{!v.PVForm.reasonMdt.uniqueId__c != 30}">
+        <table class="slds-table slds-table_bordered slds-table_col-bordered">
+            <tbody>
+                <tr class="slds-hint-parent">
+                    <td colspan="3" class="slds-cell-buffer_left">
+                        <p class="slds-p-horizontal_small slds-text-color_error slds-text-title_bold">
+                            Modificare solo i dati da variare. NON cancellare i dati per cui non è necessaria alcuna
+                            modifica.
+                        </p>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+
+        <div class="slds-grid slds-container_medium slds-align_absolute-center slds-wrap">
+            <aura:if isTrue="{!v.PVForm.cliente.formaGiuridica != ''}">
+                <div class="slds-size_6-of-12">
+                    <lightning:input label="{!'Denominazione Attuale: '+ v.denominazioneAziendaOrig }"
+                        name="denominazioneAzienda" value='{!v.PVForm.cliente.denominazioneAzienda}'
+                        onblur="{!c.toUppercase}" />
+                </div>
+
+                <div class="slds-size_6-of-12"><span>
+                        <lightning:input label="{!'Forma giuridica Attuale: '+ v.formaGiuridicaOrig }"
+                            name="formaGiuridica" value='{!v.PVForm.cliente.formaGiuridica}' />
+                    </span></div>
+            </aura:if>
+        </div>
+        <aura:if isTrue="{!v.PVForm.sottotipologiaMdt.uniqueId__c == 144}">
+            <lightning:card class='slds-form_stacked' aura:id="cardVariazioneSemplice">
+                <div class="slds-grid slds-container_medium slds-align_absolute-center slds-wrap">
+                    <div class="slds-size_6-of-12">
+                        <lightning:input name="cognome" value='{!v.PVForm.cliente.cognome}'
+                            onblur="{!c.toUppercase}"
+                            label="{!'Cognome Attuale: '+ v.cognomeOrig}" />
+                    </div>
+                    <div class="slds-size_6-of-12">
+                        <lightning:input label="{!'Nome Attuale: '+ v.nomeOrig}" name="nome"
+                            value='{!v.PVForm.cliente.nome}' onblur="{!c.toUppercase}" />
+                    </div>
+                    <div class="slds-size_6-of-12">
+                        <span>
+                            <lightning:input label="{!'Codice Fiscale Attuale: '+ v.codFiscaleOrig }"
+                                name="codFiscale" value='{!v.PVForm.cliente.codFiscale}' maxlength='16'
+                                onblur="{!c.toUppercase}"
+                                pattern='^(?:(?:[B-DF-HJ-NP-TV-Z]|[AEIOU])[AEIOU][AEIOUX]|[B-DF-HJ-NP-TV-Z]{2}[A-Z]){2}[\dLMNP-V]{2}(?:[A-EHLMPR-T](?:[04LQ][1-9MNP-V]|[1256LMRS][\dLMNP-V])|[DHPS][37PT][0L]|[ACELMRT][37PT][01LM])(?:[A-MZ][1-9MNP-V][\dLMNP-V]{2}|[A-M][0L](?:[1-9MNP-V][\dLMNP-V]|[0L][1-9MNP-V]))[A-Z]$' />
+                        </span>
+                    </div>
+
+                    <div class="slds-size_6-of-12"><span>
+                            <lightning:combobox label="{!'Sesso Attuale: '+ v.sessoOrig }" name="sesso"
+                                placeholder="Seleziona" value="{!v.PVForm.cliente.sesso}" variant="standard"
+                                dropdownAlignment="Left" options="{!v.optionsSesso}" />
+                        </span>
+                    </div>
+
+                    <div class="slds-size_6-of-12"><span>
+                            <lightning:input type="Date" name="dataNascita"
+                                value='{!v.PVForm.cliente.dataNascitaDate}' max="{!v.today}"
+                                label="{!'Data Nascita Attuale:' + v.dataNascitaOrig}" /></span></div>
+                    <div class="slds-size_6-of-12"><span>
+                            <lightning:input label="{!'Partita IVA Attuale: '+ v.pivaOrig }" name="piva"
+                                value='{!v.PVForm.cliente.piva}' maxlength='11' />
+                        </span></div>
+
+                    <div class="slds-size_6-of-12"><span>Provincia nascita Attuale: {!v.provNascitaOrig} </span>
+                    </div>
+                    <div class="slds-size_6-of-12"><span>
+                            <c:PVProvinciaCombo provinciaSelection="{!v.PVForm.cliente.provNascita}">
+                            </c:PVProvinciaCombo>
+                        </span></div>
+
+                    <div class="slds-size_6-of-12"><span>Luogo nascita Attuale: {!v.luogoNascitaOrig}</span></div>
+                    <div class="slds-size_6-of-12"><span>
+                            <c:PVComuneCombo provinciaSelection="{!v.PVForm.cliente.provNascita}"
+                                comuneSelection="{!v.PVForm.cliente.luogoNascita}">
+                            </c:PVComuneCombo>
+                        </span></div>
+
+
+                    <div class="slds-size_6-of-12"><span>Tipo anagrafica Attuale: {!v.tipoAnagraficaOrig}</span>
+                    </div>
+                    <div class="slds-size_6-of-12"><span>
+                            <lightning:combobox name="tipoAnagrafica" placeholder="Seleziona"
+                                value="{!v.PVForm.cliente.tipoAnagrafica}" variant="standard"
+                                dropdownAlignment="Left" options="{!v.optionsTipoAnagrafica}" />
+                            <aura:if
+                                isTrue="{!and(v.tipoAnagraficaOrig=='A',v.PVForm.cliente.tipoAnagrafica=='P')}">
+                                <lightning:combobox placeholder="Seleziona Ruolo" value="{!v.ruoloTipoAnagrafica}"
+                                    variant="standard" dropdownAlignment="Left"
+                                    options="{!v.optionsRuoloTipoAnag}" required="true"/>
+                            </aura:if>
+                        </span>
+                    </div>
+                </div>
+            </lightning:card>
+            <!--CARD del documento-->
+            <lightning:card class='slds-form_stacked' title="Dati del Documento" iconName="action:add_contact"
+                variant="base">
+                <div class="slds-grid slds-container_medium slds-align_absolute-center slds-wrap">
+
+                    <div class="slds-size_6-of-12"><span>Tipo Documento Attuale: {!v.tipoDocumentoOrig}</span></div>
+                    <div class="slds-size_6-of-12"><span>
+                            <lightning:combobox name="tipoDocumento" placeholder="Seleziona"
+                                value="{!v.PVForm.cliente.tipoDocumento}" variant="standard"
+                                dropdownAlignment="Left" options="{!v.optionsTipoDocumento}" />
+                        </span>
+                    </div>
+
+                    <div class="slds-size_6-of-12"><span>
+                            Numero Doc Attuale: {!v.numDocumentoOrig}
+                        </span></div>
+                    <div class="slds-size_6-of-12"><span>
+                            <lightning:input name="numDocumento" value='{!v.PVForm.cliente.numDocumento}' />
+                        </span></div>
+                    <div class="slds-size_6-of-12"><span>Data rilascio Attuale: {!v.dataRilascioOrig} </span></div>
+                    <div class="slds-size_6-of-12"><span>
+                            <lightning:input type="Date" name="dataRilascio"
+                                value='{!v.PVForm.cliente.dataRilascioDate}' max="{!v.today}" /></span></div>
+
+                    <div class="slds-size_6-of-12"><span>Provincia rilascio Attuale: {!v.provRilascioOrig} </span>
+                    </div>
+                    <div class="slds-size_6-of-12"><span>
+                            <c:PVProvinciaCombo provinciaSelection="{!v.PVForm.cliente.provRilascio}">
+                            </c:PVProvinciaCombo>
+                        </span></div>
+
+                    <div class="slds-size_6-of-12"><span>Data scadenza Attuale: {!v.dataScadenzaOrig}</span></div>
+                    <div class="slds-size_6-of-12"><span>
+                            <lightning:input type="Date" aura:id="dataScadenza" name="dataScadenza"
+                                value='{!v.PVForm.cliente.dataScadenzaDate}' min="{!v.today}"
+                                max="{!v.todayPlus15Y}" /></span></div>
+
+
+                    <div class="slds-size_6-of-12"><span>Luogo rilascio Attuale: {!v.luogoRilascioOrig}</span></div>
+                    <div class="slds-size_6-of-12"><span>
+                            <c:PVComuneCombo provinciaSelection="{!v.PVForm.cliente.provRilascio}"
+                                comuneSelection="{!v.PVForm.cliente.luogoRilascio}">
+                            </c:PVComuneCombo>
+                        </span></div>
+                </div>
+            </lightning:card>
+
+
+        </aura:if>
+
+        <aura:if isTrue="{!v.PVForm.sottotipologiaMdt.uniqueId__c == 145}">
+
+            <!--CARD del documento-->
+            <lightning:card class='slds-form_stacked' title="Dati del Documento" iconName="action:add_contact"
+                variant="base">
+
+                <div class="slds-grid slds-container_medium slds-align_absolute-center slds-wrap">
+
+                    <div class="slds-size_6-of-12"><span>Tipo Documento Attuale: {!v.tipoDocumentoOrig}</span></div>
+                    <div class="slds-size_6-of-12"><span>
+                            <lightning:combobox name="tipoDocumento" placeholder="Seleziona"
+                                value="{!v.PVForm.cliente.tipoDocumento}" variant="standard"
+                                dropdownAlignment="Left" options="{!v.optionsTipoDocumento}" />
+                        </span>
+                    </div>
+
+
+                    <div class="slds-size_6-of-12"><span>
+                            Numero Doc Attuale: {!v.numDocumentoOrig}
+                        </span></div>
+                    <div class="slds-size_6-of-12"><span>
+                            <lightning:input name="numDocumento" value='{!v.PVForm.cliente.numDocumento}' />
+                        </span></div>
+
+                    <div class="slds-size_6-of-12"><span>Data rilascio Attuale: {!v.dataRilascioOrig} </span></div>
+                    <div class="slds-size_6-of-12"><span>
+                            <lightning:input type="Date" name="dataRilascio"
+                                value='{!v.PVForm.cliente.dataRilascioDate}' max="{!v.today}" /></span></div>
+
+                    <div class="slds-size_6-of-12"><span>Provincia rilascio Attuale: {!v.provRilascioOrig} </span>
+                    </div>
+                    <div class="slds-size_6-of-12"><span>
+                            <c:PVProvinciaCombo provinciaSelection="{!v.PVForm.cliente.provRilascio}">
+                            </c:PVProvinciaCombo>
+                        </span></div>
+
+                    <div class="slds-size_6-of-12"><span>Luogo rilascio Attuale: {!v.luogoRilascioOrig}</span></div>
+                    <div class="slds-size_6-of-12"><span>
+                            <c:PVComuneCombo provinciaSelection="{!v.PVForm.cliente.provRilascio}"
+                                comuneSelection="{!v.PVForm.cliente.luogoRilascio}">
+                            </c:PVComuneCombo>
+                        </span></div>
+                </div>
+            </lightning:card>
+            <lightning:card class='slds-form_stacked' aura:id="cardVariazioneFirmatario">
+                <div class="slds-grid slds-container_medium slds-align_absolute-center slds-wrap">
+                    <div class="slds-size_6-of-12"><span>
+                            <lightning:input type="checkbox" aura:id='checkboxScadenza'
+                                label='Variazione relativa alla sola data di scadenza' name='checkbox'
+                                onchange="{!c.verifyCheckScadenza}" />
+                        </span></div>
+                    <aura:if isTrue="{!v.viewScadenza}">
+                        <div class="slds-size_6-of-12"><span>
+                                <lightning:input type="Date" name="dataScadenza"
+                                    value='{!v.PVForm.cliente.dataScadenzaDate}' min="{!v.today}"
+                                    max="{!v.todayPlus15Y}" required="true" /></span></div>
+                        <aura:set attribute="else">
+                            <div class="slds-size_6-of-12"><span></span></div>
+                        </aura:set>
+                    </aura:if>
+                </div>
+            </lightning:card>
+        </aura:if>
+    </aura:if>
+</aura:component>

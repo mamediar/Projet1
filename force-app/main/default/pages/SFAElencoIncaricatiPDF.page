@@ -1,0 +1,178 @@
+<apex:page renderAs="PDF"  
+    standardController="Case"
+    action="{!init}"
+    applyBodyTag="false"
+    extensions="SFAElencoIncaricatiPDFController">
+    <head>
+            <style  type="text/css" media="print">
+   @page {
+                @top-center {
+                    content: element(header);
+                }
+    
+                @bottom-left {
+                    content: element(footer);
+                }
+            }
+            
+            * {
+            	margin: 0px;
+            	padding: 0px;
+            }
+            
+            div.header {
+            	margin-top: 30px;
+            	height: 130px;
+            	width: 715px;
+            	text-align: center;
+            	position: running(header);
+            }
+            
+            div.content {
+            	padding-top: 130px;
+            }
+            
+            div.footer {
+            	display: block;
+            	padding: 5px;
+                position: running(footer);
+            }
+            
+            div.subfooter {
+            	display: inline-block;
+            }
+            
+            div.right {
+            	float: right;
+            }
+            
+            .pagenumber:before {
+                content: counter(page);
+            }
+            
+            .pagecount:before {
+            	content: counter(pages);
+            }
+            
+            .stationName {
+                text-align: center;
+            	font-weight: bold;
+            	font-size: 20pt;
+            	margin-bottom: 30px;
+            }
+            
+            table {
+            	width: 100%;
+            }
+            
+            .centered {
+            	text-align: center;
+            }
+            
+            .right {
+            	text-align: right;
+            }
+            
+            .tableHeader {
+            	border-width: 0px 0px 1px 0px;
+            	border-color: #000;
+            	border-style: solid;
+            }
+            
+            .sectionHeader {
+            	width: 100%;
+            	background-color: #eee;
+            	font-size: 16pt;
+            	padding: 5px;
+            	margin: 20px 0px;
+            	font-weight: bold;
+            }
+            
+            #totalCost {
+            	margin-top: 15px;
+            }
+            
+            #totalCostLabel {
+            	font-weight: bold;
+            	margin-right: 10px;
+            }           
+            </style>        
+    </head>
+    <body>
+          <div class="fromContainer">
+                   <center><b>ELENCO INCARICATI DELL'IDENTIFICAZIONE ANTIRICICLAGGIO</b></center>
+          </div> 
+          <br/>           
+          <br/> 
+          <div>
+            <table border="1px solid black" align="center" cellpadding="0" cellspacing="0">
+                  <tr>
+                        <td style="padding: 8px;"><b>NOME</b></td>
+                        <td style="padding: 8px;"><b>COGNOME</b></td>
+                        <td style="padding: 8px;"><b>CODICE FISCALE</b></td>
+                        <td style="padding: 8px;"><b>EMAIL</b></td>
+                  </tr>
+                  <apex:repeat value="{!listaCollegati}" var="collegato">
+                  <tr>
+                      <td style="padding: 8px;"><apex:outputText value="{!collegato.nome}"/></td>
+                      <td style="padding: 8px;"><apex:outputText value="{!collegato.cognome}"/></td>
+                      <td style="padding: 8px;"><apex:outputText value="{!collegato.codFiscale}"/> </td> 
+                      <td style="padding: 8px;"><apex:outputText value="{!collegato.email}"/> </td>
+                  </tr>
+                </apex:repeat>
+            </table>
+        </div>
+        <br/>
+        <br/>
+        <br/>
+        <div align="right">
+                Firma del convenzionato
+        </div> 
+        <br/> 
+        <div align="right">
+                _______________________
+        </div> 
+        <div class="footer"> 
+                <center><apex:outputText value="ORIGINALE PER COMPASS FILIALE"/> </center>
+        </div>
+        <div style="page-break-after:always;"/>
+        <!-- seconda copia-->
+
+        <div class="fromContainer">
+                <center><b>ELENCO INCARICATI DELL'IDENTIFICAZIONE ANTIRICICLAGGIO</b></center>
+       </div> 
+       <br/>           
+       <br/> 
+       <div>
+           <table class="pdfTable" border="1px solid black" align="center" cellpadding="0" cellspacing="0">
+               <tr>
+                    <td style="padding: 8px;"><b>NOME</b></td>
+                    <td style="padding: 8px;"><b>COGNOME</b></td>
+                    <td style="padding: 8px;"><b>CODICE FISCALE</b></td>
+                    <td style="padding: 8px;"><b>EMAIL</b></td>
+              </tr>
+               <apex:repeat value="{!listaCollegati}" var="collegato">
+               <tr>
+                   <td style="padding: 8px;"><apex:outputText value="{!collegato.nome}"/></td>
+                   <td style="padding: 8px;"><apex:outputText value="{!collegato.cognome}"/></td>
+                   <td style="padding: 8px;"><apex:outputText value="{!collegato.codFiscale}"/> </td> 
+                   <td style="padding: 8px;"><apex:outputText value="{!collegato.email}"/> </td>
+               </tr>
+               </apex:repeat>
+            </table>
+         </div>
+         <br/>
+         <br/>
+         <br/>
+         <div align="right">
+                 Firma del convenzionato
+         </div> 
+         <br/> 
+         <div align="right">
+                 _______________________
+         </div> 
+         <div class="footer"> 
+            <center><apex:outputText value="ORIGINALE PER COMPASS SEDE"/> </center>
+        </div>
+    </body>
+</apex:page>

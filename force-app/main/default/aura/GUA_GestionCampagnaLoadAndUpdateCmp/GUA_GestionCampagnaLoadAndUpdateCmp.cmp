@@ -1,0 +1,85 @@
+<aura:component controller="GUA_GestionCampagnaCnt"
+  implements="flexipage:availableForAllPageTypes,force:appHostable,flexipage:availableForRecordHome,force:hasRecordId,force:hasSObjectName"
+  access="global">
+  <aura:attribute name="data" type="Object" />
+  <!-- The list of currently viewable items -->
+  <aura:attribute name="filteredData" type="Object" />
+  <aura:attribute name="columns" type="List" />
+  <aura:attribute name="errors" type="Object" default="[]" />
+  <aura:attribute name="draftValues" type="Object" default="[]" />
+  <aura:attribute name="selectedRowsCount" type="Integer" default="0" />
+  <aura:attribute name="selectedRowsDetails" type="Object" />
+  <aura:attribute name="selectedRowsList" type="List" />
+  <aura:attribute name="dataSize" type="Integer" default="0" />
+  <aura:attribute name="pageNumber" type="Integer" default="1" />
+  <aura:attribute name="pageSize" type="Integer" default="10" />
+  <aura:attribute name="isLastPage" type="Boolean" default="false" />
+  <aura:attribute name="maxRowSelection" type="Integer" default="5" />
+  <aura:attribute name="selectedRows" type="List" />
+
+  <!--- enableInfiniteLoading  -->
+  <aura:attribute name="enableInfiniteLoading" type="Boolean" default="true" />
+  <aura:attribute name="initialRows" type="Integer" default="30" />
+  <aura:attribute name="rowsToLoad" type="Integer" default="10" />
+  <aura:attribute name="totalNumberOfRows" type="Integer" default="10" />
+  <aura:attribute name="loadMoreStatus" type="String" default="Loading .... " />
+  <aura:attribute name="showRowNumberColumn" type="Boolean" default="false" />
+  <aura:attribute name="rowNumberOffset" type="Integer" default="0" />
+  <aura:attribute name="rowsToAdd" type="Integer" default="10" />
+  <aura:attribute name="currentCount" type="Integer" default="10" />
+  <aura:attribute name="activeFilter" type="string" default="All" description="The currently selected actions filter" />
+  <aura:attribute name="sortedBy" type="String" />
+  <aura:attribute name="sortedDirection" type="String" />
+  <aura:attribute name="defaultSortDirection" type="String" />
+  <!-- filter input -->
+  <aura:attribute name="filter" type="String" />
+  <aura:handler name="init" value="{! this }" action="{! c.init }" />
+  <aura:handler event="aura:waiting" action="{!c.showSpinner}" />
+  <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}" />
+  <div class="slds-p-around_medium">
+    <h1 class="slds-text-heading_large">elenco di campagne </h1>
+  </div>
+
+  <ui:spinner aura:id="spinner" isVisible="False" />
+  <!-- the container element determine the height of the datatable -->
+  <div style="">
+    <div class="slds-form-element">
+      <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left">
+        <lightning:input type="search" onchange="{!c.filter}" value="{!v.filter}" label="Search by Campaign Name" />
+      </div>
+    </div>
+
+    <div class="slds-form-element" id="input-element">
+      <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left">
+        <lightning:select value="{!v.initialRows}" label="Show" onchange="{!c.onChangeSorting}">
+          <option value=""></option>
+          <option value="0">All</option>
+          <option value="10">10</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </lightning:select>
+      </div>
+    </div>
+
+    <lightning:datatable aura:id="dtTable" columns="{! v.columns }" data="{! v.data }" keyField="Id"
+      errors="{! v.errors }" draftValues="{! v.draftValues }" onsave="{! c.handleSaveEdition }"
+      showRowNumberColumn="true" onrowaction="{! c.handleRowAction }" selectedRows="{! v.selectedRows }"
+      maxRowSelection="{! v.maxRowSelection }" onheaderaction="{! c.handleHeaderAction }" sortedBy="{! v.sortedBy }"
+      sortedDirection="{! v.sortedDirection }" defaultSortDirection="{! v.defaultSortDirection }"
+      onsort="{! c.updateColumnSorting }" />
+    <div class="slds-clearfix">
+      <div class="slds-page-header" role="banner">
+        <div class="slds-float_right">
+          <lightning:button label="Prev" iconName="utility:chevronleft" iconPosition="left" onclick="{!c.handlePrev}"
+            disabled="{! v.pageNumber == 1}" />
+          <lightning:button label="Next" iconName="utility:chevronright" iconPosition="right"
+            disabled="{! v.isLastPage}" onclick="{!c.handleNext}" />
+        </div>
+        <p class="slds-page-header__title">Page {!v.pageNumber} | Showing records from {!
+          ((v.pageNumber-1)*v.pageSize)+' to '+((v.pageNumber-1)*v.pageSize+v.dataSize)}</p>
+      </div>
+    </div>
+
+  </div>
+
+</aura:component>

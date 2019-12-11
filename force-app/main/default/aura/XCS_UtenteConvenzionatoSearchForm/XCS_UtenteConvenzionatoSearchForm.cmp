@@ -1,0 +1,39 @@
+<aura:component controller="XCS_UtenteConvenzionatoSearchFormCtrl"
+                implements="force:appHostable,flexipage:availableForAllPageTypes"
+                access="global">   
+    
+    <aura:attribute name="codiceIntermediario" type="string" default=""/>
+    <aura:attribute name="utenza" type="string" default=""/>
+    <aura:attribute name="response" type="Object"/>
+    <aura:attribute name="toastMessage" type="Map"/> 
+    <aura:attribute name="waiting" type="Boolean"/>
+    
+    <aura:handler name = "init" value = "{!this}" action = "{!c.init}"/>
+    <aura:registerEvent name="sendResponse" type="ltng:sendMessage"/>
+    
+    
+    <lightning:card>
+        <div class="slds-m-left_small">
+            <div style="width: 250px">
+                <ui:inputText label="Codice Intermediario" 
+                              class="field"
+                              value="{!v.codiceIntermediario}"/>
+                
+                <ui:inputText label="Utenza" 
+                              class="field"
+                              value="{!v.utenza}"/>                
+            </div>            
+            <div class="slds-m-top_small">
+                <lightning:button label="Ricerca"
+                                  variant="brand"
+                                  onclick="{!c.search}"
+                                  />                
+            </div>
+        </div>
+    </lightning:card>   
+    
+    <aura:if isTrue="{!v.waiting}">
+        <lightning:spinner variant="brand" size="large"/>        
+    </aura:if>
+    
+</aura:component>

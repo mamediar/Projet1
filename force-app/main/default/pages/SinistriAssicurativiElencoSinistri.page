@@ -1,0 +1,4 @@
+<apex:page contentType="application/vnd.ms-excel#{!title}.xls" controller="SinistriAssicurativiCtrl">
+    
+    {!body}
+</apex:page>

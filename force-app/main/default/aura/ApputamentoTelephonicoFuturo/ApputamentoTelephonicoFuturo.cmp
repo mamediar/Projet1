@@ -1,0 +1,68 @@
+<!-- @component : ApputamentoTelephonicoFuturo
+       @description: per pianificare gli appuntamenti
+       @author: Mady COLY
+       @dateCreated: 20/05/2019 
+       @dateLastModified: 29/05/2019-->
+<aura:component controller="CommodityFuturoCnt" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+                access="global">
+    <!--AURA ATTRIBUTI-->
+    <aura:attribute name="clienteFuturo" type="Com_Commodity_Survey__c" default="{'sobjectype':'Com_Commodity_Survey__c',
+                                                                                 'Name':'',
+                                                                                 'COM_CODICE_AGENTE__c':'',
+                                                                                 'COM_NOME_CEDENTE__c':'',
+                                                                                 'COM_CED_TELEFONO_CELL__c':'',
+                                                                                 'COM_TIPO_PRODOTTO__c':'',
+                                                                                 'COM_CATEGORIA_PRODOTTO__c':'',
+                                                                                 'COM_COD_SUB_AGENTE__c':'',
+                                                                                 'COM_SUB_AGENTE__c':'',
+                                                                                 'COM_AGENTE__c':'',
+                                                                                 'Ultimo_Esito__c':'',
+                                                                                 'Data_Ultimo_Esito__c':'',
+                                                                                 'COM_NETTO_EROGATO__c':'',
+                                                                                 'COM_IMPORTO_RATA__c':'',
+                                                                                 'COM_NUMERO_RATE__c':'',
+                                                                                 'Interviste_Utili__c':'',
+                                                                                 'CreatedDate':'',
+                                                                                 'LastModifiedDate':''
+                                                                                 }" />
+    <aura:attribute name="richiamareDate" type="Date" />
+    <aura:attribute name="richiamareTime" type="Time" />
+    <aura:attribute name="richiamarenote" type="String" />
+    
+    <fieldset class="slds-box slds-theme--default">
+        <div class="">
+            <div class="apputamento_quezione"></div>
+            <form class="slds-form--stacked">
+                <div class=" slds-form-element__control">
+                    <label class="slds-form-element_label">Date Time</label>
+                    <div class="slds-grid slds-wrap slds-gutters">
+                        <div class="slds-form-element__control slds-col">
+                            <lightning:input aura:id="richiamare" type="date" name="date" label="" required="true" variant="label-hidden" class="date"
+                                             messageWhenValueMissing="Il Campo è obbligatorio!" value="{!v.richiamareDate}" />
+                        </div>
+                        <div class="slds-form-element__control slds-col">
+                            <lightning:input aura:id="richiamare" type="time" name="time" label="" required="true" variant="label-hidden" class="time"
+                                             messageWhenValueMissing="Il Campo è obbligatorio!" value="{!v.richiamareTime}" />
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-form-element slds-col">
+                    
+                    <div class="slds-form-element__control">
+                        <label class="slds-form-element__label"></label>
+                        <lightning:textarea aura:id="richiamare" name="input1" label="Note" required="true" value="{!v.richiamarenote}" messageWhenValueMissing="Il Campo è obbligatorio!"/>
+                    </div>
+                </div>
+                <br/> <br/>
+                <div style="width:100%!Important"
+                     class="slds-col slds-size_1-of-1 slds-large-size_3-of-3 stylePag">
+                    <lightning:button class="slds-button slds-button_brand buttonPage"
+                                      onclick="{!c.clickCreate}" label="Salva Appuntamento"/>
+                    <lightning:button class="slds-button slds-button_brand buttonPage" onclick="{!c.notInterested}"
+                                      label="not interested" />    
+                </div>
+            </form>
+        </div>
+    </fieldset>
+    
+</aura:component>

@@ -1,0 +1,4 @@
+<design:component>
+    <design:attribute name="filter" label="Filtro"/>
+    <design:attribute name="status" label="Status"/>
+</design:component>

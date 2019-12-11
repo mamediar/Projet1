@@ -1,0 +1,60 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" 
+ controller="SchedaVerificaFilialeButtonComponentCtrl" access="global" >
+ <aura:attribute name="recordId" type="Id" />
+ <aura:attribute name="simpleRecord" type="Object"/>
+ <aura:attribute name="fields" type="String[]" default="['Stati_Approvazione__c','Filiale__c','Stato__c']"/>
+ <aura:attribute name="showSendApprovers" type= "Boolean" default="false" />
+ <aura:attribute  name="showSpinner" type="Boolean" default="false"  />
+ <aura:handler name="render" value="{!this}" action = "{!c.doInit}" />
+ <force:recordData aura:id="recordLoader"
+    recordId="{!v.recordId}"
+    layoutType="FULL"
+    mode="VIEW"
+    fields="{!v.fields}"
+    targetFields="{!v.simpleRecord}"/>
+    
+    <c:Spinner visible="{!v.showSpinner}"/>
+
+
+	<aura:if isTrue="{!v.simpleRecord != null}">
+        <aura:if isTrue="{!v.showSendApprovers}">
+        	<lightning:button label="Invia in Approvazione" title="Neutral action" onclick="{! c.openModalExtension }"/>
+     	</aura:if>
+        <aura:if isTrue="{!and(v.simpleRecord.Stato__c != '1',v.simpleRecord.Stato__c != '3')}">
+            <lightning:button label="Stampa PDF" title="Neutral action" onclick="{! c.stampaPDF }"/>
+            <aura:set attribute="else">
+                <lightning:button label="Scheda Precedente" title="Neutral action" onclick="{! c.schedaPrecedente }"/>
+            </aura:set>
+        </aura:if>
+    </aura:if>
+
+
+    <div role="dialog" tabindex="-1" aria-labelledby="header43" aura:id="ModalboxExtension" id="ModalboxExtension" class="slds-modal">
+        <div class="slds-modal__container">
+            <div class="slds-modal__header">
+                <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" onclick="{!c.closeModal}">
+                    <lightning:icon class="slds-button__icon slds-m-right_x-small" aria-hidden="true" iconName="utility:close" size="xx-small"/>
+                    <span  class="slds-assistive-text" onclick="{!c.closeModal}">Invio in Approvazione</span>
+                </button>
+                <h2 id="header43" class="slds-text-heading--medium">Invio in Approvazione</h2>
+            </div>
+
+            <div class="slds-modal__content slds-p-around--medium">
+                <div>
+                    Sei sicuro di voler inviare in approvazione la Scheda della Filiale?
+                    <br/>
+
+
+                </div>
+            </div>
+            <div class="slds-modal__footer">
+                <lightning:button title="Close" class="floatLeft" onclick="{!c.closeModal}">Chiudi</lightning:button>
+                <lightning:button title="approvazione"  onclick="{!c.sendApproval}">Invia in Approvazione</lightning:button>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="slds-backdrop" id="ModalbackdropExtension" aura:id="ModalbackdropExtension"></div>
+</aura:component>

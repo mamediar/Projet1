@@ -1,0 +1,93 @@
+<!--
+  @Component Name : GUA_GestionCampagnaCmp.cmp
+  @Description        : 
+  @Author             : BADJI SANA
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0       17/09/2019              SANA BADJI              Initial Version
+-->
+<aura:component controller="GUA_GestionCampagnaCnt" implements="flexipage:availableForAllPageTypes,force:appHostable,lightning:actionOverride,force:hasRecordId" access="global">
+    <aura:attribute name="newCampaign" type="Campaign" default="{ 'sobjectType':
+    'Campaign',
+    'Name': '',
+    'StartDate': '',
+    'EndDate': '',
+    'UAF_Script__c': '',
+    'UAF_DatiAggiuntivi__c': ''}" />
+    <aura:attribute name="myVal" type="string" />
+    <aura:attribute name="lstItem" type="Object[]" />
+    <aura:handler name="init" value="{! this }" action="{! c.init }" />
+    <aura:attribute name="checkdate" type="boolean" default="false" />
+    <aura:attribute name="valCheckbox" type="Integer" />
+
+    <div class="slds-p-bottom_large slds-p-left_large" style="width:700px;margin-top:25px;">
+        <!-- CREATE NEW CAMPAIGN FORM -->
+        <lightning:messages />
+        <div class="slds-grid slds-grid_pull-padded-medium">
+            <div class="slds-col slds-p-horizontal_medium">
+                <lightning:input aura:id="formFieldToValidate" label="Nome
+                    campagna" messageWhenValueMissing="Campaign's Name is Mandatory" value="{!v.newCampaign.Name}" required="true" />
+            </div>
+        </div>
+        <div class="slds-grid slds-grid_pull-padded-medium">
+            <div class="slds-col slds-p-horizontal_medium">
+                <lightning:input aura:id="formFieldToValidate" type="date" label="Data inizio" messageWhenValueMissing="Campaign's StartDate is
+                      Mandatory" value="{!v.newCampaign.StartDate}" required="true" />
+
+            </div>
+        </div>
+
+        <div class="slds-grid slds-grid_pull-padded-medium">
+            <div class="slds-col slds-p-horizontal_medium">
+                <lightning:input aura:id="formFieldToValidate" type="date" label="Data fine" messageWhenValueMissing="Campaign's EndDate is
+                        Mandatory" value="{!v.newCampaign.EndDate}" required="true" onchange="{! c.datecheckChange }" />
+                <aura:if isTrue="{!v.checkdate}">
+                    <div class="slds-form-element__help" id="error-message-unique-id">the end date is greater than the departure date
+                    </div>
+                </aura:if>
+            </div>
+        </div>
+        <div class="slds-grid slds-grid_pull-padded-medium">
+
+            <div class="slds-col slds-p-horizontal_medium">
+                <lightning:inputRichText value="{!v.newCampaign.UAF_Script__c}" placeholder="Type the Script" />
+            </div>
+        </div>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size_1-of-6 margin-top">
+                <label class="">Dati Aggiuntivi</label>
+            </div>
+            <div class="slds-col slds-size_1-of-6">
+                <lightning:input aura:id="myVal" value="" />
+            </div>
+            <div class="slds-col slds-size_1-of-6">
+                <lightning:checkboxGroup name="checkboxGroup" aura:id="formFieldToValidate" options="{!
+                              v.lstItem }" required="true" value="{! v.newCampaign.UAF_DatiAggiuntivi__c }" onchange="{! c.handleChange }" messageWhenValueMissing="Campaign's Dati
+                              Aggiuntivi is Mandatory" />
+            </div>
+
+            <div class="slds-col slds-size_1-of-4">
+                <lightning:button type="submit" label="Inserisci
+                                dato" class="slds-m-top_medium
+                                slds-button_brand" iconName="utility:add" onclick="{!c.textChange}" />
+            </div>
+
+            <div class="slds-col slds-size_1-of-4">
+                <lightning:button type="submit" label="Cancella
+                                  dato" class="slds-m-top_medium" iconName="utility:clear" onclick="{!c.removeDeletedRow}" />
+            </div>
+        </div>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_1-of-6">
+                <lightning:button iconName="utility:save" type="submit" label="Inserisci" class="slds-m-top_medium
+                                    slds-button_brand" onclick="{!c.createCampaign}" />
+            </div>
+            <div class="slds-col slds-size_1-of-6">
+                <lightning:button aura:id="submit" iconName="utility:clear" type="submit" label="Chiudi" class="slds-m-top_medium" onclick="{!c.cancelField}" />
+            </div>
+            <div class="slds-col"> </div>
+        </div>
+    </div>
+    <lightning:spinner aura:id="csvSpinner" class="slds-hide" variant="brand" size="small" />
+</aura:component>

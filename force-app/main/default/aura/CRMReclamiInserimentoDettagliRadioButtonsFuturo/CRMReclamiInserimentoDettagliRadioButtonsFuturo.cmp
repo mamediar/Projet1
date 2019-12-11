@@ -1,0 +1,77 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" 
+                access="global" 
+                >
+	
+    <aura:attribute name="campiCase" type="Object"/>
+    <aura:attribute name="commissioniOutput" type="Object"/>
+    <aura:attribute name="provvAccOutput" type="Object"/>
+    <aura:attribute name="premioAssOutput" type="Object"/>
+    <aura:attribute name="varieOutput" type="Object"/>
+    <aura:attribute name="speseLegaliOutput" type="Object"/>
+    <aura:attribute name="isRimborsoCOk" type="Boolean"/>
+    <aura:attribute name="isRimborsoPOk" type="Boolean"/>
+    <aura:attribute name="isRimborsoPremiomOk" type="Boolean"/>
+    <aura:attribute name="isRimborsoVOk" type="Boolean"/>
+    <aura:attribute name="isRimborsoSOk" type="Boolean"/>
+    
+    <aura:attribute name="commissioniSelection" type="String"/>
+    <aura:attribute name="provvAccSelection" type="String"/>
+    <aura:attribute name="premioAssSelection" type="String"/>
+    <aura:attribute name="varieSelection" type="String"/>
+    <aura:attribute name="speseLegaliSelection" type="String"/>
+    <aura:attribute name="commissioniValue" type="Double"/>
+    <aura:attribute name="provvAccValue" type="Double"/>
+    <aura:attribute name="premioAssValue" type="Double"/>
+    <aura:attribute name="varieValue" type="Double"/>
+    <aura:attribute name="speseLegaliValue" type="Double"/>
+    
+    <aura:attribute name="isOk" type="Boolean" default="false"/>
+    <aura:attribute name="errorMessage" type="String"/>
+    <aura:attribute name="output" type="Object"/>
+     
+    <aura:handler name="change" value="{!v.isRimborsoCOk}" action="{!c.checkIfOk}"/>
+    <aura:handler name="change" value="{!v.isRimborsoPOk}" action="{!c.checkIfOk}"/>
+    <aura:handler name="change" value="{!v.isRimborsoPremiomOk}" action="{!c.checkIfOk}"/>
+    <aura:handler name="change" value="{!v.isRimborsoVOk}" action="{!c.checkIfOk}"/>
+    <aura:handler name="change" value="{!v.isRimborsoSOk}" action="{!c.checkIfOk}"/>
+    
+    <aura:handler name="change" value="{!v.commissioniOutput}" action="{!c.buildOutput}"/>
+    <aura:handler name="change" value="{!v.provvAccOutput}" action="{!c.buildOutput}"/>
+    <aura:handler name="change" value="{!v.premioAssOutput}" action="{!c.buildOutput}"/>
+    <aura:handler name="change" value="{!v.varieOutput}" action="{!c.buildOutput}"/>
+    <aura:handler name="change" value="{!v.speseLegaliOutput}" action="{!c.buildOutput}"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    
+    <c:XCSRadioGroupGenericReclami label="Rimborso Commissioni:"
+                                   output="{!v.commissioniOutput}"
+                                   isOk="{!v.isRimborsoCOk}"
+                                   showValue="{!v.commissioniSelection}"
+                                   value="{!v.commissioniValue}"
+                                   />
+    <c:XCSRadioGroupGenericReclami label="Rimborso Provvigioni/Accessorie:"
+                                   output="{!v.provvAccOutput}"
+                                   isOk="{!v.isRimborsoPOk}"
+                                   showValue="{!v.provvAccSelection}"
+                                   value="{!v.provvAccValue}"
+                                   />
+    <c:XCSRadioGroupGenericReclami label="Rimborso Premio Assicurativo:"
+                                   output="{!v.premioAssOutput}"
+                                   isOk="{!v.isRimborsoPremiomOk}"
+                                   showValue="{!v.premioAssSelection}"
+                                   value="{!v.premioAssValue}"
+                                   />
+    <c:XCSRadioGroupGenericReclami label="Rimborso Varie:"
+                                   output="{!v.varieOutput}"
+                                   isOk="{!v.isRimborsoVOk}"
+                                   showValue="{!v.varieSelection}"
+                                   value="{!v.varieValue}"
+                                   />
+    <c:XCSRadioGroupGenericReclami label="Rimborso Spese Legali:"
+                                   output="{!v.speseLegaliOutput}"
+                                   isOk="{!v.isRimborsoSOk}"
+                                   showValue="{!v.speseLegaliSelection}"
+                                   value="{!v.speseLegaliValue}"
+                                   />
+    
+</aura:component>

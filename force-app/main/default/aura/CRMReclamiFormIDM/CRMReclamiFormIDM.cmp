@@ -1,0 +1,52 @@
+<aura:component controller="CRMReclamiFormIDMController" implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId" >
+    
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="listaAllegati" type="Attachment[]"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="url" type="String"/>
+    
+    <aura:attribute name="vfpURL" type="String"/>
+    <aura:attribute name="caseParent" type="Case"/>
+    <aura:attribute name="caseChild" type="Case"/>
+    <aura:attribute name="codaIDM" type="Group"/>
+    <!-- <aura:attribute name="pageReference" type="Object"/>
+    
+    <lightning:navigation aura:id="navService"/> -->
+    <!-- <lightning:outputField label="N.Rif" fieldName="{!v.caseChild.CaseNumber}" />
+    <lightning:outputField label="Contatto" fieldName="{!v.caseChild.Account.Name}" />
+    <lightning:outputField label="Contatto" fieldName="{!v.caseChild.Account.Name}" />
+    <lightning:outputField label="Contatto" fieldName="{!v.caseChild.Account.Name}" />
+    <lightning:outputField label="Contatto" fieldName="{!v.caseChild.Account.Name}" />
+    <lightning:outputField label="Contatto" fieldName="{!v.caseChild.Account.Name}" /> -->
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    
+    
+    <!-- <lightning:datatable keyField="Id"
+                         resizeColumnDisabled="true"
+                         columns="{!v.columns}"
+                         data="{!v.listaAllegati}"
+                         selectedRows="{!v.selectedRows}"
+                         showRowNumberColumn="true"
+                         onRowSelection="{!c.selectedRow}"
+                         /> 
+    
+    <aura:iteration items="{!v.listaAllegati}" var="allegato">  
+        <tr>  
+            <td> <a href="{!v.url}" id="{!allegato.Id}" onclick="{!c.apriFile}">{!allegato.Name}</a></td>  
+            <td>{!allegato.Description}</td>  
+            <div>
+                IFRAME DI PROVA
+                 <iframe src="{!v.vfpURL}" width="100%" height="100%;" frameBorder="0"/> 
+           
+            </div> 
+        </tr>  
+    </aura:iteration> -->
+    
+    <lightning:button variant="brand"
+                      class="slds-m-top_medium"
+                      label="Salva come gestita"
+                      onclick="{!c.salvaReclamoGestito}"
+                      />
+    
+</aura:component>

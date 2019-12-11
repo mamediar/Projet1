@@ -1,0 +1,40 @@
+<aura:component controller="SFASottoscrizioneUtenzaHelper" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes" access="global">
+
+    <aura:attribute name="base64url" type="String" default="data:application/octet-stream;base64," /> 
+    <aura:attribute name="pdfRecuperato" type="Map"/>
+    <aura:attribute name="showSpinner" type="Boolean" default="false"/>
+
+    <aura:handler name="init" action="{!c.callPDF}" value="{!this}"/>
+
+    
+    
+    <lightning:card variant="Narrow" title="Download PDF" iconName="action:description" footer=" "> 
+        <aura:if isTrue="{!v.showSpinner}">
+            <lightning:spinner alternativeText="Loading" size="large"/>
+        </aura:if>                     
+        <table class="slds-table slds-table--bordered">  
+          <tbody>
+            <aura:iteration items="{!v.pdfRecuperato}" var="pdfRec" indexVar="key">  
+                <tr>  
+                    <td> {!pdfRec.key} </td>  
+                    <td>
+                    <div class="slds-grid slds-grid_align-end">
+                    <aura:if isTrue="{!pdfRec.value == ''}">
+                        <lightning:buttonIcon iconName="utility:close" onclick="{! c.getPDF_KO }" />
+                        <aura:set attribute="else">
+                          <a id="{!pdfRec.key}" href="{!v.base64url + pdfRec.value}" download="{!pdfRec.key + '.pdf'}">
+                          
+                          <lightning:buttonIcon iconName="utility:check" value="{!pdfRec.value}"/>
+                          </a>
+                        </aura:set>
+                    </aura:if>
+                    </div>
+                    </td> 
+
+                </tr>  
+            </aura:iteration>  
+          </tbody>
+        </table>  
+      </lightning:card>
+
+</aura:component>

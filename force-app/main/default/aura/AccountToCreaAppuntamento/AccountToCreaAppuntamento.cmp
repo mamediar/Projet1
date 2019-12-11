@@ -1,0 +1,32 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+                access="global">
+    <aura:attribute name="openmodel" type="Boolean" default="true"/>    
+    <aura:attribute name="recordId" type="String"/>
+    <div>
+        <!--
+        <lightning:button class="slds-p-bottom_small Presegui" label="Prosegui" variant="brand" onclick="{!c.openCreaAppuntamento}"></lightning:button>
+        -->
+        <div class="slds-theme_default">
+            <aura:if isTrue="{!v.openmodel==true}">
+                <div class="demo-only" style="height: 640px;">
+                    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open slds-modal_small slds-fade-in-open">
+                        <div class="slds-modal__container">
+                            <header class="slds-modal__header">
+                                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Crea Appuntamento</h2>
+                            </header>
+                            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                                <center>
+                                        <c:creaAppuntamento idCliente="{!v.recordId}"/>
+                                </center>
+                            </div>
+                            <footer class="slds-modal__footer">
+                                <lightning:button label="chiudere" variant="neutral" onclick="{!c.closeModal}"></lightning:button>
+                            </footer>
+                        </div>
+                    </section>
+                    <div class="slds-backdrop slds-backdrop_open"></div>
+                </div>
+          </aura:if> 
+        </div>
+    </div>
+</aura:component>

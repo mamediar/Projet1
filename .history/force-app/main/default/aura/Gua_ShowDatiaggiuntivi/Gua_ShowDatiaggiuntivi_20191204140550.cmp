@@ -1,0 +1,13 @@
+<aura:component  controller="Gua_DatiaggiuntiviCnt" implements="flexipage:availableForAllPageTypes,force:appHostable,force:lightningQuickAction">
+	
+    <!-- attributes of the component -->
+    <aura:attribute name="idCase" type="String" />
+    <aura:attribute name="script" type="String"/>
+    <aura:attribute name="campaignName" type="String"/>
+    <!-- handler --> 
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+                  {!v.campaignName}
+    <fieldset class="slds-box slds-theme--default slds-m-bottom_small" style="margin-bottom: 3%">
+    	<div class="slds-text-title">{!v.script}</div>
+    </fieldset>
+</aura:component>

@@ -1,0 +1,30 @@
+.THIS .slds-modal__container{
+        max-width: 80rem !important;
+    	width: 70%;
+}
+.THIS.c-container {
+    /*border: 1px solid #d8dde6;
+    margin: 10px 0 20px 0;
+    display: table; 
+    height: 100%; */
+}
+
+.THIS .custom-box {
+    /*text-align: center;
+    border: 1px solid #d8dde6;
+    display: table-cell;*/
+        
+    
+}
+
+.THIS .floatLeft {
+	float:left;
+}
+.THIS .floatRight {
+	float:right;
+}
+.THIS.slds-spinner_container {
+    z-index: 10000 !important;
+    position: fixed;
+     
+  }

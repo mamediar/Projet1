@@ -1,0 +1,5 @@
+<design:component>
+	<design:attribute name="lotto" label="LottoSelezionato"/>
+    <design:attribute name="recordId" label ="recordId"/>
+    <design:attribute name="contratti" label ="contratti"/>
+</design:component>

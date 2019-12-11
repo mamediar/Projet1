@@ -1,0 +1,41 @@
+<aura:component >
+    <aura:attribute name="labelOptions" type="String" default="" />
+    <aura:attribute name="optionsModalitaPagamento" type="List" default="[
+                                                        {'label': 'Assegno', 'value': 'Assegno'},
+                                                        {'label': 'Bonifico', 'value': 'Bonifico'},
+                                                        ]"/>
+	<aura:attribute name="modalitaPagamentoSelected" type="String" default="" />
+    <aura:attribute name="sottotipologiaSelezionata" type="String" />
+    
+    <lightning:card>
+        <lightning:select name="modalitaPagamento" 
+                          label="{! v.labelOptions }" 
+                          aura:id="modalitaPagamento" 
+                          value="{!v.modalitaPagamentoSelected}">
+            <option text="" value=""/>
+            <aura:iteration items="{!v.optionsModalitaPagamento}" var="modPag">
+                <option text="{!modPag.label}" value="{!modPag.value}"/>
+            </aura:iteration>
+        </lightning:select>
+        
+        
+        <aura:if isTrue="{!v.modalitaPagamentoSelected == 'Assegno'}">
+            <lightning:input name="cliente" readonly="true" value="NOME CLIENTE" />        
+
+            <c:ProvinciaIndirizzoFormGenerico showIndirizzo="true"
+                                              groupByProvinciaAbbreviata="false"
+                                              indirizzo="{!v.indirizzo}"
+                                              CAP="{!v.CAP}"
+                                              provinciaSelection="{!v.provincia}"
+                                              comuneSelection="{!v.citta}"
+                                              />            
+        </aura:if>
+        <aura:if isTrue="{!v.modalitaPagamentoSelected == 'Bonifico'}">
+            <lightning:input name="intestatario" placeholder="intestatario" label="Nome e cognome intestatario del conto" />        
+            <lightning:input name="ABI" label="ABI" />        
+            <lightning:input name="CAB" label="CAB" />        
+            <lightning:input name="CC" label="CC" />        
+            <lightning:input name="IBAN" label="IBAN" />        
+        </aura:if>
+    </lightning:card>            
+</aura:component>

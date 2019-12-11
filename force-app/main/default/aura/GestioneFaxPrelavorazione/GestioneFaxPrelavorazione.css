@@ -1,0 +1,36 @@
+.THIS .side-content{
+	overflow: hidden;
+    white-space: nowrap;
+    display: none;
+    -webkit-transition: width 300ms ease-in-out;
+    -moz-transition: width 300ms ease-in-out;    
+    -o-transition: width 300ms ease-in-out;    
+    transition: width 300ms ease-in-out;
+}
+
+.THIS .slds-button{white-space: nowrap;}
+.THIS .slds-size_6-of-12, .THIS .slds-size_4-of-12, .THIS .slds-size_5-of-12{transition: width 300ms ease-in-out;}
+.THIS .side-content.filled{overflow: visible;}
+
+.THIS.roll-content{  
+    display: none;
+    overflow: hidden;
+    border-radius: .25rem;
+    -webkit-transition: height 300ms ease-in-out;
+    -moz-transition: height 300ms ease-in-out;    
+    -o-transition: height 300ms ease-in-out;    
+    transition: height 300ms ease-in-out;
+}
+
+.THIS .slds-flexSolid{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.THIS .errorEnable{
+    -webkit-transition: all 300ms ease-in-out;
+    -moz-transition: all 300ms ease-in-out;    
+    -o-transition: all 300ms ease-in-out;    
+    transition: all 300ms ease-in-out;
+}

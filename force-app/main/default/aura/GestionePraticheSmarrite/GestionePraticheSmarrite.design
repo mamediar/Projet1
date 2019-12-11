@@ -1,0 +1,6 @@
+<design:component>
+    <!-- INPUT -->
+    <design:attribute name="sectionName" label="Nome Sezione" />
+    <design:attribute name="flagAccolli" label="Mostra Accolli" />
+    <design:attribute name="cardName" label="Nome Cornice" />
+</design:component>

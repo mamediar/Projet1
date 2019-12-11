@@ -1,0 +1,48 @@
+<apex:page renderAs="PDF"  
+    standardController="Case"
+    action="{!init}"
+    extensions="SFAUtenzeNominativePDFController">
+    <head>
+            <style>
+            .pdfTable {
+                width: 100%; 
+            }             
+            </style>        
+    </head>
+
+    <body>
+        <center><b>Lista Utenze Nominative</b></center>
+        <br/>
+            <apex:outputPanel rendered="{! If(utenzeNominaliList!=null ,true,false) }">
+                <table class="pdfTable" border="1px solid black" align="center" cellpadding="0" cellspacing="0">
+                        <tr> 
+                            <td style="padding: 8px;"><b>Cognome</b></td> 
+                            <td style="padding: 8px;"><b>Nome</b></td>
+                            <td style="padding: 8px;"><b>Utenza</b></td>
+                            <td style="padding: 8px;"><b>Profilo</b></td>
+                            <td style="padding: 8px;"><b>Data Creazione</b></td>
+                            <td style="padding: 8px;"><b>Canale</b></td>
+                            <td style="padding: 8px;"><b>Tipo</b></td>
+                            <td style="padding: 8px;"><b>Esito</b></td>
+                        </tr>                       
+                
+                        <apex:repeat value="{!utenzeNominaliList}" var="ute">
+                        <tr>           
+                            <td style="padding: 8px;">{!ute.Last_Name__c}</td>
+                            <td style="padding: 8px;">{!ute.First_Name__c}</td>
+                            <td style="padding: 8px;">{!ute.Utenza__c}</td>
+                            <td style="padding: 8px;">{!ute.Tipo_Utenza__c}</td>
+                            <td style="padding: 8px;">{!ute.Data_Creazione__c}</td>
+                            <td style="padding: 8px;">{!ute.Canale__c}</td>
+                            <td style="padding: 8px;">
+                                <apex:outputText value="Generica"  rendered="{!IF(ute.OCS_Code_Delegato__c==null,true,false)}"/>
+                                <apex:outputText value="Nominale"  rendered="{!IF(ute.OCS_Code_Delegato__c!=null,true,false)}"/>                                 
+                            </td>
+                            <td style="padding: 8px;">{!ute.Note__c}</td>
+                        </tr>
+                        </apex:repeat>
+                </table> 
+            </apex:outputPanel>           
+    </body>
+
+</apex:page>

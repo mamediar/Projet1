@@ -1,0 +1,26 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,lightning:availableForFlowScreens,force:hasRecordId" access="global">
+	
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="lstAttribute" type="String"/>
+    <aura:attribute name="objectApiName" type="String" default="Case"/>
+    <aura:attribute name="numColums" type="Integer"/> 
+    <aura:attribute name="dettaglioConfig" type="Object"/>
+ 
+    <lightning:card class="slds-p-left_small">
+        
+        <lightning:recordViewForm recordId="{!v.recordId}" objectApiName="{!v.objectApiName}">
+            <table style="width:100%">
+                <aura:iteration items="{!v.dettaglioConfig}" var="items">
+                    <tr>
+                        <aura:iteration items="{!items}" var="item">
+                            <th><lightning:outputField fieldName="{!item}" /></th>
+                        </aura:iteration>
+                    </tr>
+                </aura:iteration>
+            </table>
+        </lightning:recordViewForm>
+
+   </lightning:card>
+
+</aura:component>

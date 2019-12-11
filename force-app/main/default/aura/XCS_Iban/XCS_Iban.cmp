@@ -1,0 +1,93 @@
+<aura:component controller="XCS_IbanController" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes,forceCommunity:searchInterface" access="global">
+
+    <aura:attribute name="problemaChiamataServizioCalcolaIBAN" type="Boolean" default="false"/>
+    <aura:attribute name="messaggioChiamataServizioCalcolaIBAN" type="String" default=""/>     
+    <aura:attribute name="formatoIBANverificato" type="Boolean" default="false"/> 
+    <aura:attribute name="isIBANvalido" type="Boolean" default="false"/>          
+    
+    <!--INPUTS-->
+    <aura:attribute name="salvaCCsuCRM" type="Boolean" default="true"/>
+    <aura:attribute name="salvaCCsuOCS" type="Boolean" default="false"/>   <!--Per poter essere salvato su OCS, deve essere necessariamente essere salvato anche sul CRM-->
+    <aura:attribute name="showDatiAggiuntiviCC" type="Boolean" default="false"/>
+    <aura:attribute name="CCId" type="String" default=""/> <!--Nel caso ci sia un record da aggiornare, altrimenti lasciarlo vuoto nel caso di inserimento nuovo-->
+    <aura:attribute name="accountId" type="String"/> <!-- l'account a cui va associato il record del CC (è una master-detail verso l'account)-->
+    <aura:attribute name="labelButtonSalva" type="String" default="Salva"/>
+    
+    
+    <aura:registerEvent name="XCS_IbanReady" type="c:XCS_IbanReady"/>
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    
+    <aura:attribute name="spinnerCounter" type="Integer" default="0"/>
+    <c:SpinnerComponent aura:id="spinnerComponent" spinnerCounter="{!v.spinnerCounter}"/>    
+    
+            <lightning:recordEditForm aura:id="FormCC" recordId="{!v.CCId}" objectApiName="XCS_CCAccredito__c" onload="{!c.showRequiredFields}" onsubmit="{!c.onSubmitFormCC}" onsuccess="{!c.handleSuccess}"  onerror="{!c.handleError}" >  
+                      <lightning:layout horizontalAlign="spread" multipleRows="false">
+                        
+                        <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="3">
+                            <lightning:inputField aura:id="ABI__c" fieldName="ABI__c"/>
+                        </lightning:layoutItem>                                        
+                        
+                        <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="3">
+                            <lightning:inputField aura:id="CAB__c" fieldName="CAB__c" />
+                        </lightning:layoutItem>   
+                        
+                        <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="3">
+                            <lightning:inputField aura:id="ContoCorrente__c" fieldName="ContoCorrente__c" />
+                        </lightning:layoutItem>
+                        <lightning:layoutitem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="3">
+                            <lightning:button label="Calcola IBAN"
+                                              variant="neutral"
+                                              class="slds-m-top_medium"
+                                              onclick="{!c.actionButtonCalcolaIBAN}"/>                                             
+                            
+                        </lightning:layoutitem>                    
+                        
+                    </lightning:layout> 
+                
+                    <lightning:layout horizontalAlign="spread" multipleRows="true">
+                        <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="9">
+                            <lightning:inputField aura:id="IBAN__c" fieldName="IBAN__c" />
+                        </lightning:layoutItem> 
+                        
+                        <lightning:layoutitem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="3">
+                            <lightning:button label="Verifica IBAN"
+                                              variant="neutral"
+                                              class="slds-m-top_medium"
+                                              onclick="{!c.actionButtonVerificaIBAN}"/>                                                   
+                        </lightning:layoutitem>                         
+                        
+                        <aura:if isTrue="{!v.showDatiAggiuntiviCC}">
+                                <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                                    <lightning:inputField aura:id="Descrizione__c" fieldName="Descrizione__c" />
+                                </lightning:layoutItem> 
+                                
+                                <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="2">
+                                    <lightning:inputField aura:id="Liquidazione__c" fieldName="Liquidazione__c" />
+                                </lightning:layoutItem>                                                        
+                                
+                                <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="2">
+                                    <lightning:inputField aura:id="Provvigioni__c" fieldName="Provvigioni__c" />
+                                </lightning:layoutItem> 
+                                
+                                <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="2">
+                                    <lightning:inputField aura:id="Erogazione_RVD_CO__c" fieldName="Erogazione_RVD_CO__c" />
+                                </lightning:layoutItem>  
+                        </aura:if>
+                        
+                                            
+                        <lightning:layoutitem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="3">
+                            <lightning:button label="{!v.labelButtonSalva}"
+                                              type="submit"
+                                              variant="destructive"
+                                              class="slds-m-top_medium"/>  
+                            
+                            
+                        </lightning:layoutitem> 
+
+                        
+                    </lightning:layout>                                                                                                                    
+            </lightning:recordEditForm>            			    
+    
+    
+    
+</aura:component>

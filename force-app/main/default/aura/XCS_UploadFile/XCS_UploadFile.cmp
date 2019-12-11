@@ -1,0 +1,28 @@
+<aura:component   implements="flexipage:availableForAllPageTypes"  controller="XCS_UploadFileCTRL" access="global">
+    
+    <!-- Boris -->
+    
+    <aura:attribute name="label" type="String" default=""/>
+    <aura:attribute name="multiple" type="Boolean" default="false"/>
+    <aura:attribute name="disabled" type="Boolean" default="false"/>
+    <aura:attribute name="file" type="Object" />
+    <aura:attribute name="spinner" type="Integer" default="0" />
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="accept" type="String" default=""/>
+    <aura:attribute name="title" type="String" default=""/>
+    
+    <aura:if isTrue="{!not(v.spinner==0)}" >
+        <lightning:spinner alternativeText="Loading" size="large" />
+    </aura:if>
+    
+    <lightning:fileUpload  
+                          
+                          title= "{!v.title}"
+                          label= "{!v.label}"
+                          multiple="{!v.multiple}"
+                          disabled="{!v.disabled}"
+                          recordId="{!v.recordId}"
+                          accept="{!v.accept}"
+                          onuploadfinished="{!c.handleUploadFinished }"/>
+    
+</aura:component>

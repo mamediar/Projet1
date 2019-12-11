@@ -1,0 +1,20 @@
+<aura:component >
+    <!-- 
+
+ mettere la ricerca e il bottone sul quale faccio scantenare la chiamata per l'attivazione della carta
+che si comporta diversamente a seconda del tipo di pratiche che vengono selezionate
+sulla selezione del cliente viene lanciato l'evento, così si passa OCSCliente con tutte le pratiche
+e si può decidere se gestirle o meno, lasciandole solo visualizzabili oppure si potranno selezionare
+per attivarle
+
+
+il componente dovrà implementare la logica per far vedere o meno le pratiche dei clienti
+
+
+Modal
+ModalController
+RitiroContrattiPerDealer
+
+
+ -->
+</aura:component>

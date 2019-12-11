@@ -1,0 +1,16 @@
+<aura:component>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="title" type="String" default="Privacy"/>
+    <aura:attribute name="hideTableHeader" type="Boolean" default="true"/>
+    <aura:attribute name="privacyList" type="List"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    <lightning:card class="slds-card_boundary" title="{!v.title}">
+        <lightning:datatable
+                keyField="id"
+                data="{!v.privacyList}"
+                columns="{!v.columns}"
+                hideCheckboxColumn="true"
+                hideTableHeader="{!v.hideTableHeader}"/>
+    </lightning:card>
+</aura:component>

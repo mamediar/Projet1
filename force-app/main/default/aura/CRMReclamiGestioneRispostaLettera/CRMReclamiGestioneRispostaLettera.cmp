@@ -1,0 +1,106 @@
+<aura:component controller="CRMReclamiGestioneRispostaLetteraCtrl"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" 
+                access="global" 
+                >
+    
+    <aura:attribute name="clienteSelezionato"  type="OCSCliente"/>
+    <aura:attribute name="praticaSelezionata" type="Object"/>
+    <aura:attribute name="campiCase" type="Object" />
+   
+    <aura:attribute name="fileList" type="Attachment[]"/>
+    <aura:attribute name="categoriaDettagli" type="XCS_Categoria__c"/>
+    
+    <aura:attribute name="mailText" type="String"/>
+    <aura:attribute name="variantButtonFirmaDigitale" type="String" default="neutral"/>
+    <aura:attribute name="getFirmaDigitale" type="Boolean" default="false"/>
+    <aura:attribute name="showMailSection" type="Boolean" default="false"/>
+   <!--Boris Inizio-->
+    <aura:attribute name="caseObj" type="Object"/>
+     <aura:attribute name="aziendaSelezionata" type="String"/>
+    <aura:attribute name="showButton" type="Boolean" default= "false" description="Se True mostra i bottoni per gestire la lettera"/>
+
+    <aura:attribute name="stdtextsLabels" type="List"/>
+    <aura:attribute name="stdtextSelected" type="String"/>
+    <aura:attribute name="textAreaValue" type="String"/>
+    <aura:attribute name="spinner" type="Boolean" default="false"/>
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    <aura:method name="save" action="c.salvaLettera"/>
+    <aura:method name="refresh" action="{!c.init}"/>
+    <aura:registerEvent name="aggiorna" type="c:CRMReclamiGestioneApprovazioneEvent"/>
+     <aura:registerEvent name="richiedoAutorizzazione" type="c:CRMReclamiGestioneApprovazioneEvent"/>
+   
+    <!--Boris Fine-->
+    
+    <aura:handler name="change" value="{!v.textAreaValue}" action="{!c.handleTextboxChange}"/>
+    
+    <aura:if isTrue="{!v.spinner}" >
+        <lightning:spinner alternativeText="Loading" size="large" />
+    </aura:if>
+    <lightning:layout>
+        <lightning:layoutItem size="6">
+            <div class="slds-p-right_x-small">
+                <lightning:combobox name="progress" label="Testo Standard" value="{!v.stdtextSelected}"  placeholder="Seleziona" options="{!v.stdtextsLabels }"/>
+                
+                
+            </div>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="6">
+            <div class="slds-p-top_medium">
+                
+                <lightning:button label="Inserisci Testo Standard"
+                                  variant="brand"
+                                  onclick="{!c.inserisciTestoStandard}"
+                                  />
+                <lightning:button label="Inserisci Paragrafo Standard"
+                                  variant="brand"
+                                  onclick="{!c.inserisciParagrafoStandard}"
+                                  />
+                
+                 
+            </div>
+        </lightning:layoutItem>
+    </lightning:layout>
+    <aura:if isTrue="{!true}">
+        <div class="slds-p-top_x-small">
+            <lightning:textarea aura:id="letteraText"
+                                label="Enter some text" 
+                                variant="label-hidden"
+                                value="{!v.textAreaValue}"
+                                escape="false"
+                                />
+            <aura:if isTrue="{!v.showButton}">
+                <lightning:buttonStateful labelWhenOff="Inserisci Firma Digitale"
+                                          labelWhenOn="Inserisci Firma Digitale"
+                                          labelWhenHover="Inserisci Firma Digitale"
+                                          iconNameWhenOff="utility:add"
+                                          iconNameWhenOn="utility:check"
+                                          iconNameWhenHover="utility:close"
+                                          state="{!v.getFirmaDigitale}"
+                                          variant="{!v.variantButtonFirmaDigitale}"
+                                          onclick="{!c.handleClickFirmaDigitale}"
+                                          />
+                <lightning:button label="Crea lettera di risposta"
+                                  variant="brand"
+                                  onclick="{!c.creaLettera}"
+                                  />
+                
+                <lightning:button label="Invia via Mail"
+                                  onclick="{!c.showMailSection}"  
+                                  variant="brand"/>
+            </aura:if>
+            <aura:if isTrue="{!v.showMailSection}">
+                <c:CRMReclamiGestioneRispostaLetteraMail aziendaSelezionata="{!v.aziendaSelezionata}"
+                                                         fileList="{!v.fileList}"
+                                                         buttonLabel="Invia risposta al Cliente"
+                                                         isNotSelectableAttach="false"
+                                                         canDeleteAttach="false"
+                                                         canUploadAttach="false"
+                                                         mailText="{!v.mailText}"
+                                                         campiCase ="{!v.campiCase}"
+                                                         clienteSelezionato ="{!v.clienteSelezionato}"
+                                                         praticaSelezionata ="{!v.praticaSelezionata}"
+                                                         />
+            </aura:if>
+        </div>
+    </aura:if>
+</aura:component>

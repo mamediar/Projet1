@@ -1,0 +1,231 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId" controller="GUA_DettaglioDealerCnt">
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="caseDealer" type="Case" default="{'sobjectType' : 'Case' }"/>
+    <aura:attribute name="datiAggiuntivi" type="Object" />
+    <aura:handler name="init" value="{!this}" action="{!c.handleManageContact}"/>
+    
+    <!--
+    	<article class="">        
+        <lightning:card title="Dealer" variant="base" class="slds-m-top_small slds-m-bottom_small">
+            <div class="slds-card__body_inner">
+        <lightning:layout>
+            <lightning:layoutItem size="6" class="slds-m-around_xxx-small">
+                <div class="slds-p-around_xxx-small slds-text-heading_medium slds-m-bottom_small" style="text-align:center;background-color:#9f201c;color:#fff;">
+                    Dati Aggiuntivi
+                </div>
+                <lightning:layout>
+                    <lightning:layoutItem size="6">
+                        <div class="slds-form-element   "><span class="slds-form-element__label">Codice Pratica:</span>
+                    <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.Pratica_Codice_Attributo_PM__c}</span></div>
+                </div>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="6">
+                        <div class="slds-form-element   "><span class="slds-form-element__label">Stato Pratica:</span>
+                    <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.Stato_Pratica__c}</span></div>
+                </div>
+                    </lightning:layoutItem>
+                </lightning:layout> 
+                <lightning:layout>
+                    <lightning:layoutItem size="6">
+                        <div class="slds-form-element   "><span class="slds-form-element__label">Note:</span>
+                    <div class="slds-form-element__control"><span class="slds-form-element__static"><textarea disabled="true" class="slds-p-around_x-small slds-text-heading_large slds-text-title_caps">{!v.caseDealer.Note__c}</textarea></span></div>
+                </div>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="6">
+                        <div class="slds-form-element   "><span class="slds-form-element__label">Priorità:</span>
+                    <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.Priority}</span></div>
+                </div>
+                    </lightning:layoutItem>
+                </lightning:layout>
+                <lightning:layout>
+                    <lightning:layoutItem size="6">
+                        <div class="slds-form-element   "><span class="slds-form-element__label">Scadenza:</span>
+                    <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.Scadenza__c}</span></div>
+                </div>
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="3" class="slds-m-around_xxx-small">
+                <div class="slds-p-around_xxx-small slds-text-heading_medium slds-m-bottom_small" style="text-align:center;background-color:#9f201c;color:#fff;">
+                    Informazioni Dealer
+                </div>
+                        <div class="slds-form-element   "><span class="slds-form-element__label">Codice</span>
+                    <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.Dealer__r.CodiceClienteFilled__c}</span></div>
+                </div>
+                <div class="slds-form-element   "><span class="slds-form-element__label">Ragione Sociale</span>
+                    <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.Dealer__r.Region_Name__c}</span></div>
+                </div>
+                <div class="slds-form-element   "><span class="slds-form-element__label">Indirizzo</span>
+                    <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.Dealer__r.Address_Abbr_Sms__c}</span></div>
+                </div>
+                <div class="slds-form-element   "><span class="slds-form-element__label">Telefono</span>
+                    <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.Dealer__r.Phone}</span></div>
+                </div>
+                <div class="slds-form-element   "><span class="slds-form-element__label">Cellulare</span>
+                    <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.Dealer__r.Telefono_Cellulare__c}</span></div>
+                </div>
+                <div class="slds-form-element   "><span class="slds-form-element__label">Fax</span>
+                    <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.Dealer__r.Telefono_Casa__c }</span></div>
+                </div>
+                <div class="slds-form-element   "><span class="slds-form-element__label">Email</span>
+                    <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.Dealer__r.PersonEmail}</span></div>
+                </div>
+                <div class="slds-form-element   "><span class="slds-form-element__label">Dematerializzazzione PASSCOM</span>
+                    <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.CodiceDealer__c}</span></div>
+                </div>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="3" class="slds-m-around_xxx-small">
+                <div class="slds-p-around_xxx-small slds-text-heading_medium slds-m-bottom_small" style="text-align:center;background-color:#9f201c;color:#fff;">
+                    Riferimenti Compass
+                </div>
+               <div class="slds-form-element   "><span class="slds-form-element__label">Filiale di riferimento</span>
+                    <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.Branch__r.Name}</span></div>
+                </div>
+                <div class="slds-form-element   "><span class="slds-form-element__label">Indirizzo</span>
+                    <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.Branch__r.Address_Abbr_Sms__c}</span></div>
+                </div>
+                <div class="slds-form-element   "><span class="slds-form-element__label">Telefono</span>
+                    <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.Branch__r.Phone}</span></div>
+                </div>
+                <div class="slds-form-element   "><span class="slds-form-element__label">Fax</span>
+                    <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.Branch__r.Telefono_Casa__c}</span></div>
+                </div>
+                <div class="slds-form-element   "><span class="slds-form-element__label">Email</span>
+                    <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.Branch__r.PersonEmail}</span></div>
+                </div>
+                <div class="slds-form-element   "><span class="slds-form-element__label">Capo filiale</span>
+                    <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.Branch__c}</span></div>
+                </div>
+                <div class="slds-form-element   "><span class="slds-form-element__label">Unita Affari</span>
+                    <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.queueContact.Name}</span></div>
+                </div>
+                <div class="slds-form-element   "><span class="slds-form-element__label">La filiale e disponibile sabato</span>
+                    <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.Branch__r.DataInizioAttivita__pc}</span></div>
+                </div>
+            </lightning:layoutItem>
+        </lightning:layout>
+                </div>
+        </lightning:card>
+        
+        
+        <div class="slds-m-top_large slds-m-bottom_large">
+                    
+                    <lightning:card title="Cliente" iconName="standard:avatar" variant="base" class="">
+                        <div class="slds-card__body_inner">
+                            <lightning:layout>
+                                <lightning:layoutItem size="6">
+                                    <div class="slds-form-element   "><span class="slds-form-element__label">Cognome:</span>
+                                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.Account.FirstName}</span></div>
+                                    </div>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem size="6">
+                                    <div class="slds-form-element   "><span class="slds-form-element__label">Nome:</span>
+                                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.Account.LastName}</span></div>
+                                    </div>
+                                </lightning:layoutItem>
+                            </lightning:layout>
+                            <lightning:layout>
+                                <lightning:layoutItem size="6">
+                                    <div class="slds-form-element   "><span class="slds-form-element__label">Date Depennamento:</span>
+                                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.UAF_DatiAggiuntiviFile__c}</span></div>
+                                    </div>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem size="6">
+                                    <div class="slds-form-element   "><span class="slds-form-element__label">Date Delibera:</span>
+                                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.UAF_DatiAggiuntiviFile__c.data_delibera}</span></div>
+                                    </div>
+                                </lightning:layoutItem>
+                            </lightning:layout>
+                            <lightning:layout>
+                                <lightning:layoutItem size="6">
+                                    <div class="slds-form-element   "><span class="slds-form-element__label">Date Liquidazione:</span>
+                                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.AccountId}</span></div>
+                                    </div>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem size="6">
+                                    <div class="slds-form-element   "><span class="slds-form-element__label">Importo erogato:</span>
+                                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.AccountId}</span></div>
+                                    </div>
+                                </lightning:layoutItem>
+                            </lightning:layout>
+                            <lightning:layout>
+                                <lightning:layoutItem size="6">
+                                    <div class="slds-form-element   "><span class="slds-form-element__label">Cod Convenzionato:</span>
+                                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.AccountId}</span></div>
+                                    </div>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem size="6">
+                                    <div class="slds-form-element   "><span class="slds-form-element__label">Descr Convenzionato:</span>
+                                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.AccountId}</span></div>
+                                    </div>
+                                </lightning:layoutItem>
+                            </lightning:layout>
+                            <lightning:layout>
+                                <lightning:layoutItem size="6">
+                                    <div class="slds-form-element   "><span class="slds-form-element__label">SPA:</span>
+                                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.AccountId}</span></div>
+                                    </div>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem size="6">
+                                    <div class="slds-form-element   "><span class="slds-form-element__label">Codice Fiscale Conv:</span>
+                                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.AccountId}</span></div>
+                                    </div>
+                                </lightning:layoutItem>
+                            </lightning:layout>
+                            <lightning:layout>
+                                <lightning:layoutItem size="6">
+                                    <div class="slds-form-element   "><span class="slds-form-element__label">Partita IVA Conv:</span>
+                                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.AccountId}</span></div>
+                                    </div>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem size="6">
+                                    <div class="slds-form-element   "><span class="slds-form-element__label">Codice PV H3G:</span>
+                                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.AccountId}</span></div>
+                                    </div>
+                                </lightning:layoutItem>
+                            </lightning:layout>
+                            <lightning:layout>
+                                <lightning:layoutItem size="6">
+                                    <div class="slds-form-element   "><span class="slds-form-element__label">Descr Pv H3G:</span>
+                                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.AccountId}</span></div>
+                                    </div>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem size="6">
+                                    <div class="slds-form-element   "><span class="slds-form-element__label">Num I telefono:</span>
+                                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.AccountId}</span></div>
+                                    </div>
+                                </lightning:layoutItem>
+                            </lightning:layout>
+                            <lightning:layout>
+                                <lightning:layoutItem size="6">
+                                    <div class="slds-form-element   "><span class="slds-form-element__label">Num II telefono:</span>
+                                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.AccountId}</span></div>
+                                    </div>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem size="6">
+                                    <div class="slds-form-element   "><span class="slds-form-element__label">Codice filiale Compass:</span>
+                                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.AccountId}</span></div>
+                                    </div>
+                                </lightning:layoutItem>
+                            </lightning:layout>
+                            <lightning:layout>
+                                <lightning:layoutItem size="6">
+                                    <div class="slds-form-element   "><span class="slds-form-element__label">Filiale Compass:</span>
+                                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.AccountId}</span></div>
+                                    </div>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem size="6">
+                                    <div class="slds-form-element   "><span class="slds-form-element__label">gg trascorsi dalla liquidanzione:</span>
+                                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.caseDealer.AccountId}</span></div>
+                                    </div>
+                                </lightning:layoutItem>
+                            </lightning:layout>
+                        </div>
+                    </lightning:card>
+                    </div>
+        
+		</article>
+	-->
+    <c:GUA_DetailDealerHandlerCmp caseDealer="{!v.caseDealer}" datiAggiuntivi="{!v.datiAggiuntivi}" isDealer="true"/>
+    <c:GUA_Dettaglio2Contact  contactDetails="{!v.caseDealer}" />
+</aura:component>

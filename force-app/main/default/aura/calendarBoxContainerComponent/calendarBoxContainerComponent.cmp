@@ -1,0 +1,216 @@
+<aura:component implements="flexipage:availableForAllPageTypes">
+    <!--own attributes of component-->
+    <aura:attribute name="slotListsAM" type="Object[]"/>
+    <aura:attribute name="slotListsPM" type="Object[]"/>
+    <aura:attribute name="slotListAMForAllUsers" type="Object[]"/>
+    <aura:attribute name="slotListPMForAllUsers" type="Object[]"/>
+    <aura:attribute name="popUpMoment" type="String"/>
+    <aura:attribute name="newSlotForPopUp" type="Object"/>
+    
+    <!--attributes from external component-->
+    <aura:attribute name="targhetDate" type="Date"/>
+    <aura:attribute name="today" type="Date"/>
+    <aura:attribute name="user" type="User"/>
+    <aura:attribute name="weekDays" type="Object[]"/>
+    <aura:attribute name="slotList" type="SFA_Slot__c[]"/>
+    <aura:attribute name="draftSlotList" type="SFA_Slot__c[]"/>
+    <aura:attribute name="assenzeProlungateList" type="SFA_Assenza_Prolungata__c[]"/>
+    <aura:attribute name="branches" type="Account[]"/>
+    <aura:attribute name="zonePerFiliale" type="Map"/>
+    <aura:attribute name="TypeSelectOptions" type="Map"/>
+    <aura:attribute name="showHeader" type="boolean" default="true"/>
+    <aura:attribute name="branch" type="Account"/>
+    <aura:attribute name="isFilialista" type="boolean" default="false"/>
+    <aura:attribute name="trashSlotList" type="SFA_Slot__c[]"/>
+    <aura:attribute name="unsavedAdd" type="Integer" default="0"/>
+    <aura:attribute name="filialeTab" type="boolean" default="true"/>
+    <aura:attribute name="mapOfAppointmentsPerDesk" type="Map"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="change" value="{!v.slotList}" action="{!c.doInit}"/>
+    <aura:handler name="change" value="{!v.weekDays}" action="{!c.doInit}"/>
+    <aura:method name="refreshComponent" action="{!c.doInit}"/>
+
+    <c:calendarPopUpMassive aura:id="popUpComponent"
+                            slotList="{!v.slotList}"
+                            slot="{!v.newSlotForPopUp}"
+                            zonePerFiliale="{!v.zonePerFiliale}"
+                            branches="{!v.branches}"
+                            branch="{!v.branch}"
+                            TypeSelectOptions="{!v.TypeSelectOptions}"
+                            isFilialista="{!v.isFilialista}"
+                            unsavedAdd="{!v.unsavedAdd}"
+                            weekDays="{!v.weekDays}"
+                            moment="{!v.popUpMoment}"
+                            slotListsAM="{!v.slotListsAM}"
+                            slotListAMForAllUsers="{!v.slotListAMForAllUsers}"
+                            slotListPMForAllUsers="{!v.slotListPMForAllUsers}"
+                            slotListsPM="{!v.slotListsPM}"
+                            draftSlotList="{!v.draftSlotList}"
+                            today="{!v.today}"
+                            />
+    <lightning:layout multipleRows="true">
+        <aura:if isTrue="{!v.showHeader}">
+            
+            <lightning:layoutItem size="12" class="borderRow">
+
+                <lightning:layout>
+                    <aura:if isTrue="{!v.filialeTab}">
+                        <lightning:layoutItem size="2" >
+                            <!-- <lightning:card class="slds-card_boundary noHeader headerCard fullHeightRow" title="">
+                                <aura:text value="Risorse"></aura:text>
+                            </lightning:card> -->
+                            
+                            <lightning:layout class="fullHeightRow">
+                        
+                                <lightning:layoutItem size="6" class="fullHeightRow" >
+                                    <lightning:card class="slds-card_boundary noHeader headerCard fullHeightRow " title="">
+                                        <aura:text value="Risorse"></aura:text>
+                                    </lightning:card>
+                                </lightning:layoutItem>
+
+                                <lightning:layoutItem size="6" class="fullHeightRow">
+                                    <lightning:card class="slds-card_boundary noHeader headerCard fullHeightRow" title="">
+                                        <aura:text value="Slot"></aura:text> 
+                                    </lightning:card>
+                                </lightning:layoutItem>
+                            
+                            </lightning:layout>
+                        </lightning:layoutItem>
+                    </aura:if>
+                    <lightning:layoutItem size="{! v.filialeTab ? 10 : 12}">
+                        <lightning:layout verticalAlign="center">
+                            <aura:iteration items="{!v.weekDays}" var="day">
+                                <lightning:layoutItem size="2" >
+                                    <lightning:card class="slds-card_boundary noHeader headerCard">
+                                        <aura:text value="{!day.weekDay}"></aura:text>
+                                        <aura:if isTrue="{!v.filialeTab}">
+                                            <br/>
+                                            <lightning:formattedRichText value="{!day.formattedDate}"></lightning:formattedRichText>
+                                        </aura:if>
+                                    </lightning:card>
+                                </lightning:layoutItem>
+                            </aura:iteration>
+                        </lightning:layout>
+                    </lightning:layoutItem>
+
+                </lightning:layout>
+
+            </lightning:layoutItem>
+        </aura:if>
+
+        
+            <lightning:layoutItem size="12" class="borderRowTopSides">
+                <lightning:layout>
+                    <aura:if isTrue="{!v.filialeTab}">
+                        <lightning:layoutItem size="2">
+                            <lightning:layout verticalAlign="center" class="fullHeightRow">
+                            
+                                <lightning:layoutItem size="6" class="fullHeightRow">
+                                    <lightning:card class="slds-card_boundary noHeader headerCard fullHeightRow" title="">
+                                        <aura:text value="{!v.user.FirstName}"></aura:text>
+                                        <br/>
+                                        <aura:text value="{!v.user.LastName}"></aura:text>
+                                        <br/>
+                                        <lightning:buttonIcon iconName="utility:add" variant="bare" onclick="{!c.addALL}" alternativeText="New" />
+                                    </lightning:card>
+                                </lightning:layoutItem>
+                            
+                                <lightning:layoutItem size="6" class="fullHeightRow">
+                                    <lightning:card class="slds-card_boundary noHeader headerCard fullHeightRow" title="">
+                                        <aura:text value="AM"></aura:text>
+                                        <aura:if isTrue="{!v.filialeTab}">
+                                            <br/>
+                                            <lightning:buttonIcon iconName="utility:add" variant="bare" onclick="{!c.addAM}" alternativeText="New" />
+                                        </aura:if>
+                                    </lightning:card>
+                                </lightning:layoutItem>
+                            
+                            </lightning:layout>
+                        </lightning:layoutItem>
+                    </aura:if>
+                    <lightning:layoutItem size="{! v.filialeTab ? 10 : 12}">
+                        <lightning:layout class="fullHeightRow">
+                            <aura:iteration items="{!v.slotListsAM}" var="slotListWrp" indexVar="index">
+                                <lightning:layoutItem size="2">
+                                    <c:calendarBoxComponent slotList="{!slotListWrp.slotList}" 
+                                                            slotListForAllUsers="{!v.slotListAMForAllUsers}"
+                                                            slotListIndex="{!index}"
+                                                            draftSlotList="{!v.draftSlotList}"
+                                                            dayOfThisSlot="{!slotListWrp.day}" 
+                                                            moment="AM"
+                                                            user="{!v.user}"
+                                                            zonePerFiliale="{!v.zonePerFiliale}"
+                                                            branches="{!v.branches}"
+                                                            TypeSelectOptions="{!v.TypeSelectOptions}"
+                                                            branch="{!v.branch}"
+                                                            isFilialista="{!v.isFilialista}"
+                                                            trashSlotList="{!v.trashSlotList}"
+                                                            unsavedAdd="{!v.unsavedAdd}"
+                                                            today="{!v.today}"
+                                                            assenzeProlungateUserList="{!slotListWrp.assenzeList}"
+                                                            filialeTab="{!v.filialeTab}"
+                                                            belongToCurrentMonth="{!slotListWrp.belongToCurrentMonth}"
+                                                            notElapsed = "{!slotListWrp.notElapsed}"
+                                                            />
+                                </lightning:layoutItem>
+                            </aura:iteration>
+                        </lightning:layout>
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </lightning:layoutItem>
+        <lightning:layoutItem size="12" class="borderRowBottomSides">
+            <lightning:layout>
+                <aura:if isTrue="{!v.filialeTab}">
+                    <lightning:layoutItem size="2">
+                        <lightning:layout verticalAlign="center" class="fullHeightRow">
+                        
+                            <lightning:layoutItem size="6" class="fullHeightRow">
+                            </lightning:layoutItem> 
+                        
+                            <lightning:layoutItem size="6" class="fullHeightRow">
+                                <lightning:card class="slds-card_boundary noHeader headerCard fullHeightRow" title="">
+                                    <aura:text value="PM"></aura:text>
+                                    <aura:if isTrue="{!v.filialeTab}">
+                                        <br/>
+                                        <lightning:buttonIcon iconName="utility:add" variant="bare" onclick="{!c.addPM}" alternativeText="New" />
+                                    </aura:if>
+                                </lightning:card>
+                            </lightning:layoutItem>
+                    
+                        </lightning:layout>
+                    </lightning:layoutItem>
+                </aura:if>
+                <lightning:layoutItem size="{! v.filialeTab ? 10 : 12}">
+                    <lightning:layout  class="fullHeightRow">
+                        <aura:iteration items="{!v.slotListsPM}" var="slotListWrp" indexVar="index">
+                            <lightning:layoutItem size="2"> 
+                                <c:calendarBoxComponent slotList="{!slotListWrp.slotList}" 
+                                                        slotListForAllUsers="{!v.slotListPMForAllUsers}"
+                                                        slotListIndex="{!index}"
+                                                        draftSlotList="{!v.draftSlotList}"
+                                                        dayOfThisSlot="{!slotListWrp.day}" 
+                                                        moment="PM" 
+                                                        user="{!v.user}"
+                                                        zonePerFiliale="{!v.zonePerFiliale}"
+                                                        branches="{!v.branches}"
+                                                        TypeSelectOptions="{!v.TypeSelectOptions}"
+                                                        branch="{!v.branch}"
+                                                        isFilialista="{!v.isFilialista}"
+                                                        trashSlotList="{!v.trashSlotList}"
+                                                        unsavedAdd="{!v.unsavedAdd}"
+                                                        today="{!v.today}"
+                                                        assenzeProlungateUserList="{!slotListWrp.assenzeList}"
+                                                        filialeTab="{!v.filialeTab}" 
+                                                        belongToCurrentMonth="{!slotListWrp.belongToCurrentMonth}"
+                                                        notElapsed = "{!slotListWrp.notElapsed}"
+                                                        />
+                            </lightning:layoutItem>
+                        </aura:iteration> 
+                    </lightning:layout>
+                </lightning:layoutItem>
+            </lightning:layout>
+        </lightning:layoutItem>
+    </lightning:layout>
+
+</aura:component>

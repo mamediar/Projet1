@@ -1,0 +1,177 @@
+<aura:component controller="GUA_AnnullaChiamateOutboundCnt"
+       implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+       access="global">
+       <!-- Handler-->
+       <aura:handler name="init" action="{!c.doInit}" value="{!this}" />
+
+       <!-- fin Handler-->
+       <!-- Attribute list-->
+       <aura:attribute name="loadFilterList" type="sObject[]" default="[]" /> <!-- list pour reset les données-->
+       <aura:attribute name="resetList" type="sObject[]" default="[]" /> <!-- list pour reset les données-->
+       <aura:attribute name="caseObj" type="Case" default="{'sObjectType':'Case',
+                                                            'CaseNumber':'',
+                                                            'CodiceDealer__c':'',
+                                                            'NumeroPratica__c':'',
+                                                            'CampaignId__r.Name':''}" />
+       <aura:attribute name="filterList" type="String" default="[]" /><!-- filtre pour les campaign-->
+       <aura:attribute name="dataList" type="Case[]" default="[]" />
+       <aura:attribute name="objectList" type="sObject[]" default="[]" /> <!-- liste initial depuis l'objet-->
+       <aura:attribute name="Result" type="Case[]"
+              description="use for store and display case list return from server" />
+       <!-- fin Attribute list-->
+       <!-- Attribute champ-->
+       <aura:attribute name="pratiche" type="String" default='' />
+       <aura:attribute name="mostraConttati" type="String" default='' />
+       <aura:attribute name="campNameMap" type="Map" />
+       <aura:attribute name="selectedCount" type="integer" default="0" />
+       <aura:attribute name="Message" type="boolean" default="false"
+              description="use for display no record found message" />
+       <aura:attribute name="storeResponse" type="List"
+              description="use for store and display case list return from server" />
+       <!-- fin Attribute champ-->
+       <!-- ATTRIBUTI RELATIVI ALLA PAGINAZIONE -->
+       <aura:attribute name="totalPage" type="Integer" default="1" />
+       <aura:attribute name="currentPage" type="Integer" default="1" />
+       <aura:attribute name="totalRecord" type="integer" default="0" />
+       <aura:attribute name="onInit" type="boolean" default="true" />
+       <aura:attribute name="pages" type="integer[]" />
+       <aura:attribute name="pageSize" type="Integer" default="10" />
+       <aura:attribute name="start" type="Integer" default="0" />
+       <aura:attribute name="end" type="Integer" default="0" />
+       <aura:attribute name="dashbord" type="Map" default="{}" />
+       <!-- <div class="slds-p-bottom_large slds-p-left_large" style="width:500px;margin-top:25px;">
+ -->
+       <div class="slds-grid slds-gutters">
+              <div class="slds-col slds-size_1-of-3">
+                     <div>
+                            <h1> Annulla Chiamate Outbound </h1>
+                     </div>
+                     <div class="slds-grid slds-grid_pull-padded-medium">
+                            <div class="slds-col slds-p-horizontal_small">
+                                   <lightning:input aura:id="codicedealer" label="Codice Dealer"
+                                          value="{!v.caseObj.CodiceDealer__c}" />
+                            </div>
+                     </div>
+                     <div class="slds-grid slds-grid_pull-padded-medium">
+                            <div class="slds-col slds-p-horizontal_small">
+                                   <lightning:select name="campagna" aura:id="campagna" label="Campagna">
+                                          <option value="Selezionatutte"> Seleziona tutte </option>
+                                          <aura:iteration items="{!v.filterList}" var="campName">
+                                                 <option value="{!campName}">{!campName}</option>
+                                          </aura:iteration>
+                                   </lightning:select>
+                            </div>
+                     </div>
+                     <div class="slds-grid slds-grid_pull-padded-medium">
+                            <div class="slds-col slds-p-horizontal_small">
+                                   <lightning:button variant="brand" label="Ricerca" onclick="{!c.Search}" />
+                                   <lightning:button label="Indietro" onclick="{!c.reset}" />
+                            </div>
+                     </div>
+              </div>
+              <div class="slds-col slds-size_2-of-3">
+                     <div>
+                            <h1> Elenco Chiamate </h1>
+                     </div>
+
+                     <p class="slds-page-header__title slds-truncate" title="">
+                            <span class="slds-badge slds-badge_lightest" style="display:inline-block">Selected
+                                   Case:{!v.selectedCount}</span>
+                     </p>
+
+                     <!-- TABLE CONTENT-->
+                     <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                            <thead>
+                                   <tr class="slds-text-title_caps">
+                                          <th style="width:3.25rem;" class="slds-text-align--right">
+                                                 <div class="slds-form-element">
+                                                        <div class="slds-form-element__control">
+                                                               <label class="slds-checkbox">
+                                                                      <!--header checkbox for select all-->
+                                                                      <ui:inputCheckbox aura:id="box3"
+                                                                             change="{!c.selectAll}" disabled="true" />
+                                                                      <span class="slds-checkbox--faux"></span>
+                                                                      <span
+                                                                             class="slds-form-element__label text"></span>
+                                                               </label>
+                                                        </div>
+                                                 </div>
+                                          </th>
+                                          <th scope="col">
+                                                 <div class="slds-truncate" title="N. Rif.">N. Rif.</div>
+                                          </th>
+                                          <th scope="col">
+                                                 <div class="slds-truncate" title="Campagna">Campagna</div>
+                                          </th>
+                                          <th scope="col">
+                                                 <div class="slds-truncate" title="Codice dealer">Codice Dealer</div>
+                                          </th>
+                                          <th scope="col">
+                                                 <div class="slds-truncate" title="Codice pratica">Codice pratica</div>
+                                          </th>
+                                   </tr>
+                            </thead>
+                            <tbody>
+                                   <!--### display all records of searchResult attribute by aura:iteration ###-->
+                                   <aura:iteration items="{!v.Result}" var="Result">
+                                          <tr>
+                                                 <td scope="row" class="slds-text-align--right" style="width:3.25rem;">
+                                                        <div class="slds-form-element">
+                                                               <div class="slds-form-element__control">
+                                                                      <label class="slds-checkbox">
+                                                                             <ui:inputCheckbox text="{!Result.Id}"
+                                                                                    aura:id="boxPack" value=""
+                                                                                    change="{!c.checkboxSelect}" />
+                                                                             <span class="slds-checkbox--faux"></span>
+                                                                             <span
+                                                                                    class="slds-form-element__label text"></span>
+                                                                      </label>
+                                                               </div>
+                                                        </div>
+                                                 </td>
+                                                 <td>
+                                                        <div class="slds-truncate">{!Result.CaseNumber}</div>
+                                                 </td>
+                                                 <td>
+                                                        <div class="slds-truncate">{!Result.CampaignId__r.Name}</div>
+                                                 </td>
+                                                 <td>
+                                                        <div class="slds-truncate">{!Result.CodiceDealer__c}</div>
+                                                 </td>
+                                                 <td>
+                                                        <div class="slds-truncate">{!Result.NumeroPratica__c}</div>
+                                                 </td>
+
+                                          </tr>
+                                   </aura:iteration>
+                            </tbody>
+                     </table>
+                     <br />
+
+                     <!--SS_Pagination-->
+                     <div class="slds-grid slds-wrap" style="margin-top: 1%">
+                            <div class="slds-size_1-of-3">
+                                   <div class="padding-top" style="margin-top: 1%">
+                                          <p class="slds-truncate">&nbsp;&nbsp;</p>
+                                   </div>
+                            </div>
+                            <div class="slds-size_1-of-3">
+                                   <div class=" slds-text-align_center slds-m-around_x-small">
+                                          <c:FilialiPagination objectList="{!v.dataList}" paginationList="{!v.Result}"
+                                                 pageSize="{!v.pageSize}" start="{!v.start}" end="{!v.end}"
+                                                 totalPage="{!v.totalPage}" currentPage="{!v.currentPage}"
+                                                 totalRecord="{!v.totalRecord}" pages="{!v.pages}" />
+                                   </div>
+                            </div>
+                            <div class="slds-size_1-of-3">
+                            </div>
+                     </div>
+                     <div class="slds-grid slds-grid_pull-padded-medium">
+                            <div class="slds-col slds-p-horizontal_small">
+                                   <lightning:button label="Elimina" onclick="{!c.deleteSlctd}" />
+                            </div>
+                     </div>
+              </div>
+       </div>
+
+</aura:component>

@@ -1,0 +1,149 @@
+<!--
+  @Component Name     : PV2564AzzeramentoSpeseLista.cmp
+  @Description        : 
+  @Author             : Andrea Vanelli
+  @Group              : 
+  @Last Modified By   : Andrea Vanelli
+  @Last Modified On   : 18/10/2019, 11:08:31
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    3/8/2019, 22:48:16   Andrea Vanelli     Initial Version
+-->
+<aura:component controller="PV2564AzzeramentoSpeseLista" access='global'>
+    <aura:handler name='init' value='{!this}' action='{!c.init}' />
+    <aura:attribute name="parent" type="Aura.Component" required="true"
+        description="componente padre per accedere ai metodi comuni" />
+
+    <aura:method name="loadSpese" action="{!c.loadSpese}" description="Metodo richiamato per caricare i dati">
+    </aura:method>
+
+    <aura:attribute name="praticaSelezionata" type="OCSPratica" />
+    <aura:attribute name="caseId" type="Id" />
+    <aura:attribute name="modalita" type="String" />
+
+    <!-- Attributi del PV-->
+    <aura:attribute name="mostraSpeseSelezionato" type="String" />
+
+    <aura:attribute name="speseListCompleta" type="OCSRecuperaSpeseAzzeraRecInvoker.SpesaRecuperoDTO[]" />
+    <aura:attribute name="speseListFiltrata" type="OCSRecuperaSpeseAzzeraRecInvoker.SpesaRecuperoDTO[]" />
+    <aura:attribute name="speseListSelezionate" type="OCSRecuperaSpeseAzzeraRecInvoker.SpesaRecuperoDTO[]" />
+
+    <aura:attribute name="speseColumns" type="List" default="[
+                            {
+                                'label': 'Tipo',
+                                'fieldName': 'tipoSpesa',
+                                'type': 'text',
+                                initialWidth: 30,
+                                'cellAttributes': {
+                                    'class': {
+                                        'fieldName': 'showClass'
+                                    }
+                                }
+                            },
+                             {label: 'Data reg.', fieldName: 'dataRegistrazione',  initialWidth: 100, type: 'date-local',
+                             typeAttributes:{
+                                 month: '2-digit',
+                                 day: '2-digit'
+                             },
+                             'cellAttributes': {
+                                'class': {
+                                    'fieldName': 'showClass'
+                                }
+                            }
+                            },
+                             {label: 'Imp. maturato', fieldName: 'importoMaturato', type: 'currency',
+                             typeAttributes: { currencyCode: 'EUR'},
+                             'cellAttributes': {
+                                'class': {
+                                    'fieldName': 'showClass'
+                                }
+                            }},
+                             {label: 'Data inc.', fieldName: 'dataIncasso',   type: 'date-local',
+                             typeAttributes:{
+                                 month: '2-digit',
+                                 day: '2-digit'
+                             },
+                             'cellAttributes': {
+                                'class': {
+                                    'fieldName': 'showClass'
+                                }
+                            }},
+                             {label: 'Imp. inc.', fieldName: 'importoIncassato', type: 'currency',
+                            typeAttributes: { currencyCode: 'EUR'},
+                             'cellAttributes': {
+                                'class': {
+                                    'fieldName': 'showClass'
+                                }
+                            }},
+                             {label: 'Saldo', fieldName: 'saldo', type: 'currency',
+                             typeAttributes: { currencyCode: 'EUR'},
+                             'cellAttributes': {
+                                'class': {
+                                    'fieldName': 'showClass'
+                                }
+                            }},
+                             {label: 'Rata', fieldName: 'rata', type: 'text',
+                             'cellAttributes': {
+                                'class': {
+                                    'fieldName': 'showClass'
+                                }
+                            }},
+                             {label: 'Annull.', fieldName: 'statoRecord', type: 'text', initialWidth: 30,
+                             'cellAttributes': {
+                                'class': {
+                                    'fieldName': 'showClass'
+                                }
+                            }},
+                             {type:  'button', initialWidth: 80,
+                             typeAttributes: 
+                             {
+                                 iconName: { fieldName: 'buttonIcon' },    
+                               label: '', 
+                               name: 'selRecord', 
+                               title: 'Seleziona / Rimuovi', 
+                               disabled: false, 
+                               value: 'test'
+                             }}
+
+                                            ]" />
+
+
+
+    <div class="cPV2564AzzeramentoSpeseLista">
+
+
+        <lightning:layout class="slds-wrap" multipleRows="true">
+            <lightning:layoutItem size="6" padding="horizontal-small">
+                <lightning:select name="tipologia" label="Mostra:" aura:id="tipologia"
+                    value="{!v.mostraSpeseSelezionato}" onchange="{!c.aggiornaSpeseMostrate}">
+                    <option text="tutte le spese" value="ALL" />
+                    <option text="le spese Azzerabili" value="AZZ" selected='selected'/>
+                    <option text="le spese Annullate" value="ANN" />
+                    <option text="le spese Selezionate" value="SEL" />
+                </lightning:select>
+            </lightning:layoutItem>
+        </lightning:layout>
+
+
+
+        <div
+            class="slds-m-top_small slds-box slds-box_xx-small slds-text-align_center  slds-theme_info slds-text-heading_small">
+            Elenco spese</div>
+        <lightning:datatable class="table-pv table-pv-75" data="{!v.speseListFiltrata}" columns="{!v.speseColumns}"
+            keyField="customID" showRowNumberColumn="false" hideCheckboxColumn="true"
+            onrowaction="{! c.handleRowAction }" />
+        <!--
+            <div class="slds-m-top_small slds-box slds-box_xx-small slds-text-align_center  slds-theme_info slds-text-heading_small">
+                Elenco spese Selezionate</div>
+            <lightning:datatable class="table-pv table-pv-75" data="{!v.speseListSelezionate}" columns="{!v.speseColumns}"
+                keyField="customID" 
+                 showRowNumberColumn="false"
+                 hideCheckboxColumn="true"
+                 />
+            -->
+    </div>
+
+
+</aura:component>

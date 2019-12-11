@@ -1,0 +1,123 @@
+<!--
+  @File Name          : PV1760CopiaContrattoGestione.cmp
+  @Description        : 
+  @Author             : Lorenzo Marzocchi
+  @Group              : 
+  @Last Modified By   : Andrea Vanelli
+  @Last Modified On   : 4/10/2019, 08:49:58
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    2019-9-17   Lorenzo Marzocchi     Initial Version
+-->
+<aura:component controller='PV1760CopiaContrattoGestione' access='global'>
+  <aura:handler name='init' value='{!this}' action='{!c.doInit}' />
+  <aura:attribute name="parent" type="Aura.Component" required="true"
+    description="componente padre per accedere ai metodi comuni" />
+  <aura:method name="save" action="{!c.save}" description="Metodo richiamato dal bottone del componente padre">
+  </aura:method>
+
+  <!-- Attributi -->
+  <aura:attribute name="optionsTrovato" type="List" default="[                                                                                                                      
+    {'label': 'Si', 'value': '1'},                                                                                  
+    {'label': 'No', 'value': '0'},]" />
+  <aura:attribute name="disabler" type="Boolean" />
+  <aura:attribute name="codOCS" type="String" default="" />
+  <aura:attribute name="dataList" type="PV1760CopiaContrattoGestione.ComunicazioniOCSListDTO[]" />
+  <aura:attribute name="columns" type="List" default="[
+  {
+      'label': 'Tipologia',
+      'fieldName': 'Tipologia',
+      'type': 'text',
+    
+      'cellAttributes': {
+          'class': {
+              'fieldName': 'showClass'
+          }
+      }
+  },
+  {
+    'label': 'Codice',
+    'fieldName': 'Codice',
+    'type': 'text',
+  
+    'cellAttributes': {
+        'class': {
+            'fieldName': 'showClass'
+        }
+    }
+}
+]" />
+
+
+  <!-- da parent -->
+  <aura:attribute name="theCase" type="Case" />
+  <aura:attribute name="dispositionSelezionato" type="XCS_Disposition__c" />
+  <aura:attribute name='note' type='String' />
+  <aura:attribute name="allegati" type="Attachment[]" />
+  <aura:attribute name="newStatus" type="String" />
+
+  <!-- main -->
+  <lightning:card class='slds-form_stacked'>
+    <lightning:layoutItem size="6" padding="horizontal-small">
+      <span>
+        <lightning:combobox name="trovato" value="{!v.theCase.pv_ctr_esiste__c}" variant="standard"
+          dropdownAlignment="Left" options="{!v.optionsTrovato}" label='Il contratto è stato TROVATO?' aura:id="trovato"
+          onchange="{!c.mostraAnomalie}" />
+      </span>
+    </lightning:layoutItem>
+
+    <lightning:card title="Controllo delle anomalie sul contratto" iconName="utility:check" variant="base">
+      <lightning:layout class="slds-wrap" multipleRows="true">
+
+        <lightning:layoutItem size="6" padding="horizontal-small">
+          <span>
+            <lightning:combobox name="sign" value="{!v.theCase.pv_ctr_no_sign__c}" variant="standard"
+              dropdownAlignment="Left" options="{!v.optionsTrovato}" label='La FIRMA è mancante?' aura:id="sign"
+              disabled="{!v.disabler}" />
+          </span>
+          <span>
+            <lightning:combobox name="taeg" value="{!v.theCase.pv_ctr_no_taeg__c}" variant="standard"
+              dropdownAlignment="Left" options="{!v.optionsTrovato}" label='Il TAEG è mancante?' aura:id="taeg"
+              disabled="{!v.disabler}" />
+          </span>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="6" padding="horizontal-small">
+          <span>
+            <lightning:combobox name="titolare" value="{!v.theCase.pv_ctr_no_titolare__c}" variant="standard"
+              dropdownAlignment="Left" options="{!v.optionsTrovato}" label='Il TITOLARE è mancante?' aura:id="titolare"
+              disabled="{!v.disabler}" />
+          </span>
+          <span>
+            <lightning:combobox name="bene" value="{!v.theCase.pv_ctr_no_bene__c}" variant="standard"
+              dropdownAlignment="Left" options="{!v.optionsTrovato}" label='il BENE è mancante?' aura:id="bene"
+              disabled="{!v.disabler}" />
+          </span>
+        </lightning:layoutItem>
+      </lightning:layout>
+    </lightning:card>
+    <lightning:card title="Comunicazioni al cliente" iconName="utility:email" variant="base">
+
+      <div
+        class="slds-m-top_small slds-box slds-box_xx-small slds-text-align_center  slds-theme_info slds-text-heading_small">
+        Selezionare il codice lettera: </div>
+      <lightning:datatable class="table-pv table-pv-75" data="{!v.dataList}" columns="{!v.columns}" keyField="customID"
+        showRowNumberColumn="false" hideCheckboxColumn="false" onrowselection="{!c.handleRowAction}"
+        maxRowSelection="1" />
+
+      <aura:if isTrue="{!v.codOCS != ''}">
+        <lightning:layout class="slds-wrap slds-m-top_small" multipleRows="true">
+          <lightning:layoutItem size="6" padding="horizontal-small">
+            <c:PVLinkEvo task="TK00000375" codiceCliente="" infoPost="  000000C              S     " numeroPratica=""
+              linkage="{!v.theCase.Tipo_Pratica__c}"
+              infoPre="{!v.theCase.NumeroPratica__c+v.theCase.Tipo_Pratica__c+v.codOCS}"
+              btn_label="Prosegui con il codice lettera selezionato" btn_icon="utility:email" />
+          </lightning:layoutItem>
+        </lightning:layout>
+
+      </aura:if>
+
+    </lightning:card>
+  </lightning:card>
+  <!-- /main -->
+
+</aura:component>

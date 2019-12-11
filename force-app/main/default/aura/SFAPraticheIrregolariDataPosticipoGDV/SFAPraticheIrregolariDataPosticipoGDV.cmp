@@ -1,0 +1,27 @@
+<aura:component controller= "SFAPraticheIrregDataPostGDVCntroller" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes" access="global">
+    <aura:attribute name="recordId" type="String"/>
+    
+    <aura:attribute name="myText" type="String" default=""/>
+    <aura:attribute name="dataPosticipoDaSalvare" type="Date" />
+    <aura:attribute name="dataPosticipoDaFiliale" type="Date" />
+    <aura:attribute name="disableButton" type="Boolean" default="true"/>
+   
+    <aura:handler name="init" value="{! this }" action="{!c.init}"/>
+    
+
+        
+        <div id="calendar"></div>
+    	<div class="slds-size_2-of-12 slds-m-top_medium">
+            <ui:inputDate aura:id="dataPosticipoDaFilialeId" value="{!v.dataPosticipoDaFiliale}" displayDatePicker="true" disabled="true" format="dd/MM/yyyy" label="Data Richiesta da filiale:" required="false"/>
+        </div>    
+        <div class="slds-size_2-of-12 slds-m-top_medium">
+            <ui:inputDate aura:id="dataPosticipoDaSalvareId" value="{!v.dataPosticipoDaSalvare}" displayDatePicker="true" format="dd/MM/yyyy" label="Posticipa la pratica:" required="false"/>
+        </div>      
+        <div class="slds-m-top_medium">
+            <lightning:button aura:id="SalvaDataPosticipoRichiesta" label="Posticipa Lavorazione Pratica" variant="destructive" onclick="{!c.inviaDataPosticipo}"/>   <!--variant="destructive" ?????-->
+        </div>
+        <ui:outputText value="{!v.myText}"/>        
+
+
+	
+</aura:component>

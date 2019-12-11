@@ -1,0 +1,19 @@
+<aura:component controller="ApriSchermataEVOController">
+    
+    <aura:attribute name="evoUrl" type="String" />
+    
+    <aura:attribute name="task" type="String" />
+    <aura:attribute name="linkage" type="String" default="DEFAULT"/>
+    <aura:attribute name="urlritorno" type="String" default="closewindow"/>
+    <aura:attribute name="codiceCliente" type="String" />
+    <aura:attribute name="numeroPratica" type="String" default="000000000000" />
+    <aura:attribute name="office" type="String" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    
+    <a href="{!v.evoUrl}" target="_blank">
+        <lightning:button aura:id="apriSchermataEVOButton"
+                          label="Apri schermata EVO"
+                          variant="destructive"/>
+    </a>
+</aura:component>

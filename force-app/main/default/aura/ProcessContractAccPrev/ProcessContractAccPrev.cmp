@@ -1,0 +1,29 @@
+<aura:component  implements="force:lightningQuickAction,force:hasRecordId,lightning:availableForFlowScreens">
+   	<aura:attribute name="lotto" type="SFALotto__c"/>
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="Account" type="String"/>
+    <aura:attribute name="listaContratti"  type="Contract[]"/>
+    <aura:attribute name="countContract" type ="Integer"/>
+    <aura:attribute name="contoContract" type ="Integer"/>
+    
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    
+    <div class="slds-m-bottom--x-small">Acquisire il bar code dei contratti.</div>		
+    <div class="slds-grid slds-gutters">        
+        	<div class="slds-col slds-size_6-of-12">
+                <div class="slds-m-bottom--x-small"><b>Branch:</b></div>
+                <div class="slds-m-bottom--x-small"><b>OCS Lot ID:</b></div>
+                <div class="slds-m-bottom--x-small"><b>Total Contracts in Lot:</b></div>                
+                <div class="slds-m-bottom--x-small"><b>Processed Contracts:</b></div>                
+        	</div>
+        	<div class="slds-col slds-size_6-of-12">
+                <div class="slds-m-bottom--x-small">{!v.Account}</div>
+                <div class="slds-m-bottom--x-small">{!v.lotto.OCSLottoId__c}</div>
+                <div class="slds-m-bottom--x-small">{!v.countContract}</div>                
+        		<div class="slds-m-bottom--x-small">dddd</div>                
+        	</div>
+    </div>
+    
+    
+    
+</aura:component>

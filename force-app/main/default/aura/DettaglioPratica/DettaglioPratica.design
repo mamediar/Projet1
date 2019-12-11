@@ -1,0 +1,6 @@
+<design:component>
+	<design:attribute name="lstAttribute" label="Lista Attributi" />
+    <design:attribute name="numColums" label="Numero Colonne" />
+    <design:attribute name="objectApiName" label="Object"/>
+    <design:attribute name="recordId" label="recordId"/>
+</design:component>

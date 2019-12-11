@@ -1,0 +1,125 @@
+<aura:component controller="SFAConvenzCensimDealerDaFilialeCntroller" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes">
+
+   
+    <aura:attribute name="ragioneSociale" type="String" />
+    <aura:attribute name="personaDiRiferimento" type="String" />
+    <aura:attribute name="partitaIVA" type="String" />
+    <aura:attribute name="codiceFiscale" type="String" />
+    <aura:attribute name="indirizzo" type="String" />
+    <aura:attribute name="citta" type="String" />
+    <aura:attribute name="cap" type="String" />
+    <aura:attribute name="provincia" type="String" />
+    <aura:attribute name="telefono" type="String" />
+    <aura:attribute name="telefonoCellulare" type="String" />
+    <aura:attribute name="email" type="String" />
+    <aura:attribute name="preferenze" type="String" />
+    <aura:attribute name="note" type="String" />
+    <aura:attribute name="buttonClicked" type="Boolean" default="false" />
+
+    <aura:attribute name="url" type="String"/>
+    <aura:attribute name="pageReference" type="Object"/>
+    <lightning:navigation aura:id="navService"/>     
+    
+
+        
+    
+    <table class="slds-m-top--medium">
+        <tr>
+            <td class="slds-size_1-of-2 slds-p-right_small">
+                <lightning:input type="text" value="{!v.ragioneSociale}" label="Ragione Sociale" />
+            </td>
+        </tr>
+    </table>
+
+    <table class="slds-m-top--medium">
+        <tr>
+            <td class="slds-size_1-of-2 slds-p-right_small">
+                <lightning:input type="text" value="{!v.personaDiRiferimento}" label="Contatto" />
+            </td>
+        </tr>
+    </table>
+
+    
+    <table class="slds-size_10-of-12 slds-m-top--medium">
+        <tr>
+            <td class="slds-size_1-of-2 slds-p-right_small">
+                <lightning:input type="text" value="{!v.partitaIVA}" label="P.IVA" maxlength="16"/>
+            </td>
+            <td class="slds-size_1-of-2 slds-p-right_small">
+                <lightning:input type="text" value="{!v.codiceFiscale}" label="Codice Fiscale" maxlength="16"/>
+            </td>
+        </tr> 
+    </table> 
+                <c:XCSProvinceComuniPicklist    
+                                             enabledProvincia="true"
+                                             labelProvincia="Provincia"
+                                             labelCitta="Citta"
+                                             provinciaSelezionata="{!v.provincia}" 
+                                             cittaSelezionata="{!v.citta}"
+                                             enabledIndirizzo="true"
+                                             labelIndirizzo="Indirizzo"
+                                             indirizzo="{!v.indirizzo}"
+                                             labelCap="C.A.P."
+                                             cap="{!v.cap}"
+                                             colonnaProvincia="5"
+                                             colonnaCitta="5"
+                                             colonnaIndirizzo="5"
+                                             colonnaCap="5"
+                   
+                 />
+        
+              
+                                                                  
+        
+    
+    <table class="slds-size_10-of-12 slds-m-top--medium">
+        <tr>
+            <td class="slds-size_1-of-2 slds-p-right_small">
+                <lightning:input type="text" value="{!v.telefono}" label="Telefono" maxlength="40"/>
+            </td>
+            <td class="slds-size_1-of-2 slds-p-right_small">
+                <lightning:input type="text" value="{!v.telefonoCellulare}" label="Cellulare" maxlength="40"/>
+            </td>
+        </tr> 
+    </table>    
+    
+    <table class="slds-m-top--medium">
+        <tr>
+            <td class="slds-size_1-of-2 slds-p-right_small">
+                <lightning:input type="text" value="{!v.email}" label="Email" />
+            </td>
+        </tr>
+    </table> 
+    
+    <table class="slds-m-top--medium">
+        <tr>
+            <td class="slds-size_1-of-2 slds-p-right_small">
+                <lightning:textarea aura:id="notaId" label="Preferenze" value="{!v.preferenze}" maxlength="1000" />
+            </td>
+        </tr>
+    </table>    
+    
+    <table class="slds-m-top--medium">
+        <tr>
+            <td class="slds-size_1-of-2 slds-p-right_small">
+                <lightning:textarea aura:id="notaId" label="Note" value="{!v.note}" maxlength="1000" />
+            </td>
+        </tr>
+    </table>
+    
+    
+    <table class="slds-size_10-of-12 slds-m-top--medium">
+        <tr>
+            <td class="slds-size_1-of-2 slds-p-right_small">
+                <lightning:button class="slds-m-top_medium" variant="brand" label="Salva attività" onclick="{!c.salvaProseguiAttivita}" />
+            </td>
+            <td class="slds-size_1-of-2 slds-p-right_small">
+                <aura:if isTrue="{!and(v.url != null, v.url != undefined)}">
+                    <div class="slds-m-top_large"><span><b><a href="{!v.url}">Prosegui all'attività</a></b></span></div>                     
+                </aura:if>
+            </td>
+        </tr> 
+    </table>    
+
+    
+</aura:component>

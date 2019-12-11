@@ -1,0 +1,591 @@
+<aura:component controller="ComodityApexClass"
+    implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+    access="global">
+    <!--AURA ATTRIBUTI-->
+    <aura:attribute name="datafilialList" type="COM_Intervista__c[]" />
+    <!--type="Account[]"/>-->
+    <aura:attribute name="paginationList" type="sObject[]" default='[]' />
+    <aura:attribute name="objectList" type="sObject[]" default='[]' />
+    <aura:attribute name='dataName' type='String' default='' />
+    <aura:attribute name='nomeCliente' type='String' default='' />
+    <aura:attribute name='telefono' type='String' default='' />
+    <aura:attribute name='prodotto' type='String' default='' />
+    <aura:attribute name='dataContatto' type='DateTime' default='' />
+    <aura:attribute name='numeroPratriche' type='String' default='' />
+    <aura:attribute name='dateLiquidazione' type='DateTime' default='' />
+    <aura:attribute name='dataUltimaModifico' type='DateTime' default='' />
+    <aura:attribute name='chiusoConforme' type='String' default='' />
+    <aura:attribute name='chiusoNonConforme' type='String' default='' />
+
+    <aura:attribute name='filteredData' type='sObject[]' default='' />
+    <aura:attribute name="dataByFiliali" type="sObject[]" default='[]' />
+    <aura:attribute name="dataInitial" type="sObject[]" default='[]' />
+    <aura:attribute name="Index1" type="Integer" default="0"/>
+
+    <!-- ATTRIBUTI RELATIVI ALLA PAGINAZIONE -->
+    <aura:attribute name="totalPage" type="Integer" default="1" />
+    <aura:attribute name="currentPage" type="Integer" default="1" />
+    <aura:attribute name="currentDate" type="Datetime" />
+    <aura:attribute name="totalRecord" type="integer" default="0" />
+    <aura:attribute name="pages" type="integer[]" />
+    <aura:attribute name="pageSize" type="Integer" default="10" />
+    <aura:attribute name="start" type="Integer" default="0" />
+    <aura:attribute name="end" type="Integer" default="0" />
+    <!-- ATTRIBUTI FOR SORT TABLE -->
+    <aura:attribute name="isAsc" type="boolean" default="true"
+        description="boolean flag for pass sorting condition to apex class" />
+    <aura:attribute name="arrowDirection" type="string" default="arrowup"
+        description="Use for change arrow sign direction on header based on click" />
+    <aura:attribute name="selectedTabsoft" type="string" default="Cliente"
+        description="Use for show/hide arraow sign on header based on conditions" />
+    <aura:attribute name="Id" type="String" description="Id of filiale" />
+    <aura:attribute name="loadData" type="Boolean" />
+    <!-- Handler Init -->
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    <aura:registerEvent name="eventNavigateToFiliali" type="c:eventNavigateToFiliali" />
+    <aura:registerEvent name="eventNavigateToIntervistaDettagli" type="c:eventNavigateToIntervistaDettagli" />
+    <aura:registerEvent name="eventNavigateToPraticheFiliali" type="c:eventNavigateToPraticheFiliali" />
+    <!-- SPINNER -->
+    <aura:handler action="{!c.getPraticheFilter}" event="c:eventNavigateToPraticheFiliali" />
+    <aura:attribute name="choiceColorPratiche" type="String" default="rgb(245, 190, 195)" />
+    <!--AURA ATTRIBUTI for CSS-->
+    <aura:html tag="style">
+            :root {
+                --backgroundColor: {!v.choiceColorPratiche};
+            }
+    </aura:html>
+    <!--
+    <aura:handler event="aura:waiting" action="{!c.showSpinner}"/>
+        <aura:attribute name="toggleSpinner" type="boolean" default="true"/>
+        <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}"/>
+        <aura:attribute name="SpinnerSearch" type="boolean" default="false"/> 
+        <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}"/>
+        <aura:attribute name="toggleSpinner" type="boolean" default="true"/>
+        <aura:attribute name="SpinnerSearch" type="boolean" default="false"/> -->
+
+    <div>
+        <div class="slds-grid">
+            <!--<div class="slds-col slds-size_2-of-12 "></div>-->
+            <div class="slds-col slds-size_12-of-12 ">
+                <!--START HEADER-->
+                <lightning:card variant="Narrow" title="Pratiche" iconName="standard:account"></lightning:card>
+                <div class="slds-page-header">
+                    <div class="slds-page-header__row">
+                        <div class="slds-page-header__col-title">
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col">
+                                    <lightning:input aura:id="nomecliente" name="nomecliente"
+                                        onchange="{!c.setValueNomeFilter}" value="{!v.nomeCliente}" label="Cliente"
+                                        placeholder="Cliente" />
+                                </div>
+                                <div class="slds-col">
+                                    <lightning:input aura:id="telefono" name="telefono" type="tel"
+                                        onchange="{!c.setValueTelefonoFilter}" value="{!v.telefono}" label="Telefono"
+                                        placeholder="Telefono" />
+                                </div>
+                                <div class="slds-col">
+                                    <lightning:input aura:id="dataContatto" name="dataContatto" type="date"
+                                        onchange="{!c.setValueDataContattoFilter}" value="{!v.dataContatto}"
+                                        label="Data Contatto" placeholder="Data Contatto" />
+                                </div>
+                                <div class="slds-col">
+                                    <lightning:input aura:id="namefiliale" name="name" onchange="{!c.setValueFilter}"
+                                        value="{!v.dataName}" label="Filiale" placeholder="Filiale" />
+                                </div>
+                                <div class="slds-col">
+                                    <lightning:input aura:id="dateLiquidazione" type="date" name="dateLiquidazione"
+                                        value="{!v.dateLiquidazione}" label="Data Liquidazione"
+                                        placeholder="Data Liquidazione"
+                                        onchange="{!c.setValueDateLiquidazioneFilter}" />
+                                </div>
+                                <div class="slds-col">
+                                    <lightning:input aura:id="dataUltimaModifico" type="date" name="dataUltimaModifico"
+                                        value="{!v.dataUltimaModifico}" label="Data Ultima Modifica"
+                                        placeholder="Data Ultima Modifica"
+                                        onchange="{!c.setValuedataUltimaModificaFilter}" />
+                                </div>
+                                <div class="slds-col">
+                                    <lightning:input aura:id="prodotto" name="prodotto"
+                                        onchange="{!c.setValueProdottoFilter}" value="{!v.prodotto}" label="Prodotto"
+                                        placeholder="Prodotto" />
+                                </div>
+                                <div class="slds-col">
+                                    <!--div style="margin-top: 1%">
+                                        <button
+                                            class="slds-button slds-buttonbrand slds-m-leftsmall slds-m-top_large"
+                                            onclick="{!c.getRunSearch}">
+                                            <lightning:icon class="icon" iconName="utility:search" size="small" />
+                                        </button>
+                                    </div>-->
+                                </div>
+                            </div>
+
+
+                            <!-- FILTRO -->
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col">
+                                    <label for="filter">Filtro: </label>
+                                    <!--
+                                    <label class="slds-text-heading_small" for="filter">Filtro: </label>-->
+                                    <div class="slds-form-element__control">
+                                        <select name="province" class="slds-select" id="status"
+                                            onchange="{!c.filterAssicurativos}">
+                                            <!--option value="Tutte le pratiche"> Tutte le pratiche </option>-->
+                                            <option value="Pratiche liquidate">Pratiche liquidate</option>
+                                            <option value="Contatti utili chiusi">Contatti utili chiusi</option>
+                                            <option value="Tutti i contatti eseguiti">Tutti i contatti eseguiti</option>
+                                            <option value="Contatti negativi">Contatti negativi</option>
+                                            <option value="Richiami">Richiami</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="slds-col">
+
+                                </div>
+                                <div class="slds-col">
+                                </div>
+                                <div class="slds-col">
+                                </div>
+                                <div class="slds-col">
+                                </div>
+                                <div class="slds-col">
+                                </div>
+                                <div class="slds-col">
+                                </div>
+                            </div>
+                            <div class="slds-m-top_large">
+                                <button class="slds-button slds-button_success" onclick="{!c.downloadCsv}">
+                                    <lightning:icon iconName="doctype:csv" size="small" />
+                                    Esportare
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--END HEADER-->
+                <div class="divTable" style="padding-bottom: 10px;padding-top: 10px;padding-left: 19px;">
+                    <div style='font-size:13px;margin-top:20px;display:flex;'>
+                        <aura:if isTrue="{!v.SpinnerSearch}">
+                            <aura:if isTrue="{!v.toggleSpinner}">
+                                <div class="slds-spinner_container">
+                                    <div class="slds-spinner slds-spinner_large slds-spinner_brand" role="alert">
+                                        <span class="slds-assistive-text">Loading</span>
+                                        <div class="slds-spinner__dot-a"></div>
+                                        <div class="slds-spinner__dot-b"></div>
+                                    </div>
+                                </div>
+                            </aura:if>
+                        </aura:if>
+                    </div>
+                </div>
+                <div class="slds-table--header-fixed_container" style=" width:100%;">
+                    <div class="slds-scrollable_y slds-scrollable_x">
+
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                            <thead>
+                                <tr class="slds-text-heading--label slds-line-height_reset">
+                                    <th class="slds-is-sortable slds-text-title--caps" scope="col"
+                                        onclick="{!c.sortClienteFiliali}">
+                                        <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                                            <span class="slds-assistive-text">Sort</span>
+                                            <span class="slds-truncate" title="">Cliente</span>
+                                            <aura:if
+                                                isTrue="{! and(v.arrowDirection == 'arrowdown', v.selectedTabsoft == 'Cliente') }">
+                                                &nbsp; &#9660; </aura:if>
+                                            <aura:if
+                                                isTrue="{! and(v.arrowDirection != 'arrowdown', v.selectedTabsoft == 'Cliente') }">
+                                                &nbsp; &#9650; </aura:if>
+                                        </a>
+                                    </th>
+                                    <th class="slds-is-sortable slds-text-title--caps" scope="col"
+                                        onclick="{!c.sortTelefonoFiliali}">
+                                        <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                                            <span class="slds-assistive-text">Sort</span>
+                                            <span class="slds-truncate" title="">Telefono</span>
+                                            <aura:if
+                                                isTrue="{! and(v.arrowDirection == 'arrowdown', v.selectedTabsoft == 'Telefono') }">
+                                                &nbsp; &#9660; </aura:if>
+                                            <aura:if
+                                                isTrue="{! and(v.arrowDirection != 'arrowdown', v.selectedTabsoft == 'Telefono') }">
+                                                &nbsp; &#9650; </aura:if>
+                                        </a>
+                                    </th>
+                                    <!--
+                                     <th scope="col">
+                                         <span class="slds-truncate" title=" ">Cliente</span>
+                                     </th> -->
+                                    <!--
+                                     <th scope="col">
+                                         <span class="slds-truncate" title=" "> Telefono </span>
+                                     </th> -->
+                                    <!--
+                                     <th scope="col">
+                                         <span class="slds-truncate" title=""> Data Contatto  </span>
+                                     </th>-->
+                                    <th class="slds-is-sortable slds-text-title--caps" scope="col"
+                                        onclick="{!c.sortDataContatto}">
+                                        <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                                            <span class="slds-assistive-text">Sort</span>
+                                            <span class="slds-truncate" title="">Data Contatto</span>
+                                            <aura:if
+                                                isTrue="{! and(v.arrowDirection == 'arrowdown', v.selectedTabsoft == 'DataContatto') }">
+                                                &nbsp; &#9660; </aura:if>
+                                            <aura:if
+                                                isTrue="{! and(v.arrowDirection != 'arrowdown', v.selectedTabsoft == 'DataContatto') }">
+                                                &nbsp; &#9650; </aura:if>
+                                        </a>
+                                    </th>
+                                    <!--
+                                     <th scope="col">
+                                         <span class="slds-truncate" title=" ">Filiale </span>
+                                     </th>-->
+
+                                    <th class="slds-is-sortable slds-text-title--caps" scope="col"
+                                        onclick="{!c.sortFiliale}">
+                                        <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                                            <span class="slds-assistive-text">Sort</span>
+                                            <span class="slds-truncate" title="">Filiale</span>
+                                            <aura:if
+                                                isTrue="{! and(v.arrowDirection == 'arrowdown', v.selectedTabsoft == 'Filiale') }">
+                                                &nbsp; &#9660; </aura:if>
+                                            <aura:if
+                                                isTrue="{! and(v.arrowDirection != 'arrowdown', v.selectedTabsoft == 'Filiale') }">
+                                                &nbsp; &#9650; </aura:if>
+                                        </a>
+                                    </th>
+                                    <!--
+                                     <th scope="col">
+                                         <span class="slds-truncate" title="Data liquidazione ">Data liquidazione </span>
+                                     </th>-->
+                                    <th class="slds-is-sortable slds-text-title--caps" scope="col"
+                                        onclick="{!c.sortByDataLiquidazione}">
+                                        <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                                            <span class="slds-assistive-text">Sort</span>
+                                            <span class="slds-truncate" title="">Data
+                                                liquidazione</span>
+                                            <aura:if
+                                                isTrue="{! and(v.arrowDirection == 'arrowdown', v.selectedTabsoft == 'Dataliquidazione') }">
+                                                &nbsp; &#9660; </aura:if>
+                                            <aura:if
+                                                isTrue="{! and(v.arrowDirection != 'arrowdown', v.selectedTabsoft == 'Dataliquidazione') }">
+                                                &nbsp; &#9650; </aura:if>
+                                        </a>
+                                    </th>
+                                    <th class="slds-is-sortable slds-text-title--caps" scope="col"
+                                        onclick="{!c.sortByDataUltimaModificaParam}">
+                                        <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                                            <span class="slds-assistive-text">Sort</span>
+
+                                            <span class="slds-truncate" title="">Data Ultima
+                                                Modifica</span>
+                                            <aura:if
+                                                isTrue="{! and(v.arrowDirection == 'arrowdown', v.selectedTabsoft == 'DataUltimaModifica') }">
+                                                &nbsp; &#9660; </aura:if>
+                                            <aura:if
+                                                isTrue="{! and(v.arrowDirection != 'arrowdown', v.selectedTabsoft == 'DataUltimaModifica') }">
+                                                &nbsp; &#9650; </aura:if>
+                                        </a>
+                                    </th>
+                                    <th class="slds-is-sortable slds-text-title--caps" scope="col"
+                                        onclick="{!c.sortProdottoFiliali}">
+                                        <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                                            <span class="slds-assistive-text">Sort</span>
+                                            <span class="slds-truncate" title="">Prodotto</span>
+                                            <aura:if
+                                                isTrue="{! and(v.arrowDirection == 'arrowdown', v.selectedTabsoft == 'Prodotto') }">
+                                                &nbsp; &#9660; </aura:if>
+                                            <aura:if
+                                                isTrue="{! and(v.arrowDirection != 'arrowdown', v.selectedTabsoft == 'Prodotto') }">
+                                                &nbsp; &#9650; </aura:if>
+                                        </a>
+                                    </th>
+                                    <!--
+                                     <th scope="col">
+                                         <span class="slds-truncate" title=" ">Prodotto</span>
+                                     </th> -->
+                                    <th class="slds-is-sortable slds-text-title--caps" scope="col"
+                                        onclick="{!c.sortByUltimoEsito}">
+                                        <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                                            <span class="slds-assistive-text">Sort</span>
+                                            <span class="slds-truncate" title="">Ultimo Esito</span>
+                                            <aura:if
+                                                isTrue="{! and(v.arrowDirection == 'arrowdown', v.selectedTabsoft == 'UltimoEsito') }">
+                                                &nbsp; &#9660; </aura:if>
+                                            <aura:if
+                                                isTrue="{! and(v.arrowDirection != 'arrowdown', v.selectedTabsoft == 'UltimoEsito') }">
+                                                &nbsp; &#9650; </aura:if>
+                                        </a>
+                                    </th>
+                                    <!--
+                                     <th scope="col">
+                                         <span class="slds-truncate" title="">Ultimo Esito</span>
+                                     </th>-->
+                                    <!-- <th scope="col">
+                                        <span class="slds-truncate" title="">Richiamare il</span>
+                                    </th> -->
+                                    <th class="slds-is-sortable slds-text-title--caps" scope="col"
+                                        onclick="{!c.sortByRichiamareil}">
+                                        <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                                            <span class="slds-assistive-text">Sort</span>
+                                            <span class="slds-truncate" title="">Richiamare il</span>
+                                            <aura:if
+                                                isTrue="{! and(v.arrowDirection == 'arrowdown', v.selectedTabsoft == 'Richiamareil') }">
+                                                &nbsp; &#9660; </aura:if>
+                                            <aura:if
+                                                isTrue="{! and(v.arrowDirection != 'arrowdown', v.selectedTabsoft == 'Richiamareil') }">
+                                                &nbsp; &#9650; </aura:if>
+                                        </a>
+                                    </th>
+                                    <th scope="col">
+                                        <span class="slds-truncate" title="">Note</span>
+                                    </th>
+                                    <!-- <th class="slds-is-sortable slds-text-titlecaps"
+                                     scope="col" onclick="{!c.sortByNote}">
+                                            <a href="javascript:void(0);" class="slds-th__action slds-text-linkreset">
+                                                <span class="slds-assistive-text">Sort</span>
+                                                <span class="slds-truncate" title="">Note</span>
+                                                <aura:if
+                                                    isTrue="{! and(v.arrowDirection == 'arrowdown', v.selectedTabsoft == 'Note') }">
+                                                    &nbsp; &#9660; </aura:if>
+                                                <aura:if
+                                                    isTrue="{! and(v.arrowDirection != 'arrowdown', v.selectedTabsoft == 'Note') }">
+                                                    &nbsp; &#9650; </aura:if>
+                                            </a>
+                                    </th> -->
+                                    <!-- <th scope="col">
+                                        <span class="slds-truncate" title="">Ritiro Doc</span>
+                                    </th> -->
+                                    <th class="slds-is-sortable slds-text-title--caps" scope="col"
+                                        onclick="{!c.sortByRitiroDoc}">
+                                        <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                                            <span class="slds-assistive-text">Sort</span>
+                                            <span class="slds-truncate" title="">Ritiro Doc</span>
+                                            <aura:if
+                                                isTrue="{! and(v.arrowDirection == 'arrowdown', v.selectedTabsoft == 'RitiroDoc') }">
+                                                &nbsp; &#9660; </aura:if>
+                                            <aura:if
+                                                isTrue="{! and(v.arrowDirection != 'arrowdown', v.selectedTabsoft == 'RitiroDoc') }">
+                                                &nbsp; &#9650; </aura:if>
+                                        </a>
+                                    </th>
+                                    <!-- <th scope="col">
+                                        <span class="slds-truncate" title="">CIN</span>
+                                    </th> -->
+                                    <th class="slds-is-sortable slds-text-title--caps" scope="col"
+                                        onclick="{!c.sortByCIN}">
+                                        <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                                            <span class="slds-assistive-text">Sort</span>
+                                            <span class="slds-truncate" title="">CIN</span>
+                                            <aura:if
+                                                isTrue="{! and(v.arrowDirection == 'arrowdown', v.selectedTabsoft == 'CIN') }">
+                                                &nbsp; &#9660; </aura:if>
+                                            <aura:if
+                                                isTrue="{! and(v.arrowDirection != 'arrowdown', v.selectedTabsoft == 'CIN') }">
+                                                &nbsp; &#9650; </aura:if>
+                                        </a>
+                                    </th>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <aura:iteration items="{!v.paginationList}" var="filiale" indexVar="i">
+                                    <!--SS_Pagination-->
+                                    <aura:if isTrue="{!(v.currentDate  >= filiale.COM_CRMRichiamare_il__c )}">
+                                        <tr class="valueOnTable" style="{!'background-color: '+v.choiceColorPratiche}">
+
+                                       <!--
+                                        <tr class="slds-hint-parent" style="background-color: rgb(245, 190, 195);">
+                                         -->
+                                            <td scope="row">
+                                                <div class="slds-truncate" value="{!filiale.Id}" id="{!i}" title=""><a
+                                                        href="" data-index="{!i}"
+                                                        onclick="{!c.PraticheImpaginazioneCompController}">{!filiale.COM_NomeCliente__r.Name}</a>
+                                                </div>
+                                            </td>
+                                            <td scope="row">
+                                                <div class="slds-truncate" title="">{!filiale.COM_N_Telefono_Cel__c}
+                                                </div>
+                                            </td>
+                                            <td scope="row">
+                                                <div title="{!filiale.COM_date_first_contacted__c}">
+                                                    <ui:outputDate format="dd/MM/yyyy"
+                                                                   value="{!filiale.COM_Data_Esito__c}" />
+                                                        <!--
+                                                        value="{!filiale.COM_date_first_contacted__c}" /> -->
+                                                </div>
+                                            </td>
+                                            <td scope="row">
+                                                <div class="slds-truncate" title="">{!filiale.COM_MD_Filiale__r.Name}
+                                                </div>
+                                            </td>
+                                            <td scope="row">
+                                                <div title="">
+                                                    <ui:outputDate format="dd/MM/yyyy"
+                                                        value="{!filiale.COM_D_liquid__c}" />
+                                                </div>
+                                            </td>
+                                            <td scope="row">
+                                                <div title="">
+                                                    <ui:outputDate format="dd/MM/yyyy"
+                                                        value="{!filiale.LastModifiedDate}" />
+                                                </div>
+                                            </td>
+                                            <td scope="row">
+                                                <div class="slds-truncate" title="">{!filiale.COM_C_prod__c}</div>
+                                            </td>
+                                            <td scope="row">
+                                                <div class="slds-truncate" title="">{!filiale.COM_Ultimo_Esito_FIL__c}</div>
+                                            </td>
+                                            <td scope="row">
+                                                <div title="">
+                                                    <!--ui:outputDate format="dd/MM/yyyy" value="{!filiale.COM_CRMRichiamare_il__c}"/-->
+                                                    <ui:outputDateTime format="dd/MM/yyyy HH:mm"
+                                                        value="{!filiale.COM_CRMRichiamare_il__c}" />
+                                                    <!--
+                                                    <lightning:formattedDateTime
+                                                        value="{!filiale.COM_CRMRichiamare_il__c}" /> -->
+                                                </div>
+                                            </td>
+                                            <td scope="row">
+                                                <div class="slds-truncate" title="">{!filiale.COM_callback_notes__c}
+                                                </div>
+                                            </td>
+                                            <td scope="row">
+                                                <div class="slds-truncate" title="">{!filiale.Ritiro_Doc__c}</div>
+                                            </td>
+                                            <aura:if isTrue="{!filiale.COM_cin_z_calc__c=='G'}">
+                                                <td scope="row" style="background-color: yellow;">
+                                                    <div class="slds-truncate" style="background-color: yellow;">
+                                                        <span>{!filiale.COM_cin_z_calc__c}</span>
+                                                    </div>
+                                                </td>
+                                            </aura:if>
+                                            <aura:if isTrue="{!filiale.COM_cin_z_calc__c=='R'}">
+                                                <td scope="row" style="background-color: red;">
+                                                    <div class="slds-truncate" style="background-color: red;">
+                                                        <span>{!filiale.COM_cin_z_calc__c}</span>
+                                                    </div>
+                                                </td>
+                                            </aura:if>
+                                            <aura:if
+                                                isTrue="{!or(filiale.COM_cin_z_calc__c=='EV',filiale.COM_cin_z_calc__c=='V')}">
+                                                <td scope="row" style="background-color: green;">
+                                                    <div class="slds-truncate" style="background-color: green;">
+                                                        <span>{!filiale.COM_cin_z_calc__c}</span>
+                                                    </div>
+                                                </td>
+                                            </aura:if>
+                                        </tr>
+                                        <aura:set attribute="else">
+                                            <tr class="slds-hint-parent">
+                                                <td scope="row">
+                                                    <div class="slds-truncate" value="{!filiale.Id}" id="{!i}" title="">
+                                                        <a href="" data-index="{!i}"
+                                                            onclick="{!c.PraticheImpaginazioneCompController}">{!filiale.COM_NomeCliente__r.Name}</a>
+                                                    </div>
+                                                </td>
+                                                <td scope="row">
+                                                    <div class="slds-truncate" title="">{!filiale.COM_N_Telefono_Cel__c}
+                                                    </div>
+                                                </td>
+                                                <td scope="row">
+                                                    <div title="">
+                                                        <ui:outputDate format="dd/MM/yyyy"
+                                                                       value="{!filiale.COM_Data_Esito__c}" />
+                                                            <!--
+                                                            value="{!filiale.COM_date_first_contacted__c}" /> -->
+                                                    </div>
+                                                </td>
+                                                <td scope="row">
+                                                    <div class="slds-truncate" title="">
+                                                        {!filiale.COM_MD_Filiale__r.Name}</div>
+                                                </td>
+                                                <td scope="row">
+                                                    <div title="">
+                                                        <ui:outputDate format="dd/MM/yyyy"
+                                                            value="{!filiale.COM_D_liquid__c}" />
+                                                    </div>
+                                                </td>
+                                                <td scope="row">
+                                                    <div title="">
+                                                        <ui:outputDate format="dd/MM/yyyy"
+                                                            value="{!filiale.LastModifiedDate}" />
+                                                    </div>
+                                                </td>
+                                                <td scope="row">
+                                                    <div class="slds-truncate" title="">{!filiale.COM_C_prod__c}</div>
+                                                </td>
+                                                <td scope="row">
+                                                    <div class="slds-truncate" title="">{!filiale.COM_Ultimo_Esito_FIL__c}
+                                                    </div>
+                                                </td>
+                                                <td scope="row">
+                                                    <div title="">
+                                                        <!--ui:outputDate format="dd/MM/yyyy" value="{!filiale.COM_CRMRichiamare_il__c}"/-->
+                                                        <ui:outputDateTime format="dd/MM/yyyy HH:mm"
+                                                            value="{!filiale.COM_CRMRichiamare_il__c}" />
+                                                    </div>
+                                                </td>
+                                                <td scope="row">
+                                                    <div class="slds-truncate" title="">{!filiale.COM_callback_notes__c}
+                                                    </div>
+                                                </td>
+                                                <td scope="row">
+                                                    <div class="slds-truncate" title="">{!filiale.Ritiro_Doc__c}</div>
+                                                </td>
+                                                <aura:if isTrue="{!filiale.COM_cin_z_calc__c=='G'}">
+                                                    <td scope="row" style="background-color: yellow;">
+                                                        <div class="slds-truncate" style="background-color: yellow;">
+                                                            <span>{!filiale.COM_cin_z_calc__c}</span>
+                                                        </div>
+                                                    </td>
+                                                </aura:if>
+                                                <aura:if isTrue="{!filiale.COM_cin_z_calc__c=='R'}">
+                                                    <td scope="row" style="background-color: red;">
+                                                        <div class="slds-truncate" style="background-color: red;">
+                                                            <span>{!filiale.COM_cin_z_calc__c}</span>
+                                                        </div>
+                                                    </td>
+                                                </aura:if>
+                                                <aura:if
+                                                    isTrue="{!or(filiale.COM_cin_z_calc__c=='EV',filiale.COM_cin_z_calc__c=='V')}">
+                                                    <td scope="row" style="background-color: green;">
+                                                        <div class="slds-truncate" style="background-color: green;">
+                                                            <span>{!filiale.COM_cin_z_calc__c}</span>
+                                                        </div>
+                                                    </td>
+                                                </aura:if>
+                                            </tr>
+                                        </aura:set>
+                                    </aura:if>
+                                </aura:iteration>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <br />
+                <div class="slds-grid slds-wrap" style="margin-top: 2">
+                    <div class="slds-size_1-of-3">
+                        <div class="padding-top" style="margin-top: 16">
+                            <p class="slds-truncate">&nbsp;&nbsp;</p>
+                        </div>
+                        <div class="padding-top" style="margin-top: 16">
+                            <lightning:button label="Indietro" onclick="{!c.redirect}" />
+                        </div>
+                    </div>
+                    <div class="slds-size_1-of-3">
+                        <div class=" slds-text-align_center slds-m-around_x-small">
+                            <c:FilialiPagination objectList="{!v.objectList}" paginationList="{!v.paginationList}"
+                                pageSize="{!v.pageSize}" start="{!v.start}" end="{!v.end}" totalPage="{!v.totalPage}"
+                                currentPage="{!v.currentPage}" totalRecord="{!v.totalRecord}" pages="{!v.pages}" />
+                        </div>
+                    </div>
+                    <div class="slds-size_1-of-3"></div>
+                </div>
+
+            </div>
+            <div class="slds-col slds-size_2-of-12 "></div>
+        </div>
+    </div>
+</aura:component>

@@ -1,0 +1,121 @@
+<aura:component controller='SFAListaDaSedeGestioneAttivitaController' implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+	
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="toastMsg" type="String"/>
+    <aura:attribute name="showSpinner" type="Boolean" default="false"/>
+    <aura:attribute name="categoryList" type="List"/>
+    <aura:attribute name="dispositionList" type="List"/>
+    <aura:attribute name="dispositionOptions" type="List" default="[]"/>
+    <aura:attribute name="outputActivityList" type="Object"/>
+    <aura:attribute name="headerColumns" type="List"/>
+
+    <aura:attribute name="categoryId" type="Id"/>
+    <aura:attribute name="categorySelected" type="Id"/>
+    <aura:attribute name="dispositionSelected" type="Id"/>
+    <aura:attribute name="newActivityId" type="Id"/>
+
+    <aura:attribute name="categoryOptions" type="List" default="[]"/>
+
+    <aura:attribute name="categoryName" type="String" default=""/>
+    <aura:attribute name="levelName" type="String" default=""/>
+    <aura:attribute name="dispositionName" type="String" default=""/>
+    <aura:attribute name="allRecordInsered" type="List" default=""/>
+    <aura:attribute name="outputActivityTmp" type="Object" default=""/>
+    <aura:attribute name="toInsert" type="List" default=""/>
+    
+    <aura:attribute name="rowSelected" type="List"/>
+    <aura:attribute name="newActivityInsered" type="Boolean" default="false"/>
+    
+
+
+    <aura:attribute name="esitoSelectedLv1" type="String" default=""/>
+    <aura:attribute name="esitoSelectedLv2" type="String" default=""/>
+
+    <aura:attribute name="level1OptionsList" type="List"/>
+    <aura:attribute name="level1Options" type="List" default="[]"/><!--
+                                                        {'label': 'Positivo', 'value': 'Positivo'},
+                                                        {'label': 'Negativo', 'value': 'Negativo'},
+                                                        {'label': 'Sospeso', 'value': 'Sospeso'},
+                                                        ]"/>-->
+    
+    <aura:handler name="init" value="{!this }" action="{!c.init }"/>
+    
+    <lightning:notificationsLibrary aura:id="notifLib"/> 
+    
+    <div class="slds-box slds-theme_default slds-m-bottom_small">
+        <br/>
+        <div class="slds-p-horizontal_small slds-size_1-of-1">
+            <div class="slds-text-heading_small boldtext slds-m-bottom_small">Gestione Esiti</div>
+        </div>
+        
+        <div class="slds-grid slds-wrap"> 
+            
+            <div class="slds-p-horizontal_small slds-size_1-of-3 slds-medium-size_1-of-3 slds-large-size_1-of-3 border-right2 height160">
+                <lightning:input aura:id="newActivity" name="newActivity" label="Nuova Attività" onchange="{!c.setCategoryName}" type="Text"/>
+            </div>
+            
+            <div class="slds-p-horizontal_small slds-size_1-of-3 slds-medium-size_1-of-3 slds-large-size_1-of-3 border-right2 height160">
+                <!-- TIPO ATTIVITA -->
+                <lightning:combobox aura:id="categoryType" name="categoryType" label="Tipo Attività" options="{! v.categoryOptions }" onchange="{!c.getDisposition}" />
+            </div>
+            
+        </div> 
+        
+        <div class="slds-grid slds-wrap"> 
+            <div class="slds-p-horizontal_small slds-size_1-of-3 slds-medium-size_1-of-3 slds-large-size_1-of-3 border-right2 height160">
+                <!-- DISPOSITION LEVEL 1 -->
+                <lightning:combobox aura:id="level1" name="level1" label="Livello 1" options="{! v.level1Options }" onchange="{!c.getDisposition}" required="true"/>
+            </div>
+        </div> 
+        
+        <div class="slds-grid slds-wrap"> 
+            <div class="slds-p-horizontal_small slds-size_1-of-3 slds-medium-size_1-of-3 slds-large-size_1-of-3 border-right2 height160">
+                <!-- DISPOSITION LEVEL 2 -->
+                <lightning:combobox aura:id="dispositionType" name="dispositionType" label="Livello 2" options="{! v.dispositionOptions }" onchange="{!c.setDispositionName}"/>
+                <br/>
+                <lightning:button class="slds-button slds-button--neutral buttonAlign" onclick="{!c.resetAll}"> Reset Valori </lightning:button>
+                <!--<lightning:button class="slds-button slds-button@@neutral buttonAlign" onclick="{!c.insert}"> Aggiungi Esito </lightning:button>-->
+                <lightning:button class="slds-button slds-button--neutral buttonAlign" onclick="{!c.insertToList}"> Aggiungi Esito </lightning:button>
+                <!--<lightning:button class="slds-button slds-button@@neutral buttonAlign" onclick="{!c.remove}"> Elimina Esito </lightning:button>-->
+            </div>
+        </div>
+        
+        
+        <br/>
+        <br/>
+        <div class="slds-p-horizontal_small slds-size_1-of-1">
+            <div class="slds-text-heading_small boldtext slds-m-bottom_small">Esiti Selezionati</div>
+        </div>
+        <div style="max-height: fit-content;">
+            <div class="slds-is-relative">
+                <lightning:datatable
+                                     aura:id="table"
+                                     keyField="Id"
+                                     data="{!v.outputActivityList}"
+                                     columns="{!v.headerColumns}"
+                                     resizeColumnDisabled="true"
+                                     onrowselection="{!c.setEsitoSelected}"
+                                     
+                                     autocomplete="off"/>
+                
+                <aura:if isTrue="{!v.showSpinner}">
+                    <lightning:spinner alternativeText="Loading" size="large"/>
+                </aura:if>
+                <aura:if isTrue="{!v.outputActivityList.length > 0}">
+                        <br/>
+                        Esito Selezionato:<br/>
+                        Livello 1: {!v.esitoSelectedLv1} <br/>
+                        Livello 2: {!v.esitoSelectedLv2} <br/>
+                    <br/>
+                    <lightning:button class="slds-button slds-button--neutral buttonAlign" onclick="{!c.insertToDB}"> Inserisci/Modifica </lightning:button>
+                    <lightning:button aura:id="buttonRemove" class="slds-button slds-button--neutral buttonAlign" name='buttonRemove' onclick="{!c.remove}"> Elimina Esito </lightning:button>
+                <aura:set attribute="else">
+                    <div class="slds-align_absolute-center">            
+                        Nessun risultato trovato.
+                    </div>
+                </aura:set>
+                </aura:if>
+            </div>
+        </div>
+    </div>
+</aura:component>

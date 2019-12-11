@@ -1,0 +1,71 @@
+<aura:component controller="SFAHomeCanaleB2CController" implements="flexipage:availableForAllPageTypes" access="global">
+    <aura:attribute name="attRiassCount" type="Integer" default="0" />
+    <aura:attribute name="attRicCount" type="Integer" default="0" />
+    <aura:attribute name="campagnaCount" type="Integer" default="0" />
+    <aura:attribute name="carteCount" type="Integer" default="0" />
+    <aura:attribute name="praticheCount" type="Integer" default="0" />
+    <aura:attribute name="inadempimentiCount" type="Integer" default="0" />
+    <aura:attribute name="msg" type="String" />
+    <aura:attribute name="total" type="Integer" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+
+    <lightning:notificationsLibrary aura:id="notifLib" />
+
+    <lightning:card title="Canale diretto B2C">
+        <aura:if isTrue="{!v.showSpinner}">
+            <lightning:spinner alternativeText="Loading" size="large" variant="brand" />
+        </aura:if>
+        <lightning:layout multipleRows="true" class="slds-p-around_medium">
+            <!-- ATTIVITA' POST VENDITA RIASSEGNATE -->
+            <lightning:layoutItem size="1">
+                {!v.attRiassCount}
+            </lightning:layoutItem>
+            <lightning:layoutItem size="11">
+                <a id="attivita-post-riassegnate" onclick="{!c.handleRedirect}">Attività Postvendita riassegnate</a>
+            </lightning:layoutItem>
+            <!-- ATTIVITA' POST VENDITA RICEVUTE -->
+            <lightning:layoutItem size="1">
+                {!v.attRicCount}
+            </lightning:layoutItem>
+            <lightning:layoutItem size="11">
+                <a id="attivita-post-ricevute" onclick="{!c.handleRedirect}">Attività Postvendita ricevute</a>
+            </lightning:layoutItem>
+            <!-- CAMPAGNA OUTBOUND FILIALE -->
+            <lightning:layoutItem size="1">
+                {!v.campagnaCount}
+            </lightning:layoutItem>
+            <lightning:layoutItem size="11">
+                <a id="campagna" onclick="{!c.handleRedirect}">Campagna Outbound Filiale</a>
+            </lightning:layoutItem>
+            <!-- CARTE 30CF -->
+            <lightning:layoutItem size="1">
+                {!v.carteCount}
+            </lightning:layoutItem>
+            <lightning:layoutItem size="11">
+                <a id="carte" onclick="{!c.handleRedirect}">Carte in stato 30CF da sbloccare</a>
+            </lightning:layoutItem>
+            <!-- PRATICHE H3G -->
+            <lightning:layoutItem size="1">
+                {!v.praticheCount}
+            </lightning:layoutItem>
+            <lightning:layoutItem size="11">
+                <a id="pratiche-h3g" onclick="{!c.handleRedirect}">Pratiche H3G da approvare, respinte/ritirate da gestire</a>
+            </lightning:layoutItem>
+            <!-- INADEMPIMENTI -->
+            <lightning:layoutItem size="1">
+                {!v.inadempimentiCount}
+            </lightning:layoutItem>
+            <lightning:layoutItem size="11">
+                <a id="inadempimenti" onclick="{!c.handleRedirect}">Richiesta verifiche per Inadempimento</a>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="12" class="slds-text-align_right">
+                <span class="slds-p-horizontal_medium">Totale: {!v.total}</span>
+
+                <lightning:buttonIcon iconName="utility:refresh" variant="bare" alternativeText="Refresh"
+                    onclick="{!c.refresh}" />
+            </lightning:layoutItem>
+        </lightning:layout>
+    </lightning:card>
+
+</aura:component>

@@ -1,0 +1,235 @@
+<!--
+  @Component Name     : PVInserimento2.cmp
+  @Description        : 
+  @Author             : Andrea Vanelli
+  @Group              : 
+  @Last Modified By   : Andrea Vanelli
+  @Last Modified On   : 19/8/2019, 15:55:13
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    11/8/2019, 16:02:25   Andrea Vanelli     Initial Version
+-->
+<aura:component controller="PVInserimentoController" implements="force:appHostable,flexipage:availableForAllPageTypes">
+
+    <!-- Eventi -->
+    <aura:handler name="PVSubComponentEvents" event="c:PVSubComponentEvents" action="{!c.handlePVSubComponentEvents}"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.inizializzaDatiBase}" />
+    <aura:handler name="render" value="{!this}" action="{!c.onRender}" />
+
+    <!-- handler change -->
+    <aura:handler name="change" value="{!v.PVForm.pratica}" action="{!c.onPraticaSelezionata}" />
+    <aura:handler name="change" value="{!v.PVForm.cliente}" action="{!c.onClienteSelezionato}" />
+
+    <!-- attributi esterni -->
+    <aura:attribute name="parametriEsterni" type="PVInserimentoController.PVInserimentoParamEsterni" />
+    <aura:attribute name="exitMethod" type="String" default="refresh" />
+    
+    <!-- attributi interni -->
+    <aura:attribute name="PVForm" type="PVForm" />
+    
+    <aura:attribute name="isChildLoaded" type="Boolean" default="false" />
+    <aura:attribute name="isDaLavorare" type="Boolean" default="true" />
+
+    <aura:attribute name="urgenteOptions" type="List"
+        default="[ {'label': 'Si', 'value': 'Si'}, {'label': 'No', 'value': 'No'} ]" />
+    <aura:attribute name="pvsubtypeRequired" type="Boolean" default="false" />
+    <aura:attribute name="psvreasonRequired" type="Boolean" default="false" />
+    <aura:attribute name="listTipologia" type="List" />
+    <aura:attribute name="listSottotipologia" type="List" />
+    <aura:attribute name="listPvsubtype" type="List" />
+    <aura:attribute name="listPsvreason" type="List" />
+
+    <!-- AV TODO controllar isPraticaAttivabile e isPraticaAttiva-->
+    <aura:attribute name='showCartaDatiFinanziari' type='Boolean' default="false"/>
+    <aura:attribute name="cartaDatiFinanziariData"
+        type="OCSCartaDatiFinanziariResponse.DatiCartaDatiFinanziariResponseDTO" />
+
+    <!-- Gestione errori e warnings da child (AV TODO verificare meglio isErroreBloccante )   -->
+    <aura:attribute name="showMarkup" type="Boolean" default="true"/>
+    <aura:attribute name="messaggiErrore" type="String" default='' />
+
+
+
+    <aura:if isTrue="{!v.isDaLavorare}">
+        <div class="slds-is-relative">
+            <c:SpinnerComponent aura:id="spinnerComponent" />
+
+            <lightning:layout horizontalAlign="space">
+                <!-- Colonna 0 -->
+                <lightning:layoutItem size="6">
+                    <!-- Selezione postvendita -->
+                    <lightning:card title="Nuovo Postvendita" iconName="action:new" variant="base">
+                        <aura:set attribute="actions"></aura:set>
+                        <lightning:layout class="slds-wrap" multipleRows="true">
+                            <lightning:layoutItem size="6" padding="horizontal-small">
+                                <lightning:select name="tipologia" label="Seleziona una tipologia:" aura:id="tipologia"
+                                    onchange="{!c.getListaCategorie}">
+                                    <aura:iteration items="{!v.listTipologia}" var="tipologia">
+                                        <option text="{!tipologia.label}" value="{!tipologia.value}" />
+                                    </aura:iteration>
+                                </lightning:select>
+                                <lightning:select name="pvsubtype" label="Sottotipologia:"
+                                    required="{!v.pvsubtypeRequired}" aura:id="pvsubtype"
+                                    onchange="{!c.getListaReasons}">
+                                    <option text="" value="" />
+                                    <aura:iteration items="{!v.listPvsubtype}" var="pvsubtype">
+                                        <option text="{!pvsubtype.Descrizione__c}" value="{!pvsubtype.uniqueId__c}" />
+                                    </aura:iteration>
+                                </lightning:select>
+                            </lightning:layoutItem>
+                            <lightning:layoutItem size="6" padding="horizontal-small">
+                                <lightning:select name="sottotipologia" label="&nbsp;" aura:id="sottotipologia"
+                                    onchange="{!c.inizializzaDatiCategoria}">
+                                    <option text="" value="" />
+                                    <aura:iteration items="{!v.listSottotipologia}" var="sottotipologia">
+                                        <option text="{!sottotipologia.MasterLabel__c}"
+                                            value="{!sottotipologia.PostvenditaId__c}" />
+                                    </aura:iteration>
+                                </lightning:select>
+                                <lightning:select name="psvreason" label="Motivo:" required="{!v.psvreasonRequired}"
+                                    aura:id="psvreason" onchange="{!c.selezionaReason}">
+                                    <!--<aura:if isTrue="{!v.listPsvreason.length>1}">-->
+                                    <option text="" value="" />
+                                    <!--</aura:if>-->
+                                    <aura:iteration items="{!v.listPsvreason}" var="psvreason">
+                                        <option text="{!psvreason.Descrizione__c}" value="{!psvreason.uniqueId__c}" />
+                                    </aura:iteration>
+                                </lightning:select>
+                            </lightning:layoutItem>
+
+                            <lightning:layoutItem size="12" padding="horizontal-small">
+                                <!-- Motivo -->
+                                <lightning:textarea aura:id="motivo" name="motivo" label="Motivo"
+                                    value="{!v.PVForm.motivazione}" />
+                            </lightning:layoutItem>
+                            <!-- Urgenza -->
+                            <aura:if isTrue="{!v.PVForm.categoriaPV.Flag_Urgente__c}">
+                                <lightning:layoutItem size="12" padding="horizontal-small">
+                                    <lightning:radioGroup name="radioGroup" label="Urgente"
+                                        options="{!v.urgenteOptions}" value="{! v.PVForm.urgente  }" type="button" />
+                                </lightning:layoutItem>
+                            </aura:if>
+                        </lightning:layout>
+
+                        <!-- Ricerca Cliente -->
+                        <lightning:layout>
+                            <lightning:layoutItem size="12" padding="horizontal-small">
+                                <aura:if isTrue="{!v.PVForm.categoriaPV.External_Id__c}">
+                                    <aura:if isTrue="{!v.PVForm.categoriaPV.Flag_Ricerca_Cliente__c}">
+                                        <!--idOCSClienteSelezionato="{!v.idOCSClienteSelezionato}" -->
+                                        <lightning:card title="Ricerca Cliente" iconName="action:new_person_account">
+
+
+                                            <c:PVRecuperaDatiPostvendita praticaSelezionata="{!v.PVForm.pratica}"
+                                                showPratiche="{!v.PVForm.categoriaPV.Flag_Mostra_Pratiche__c}"
+                                                OCSClienteSelezionato="{!v.PVForm.cliente}"
+                                                filtroTipoPratica="{!v.PVForm.categoriaPV.Filtro_Pratiche_OCS__c}"
+                                                filtroClassName="{!v.PVRecuperaDatiPVfiltroClassName}"
+                                                filtroParametriMap="{!v.PVRecuperaDatiPVfiltroParametriMap}"
+                                                inputOCSCliente="{!v.parametriEsterni.codClienteOCS}"
+                                                inputOCSPratica="{!v.parametriEsterni.codPraticaOCS}"
+                                                aura:id="ricercaOCS" parent="{! this }">
+                                            </c:PVRecuperaDatiPostvendita>
+
+
+                                        </lightning:card>
+                                    </aura:if>
+                                </aura:if>
+                                <aura:if isTrue="{! v.showCartaDatiFinanziari }">
+                                    <c:PVDatiFinanziariCarta cartaDatiFinanziariData="{!v.cartaDatiFinanziariData}">
+                                    </c:PVDatiFinanziariCarta>
+                                </aura:if>
+                            </lightning:layoutItem>
+                        </lightning:layout>
+                        <!-- FINE Ricerca Cliente -->
+
+                    </lightning:card>
+                    <!-- FINE Selezione postvendita -->
+
+
+
+                </lightning:layoutItem>
+                <!-- FINE Colonna 0 -->
+
+                <!-- Colonna 1 -->
+                <lightning:layoutItem size="6" padding="horizontal-small">
+                    <!-- Contenitore Componenti Postvendita -->
+                    <aura:if isTrue="{!v.PVForm.categoriaPV.External_Id__c}">
+
+                        <lightning:card title="Dettagli" iconName="action:description" variant="base">
+                            <aura:set attribute="actions"></aura:set>
+                            <div class="slds-card__body_inner">
+                                <!-- Componenti PV -->
+
+                                {!v.body}
+
+
+                            </div>
+
+                            <!-- Allegati -->
+                            <lightning:layout>
+                                <lightning:layoutItem size="12" padding="horizontal-small">
+                                    <aura:if isTrue="{! v.isChildLoaded}">
+                                        <aura:if isTrue="{!v.PVForm.categoriaPV.Flag_Mostra_Allegati__c}">
+                                            <lightning:card title="Allegati" iconName="action:add_file">
+
+
+                                                <p>
+                                                    L'utilizzo del fax è consentito solo in caso di mancanza dello
+                                                    scanner.<br />In caso di malfunzionamento contattare
+                                                    tempestivamente
+                                                    l'ufficio competente.
+                                                </p><br />
+                                                <p>
+                                                    <lightning:input type="checkbox" aura:id="checkFax"
+                                                        label="Invio via fax" checked="false" />
+                                                </p><br />
+                                                <p>
+                                                    <c:XCSGestioneAllegati fileList="{!v.PVForm.attachmentList}">
+                                                    </c:XCSGestioneAllegati>
+                                                </p><br />
+
+                                            </lightning:card>
+                                        </aura:if>
+                                    </aura:if>
+                                </lightning:layoutItem>
+                            </lightning:layout>
+
+                            <aura:set attribute="footer">
+                                <aura:if isTrue="{! v.isChildLoaded}">
+
+                                    <!-- Note -->
+                                    <aura:if isTrue="{!v.showMarkup}">
+                                        <lightning:textarea name="noteInput" label="Note" value="{!v.PVForm.note}" />
+                                    </aura:if>
+
+
+                                    <!-- messaggi di errore o segnalazioni dal Child dopo il conferma-->
+                                    <aura:if isTrue="{!v.messaggiErrore != ''}">
+                                        <ui:message title="Errore" severity="error" closable="false">
+                                            <aura:unescapedHtml value="{!v.messaggiErrore}" />
+                                        </ui:message>
+                                    </aura:if>
+
+                                    <!-- Bottone Conferma -->
+                                    <!-- inserisciCase richiama la funzione inserisciCase del componente figlio -->
+                                    <lightning:button label="Inserisci" onclick="{! c.inserisciCase }"
+                                        variant='destructive' name="btnInserisci" aura:id="btnInserisci" />
+                                </aura:if>
+                            </aura:set>
+                        </lightning:card>
+                    </aura:if>
+                    <!-- FINE Componenti Postvendita -->
+
+                </lightning:layoutItem>
+                <!-- FINE Colonna 1 -->
+
+            </lightning:layout>
+
+        </div>
+    </aura:if>
+
+</aura:component>

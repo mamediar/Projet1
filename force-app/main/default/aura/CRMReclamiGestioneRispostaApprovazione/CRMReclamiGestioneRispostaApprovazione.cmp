@@ -1,0 +1,166 @@
+<aura:component controller="CRMReclamiGestioneRispostaApprCtrl"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" 
+                access="global" 
+                >
+    
+    <aura:attribute name="campiCase" type="Object" />
+    <aura:attribute name="livelloAutorizzazione" type="String" />
+    <!--    <aura:attribute name="tipoAutorizzazione" type="String"/>-->
+    <aura:attribute name="tipoAutorizzazione" type="String" default="Nessuno"/>
+    
+    <aura:attribute name="statoAutorLv1" type="String"/>
+    <aura:attribute name="statoAutorLv2" type="String"/>
+    <aura:attribute name="isAutorizzazioneOk" type="Boolean"/>
+    <aura:attribute name="showRichiediAutorizzazione" type="Boolean"/>
+    <aura:attribute name="showMessage" type="Boolean"/>
+    <aura:attribute name="messageTitle" type="String" />
+    <aura:attribute name="messageBody" type="String" />
+    <aura:attribute name="messageSeverity" type="String" />
+    
+    <!--Boris-->
+    <aura:attribute name="ident" type="String"/>
+    <aura:attribute name="spinner" type="Integer" default="0"/>
+    <aura:attribute name="case" type="Case"/>
+    <aura:attribute name="profileLevel" type="String" />
+    <aura:attribute name="isAuthorizzed" type="Boolean" default="false"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    <aura:registerEvent name="autorizza" type="c:CRMReclamiGestioneApprovazioneEvent"/>
+   
+
+    
+    <!--Boris FIne-->
+    
+    <aura:if isTrue="{!not(v.spinner==0)}">
+        <lightning:spinner alternativeText="Loading" size="large" />
+    </aura:if>
+    
+    <div>
+        <lightning:input label="Livello Autorizzazione Reclamo:"
+                         readonly="true"
+                         value="{!v.case.Tipo_Autorizzazione__c}"
+                         />
+        
+        
+    </div>
+    
+    <lightning:layout>
+        <lightning:layoutItem size="6">
+            <div class="slds-p-right_x-small">
+			
+                <aura:if isTrue="{!or(v.case.Tipo_Autorizzazione__c == '2° livello', v.case.Tipo_Autorizzazione__c == '1° livello')}">
+                    <lightning:input label="Stato Auth 1° Livello:"
+                                     readonly="true"
+                                     value="{!v.case.Autorizzazione_Livello_1__c == '4152' ? 'Richiesto' :
+                                            v.case.Autorizzazione_Livello_1__c == '4153' ? 'Approvato' : 
+                                            v.case.Autorizzazione_Livello_1__c == '4154' ? 'Respinto' : v.case.Autorizzazione_Livello_1__c}" 
+                                     />
+                </aura:if>
+                <aura:if isTrue="{!v.case.Tipo_Autorizzazione__c == '2° livello'}">
+                    <lightning:input label="Stato Auth 2° Livello:"
+                                     readonly="true"
+                                     value="{!v.case.Autorizzazione_Livello_2__c == '4155' ? 'Richiesto' :
+                                            v.case.Autorizzazione_Livello_2__c == '4156' ? 'Approvato' : 
+                                            v.case.Autorizzazione_Livello_2__c == '4157' ? 'Respinto' : v.case.Autorizzazione_Livello_2__c}"
+                                     />
+                </aura:if>
+            </div>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="6">
+            <aura:if isTrue="{!v.showMessage}">
+                <ui:message title="{!v.messageTitle}" severity="{!v.messageSeverity}">
+                    {!v.messageBody}
+                </ui:message>
+            </aura:if>
+            <div class="slds-p-right_x-small slds-p-top_large">
+                
+                <!-- Tipo Auth 1 -->
+                <aura:if isTrue="{!or(v.case.Tipo_Autorizzazione__c == '2° livello', v.case.Tipo_Autorizzazione__c == '1° livello')}">
+                    <!-- Nessuno-->
+                    <aura:if isTrue="{!v.case.Autorizzazione_Livello_1__c == 'Nessuno'}">
+                        <lightning:button label="Richiedi Autorizzazione"
+                                          variant="brand"
+                                          onclick="{!c.handleClick}"
+                                          />
+                        
+                        <aura:if isTrue="{!or(v.profileLevel == '2',v.profileLevel == '1')}">
+                            
+                            <lightning:button label="Autorizza Lv.1"
+                                              variant="brand"
+                                              onclick="{!c.handleClick}"
+                                              />
+                            <lightning:button label="Respingi Lv.1"
+                                              variant="brand"
+                                              onclick="{!c.handleClick}"
+                                              />
+                        </aura:if>
+                    </aura:if>
+                    
+                    <!-- Richiesta Autorizzazione-->
+                    <aura:if isTrue="{!v.case.Autorizzazione_Livello_1__c == '4152'}">
+                        <aura:if isTrue="{!or(v.profileLevel == '2',v.profileLevel == '1')}">
+                            <lightning:button label="Autorizza Lv.1"
+                                              variant="brand"
+                                              onclick="{!c.handleClick}"
+                                              />
+                            <lightning:button label="Respingi Lv.1"
+                                              variant="brand"
+                                              onclick="{!c.handleClick}"
+                                              />
+                        </aura:if>
+                    </aura:if>
+                    <!--Fine Richiesta Autorizzazione -->
+                    
+                    <!-- Inizio Respinto-->
+                    <aura:if isTrue="{!v.case.Autorizzazione_Livello_1__c == '4154'}">
+                        <aura:if isTrue="{!or(v.profileLevel == '0',v.profileLevel == '1')}">
+                            <lightning:button label="Richiedi Autorizzazione"
+                                              variant="brand"
+                                              onclick="{!c.handleClick}"
+                                              />
+                        </aura:if>
+                    </aura:if>
+                    <!-- Fine Respinto-->
+                </aura:if>
+                <!--Fine Tipo Auth 1 -->
+                
+                <!--Inizio Tipo Auth 2 -->
+                <aura:if isTrue="{!and(and(v.case.Tipo_Autorizzazione__c == '2° livello', v.case.Autorizzazione_Livello_1__c == '4153'), not(v.case.Autorizzazione_Livello_2__c == '4156'))}">
+                    <!--Richiedi 2 Livello -->
+                    <aura:if isTrue="{!or(v.profileLevel == '1',v.profileLevel == '2')}">
+                        <aura:if isTrue="{!and(not(v.case.Autorizzazione_Livello_2__c == '4157'), not(v.case.Autorizzazione_Livello_2__c == '4155'))}">
+                            <lightning:button label="Richiedi Autorizzazione"
+                                              variant="brand"
+                                              onclick="{!c.handleClick}"
+                                              />
+                        </aura:if>
+                    </aura:if>
+                    <!--Approva o Respingi 2 Livello -->
+                    <aura:if isTrue="{!and(v.profileLevel == '2', not(v.case.Autorizzazione_Livello_2__c == '4157'))}">
+                   
+                        <lightning:button label="Autorizza Lv.2"
+                                          variant="brand"
+                                          onclick="{!c.handleClick}"
+                                          />
+                        <lightning:button label="Respingi Lv.2"
+                                          variant="brand"
+                                          onclick="{!c.handleClick}"
+                                          />
+                    </aura:if>
+                    
+                    <aura:if isTrue="{!v.case.Autorizzazione_Livello_2__c == '4157'}">
+                        <aura:if isTrue="{!or(v.profileLevel == '1',v.profileLevel == '2')}">
+                            <lightning:button label="Richiedi Autorizzazione"
+                                              variant="brand"
+                                              onclick="{!c.handleClick}"
+                                              />
+                        </aura:if>
+                    </aura:if>
+                    
+                </aura:if>
+                <!--Fine Tipo Auth 2-->
+                
+            </div>
+        </lightning:layoutItem>
+    </lightning:layout>
+</aura:component>

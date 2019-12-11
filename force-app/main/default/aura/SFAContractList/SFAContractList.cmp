@@ -1,0 +1,40 @@
+<aura:component controller="SFAContractListController" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes">
+
+  <aura:attribute name="contractList" type="Contract[]" default="[]" />
+  <aura:attribute name="columns" type="List"/>
+
+  <aura:attribute name="colonne" type="String" />
+  <aura:attribute name="stato" type="String"/>
+  <aura:attribute name="recordId" type="String" />
+
+  <aura:attribute name="selectedRows" type="List"/>
+
+  <aura:attribute name="selectedContractIds" type="List"/>
+
+  <aura:attribute name="errorTableFlag" type="Boolean" default="false" />
+  <aura:attribute name="severity" type="String" default="error" />
+  <aura:attribute name="contractTableFlag" type="Boolean" default="false" />
+
+  <aura:attribute name="barCode" type="String"/>
+
+  <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+  <aura:handler event="force:refreshView" value="{! this }" action="{! c.init }"/>
+
+  <!--
+  <ui:inputText label="Colonne da visualizzare separate da virgole" class="field" value="{!v.colonne}" updateOn="change"/>
+  <ui:inputText label="Stato del contratto" class="field" value="{!v.stato}" updateOn="change"/>
+  <ui:inputText label="Case Id" class="field" value="{!v.recordId}" updateOn="change"/>
+-->
+
+  <aura:if isTrue="{!v.contractTableFlag}">
+    <lightning:datatable aura:id="listaContratti"
+                       resizeColumnDisabled = "true"
+                       isLoading = "false"
+                       keyField="Id"
+                       data="{! v.contractList }"
+                       columns="{! v.columns }"
+                       onrowselection="{! c.handleRowSelection }"
+                       hideCheckboxColumn="false"
+                       selectedRows="{!v.selectedRows}"/>
+  </aura:if>
+</aura:component>

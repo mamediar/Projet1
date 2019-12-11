@@ -1,0 +1,48 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable" controller="Gua_ChiamataStandaloneOutboundCnt">
+    <aura:attribute type="Boolean" name="showDetailFiliale" default="false" access="global"/>
+    <aura:handler event="c:GUA_SearchByCodiceDealerEvt" action="{!c.handleCaseSearch}" />
+    <aura:attribute name="isOpenedModal" type="Boolean" default="false" />
+    <aura:attribute name="isFoundDealer" type="Boolean" default="false"/>
+    <aura:attribute name="caseDealer" type="Case" />
+    <aura:attribute name="datiAggiuntivi" type="Object" />
+    <aura:attribute name="isOpen" type="Boolean" default="false" />
+    <aura:attribute name="showDetailDealer" type="Boolean" default="false" access="global"/>
+    <div class=" container">
+            <div class="header header-css">
+                <div class="slds-page-header slds-p-around_medium" role="banner">
+                    <div class="slds-grid">
+                        <div class="slds-col slds-has-flexi-truncate">
+                            <div class="slds-media slds-media--center">
+                                <div class="slds-media__figure">
+                                    <lightning:icon iconName="custom:custom75" style="background-color:rgb(159, 32, 28);" alternativeText="Chiamata Standalone Outbound" />
+                                </div>
+                                <div class="slds-media__body">
+                                    <h1 class="slds-page-header__title slds-text-heading--small slds-align-bottom slds-truncate" title="Chiamata Standalone Outbound">Chiamata Standalone Outbound</h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div class="slds-card slds-m-top_large slds-m-bottom_large">
+            <lightning:layout class="slds-m-top_medium slds-m-bottom_medium">
+                <lightning:layoutItem size="3"></lightning:layoutItem>
+                <lightning:layoutItem size="3">
+                    <lightning:button class="slds-theme_brand slds-size_1-of-1 slds-m-right_small" variant="brand" label="Ricerca Dealer" onclick="{!c.chiamateOutboundDealer}"></lightning:button>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="3">
+                    <lightning:button class="slds-theme_brand slds-size_1-of-1 slds-m-left_small" variant="brand" label="Ricerca Filiale" onclick="{!c.chiamateOutboundFiliale}"></lightning:button>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="3"></lightning:layoutItem>
+            </lightning:layout>
+        </div>
+        <div>
+            <aura:if isTrue="{!v.showDetailFiliale==true}">
+                <c:GUA_Informazioni_Filiale_RecapitiCmp isOpenModel="true" />
+            </aura:if>
+           
+                <c:GUA_SearchInformazioniDealerCmp isOpenedModal="{!v.isOpenedModal}" />
+           
+        </div>
+    </div>
+</aura:component>

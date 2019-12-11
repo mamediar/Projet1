@@ -1,0 +1,38 @@
+<aura:component controller="CRMTMKScriptListInModal" implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId" access="global">
+        <force:recordData aura:id="campagna" recordUpdated="{!c.init}" recordId="{!v.fileId}" fields="Id,ScriptAssociatedAtCampaign__c, SemaforoForStatus__c, FileType__c, ErrorDescription__c, CampaignType__c, EndProcessDate__c, StartProcessDate__c, Status__c, isAllCampaignHaveScript__c, NumRows__c, FileName__c, StartDate__c,EndDate__c" targetFields="{!v.fileRecord}" targetError="{!v.recordLoadError}"/>
+        <aura:attribute name="fileRecord" type="Object"/>
+        <aura:attribute name="fileId" type="String"/>
+        <aura:attribute name="data" type="String[]"/> 
+        <aura:attribute name="columns" type="List"/>
+        <aura:attribute name="tipologiaSel" type="String"/>
+        <aura:attribute name="codiceAzioneSel" type="String"/>
+        <aura:attribute name="codiceProdottoSel" type="String"/>
+        <aura:attribute name="codiceTMKSel" type="String"/>
+        <aura:attribute name="descrizioneSel" type="String"/>
+        <aura:attribute name="tipologiaSelForNew" type="String"/>
+        <aura:attribute name="codiceAzioneSelForNew" type="String"/>
+        <aura:attribute name="codiceProdottoSelForNew" type="String"/>
+        <aura:attribute name="codiceProdottoPadreSelForNew" type="String"/>
+        <aura:attribute name="codiceTMKSelForNew" type="String"/>
+        <aura:attribute name="descrizioneSelForNew" type="String"/>
+        <aura:attribute name="desScript" type="String"/>
+        <aura:attribute name="idScript" type="String"/>
+        <aura:attribute name="openForm" type="boolean"/>
+        <aura:attribute name="showOldDate" type="boolean"/>
+        <aura:attribute name="showNewDate" type="boolean"/>
+        <aura:attribute name="startDate" type="date"/>
+        <aura:attribute name="endDate" type="date"/>
+        <aura:attribute name="showButtonForNew" type="boolean"/> 
+        <div style="max-height: 300px">
+        <h1 class="slds-text-body_regular" ><b>Lista Script Associati a questa Campagna</b></h1>
+            <lightning:datatable columns="{! v.columns }" 
+                                 data="{! v.data }" 
+                                 keyField="id" 
+                                 hideCheckboxColumn="false"
+                                 onrowselection="{!c.scriptPopulate}"
+                                 maxRowSelection="1"
+                                /> 
+            
+        </div>
+
+</aura:component>

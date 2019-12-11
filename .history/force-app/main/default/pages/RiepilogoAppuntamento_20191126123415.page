@@ -1,0 +1,49 @@
+<apex:page controller="EventRepport" renderAs="pdf" applyBodyTag="false" readOnly="true" showHeader="false" sidebar="false">
+    <h1>{!Title}</h1>
+    {!PDFData}
+    <p>{!message}</p>
+
+    <div><b>Data/Ora :</b> {!data['ActivityDateTime']}</div>
+    <div><b>Tipologia :</b> {!data.Tipo_Occupazione__c}</div>
+    <div><b>Prodotto :</b> {!data.Product__r.Name}</div>
+    <div><b>Dettaglio Prodotto :</b> {!DataglioProductValues.Name}</div>
+    <apex:pageBlock title="Appuntamento">
+        <apex:pageBlockSection columns="1">
+          <tr>      
+            <td><b>Data/Ora:</b></td>
+            <td>{!data['ActivityDateTime']}</td>
+          </tr>
+          <tr>      
+            <td><b>Tipologia :</b> </td>
+            <td>{!data.Tipo_Occupazione__c} </td>
+          </tr>
+          <tr>      
+            <td><b>Prodotto:</b></td>
+            <td>{!data.Product__r.Name}</td>
+          </tr>
+          <tr>      
+            <td> <b>Dettaglio Prodotto :</b>  </td>
+            <td> {!DataglioProductValues.Name} </td>
+          </tr>
+          <tr>      
+            <td><b>Note:</b></td>
+            <td>{!data.Note__c}</td>
+          </tr>
+          <tr>      
+            <td><b>Filiale:</b></td>
+            <td>{!filialeEvent.Name}</td>
+          </tr>
+          <tr>      
+            <td><b>telefono:</b></td>
+            <td>{!data.Customer__r.PersonMobilePhone}
+                <br/>{!data.Customer__r.Phone}
+            </td>
+          </tr>
+          <tr>      
+            <td><b>fotocopie de allegare:</b></td>
+            <td>{!fotocopieAllegare}</td>
+          </tr>  
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+    	
+</apex:page>

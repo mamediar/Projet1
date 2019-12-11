@@ -1,0 +1,196 @@
+<aura:component controller="SFAConvenz_NDA_RecuperaInteseCtrller" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes" access="global">
+    
+    <aura:attribute name="recordId" type="String" />     
+    <aura:attribute name="dealerId" type="String" /> 
+    <aura:attribute name="dealerInfo" type="Object" />      
+    <aura:attribute name="inteseRecuperate" type="Map"/>
+    <aura:attribute name="inteseDinamicheRecuperate" type="Map"/>
+    <aura:attribute name="buttonsDisabled" type="Boolean" default="false"/>         
+    <aura:attribute name="showSezioneDocIdentitaCollegati" type="Boolean" default="false"/>    
+    <aura:attribute name="collegatiList" type="Object" />       
+    <aura:attribute name="columnsCollegati" type="List" />      
+    <aura:attribute name="caseAttivita" type="Object" />     
+    <aura:attribute name="problemaChiamataRecuperaTitolari" type="Boolean" default="false" />    
+    <aura:attribute name="messageChiamataRecuperaTitolariOCS" type="String" default="" />    
+    <aura:attribute name="provinciaRilascio" type="String" default="" /> 
+    <aura:attribute name="luogoRilascio" type="String" default="" /> 
+    <aura:attribute name="base64url" type="String" default="data:application/octet-stream;base64," /> 
+        
+        
+        
+    <!--Dati per la modale-->
+    <aura:attribute name="isOpen" type="Boolean" default="false"/>
+    <aura:attribute name="selectedCollegatoId" type="String" />  
+    <aura:attribute name="selectedRow" type="Object" />    
+    <aura:attribute name="messageProbemaOCS" type="String" default=""/>  
+    <aura:attribute name="problemaChiamataOCS" type="Boolean" default="false"/>   
+        
+    <aura:registerEvent name="ChangeCaseStepEvent" type="c:ChangeCaseStepEvent"/>    
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+        
+	<aura:attribute name="spinnerCounter" type="Integer" default="0"/>
+    <c:SpinnerComponent aura:id="spinnerComponent" spinnerCounter="{!v.spinnerCounter}"/>    
+    
+       <lightning:card variant="Narrow" title="Intese e Documenti" iconName="standard:account" footer=" ">
+            <p class="slds-p-horizontal_small">     
+                
+    
+                <br></br><br></br>
+                <div class="slds-box">
+                  <p>
+                     <lightning:card variant="Narrow" title="Documentazione generata" iconName="action:description" footer=" ">                      
+                       <table class="slds-table slds-table--bordered">  
+                         <tbody>
+                           <aura:iteration items="{!v.inteseRecuperate}" var="intesa" indexVar="key">  
+                               <tr>  
+                                   <td> {!intesa.key} </td>  <!--nome intesa -->
+                                   <aura:if isTrue="{!intesa.value == ''}">
+                                       <lightning:buttonIcon iconName="utility:close" onclick="{! c.getPDF_KO }" />
+                                       <!--<lightning:buttonIcon iconName="utility:check" value="{!intesa.value}" onclick="{! c.getPDF }" />-->
+                                       <!--lightning:button variant="base" label="Error PDF"/-->
+                                       <aura:set attribute="else">
+                                           <a id="{!intesa.key}" href="{!v.base64url + intesa.value}" download="{!intesa.key + '.pdf'}"><lightning:buttonIcon iconName="utility:check" value="{!intesa.value}" /></a>
+                                           <!--<lightning:buttonIcon variant="brand" iconName="utility:add" iconPosition="left" value="{!intesa.value}" onclick="{! c.getPDF }" />-->
+                                           <!--<lightning:button class="slds-p-top_x-small slds-p-buttom_x-small" variant="base" value="{!intesa.value}" label="Scarica File" onclick="{! c.getPDF }"/>-->
+                                       	   <!--<lightning:icon iconName="standard:task2" size="x-small" class="icon" value="{!intesa.value}"  onclick="{! c.getPDF }"/>-->
+                                       </aura:set>
+                                   </aura:if>
+                                   
+                               </tr>  
+                           </aura:iteration>  
+                         </tbody>
+                       </table>  
+                     </lightning:card>
+                  </p>
+                </div>            
+                
+                <br></br>  
+                
+                <lightning:button label="Inserisci documenti identità per i collegati"  
+                                  variant="destructive"
+                                  class="slds-m-top_medium"
+                                  onclick="{!c.actionButtonIDReferenti}"
+                                  disabled="{!v.buttonsDisabled}"/>             
+                <br></br>            
+                
+                <aura:if isTrue="{!v.showSezioneDocIdentitaCollegati}">     
+                    <br></br> <br></br> 
+                    <lightning:card variant="Narrow" title="Collegati - Inserisci/Aggiorna il relativo documento d'identità" iconName="standard:contact" footer=" ">                           
+                            <p class="slds-p-horizontal_small">  
+                                    <lightning:datatable
+                                            keyField="id"
+                                            data="{! v.collegatiList}"
+                                            columns="{! v.columnsCollegati }"
+                                            hideCheckboxColumn="true"
+                                            onrowaction="{! c.handleRowActionCollegati }"/>
+                            </p>
+                    </lightning:card> 
+    
+                    
+                    <!--MODALE-->                
+                         <aura:if isTrue="{!v.isOpen}">
+                             
+                          <div class="slds-modal slds-fade-in-open">
+                              <div class="slds-modal__container">
+    
+                                  <div class="slds-modal__content slds-p-around--medium">
+    
+                                      <lightning:recordEditForm aura:id="FormCollegato" recordId="{! v.selectedCollegatoId}" objectApiName="Contact" onerror="{!c.handleError}" >
+                             
+                                            <lightning:layout horizontalAlign="spread" multipleRows="true">
+            
+                                                        <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="12">
+                                                            <lightning:inputField fieldName="Tipo_Documento__c" />
+                                                        </lightning:layoutItem>            
+                                                        
+                                                        
+                                                        <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                                                            <lightning:inputField fieldName="Numero_Documento__c" />
+                                                        </lightning:layoutItem>   
+                                                
+                                                        <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                                                            <lightning:inputField fieldName="Ente_Doc_ID__c" />
+                                                        </lightning:layoutItem>            
+                                                        
+                                                        
+                                                
+                                                        <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="12">
+                                                            <c:XCSProvinceComuniPicklist 	  aura:id="ProvincePicklist"
+                                                                                              enabledProvincia="true"
+                                                                                              provinciaSelezionata="{!v.provinciaRilascio}"
+                                                                                              cittaSelezionata="{!v.luogoRilascio}"
+                                                                                              labelCitta="Città di rilascio"
+                                                                                              labelProvincia="Provincia di rilascio"
+                                                                                              />
+                                                        </lightning:layoutItem>                                           
+                                                        
+                                                        
+                                                        <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                                                            <lightning:inputField fieldName="Data_Rilascio__c" />
+                                                        </lightning:layoutItem> 
+                                                
+                                                        <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                                                            <lightning:inputField fieldName="Data_Scadenza__c" />
+                                                        </lightning:layoutItem> 
+                                                
+    
+                                                                                                   
+    
+                                                        <lightning:layout horizontalAlign="left">
+                                                            <lightning:layoutitem padding="around-small">
+                                                                <lightning:button label="Aggiorna dati"  
+                                                                                  variant="destructive"
+                                                                                  class="slds-m-top_medium"
+                                                                                  onclick="{!c.salvaDatiIDCollegato}"/>                                             
+                                                                
+                                                            </lightning:layoutitem>
+                                                        </lightning:layout>
+                                                                                           
+                                          
+                                        </lightning:layout>
+                                          
+                                          
+                                          
+                                     </lightning:recordEditForm>
+                                              
+                                  </div>
+                                  <div class="slds-modal__footer">
+                                      <lightning:button variant="neutral" iconName="utility:close" label="Chiudi"
+                                                        onclick="{!c.closeModal}"/>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="slds-backdrop slds-backdrop_open"></div>
+                        </aura:if>                   
+                    
+                    
+                    
+                </aura:if>
+                
+                
+                <br></br>
+                                  
+                        <c:SFAConvenzionamentoBottoneAnnullaAttivita buttonLabel="Annulla Convenzione"
+                                                                     nameListViewToNavigate="New_Dealer_Acquisition"
+                                                                     recordId="{!v.recordId}"/>  
+                
+                
+                        <lightning:layout multipleRows="true">
+                                <lightning:layoutItem size="" padding="around-small"  class="slds-p-left_none"> 
+                                    <c:SFAConvenzionamentoBottoniAvantiIndietro isBottoneAvantiVisible="false"
+                                                                                newStepIndietro="NewDealerAcquisition_VerificaAnagraficaECollegati" 
+                                                                                recordId="{!v.recordId}"/>                                
+                                </lightning:layoutItem>
+                                <lightning:layoutItem size="1" padding="around-small" class="slds-p-left_none"> 
+                                    <lightning:button label="Prosegui"  
+                                                      variant="destructive"
+                                                      class="slds-m-top_medium"
+                                                      onclick="{!c.actionButtonProsegui}"/>                                 
+                                </lightning:layoutItem>
+                        </lightning:layout>                        
+                           
+                
+            </p>
+        </lightning:card> 		
+        
+</aura:component>

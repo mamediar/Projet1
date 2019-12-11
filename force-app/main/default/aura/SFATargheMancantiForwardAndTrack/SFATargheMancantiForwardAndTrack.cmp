@@ -1,0 +1,124 @@
+<aura:component controller="SFATargheMancantiForwardAndTrackCtrller" implements="force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes">
+
+    <aura:registerEvent name="appEvent" type="ltng:sendMessage"/>
+     <aura:attribute name="objectId" type="String" />
+
+     <aura:handler name="init" value="{! this }" action="{! c.doInit }"/>
+
+    <aura:attribute name="listaEsiti" type="Object[]" />
+    <aura:attribute name="esitoSelezionato" type="String" />
+    <aura:attribute name="notaAgenziaItalia" type="String" />
+
+    <aura:attribute name="numeroPratica" type="String" />
+    <aura:attribute name="targa" type="String" />
+    <aura:attribute name="dataLiquidazione" type="String" />
+    <aura:attribute name="notaFiliale" type="String" />
+    <aura:attribute name="cliente" type="String" />
+    <aura:attribute name="descrizioneBene" type="String" />
+    <aura:attribute name="telaio" type="String" />
+
+    <aura:attribute name="isComponentOpen" type="Boolean" default="false" />
+    <aura:attribute name="isModalOKOpen" type="Boolean" default="false" />
+    <aura:attribute name="isModalKOOpen" type="Boolean" default="false" />
+    <aura:attribute name="isBlankPageOpen" type="Boolean" default="false" />
+
+
+    <aura:if isTrue="{!v.isComponentOpen}">
+
+        <div><b>Forward &amp; Track</b></div>
+
+        
+        
+        <table class="slds-m-top--medium">
+            <tr>
+                <td class="slds-size_1-of-3 slds-p-right_small">
+                    <lightning:input type="text" value="{!v.numeroPratica}" label="Pratica" disabled="true"/>
+                </td>
+                <td class="slds-size_1-of-3 slds-p-right_small">
+                    <lightning:input type="text" value="{!v.cliente}" label="Cliente" disabled="true"/>
+                </td>
+                <td class="slds-size_1-of-3 slds-p-right_small">
+                    <lightning:input type="text" value="{!v.targa}" label="Targa" disabled="true"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="slds-size_1-of-3 slds-p-right_small">
+                    <lightning:input type="text" value="{!v.telaio}" label="Telaio" disabled="true"/>
+                </td>
+                <td class="slds-size_1-of-3 slds-p-right_small">
+                    <lightning:input type="text" value="{!v.dataLiquidazione}" label="Data Liquidazione" disabled="true"/>
+                </td>
+                <td class="slds-size_1-of-3 slds-p-right_small">
+                    <lightning:input type="text" value="{!v.descrizioneBene}" label="Descrizione Bene" disabled="true"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <lightning:textarea aura:id="notaFilialeId" label="Nota Filiale" value="{!v.notaFiliale}" maxlength="1000" disabled="true" />
+                </td>
+            </tr>
+        </table>
+    
+        <ui:inputSelect class="slds-m-top_medium" aura:id="listaEsitiId" change="{!c.handleSelezionaEsito}">
+            <aura:iteration items="{!v.listaEsiti}" var="l">
+                <ui:inputSelectOption text="{!l.text}" label="{!l.label}" value="{!l.value}"/>
+            </aura:iteration>
+        </ui:inputSelect>
+    
+        <lightning:textarea aura:id="notaAgenziaItaliaId" label="Nota" value="{!v.notaAgenziaItalia}" maxlength="1000" />
+    
+        <lightning:button class="slds-m-top_medium" variant="destructive" label="Completa" title="Finish" onclick="{! c.handleCompletaButton }"/>
+
+    </aura:if>
+
+    <aura:if isTrue="{!v.isModalOKOpen}">
+        
+            <div role="alertdialog" tabindex="-1" aria-labelledby="prompt-heading-id" aria-describedby="prompt-message-wrapper" class="slds-modal slds-fade-in-open slds-modal--prompt">
+                    <div class="slds-modal__container">
+                      <div class="slds-modal__header slds-theme--success slds-theme--alert-texture">
+                        <h2 class="slds-text-heading--medium" id="prompt-heading-id">Operazione completata</h2>
+                      </div>
+                      <div class="slds-modal__content slds-p-around--medium">
+                        <div>
+                          <p>Esito e nota salvati con successo.</p>
+                        </div>
+                      </div>
+                      <div class="slds-modal__footer slds-theme--default">
+                        <button class="slds-button slds-button--destructive" onclick="{!c.closesModals}">Chiudi</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="slds-backdrop slds-backdrop--open"></div>
+
+            </aura:if>
+
+            <aura:if isTrue="{!v.isModalKOOpen}">
+
+                    <div role="alertdialog" tabindex="-1" aria-labelledby="prompt-heading-id" aria-describedby="prompt-message-wrapper" class="slds-modal slds-fade-in-open slds-modal--prompt">
+                            <div class="slds-modal__container">
+                              <div class="slds-modal__header slds-theme--warning slds-theme--alert-texture">
+                                <h2 class="slds-text-heading--medium" id="prompt-heading-id">Attenzione</h2>
+                              </div>
+                              <div class="slds-modal__content slds-p-around--medium">
+                                <div>
+                                  <p>La richiesta è già stata esitata.</p>
+                                </div>
+                              </div>
+                              <div class="slds-modal__footer slds-theme--default">
+                                <button class="slds-button slds-button--destructive" onclick="{!c.closesModals}">Chiudi</button>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="slds-backdrop slds-backdrop--open"></div>
+                
+            </aura:if>
+
+            <aura:if isTrue="{!v.isBlankPageOpen}">
+
+                    
+
+            </aura:if>
+
+
+
+</aura:component>

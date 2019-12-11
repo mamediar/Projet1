@@ -1,0 +1,237 @@
+<aura:component controller="SFAListaDaSedeAttivitaFilialeController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="toastMsg" type="String"/>
+    <aura:attribute name="showSpinner" type="Boolean" default="false"/>
+    <aura:attribute name="selectedItem" type="Boolean" default="false"/>
+    
+    <!-- PARENT CASE -->
+    <aura:attribute name="caseList" type="Object"/>
+    <aura:attribute name="headerColumns" type="List"/>
+    
+    <!-- CHILD CASE -->
+    <aura:attribute name="caseChildList" type="List"/>
+    <aura:attribute name="headerColumnsChild" type="List"/>
+    
+    <!-- MODAL -->
+    <aura:attribute name="showModal" type="Boolean" default="false"/>
+    <aura:attribute name="showEsitazioneAttivita" type="Boolean" default="false"/>
+    <aura:attribute name="showDettaglioDealer" type="Boolean" default="false"/>
+    <aura:attribute name="showRivediAttivita" type="Boolean" default="false"/>
+    <aura:attribute name="showUtenzeNominative" type="Boolean" default="false"/>
+    <aura:attribute name="caseChildSelected" type="Object"/>
+    
+    <!--<aura:attribute name="reload" type="Object"/>-->
+
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    <aura:handler name="change" value="{!v.showModal}" action="{!c.reloadList}"/>
+
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    <div class="slds-box slds-theme_default slds-m-bottom_small">
+        <br/>
+        <div class="slds-p-horizontal_small slds-size_1-of-1">
+            <div class="slds-text-heading_small boldtext slds-m-bottom_small">Lista Attività Dealer </div>
+        </div>
+        
+        <!-- LISTA CASE PADRE -->
+        <div style="max-height: fit-content;">
+            <div class="slds-is-relative"><!--style="height: 500px"-->
+                <lightning:datatable
+                                     aura:id="table"
+                                     keyField="Id"
+                                     data="{!v.caseList}"
+                                     columns="{!v.headerColumns}"
+                                     
+                                     maxRowSelection="1"
+                                     onrowselection="{!c.getChild}"
+                                     autocomplete="off"/>
+                
+                <aura:if isTrue="{!v.showSpinner}">
+                    <lightning:spinner alternativeText="Loading" size="large"/>
+                </aura:if>
+            </div>
+        </div>
+        <br/>
+        <br/>
+        <aura:if isTrue="{!v.selectedItem}">
+            
+            <!-- LISTA CASE FIGLI -->
+            <div style="max-height: fit-content;">
+                <div class="slds-is-relative">
+                   
+                    <aura:if isTrue="{!v.caseChildList.length > 0}">
+                        
+                        <aura:iteration items="{!v.caseChildList}" var="child" indexVar="index">
+                            <!--<div class="test slds-box slds-theme_default slds-m-bottom_small" style="position:relative;">-->
+                            <div class="test slds-box slds-theme_default slds-m-bottom_small">
+                                <!--<div class="toHover" style="height: 100px">-->
+                                    <div>
+                                        <aura:if isTrue="{!or(child.Priority == 'Bassa', child.Priority == 'Low')}">
+                                            <span class="bk-color-green">{!child.Priority}</span>
+                                        </aura:if>
+                                        <aura:if isTrue="{!or(child.Priority == 'Media', child.Priority == 'Medium')}">
+                                            <span class="bk-color-orange">{!child.Priority}</span>
+                                        </aura:if>
+                                        <aura:if isTrue="{!or(child.Priority == 'Alta', child.Priority == 'High')}">
+                                            <span class="bk-color-red">{!child.Priority}</span>
+                                        </aura:if>
+                                        <a class="paddLeft0-5"> Scadenza: {!child.DueDate__c}</a>
+                                    </div>
+                                    
+                                    <hr></hr>
+                                    <div class="slds-grid"> <!--font-class-->
+                                        <div class="slds-col slds-size_1-of-6">
+                                            <b><!--WWGField_Activity_activity_type_title-->
+                                                {!child.SFA_ListeCaricate__r.Tipo_Attivita__r.Descrizione__c}
+                                                <br/>
+                                                <aura:if isTrue="{!child.SFA_ListeCaricate__c != null}">
+                                                    [{!child.SFA_ListeCaricate__r.Nome_Lista__c}]
+                                                </aura:if>
+                                            </b>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-6 paddLeft0-5">
+                                            <b><!--WWGField_Activity_dealer_name-->
+                                                {!child.DealerName__c}
+                                            </b>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-6 paddLeft0-5">
+                                            <b><!--WWGField_Activity_branch_name-->
+                                                UTR:
+                                                <br/> 
+                                                {!child.Branch__r.Name}
+                                            </b>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-6 paddLeft0-5">
+                                            <b><!--WWGField_Activity_zone_name-->
+                                                ZONA: 
+                                                <br/>
+                                                {!child.Account.ShippingCity}
+                                            </b>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-6 paddLeft0-5">
+                                            <b><!--WWGField_Activity_dealer_city-->
+                                                {!child.Account.ShippingStreet}
+                                                <br/>
+                                                {!child.Account.ShippingPostalCode}
+                                            </b>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-6 align-center">
+                                            <button class="slds-button slds-button_brand" data-index="{!index}" name="completa" onclick="{!c.openModal}">Completa</button>
+                                        </div>
+                                        
+                                    </div>
+                                    <!--<div class="show slds-box slds-theme_default slds-m-bottom_small" style="z-index:100;position:absolute;width:100%;height:100%;display:none">-->
+                                    
+                                </div>
+                                <!--<div class="show" style="height: 100px">
+                                    
+                                    <div class="font-class">
+                                        <aura:if isTrue="{!child.SFA_ListeCaricate__r.SFA_TipologiaLista__c != null}">
+                                            {!child.SFA_ListeCaricate__r.Tipo_Attivita__r.Name}
+                                        </aura:if>
+                                    </div>
+                                    <br/>
+                                    <br/>
+                                    <div style="display:flex">
+                                        <div class="slds-col slds-size_2-of-5 top-margin">
+                                            BUTTON RIVEDI
+                                            <lightning:icon class="color-red" iconName="utility:preview" size="xx-small"/>
+                                            <a class="color-red slds-m-left_xx-small" data-index="{!index}" name="rivedi" onclick="{!c.openModal}">Rivedi</a>
+                                            
+                                            <lightning:icon class="color-red paddLeft0-5" iconName="utility:search" size="xx-small"/>
+                                            <a class="color-red slds-m-left_xx-small" data-index="{!index}" name="dettaglio" onclick="{!c.openModal}">Dettaglio Dealer</a>
+                                        </div>
+                                        
+                                        <div class="slds-col slds-size_1-of-5"></div>
+                                        <div class="slds-col slds-size_1-of-5"></div>
+                                        <div class="slds-col slds-size_1-of-5 align-center">
+                                            <button class="slds-button slds-button_brand" data-index="{!index}" name="completa" onclick="{!c.openModal}">Completa</button>
+                                        </div>
+                                    </div>
+                                </div>-->
+                            <!--</div>-->
+                            
+                        </aura:iteration>
+                        <aura:set attribute="else">
+                            <div class="slds-align_absolute-center">            
+                                Nessun risultato trovato.
+                            </div>
+                        </aura:set>
+                    </aura:if>
+                    
+                    
+                    <aura:if isTrue="{!v.showSpinner}">
+                        <lightning:spinner alternativeText="Loading" size="large"/>
+                    </aura:if>
+                </div>
+            </div>
+        </aura:if>
+        
+        
+        <!-- MODAL -->
+        <aura:if isTrue="{!v.showModal}">
+            <div aura:id="modalDiv">
+                <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                         aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                    <div class="slds-modal__container slds-is-relative modal-width">
+                        <header class="slds-modal__header">
+                            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                    title="Close" onclick="{!c.goBack}">
+                                <lightning:icon iconName="utility:close" size="small" alternativeText="Close"
+                                                variant="inverse" />
+                            </button>
+                            
+                            <!--HEADER TITLE MODAL-->
+                            <aura:if isTrue="{!v.showEsitazioneAttivita}">
+                                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Edit Activity</h2>
+                            </aura:if>        
+                            <aura:if isTrue="{!v.showDettaglioDealer}">
+                                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Dealer Info</h2>
+                            </aura:if> 
+                            <aura:if isTrue="{!v.showRivediAttivita}">
+                                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">View Activity</h2>
+                            </aura:if> 
+                            <aura:if isTrue="{!v.showUtenzeNominative}">
+                                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Edit Activity Utenze Nominative</h2>
+                            </aura:if>
+                            <!--END HEADER TITLE MODAL-->
+                            
+                        </header>
+
+                        <!--BODY MODAL-->
+                        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                            <aura:if isTrue="{!v.showEsitazioneAttivita}">
+                                <c:SFAListaDaSedeEsitazioneAttivita caseChildSelected="{!v.caseChildSelected}" showModal="{!v.showModal}" ></c:SFAListaDaSedeEsitazioneAttivita>
+                            </aura:if>        
+                            <aura:if isTrue="{!v.showDettaglioDealer}">
+                                <!--TODO: DETTAGLIO DEALER-->
+                                <force:recordView recordId="{!v.caseChildSelected.AccountId}" />
+                            </aura:if> 
+                            <aura:if isTrue="{!v.showRivediAttivita}">
+                                <!--TODO: RIVEDI ATTIVITA-->
+                            </aura:if>
+                            <aura:if isTrue="{!v.showUtenzeNominative}">
+                                <c:SFAListaDaSedeUtenzeNominative caseChildSelected="{!v.caseChildSelected}"></c:SFAListaDaSedeUtenzeNominative>
+                            </aura:if>
+                        </div>
+                        <!--END BODY MODAL-->
+                        
+                        <footer class="slds-modal__footer">
+                            <button class="slds-button slds-button_neutral" onclick="{!c.goBack}">Chiudi</button>
+                            <aura:if isTrue="{!v.showUtenzeNominative}">
+                                <button class="slds-button slds-button_neutral" onclick="{!c.goEsitaAttivita}">Continua</button>
+                            </aura:if>
+                        </footer>
+                        
+                        
+                    </div>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open"></div>
+                
+            </div>
+
+        </aura:if>
+        <!-- END MODAL -->
+        
+    </div>
+</aura:component>

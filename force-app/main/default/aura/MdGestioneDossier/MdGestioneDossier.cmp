@@ -1,0 +1,214 @@
+<!--
+  @Component Name     : MdGestioneDossier.cmp
+  @Description        : This component is created to display the detail of a Dossier__c, which will not be processed because, as expected, the Dossier__c will treat with the "Convenzionamento" process.
+  @Author             : CISSE Ahmet
+  @Group              : 
+  @Last Modified By   : CISSE Ahmet
+  @Last Modified On   : 09/08/2019 à 10:01:25
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    08/08/2019 à 12:53:15   CISSE Ahmet     Initial Version
+-->
+<aura:component controller="MdGestioneDossierController" implements="flexipage:availableForRecordHome,force:appHostable,force:lightningQuickAction,force:hasRecordId" access="global">
+    <!-- handler -->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <!-- attributes of the component -->
+    <aura:attribute type="String" name="RagioneSocialeDealer__c" />
+    <aura:attribute type="String" name="CodiceOCSDealer__c" />
+    <aura:attribute type="String" name="PartitaIVADealer__c" />
+    <aura:attribute type="String" name="Autonomia__c" />
+    <aura:attribute type="String" name="Motivo__c" />
+    <aura:attribute type="String" name="DataRiferimento__c" />
+    <aura:attribute type="String" name="getCodice_Cliente__c" />
+    <aura:attribute type="String" name="name" />
+    <aura:attribute type="String" name="DealerPersonaRiferimento__c" />
+    <aura:attribute type="String" name="DealerPersonaRiferimentoCellulare__c" />
+    <aura:attribute type="String" name="Dealership_Code__c" />
+    <aura:attribute type="String" name="Last_Status__c" />
+    <aura:attribute type="Boolean" name="showDetaglioConvenzionamento" default="false" />
+    <!-- form -->
+    <div class="slds-form__item" role="listitem">
+        <fieldset class="slds-form-element slds-form-element_compound slds-is-required slds-is-editing slds-form-element_stacked">
+            <div class="slds-form-element__control">
+                <div class="slds-form-element__row">
+                    <div class="slds-size_1-of-1">
+                        <div class="slds-form-element">
+                            <span class="slds-file-selector__text slds-medium-show">MD - GESTIONE DOSSIER</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-form-element__row">
+                    <div class="slds-size_1-of-4">
+                        <div class="slds-form-element">
+                            Ragione Sociale
+                        </div>
+                    </div>
+                    <div class="slds-size_1-of-4">
+                        {!v.RagioneSocialeDealer__c}
+                    </div>
+                    <div class="slds-size_2-of-4">
+
+                    </div>
+                </div>
+                <div class="slds-form-element__row">
+                    <div class="slds-size_1-of-4">
+                        <div class="slds-form-element">
+                            Codice OCS
+                        </div>
+                    </div>
+                    <div class="slds-size_1-of-4">
+                        {!v.CodiceOCSDealer__c}
+                    </div>
+                    <div class="slds-size_2-of-4">
+
+                    </div>
+                </div>
+                <div class="slds-form-element__row">
+                    <div class="slds-size_1-of-4">
+                        <div class="slds-form-element">
+                            P.IVA
+                        </div>
+                    </div>
+                    <div class="slds-size_1-of-4">
+                        {!v.PartitaIVADealer__c}
+                    </div>
+                    <div class="slds-size_2-of-4">
+
+                    </div>
+                </div>
+                <div class="slds-form-element__row">
+                    <div class="slds-size_1-of-4">
+                        <div class="slds-form-element">
+                            Autonomia
+                        </div>
+                    </div>
+                    <div class="slds-size_1-of-4">
+                        {!v.Autonomia__c}
+                    </div>
+                    <div class="slds-size_2-of-4">
+
+                    </div>
+                </div>
+                <div class="slds-form-element__row">
+                    <div class="slds-size_1-of-4">
+                        <div class="slds-form-element">
+                            Motivo
+                        </div>
+                    </div>
+                    <div class="slds-size_1-of-4">
+                        {!v.Motivo__c}
+                    </div>
+                    <div class="slds-size_2-of-4">
+
+                    </div>
+                </div>
+                <div class="slds-form-element__row">
+                    <div class="slds-size_1-of-4">
+                        <div class="slds-form-element">
+                            Data ultima attivazione
+                        </div>
+                    </div>
+                    <div class="slds-size_1-of-4">
+                        {!v.DataRiferimento__c}
+                    </div>
+                    <div class="slds-size_2-of-4">
+
+                    </div>
+                </div>
+                <div class="slds-form-element__row">
+                    <div class="slds-size_1-of-4">
+                        <div class="slds-form-element">
+                            <lightning:button class="slds-button slds-button_neutral" aura:id="btn-escluso" disabled="false" label="Detaglio Convenzionato" onclick="{! c.handleDettaglioConvenzionatoClick }" />
+                        </div>
+                    </div>
+                    <div class="slds-size_1-of-4">
+                    </div>
+                    <div class="slds-size_2-of-4">
+                    </div>
+                </div>
+                <aura:if isTrue="{!v.showDetaglioConvenzionamento == true}">
+                    <div class="slds-form-element__row">
+                        <div class="slds-size_1-of-4">
+                            <div class="slds-form-element">
+                                Name
+                            </div>
+                        </div>
+                        <div class="slds-size_1-of-4">
+                            {!v.name}
+                        </div>
+                        <div class="slds-size_2-of-4">
+
+                        </div>
+                    </div>
+                    <div class="slds-form-element__row">
+                        <div class="slds-size_1-of-4">
+                            <div class="slds-form-element">
+                                Codice Cliente
+                            </div>
+                        </div>
+                        <div class="slds-size_1-of-4">
+                            {!v.getCodice_Cliente__c}
+                        </div>
+                        <div class="slds-size_2-of-4">
+
+                        </div>
+                    </div>
+                    <div class="slds-form-element__row">
+                        <div class="slds-size_1-of-4">
+                            <div class="slds-form-element">
+                                Dealer Persona Riferimento
+                            </div>
+                        </div>
+                        <div class="slds-size_1-of-4">
+                            {!v.DealerPersonaRiferimento__c}
+                        </div>
+                        <div class="slds-size_2-of-4">
+
+                        </div>
+                    </div>
+                    <div class="slds-form-element__row">
+                        <div class="slds-size_1-of-4">
+                            <div class="slds-form-element">
+                                Dealer Persona Riferimento Cellulare
+                            </div>
+                        </div>
+                        <div class="slds-size_1-of-4">
+                            {!v.DealerPersonaRiferimentoCellulare__c}
+                        </div>
+                        <div class="slds-size_2-of-4">
+
+                        </div>
+                    </div>
+                    <div class="slds-form-element__row">
+                        <div class="slds-size_1-of-4">
+                            <div class="slds-form-element">
+                                Dealership Code
+                            </div>
+                        </div>
+                        <div class="slds-size_1-of-4">
+                            {!v.Dealership_Code__c}
+                        </div>
+                        <div class="slds-size_2-of-4">
+
+                        </div>
+                    </div>
+                    <div class="slds-form-element__row">
+                        <div class="slds-size_1-of-4">
+                            <div class="slds-form-element">
+                                Last Status
+                            </div>
+                        </div>
+                        <div class="slds-size_1-of-4">
+                            {!v.Last_Status__c}
+                        </div>
+                        <div class="slds-size_2-of-4">
+
+                        </div>
+                    </div>
+                </aura:if>
+            </div>
+        </fieldset>
+    </div>
+</aura:component>

@@ -1,0 +1,25 @@
+<aura:component controller="PermissionSetTestController"
+                implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" 
+                access="global" >
+    <aura:attribute name="showCmp" type="Boolean" default="false"/>
+    
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    
+    <lightning:button variant="Destructive"
+                      label='Permission Set Test'
+                      onclick="{!c.handleClick}"/>
+    
+    <aura:if isTrue="{!v.showCmp}">
+        <lightning:card>
+            <aura:set attribute="title">
+                <lightning:icon iconName="action:approval" size="large" class="slds-m-right_medium"/>
+                Complimenti!
+            </aura:set>
+            <div class="slds-m-left_medium">
+                Hai i permessi per accedere a questa funzionalità!
+            </div>
+                               
+        </lightning:card>
+    </aura:if>
+    
+</aura:component>

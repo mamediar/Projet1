@@ -1,0 +1,44 @@
+{  
+   "resultCode":0,
+   "resultMessage":"Ok",
+   "recuperaTitolariEffettiviResponse":{  
+      "elencoTitolari":[  
+         {  
+            "codAnaSecondaria":"30074",
+            "tipoAnaSecondaria":"T",
+            "tipoLegame":"S",
+            "assenzaLegame":"   ",
+            "dataInserimento":"20110601",
+            "dataChiusura":"20161004",
+            "dataAnnullo":"0",
+            "cert":" ",
+            "certDataFine":"0",
+            "certNote":"                                                            "
+         },
+         {  
+            "codAnaSecondaria":"30075",
+            "tipoAnaSecondaria":"T",
+            "tipoLegame":"S",
+            "assenzaLegame":"   ",
+            "dataInserimento":"20110601",
+            "dataChiusura":"20161020",
+            "dataAnnullo":"0",
+            "cert":" ",
+            "certDataFine":"0",
+            "certNote":"                                                            "
+         },
+         {  
+            "codAnaSecondaria":"16968496",
+            "tipoAnaSecondaria":"T",
+            "tipoLegame":" ",
+            "assenzaLegame":"   ",
+            "dataInserimento":"20161020",
+            "dataChiusura":"0",
+            "dataAnnullo":"0",
+            "cert":" ",
+            "certDataFine":"0",
+            "certNote":"                                                            "
+         }
+      ]
+   }
+}

@@ -1,0 +1,78 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" 
+                controller="SFACommodity_Controller" access="global" >
+    
+    
+<!-- ALLEGATI -->
+    <aura:attribute name="file" type="Object"/>
+    <aura:attribute name="elencoFile" type="List" default="['label':'TEST', 'value':'TEST']" />
+
+    <aura:attribute name="accept" type="List" default="['.*']"/>
+    <aura:attribute name="multiple" type="Boolean" default="false"/>
+    <aura:attribute name="disabled" type="Boolean" default="false"/>    
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+
+    <lightning:fileUpload  name="fileUploader"
+                           label= "Allega documento"
+                           multiple="{!v.multiple}"
+                           accept="{!v.accept}"
+                           disabled="{!v.disabled}"
+                           recordId="5005E000005Vd3yQAC"
+                           onuploadfinished="{! c.handleUploadFinished }"/>
+
+
+<!--    
+    <lightning:fileUpload  name="fileUploader"
+                          label= "Allega documento"
+                          disabled="true"
+                          recordId="5005E000005Vd3yQAC"
+                          onuploadfinished="{! c.handleUploadFinished }"/>
+-->    
+<!--    <aura:if isTrue="{!not(empty(v.elencoFile))}">
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th>Download</th>
+                    <th>Nome File</th>
+                    <th>Data Inserimento</th>
+                    <aura:if isTrue="{!not(v.selectedDiniego.Caseid__r.Status == 'Gestito')}">
+                        <th>Elimina</th>
+                    </aura:if>
+                </tr>
+            </thead>
+            <tbody>
+                <aura:if isTrue="{!v.refresh}">
+                    
+                    <aura:iteration items="{!v.elencoFile}" var="item" indexVar="index" >
+                        <tr>
+                            <td>
+                                <span class="slds-icon_container slds-icon-utility-arrowdown clickable" onclick="{!c.downloadfile}" data-id="{!item.ContentDocumentId}">
+                                    <lightning:icon iconName="action:download" alternativeText="Download" size="x-small"/>
+                                </span>
+                            </td>
+                            <td>{!item.ContentDocument.Title}</td>
+                            <td>
+                                <p><lightning:formattedDateTime value="{!item.ContentDocument.CreatedDate}" year="numeric" month="numeric" day="numeric" hour="2-digit" minute="2-digit" hour12="false"/></p>
+                            </td>
+                            <aura:if isTrue="{!not(v.selectedDiniego.Caseid__r.Status == 'Gestito')}">
+                                <td> 
+                                    <span class="slds-icon_container slds-icon-utility-arrowdown clickable" onclick="{!c.cancellafile}" data-id="{!item.ContentDocumentId}">
+                                        <lightning:icon iconName="action:close" alternativeText="Elimina" size="x-small"/>
+                                    </span>
+                                </td>
+                            </aura:if>
+                        </tr>    
+                    </aura:iteration>
+                    
+                </aura:if>
+                
+            </tbody>
+        </table>
+        <aura:set attribute="else">
+            <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_info" role="alert">
+                <h2>Non sono presenti allegati</h2>
+            </div>
+        </aura:set>
+    </aura:if>
+-->
+
+</aura:component>

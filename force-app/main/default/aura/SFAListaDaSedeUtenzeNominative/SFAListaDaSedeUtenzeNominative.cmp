@@ -1,0 +1,55 @@
+<aura:component controller="SFASottoscrizioneUtenzaHelper" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes" access="global">
+
+    <aura:attribute name="caseChildSelected" type="Object"/>
+    <aura:attribute name="base64url" type="String" default="data:application/octet-stream;base64," /> 
+    <aura:attribute name="pdfRecuperato" type="Map"/>
+    <aura:attribute name="showSpinner" type="Boolean" default="false"/>
+    <aura:attribute name="disable" type="Boolean" default="false"/>
+    <aura:attribute name="bodybase" type="String"/>
+
+    <aura:handler name="init" action="{!c.callPDF}" value="{!this}"/>
+
+    
+    
+    <lightning:card variant="Narrow" title="Download PDF" iconName="action:description"> 
+        <aura:if isTrue="{!v.showSpinner}">
+            <lightning:spinner alternativeText="Loading" size="large"/>
+        </aura:if>                     
+        <table class="slds-table slds-table--bordered">  
+          <tbody>
+            <aura:iteration items="{!v.pdfRecuperato}" var="pdfRec" indexVar="key">  
+                <tr>  
+                    <td> {!pdfRec.key} </td>  
+                    <td>
+                        <div class="slds-grid slds-grid_align-end">
+                        <aura:if isTrue="{!pdfRec.value == ''}">
+                            <lightning:buttonIcon name="{!pdfRec.key}" iconName="utility:close" onclick="{! c.getPDF_KO }" />
+                            <aura:set attribute="else">
+                            <a id="{!pdfRec.key}" href="{!v.base64url + pdfRec.value}" download="{!pdfRec.key + '.pdf'}">
+                            <div data-index="!key">
+                                <lightning:button name="{!pdfRec.key}" label="Download" variant="brand" value="{!pdfRec.value}" disabled="{!v.disable}" onclick="{!c.setDisable}"/>
+                            </div>
+                            </a>
+                            </aura:set>
+                        </aura:if>
+                        </div>
+                    </td> 
+                </tr>  
+            </aura:iteration>  
+             
+              <tr>
+                  <td>Elenco Incaricati</td>                  
+                 <td>
+                    <a id="idElencoIncPDF" href="{!v.base64url +v.bodybase}" download="DownloadPDFIncaricati.pdf">
+                    <div class="slds-grid slds-grid_align-end">
+                             <lightning:button name="DownloadPDFIncaricati" label="Download" variant="brand" value="Download"/>
+                    </div>
+                    </a>
+                   
+                 </td>
+             </tr>
+         </tbody>
+        </table>  
+      </lightning:card>
+
+</aura:component>

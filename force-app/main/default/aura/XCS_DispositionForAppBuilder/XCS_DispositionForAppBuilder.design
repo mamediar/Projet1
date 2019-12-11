@@ -1,0 +1,20 @@
+<design:component>
+        <design:attribute name="rootExternalId" label="Root disposition external id" description="Inserire qui l'external id della disposition da cui deve partire l'alberatura delle disposition" required="true"/>
+        <design:attribute name="disposition1Preselection" label="Preselezione disposition di primo livello" description="Inserire qui l'external id della disposition da preselezionare sul primo livello di selezione" required="false"/>
+        <design:attribute name="hideLevel1" label="Nascondi disposition di livello 1" description="Scegliere se nascondere la disposition di livello 1" required="true"/>
+        <design:attribute name="disposition2Preselection" label="Preselezione disposition di secondo livello" description="Inserire qui l'external id della disposition da preselezionare sul secondo livello di selezione" required="false"/>
+        <design:attribute name="hideLevel2" label="Nascondi disposition di livello 2" description="Scegliere se nascondere la disposition di livello 2" required="true"/>
+        <design:attribute name="disposition3Preselection" label="Preselezione disposition di terzo livello" description="Inserire qui l'external id della disposition da preselezionare sul terzo livello di selezione" required="false"/>
+        <design:attribute name="hideLevel3" label="Nascondi disposition di livello 3" description="Scegliere se nascondere la disposition di livello 3" required="true"/>
+        <design:attribute name="disposition4Preselection" label="Preselezione disposition di quarto livello" description="Inserire qui l'external id della disposition da preselezionare sul quarto livello di selezione" required="false"/>
+        <design:attribute name="hideLevel4" label="Nascondi disposition di livello 4" description="Scegliere se nascondere la disposition di livello 4" required="true"/>
+        <design:attribute name="disposition5Preselection" label="Preselezione disposition di quinto livello" description="Inserire qui l'external id della disposition da preselezionare sul quinto livello di selezione" required="false"/>
+        <design:attribute name="hideLevel5" label="Nascondi disposition di livello 5" description="Scegliere se nascondere la disposition di livello 5" required="true"/>
+        <design:attribute name="disposition6Preselection" label="Preselezione disposition di sesto livello" description="Inserire qui l'external id della disposition da preselezionare sul sesto livello di selezione" required="false"/>
+        <design:attribute name="hideLevel6" label="Nascondi disposition di livello 6" description="Scegliere se nascondere la disposition di livello 6" required="true"/>
+
+
+        <design:attribute name="noteRequired" label="Obbligo note" description="Scegliere se rendere obbligatorio l'inserimento delle note oppure renderlo opzionale" required="true"/>
+        <design:attribute name="doRefresh" label="Refresh all'invio esito" description="Scegliere se effettuare il refresh a seguito dell'invio dell'esito" required="true"/>
+        <design:attribute name="showScript" label="Mostra script" description="Scegliere se mostrare lo script al momento della selezione di una disposition finale" required="true"/>
+</design:component>

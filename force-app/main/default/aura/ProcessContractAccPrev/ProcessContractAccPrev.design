@@ -1,0 +1,9 @@
+<design:component>
+	<design:attribute name="lotto" label="Lotto"/>
+    <design:attribute name="Account" label="AccountFiliale"/>
+    <design:attribute name="countContract" label="Count"/>
+    <design:attribute name="contoContract" label="Conto"/>
+    <design:attribute name="listaContratti" label="contratti"/>
+    
+    
+</design:component>

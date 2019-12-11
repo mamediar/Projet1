@@ -1,0 +1,790 @@
+<aura:component
+  controller="IntegrativoPenetrazioneCnt"
+  implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+  access="global"
+>
+<aura:attribute
+  name="IntervistaIntegrativo"
+  type="Intervista_integrativo__c"
+/>
+<aura:attribute
+  name="intervistaPenetrazione"
+  type="Intervista_integrativo__c"
+/>
+  <aura:attribute name="productsLimites" type="Map" />
+  <aura:attribute name="risposte" type="Risposte__c" />
+  <aura:attribute
+    type="Risposte__c"
+    name="newRiposte"
+    default="{'sobjectype':'Risposte__c',
+              'D0__c':'',
+              'D1__c':'',
+              'D2__c':'',
+              'D3__c':'',
+              'D4__c':'',
+              'D5__c':'',
+              'D6__c':'',
+              'D7__c':'',
+              'D8__c':'',
+              'Intervista_integrativo__c':''
+              }"
+  />
+    
+  <aura:attribute name="previousQuestion" type="Integer" default="1" />
+  <aura:attribute name="sesso" type="string" default="" />
+  <aura:attribute name="AvivoIntervista" type="Boolean" default="false" />
+  <aura:attribute name="fissareAppuntamento" type="Boolean" default="false" />
+  <aura:attribute name="textApputamento" type="String" default="" />
+  <aura:attribute name="isConclusa" type="Boolean" default="false" />
+  <aura:attribute name="isDisponibile" type="Boolean" default="true" />
+  <aura:attribute name="startInterview" type="Boolean" default="false" />
+  <aura:attribute name="makeInterview" type="Boolean" default="false" />
+  <aura:attribute name="makeInterview2" type="Boolean" default="false" />
+  <aura:attribute name="makeInterview3" type="Boolean" default="false" />
+  <aura:attribute name="makeInterview4" type="Boolean" default="false" />
+  <aura:attribute name="showTable" type="Boolean" default="false" />
+  <aura:attribute name="intervistaFinita" type="Boolean" default="false" />
+  <aura:attribute name="dateAppuntamento" type="Date" default="" />
+  <aura:attribute name="textTable" type="String" default="" />
+  <aura:attribute name="pluraleDomanda1" type="String" default="" />
+  <aura:attribute name="pluraleDomanda2" type="String" default="" />
+  <aura:attribute name="textLDefinizione" type="String" default="" />
+  <aura:attribute name="indexFlag" type="Integer"/>
+  <aura:attribute name="assicurazioneCount" type="Integer" default="0"/>
+  <aura:attribute name="listOfStringCSERVNotExist" type="String[]" default=""/>
+  <aura:attribute name="listOfStringCSERVNotExistCount" type="Integer" default="0"/>
+  <aura:attribute name="comodityCheklistError" type="Boolean" default="false"/>
+  <aura:attribute name="comodityCheklist" type="COM_CRMComodity_Check_Asc_Desc__c[]" />
+  <aura:handler
+    event="c:eventNavigateToIntervistaPenetrazioneDetails"
+    action="{!c.showIntervistaIntegrativo}"
+  />
+  <aura:handler
+    event="c:EventRipostaValidate"
+    action="{!c.handleEventRipostaValidate}"
+  />
+  <aura:handler
+    event="c:EventRipostaCancel"
+    action="{!c.handleEventRipostaCancel}"
+  />
+  <aura:attribute
+    name="questions"
+    type="Map[]"
+    default="[]"
+  />
+  <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+  <div class="slds-card slds-m-top_large">
+    <!--Start details interview-->
+    <table
+      class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped"
+    >
+      <thead>
+        <tr class="slds-line-height_reset">
+          <th
+            style="text-align:center;background-color:#9f201c;color:#fff;"
+            scope="col"
+            colspan="4"
+          >
+            <div
+              class="slds-p-around_small slds-text-heading_medium"
+              >Dettaglio Pratica Penetrazione</div
+            >
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr class="slds-hint-parent">
+          <td>
+            <div class="slds-p-around_small"><b>Nome Cliente</b> </div>
+          </td>
+          <td>
+            <div
+              class="slds-p-around_small  slds-text-heading_large slds-text-title_caps"
+            >
+              <ui:outputText
+                aura:id="NomeCliente"
+                title="Nome Cliente"
+                value="{!v.IntervistaIntegrativo.Ac_Rag_Sociale_1__c}"
+              />
+            </div>
+          </td>
+          <td> </td>
+          <td> </td>
+        </tr>
+
+        <tr class="slds-hint-parent">
+          <td>
+            <div class="slds-p-around_small"><b>Data Carico</b> </div>
+          </td>
+          <td>
+            <div class="slds-p-around_small">
+              <ui:outputDate
+                format="dd/MM/yyyy"
+                aura:id="DataCarico"
+                value="{!v.IntervistaIntegrativo.COM_data_caricamento__c}"
+              />
+            </div>
+          </td>
+          <td>
+            <div class="slds-p-around_small"><b>Data Liquidazione</b> </div>
+          </td>
+          <td>
+            <div class="slds-p-around_small">
+              <ui:outputDate
+                format="dd/MM/yyyy"
+                aura:id="DataLiquidazione"
+                value="{!v.IntervistaIntegrativo.Data_Liquidazione__c}"
+              />
+            </div>
+          </td>
+        </tr>
+
+        <tr class="slds-hint-parent">
+          <td>
+            <div class="slds-p-around_small"><b>Numero Cellulare/Rate</b> </div>
+          </td>
+          <td>
+            <div class="slds-p-around_small">
+              <ui:outputText
+                aura:id="NumeroCellulare"
+                title="NumeroCellulare"
+                value="{!v.IntervistaIntegrativo.Ac_Telefono_Cel__c}"
+              />
+            </div>
+          </td>
+          <td>
+            <div class="slds-p-around_small"><b>Recapito Telefonico 1</b> </div>
+          </td>
+          <td>
+            <div class="slds-p-around_small">
+              <ui:outputText
+                aura:id="RecapitoTelefonico"
+                title="RecapitoTelefonico"
+                value="{!v.IntervistaIntegrativo.Ac_Telefono__c}"
+              />
+            </div>
+          </td>
+        </tr>
+
+        <tr class="slds-hint-parent">
+          <td>
+            <div class="slds-p-around_small"><b>Recapito Telefonico 2</b> </div>
+          </td>
+          <td>
+            <div class="slds-p-around_small">
+              <ui:outputText
+                aura:id="RecapitoTelefonico2"
+                title="RecapitoTelefonico2"
+                value="{!v.IntervistaIntegrativo.Ac_Telefono_2__c}"
+              />
+            </div>
+          </td>
+          <td>
+            <div class="slds-p-around_small"><b>Intermediario</b> </div>
+          </td>
+          <td>
+            <div
+              class="slds-p-around_small slds-text-heading_large slds-text-title_caps"
+            >
+              <ui:outputText
+                aura:id="RagioneSocialeIntermediario"
+                title="RagioneSocialeIntermediario"
+                value="{!v.IntervistaIntegrativo.Ragione_Sociale_Intermediario__c}"
+              />
+            </div>
+          </td>
+        </tr>
+
+        <tr class="slds-hint-parent">
+          <td>
+            <div class="slds-p-around_small"
+              ><b>Codice Descrizione Assicurazione 1</b>
+            </div>
+          </td>
+          <td>
+            <div
+              class="slds-p-around_small slds-text-heading_large slds-text-title_caps">
+              <ui:outputText
+                aura:id="CodiceDescrizioneAssicurazione1"
+                title="CodiceDescrizioneAssicurazione1"
+                value="{!v.IntervistaIntegrativo.CodiceServizio1__c}"
+              />
+            </div>
+          </td>
+          <td>
+            <div class="slds-p-around_small"
+              ><b>Codice Descrizione Assicurazione 2</b>
+            </div>
+          </td>
+          <td>
+            <div class="slds-p-around_small">
+              <ui:outputText
+                aura:id="CodiceDescrizioneAssicurazione2"
+                title="CodiceDescrizioneAssicurazione2"
+                value="{!v.IntervistaIntegrativo.CodiceServizio2__c}"
+              />
+            </div>
+          </td>
+        </tr>
+
+        <tr class="slds-hint-parent">
+          <td>
+            <div class="slds-p-around_small"
+              ><b>Codice Descrizione Assicurazione 3</b>
+            </div>
+          </td>
+          <td>
+            <div class="slds-p-around_small">
+              <ui:outputText
+                aura:id="CodiceDescrizioneAssicurazione3"
+                title="CodiceDescrizioneAssicurazione3"
+                value="{!v.IntervistaIntegrativo.CodiceServizio3__c}"
+              />
+            </div>
+          </td>
+          <td>
+            <div class="slds-p-around_small"
+              ><b>Codice Descrizione Assicurazione 4</b>
+            </div>
+          </td>
+          <td>
+            <div class="slds-p-around_small">
+              <ui:outputText
+                aura:id="CodiceDescrizioneAssicurazione4"
+                title="CodiceDescrizioneAssicurazione4"
+                value="{!v.IntervistaIntegrativo.CodiceServizio4__c}"
+              />
+            </div>
+          </td>
+        </tr>
+
+        <tr class="slds-hint-parent">
+          <td>
+            <div class="slds-p-around_small"><b>Codice Pratica</b> </div>
+          </td>
+          <td>
+            <div class="slds-p-around_small">
+              <ui:outputText
+                aura:id="CodicePratica"
+                title="CodicePratica"
+                value="{!v.IntervistaIntegrativo.Name}"
+              />
+            </div>
+          </td>
+          <td>
+            <div class="slds-p-around_small"
+              ><b>Stato Avanzamento Intervista</b>
+            </div>
+          </td>
+          <td>
+            <div class="slds-p-around_small">
+                {!v.IntervistaIntegrativo.Stato__c == 'vuoto' ? '' : v.IntervistaIntegrativo.Stato__c}				
+            </div>
+          </td>
+        </tr>
+
+        <tr class="slds-hint-parent">
+          <td>
+            <div class="slds-p-around_small"><b>Ultimo Esito</b> </div>
+          </td>
+          <td>
+            <div class="slds-p-around_small">
+              <ui:outputText
+                aura:id="UltimoEsito"
+                title="UltimoEsito"
+                value="{!v.IntervistaIntegrativo.COM_Ultimo_Esito__c}"
+              />
+            </div>
+          </td>
+          <td>
+            <div class="slds-p-around_small"><b>Data Esito</b> </div>
+          </td>
+          <td>
+            <div class="slds-p-around_small">
+              <aura:if  isTrue="{! not(v.IntervistaIntegrativo.Stato__c == 'vuoto')}">
+                  <ui:outputDateTime
+                format="dd/MM/yyyy"
+                aura:id="DataEsito"
+                value="{!v.IntervistaIntegrativo.COM_Data_Esito__c}"
+              />
+              </aura:if>
+              
+            </div>
+          </td>
+        </tr>
+
+        <tr class="slds-hint-parent">
+          <td>
+            <div class="slds-p-around_small"><b>Num. Non risponde</b> </div>
+          </td>
+          <td>
+            <div class="slds-p-around_small">
+                {!v.IntervistaIntegrativo.COM_Num_Non_Risponde__c ? v.IntervistaIntegrativo.COM_Num_Non_Risponde__c : 0}	
+              
+            </div>
+          </td>
+          <td>
+            <div class="slds-p-around_small"><b>Num. Richiamare</b> </div>
+          </td>
+          <td>
+            <div class="slds-p-around_small">
+                {!v.IntervistaIntegrativo.COM_Num_richiamare__c ? v.IntervistaIntegrativo.COM_Num_richiamare__c : 0}  
+              
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <!--End details interview-->
+  </div>
+
+  <div>
+    <!--start interview-->
+    <aura:if isTrue="{!v.AvivoIntervista}">
+      <div>
+        <aura:if isTrue="{!v.isDisponibile}">
+            
+      <div
+        class="slds-card slds-m-top_x-large slds-m-bottom_x-large lds-p-left_x-small 
+                        slds-p-right_x-small slds-p-top_large"
+      >
+        <div
+          class="slds-float_right slds-m-right_large slds-m-top_large slds-m-bottom_large"
+        >
+          <lightning:button
+            label="Non accetta intervista"
+            class="nonAccettaIntervista"
+            variant="brand"
+            onclick="{!c.nonAccettaIntervista}"
+          />
+
+          <lightning:button
+            label="Irreperibile"
+            class="Irreperibile"
+            variant="brand"
+            onclick="{!c.irreperibile}"
+          />
+
+          <lightning:button
+            label="Non risponde al telefono"
+            class="nonRispondeAlTelefono"
+            variant="brand"
+            onclick="{!c.nonRispondeAlTelefono}"
+          />
+        </div>
+        <lightning:button
+          label="Indietro"
+          onclick="{!c.redirect}"
+          variant="brand"
+          class=" slds-m-left_large slds-m-top_large slds-m-bottom_large"
+        />
+        
+        
+          <div class="slds-m-around_x-large">
+            <div class="slds-m-top_small slds-m-bottom_small question">
+              <h2 class="slds-text-heading_medium">Domanda:</h2>
+              <p
+                >Buongiorno/Buonasera, sono [nome operatore] di Compass , posso
+                parlare con la {! v.sesso}
+                <strong>{!v.IntervistaIntegrativo.Ac_Rag_Sociale_1__c}</strong>
+              </p>
+            </div>
+            <div class="slds-m-top_x-large slds-m-bottom_small riposta">
+              <h2 class="slds-text-heading_medium">Risposta:</h2>
+              <table
+                class="slds-table slds-table_bordered slds-table_cell-buffer"
+              >
+                <tbody>
+                  <tr>
+                    <td>
+                      <lightning:input
+                        type="radio"
+                        name="risponse"
+                        label="&nbsp;&nbsp;&nbsp;Disponibile"
+                        value="Disponibile"
+                        onchange="{!c.getIntervistaDomande}"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <lightning:input
+                        type="radio"
+                        name="risponse"
+                        label="&nbsp;&nbsp;&nbsp;Non Disponibile"
+                        value="NonDisponibile"
+                        onchange="{!c.getIntervistaDomande}"
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+                <div class="slds-box-btn">
+            <lightning:button
+                      label="Convalidare"
+                      variant="success"
+                      disabled="true"
+                      aura:id="disponibileBtn"
+                      onclick="{!c.validateDisponibile}"
+                    />
+            </div>
+            </div>
+          </div>
+        </div>
+        </aura:if>
+      </div>
+    </aura:if>
+    <!--end interview-->
+  </div>
+
+  <aura:if isTrue="{!v.startInterview}">
+    <div
+      class="slds-card slds-m-top_x-large slds-m-bottom_x-large lds-p-left_x-small 
+                        slds-p-right_x-small slds-p-top_large"
+    >
+      <!-- <lightning:button
+        label="Indietro"
+        onclick="{!c.redirect}"
+        variant="brand"
+        class=" slds-m-left_large slds-m-top_large slds-m-bottom_large"
+      /> -->
+
+      <div>
+        <div class="slds-m-around_x-large">
+          <div class="slds-m-top_small slds-m-bottom_small question">
+            <h2 class="slds-text-heading_medium">Domanda:</h2>
+            <p>
+              Buongiorno/Buonasera, {! v.sesso}
+              {!v.IntervistaIntegrativo.Ac_Rag_Sociale_1__c} sono [nome
+              operatore] di Compass; la contatto dall'Italia in merito al
+              finanziamento che ha sottoscritto presso
+              {!v.IntervistaIntegrativo.Ragione_Sociale_Intermediario__c} il 
+              <ui:outputDate format="dd/MM/yyyy" value="{!v.IntervistaIntegrativo.Data_Liquidazione__c}"/>
+              <!-- [data_delibera] --> per fornirle alcune importanti informazioni
+              relative {!v.pluraleDomanda1} a cui ha
+              aderito insieme al prestito.
+            </p>
+            <p>
+              <strong>Ha qualche minuto da dedicarmi?</strong>
+            </p>
+          </div>
+          <div class="slds-m-top_x-large slds-m-bottom_small riposta">
+            <h2 class="slds-text-heading_medium">Risposta:</h2>
+            <table
+              class="slds-table slds-table_bordered slds-table_cell-buffer"
+            >
+              <tbody>
+                <tr>
+                  <td>
+                    <lightning:input
+                      type="radio"
+                      name="responseStartInteriew"
+                      label="&nbsp;&nbsp;&nbsp;Si"
+                      value="Si"
+                      onchange="{!c.startInteriew}"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <lightning:input
+                      type="radio"
+                      name="responseStartInteriew"
+                      label="&nbsp;&nbsp;&nbsp;No/Non Adesso"
+                      value="No"
+                      onchange="{!c.startInteriew}"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+              <div class="slds-box-btn">
+            <lightning:button
+                      label="Convalidare"
+                      variant="success"
+                      disabled="true"
+                      aura:id="startInterviewBtn"
+                      onclick="{!c.validateStartInterview}"
+                    />
+           <lightning:button
+                label="Indietro"
+                variant="destructive"
+                disabled="false"
+                aura:id="cancelInterviewBtn"
+                onclick="{!c.cancelStartInterview}"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aura:if>
+  <aura:if isTrue="{!v.makeInterview}">
+    <c:ShowQuestion question="{!v.questions[0]}" />
+  </aura:if>
+
+  <aura:if isTrue="{!v.makeInterview2}">
+    <c:ShowQuestion question="{!v.questions[1]}" />
+  </aura:if>
+  <aura:if isTrue="{!v.makeInterview4}">
+    <c:ShowQuestion question="{!v.questions[3]}" />
+  </aura:if>
+  <aura:if isTrue="{!(v.showTable)}">
+    <div
+      class="slds-card slds-m-top_x-large slds-m-bottom_x-large lds-p-left_x-small slds-p-right_x-small slds-p-top_large slds-p-bottom_large"
+    >
+      <aura:if isTrue="{!v.comodityCheklistError}">
+          <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+              <span class="slds-assistive-text">error</span>
+              <h2>
+                  L'assicurazione con il codice descrizione {!v.listOfStringCSERVNotExist[0]} del cliente non è
+                  presente a sistema CRM.
+              </h2>
+          </div>
+          <aura:if isTrue="{!v.assicurazioneCount}">
+          <div class="slds-m-around_x-large riposta">
+            <aura:if isTrue="{!not(empty(v.textTable))}">
+              <div class="slds-m-top_small slds-m-bottom_small question">
+              <p> <aura:unescapedHtml value="{!v.textTable}" /> </p>
+            </div>
+            </aura:if>
+        
+            <table 
+              class="slds-table slds-table_cell-buffer slds-no-row-hover slds-table_bordered slds-table_striped slds-table_col-bordered"
+            >
+              <thead>
+                <tr class="slds-text-heading--label slds-line-height_reset">
+                  <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                    <span class="slds-text-body_regular" title="Cliente"
+                      >Tipo Polizza</span
+                    >
+                  </th>
+                  <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                    <span class="slds-text-body_regular" title="Cliente"
+                      >Definizione</span
+                    >
+                  </th>
+                  <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                    <span class="slds-text-body_regular" title="Cliente"
+                      >Descrizione</span
+                    >
+                  </th>
+                  <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                    <span class="slds-text-body_regular" title="Cliente"
+                      >Recesso</span
+                    >
+                  </th>
+                  <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                    <span class="slds-text-body_regular" title="Cliente"
+                      >Estinzione Anticipata</span
+                    >
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <aura:iteration
+                  items="{!v.comodityCheklist}"
+                  var="comodityChek"
+                  indexVar="i"
+                >
+                  <tr class="valueOnTable">
+                    <td>
+                      <div
+                        class="slds-text-body_regular "
+                        value="{!comodityChek.Id}"
+                        id=""
+                        title=""
+                      >
+                        {!comodityChek.COM_CRMTipo__c}
+                      </div>
+                    </td>
+                    <td>
+                      <div
+                        class="slds-text-body_regular"
+                        value="{!comodityChek.Id}"
+                        id=""
+                        title=""
+                      >
+                        {!comodityChek.COM_CRMDefinizione__c}
+                      </div>
+                    </td>
+                    <td>
+                      <div
+                        class="slds-text-body_regular"
+                        value="{!comodityChek.Id}"
+                        id=""
+                        title=""
+                      >
+                        {!comodityChek.Descrizione__c}
+                      </div>
+                    </td>
+                    <td>
+                      <div
+                        class="slds-text-body_regular"
+                        value="{!comodityChek.Id}"
+                        id=""
+                        title=""
+                      >
+                        {!comodityChek.COM_CRMTermini_Recesso__c}
+                      </div>
+                    </td>
+                    <td>
+                      <div
+                        class="slds-text-body_regular"
+                        value="{!comodityChek.Id}"
+                        id=""
+                        title=""
+                      >
+                        {!comodityChek.COM_CRMEstinzione__c}
+                      </div>
+                    </td>
+                  </tr>
+                </aura:iteration>
+              </tbody>
+            </table>
+            <aura:set attribute="else">
+              <div class="slds-text-body_regular">
+                <p>
+                  L'assicurazione {!v.stringAssicurazione} del cliente non è
+                  presente a sistema CRM.
+                </p>
+              </div>
+            </aura:set>
+          </div>
+        </aura:if>
+        <aura:set attribute="else">
+            <div class="slds-m-around_x-large riposta">
+                <aura:if isTrue="{!not(empty(v.textTable))}">
+                  <div class="slds-m-top_small slds-m-bottom_small question">
+                  <p> <aura:unescapedHtml value="{!v.textTable}" /> </p>
+                </div>
+                </aura:if>
+            
+                <table 
+                  class="slds-table slds-table_cell-buffer slds-no-row-hover slds-table_bordered slds-table_striped slds-table_col-bordered"
+                >
+                  <thead>
+                    <tr class="slds-text-heading--label slds-line-height_reset">
+                      <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                        <span class="slds-text-body_regular" title="Cliente"
+                          >Tipo Polizza</span
+                        >
+                      </th>
+                      <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                        <span class="slds-text-body_regular" title="Cliente"
+                          >Definizione</span
+                        >
+                      </th>
+                      <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                        <span class="slds-text-body_regular" title="Cliente"
+                          >Descrizione</span
+                        >
+                      </th>
+                      <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                        <span class="slds-text-body_regular" title="Cliente"
+                          >Recesso</span
+                        >
+                      </th>
+                      <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                        <span class="slds-text-body_regular" title="Cliente"
+                          >Estinzione Anticipata</span
+                        >
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <aura:iteration
+                      items="{!v.comodityCheklist}"
+                      var="comodityChek"
+                      indexVar="i"
+                    >
+                      <tr class="valueOnTable">
+                        <td>
+                          <div
+                            class="slds-text-body_regular "
+                            value="{!comodityChek.Id}"
+                            id=""
+                            title=""
+                          >
+                            {!comodityChek.COM_CRMTipo__c}
+                          </div>
+                        </td>
+                        <td>
+                          <div
+                            class="slds-text-body_regular"
+                            value="{!comodityChek.Id}"
+                            id=""
+                            title=""
+                          >
+                            {!comodityChek.COM_CRMDefinizione__c}
+                          </div>
+                        </td>
+                        <td>
+                          <div
+                            class="slds-text-body_regular"
+                            value="{!comodityChek.Id}"
+                            id=""
+                            title=""
+                          >
+                            {!comodityChek.Descrizione__c}
+                          </div>
+                        </td>
+                        <td>
+                          <div
+                            class="slds-text-body_regular"
+                            value="{!comodityChek.Id}"
+                            id=""
+                            title=""
+                          >
+                            {!comodityChek.COM_CRMTermini_Recesso__c}
+                          </div>
+                        </td>
+                        <td>
+                          <div
+                            class="slds-text-body_regular"
+                            value="{!comodityChek.Id}"
+                            id=""
+                            title=""
+                          >
+                            {!comodityChek.COM_CRMEstinzione__c}
+                          </div>
+                        </td>
+                      </tr>
+                    </aura:iteration>
+                  </tbody>
+                </table>
+                <aura:set attribute="else">
+                  <div class="slds-text-body_regular">
+                    <p>
+                      L'assicurazione {!v.stringAssicurazione} del cliente non è
+                      presente a sistema CRM.
+                    </p>
+                  </div>
+                </aura:set>
+              </div>
+        </aura:set>
+      </aura:if>
+      
+    </div>
+  </aura:if>
+
+  <aura:if isTrue="{!v.makeInterview3}">
+    <c:ShowQuestion question="{!v.questions[2]}" />
+  </aura:if>
+  <aura:if isTrue="{!v.intervistaFinita}">
+    <c:IntervistaPenetrazioneFinita intervistaIntegrativo="{!v.IntervistaIntegrativo}" risposte="{!v.newRiposte}" previousQuestion="{!v.previousQuestion}"/>
+  </aura:if>
+  
+  <!-- <div class="{!v.fissareAppuntamento == 'true' ? 'slds-show' : 'slds-hide'}"> -->
+  <aura:if isTrue="{!v.fissareAppuntamento}">
+    <div class="slds-m-top_x-large slds-m-bottom_x-large slds-p-top_large">
+      <c:ApputamentoTelephonicoPenetrazione
+        clienteIntervista="{!v.IntervistaIntegrativo}"
+        previousQuestion="{!v.previousQuestion}"
+        textApputamento="{!v.textApputamento}"
+      />
+    </div>
+  </aura:if>
+  
+</aura:component>

@@ -1,0 +1,36 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" controller="SinistriAssicurativiCtrl">
+    <aura:attribute name="file" type="Object"/>
+    <lightning:spinner aura:id="closedSinistriSpinner" class="slds-hide"/>
+    <h1>Chiusura Sinistri da Excel</h1>
+    <br/>
+   <!-- 
+    <lightning:input aura:id="file-input" class="slds-file-selector__dropzone slds-file-selector__dropzone .slds-file-selector__text"
+                     type="file" 
+                     value="{!v.file}"
+                     label="Carica file"
+                     name="file-input" 
+                     multiple="false" 
+                     accept=".xls,.xlsx" 
+                     onchange="{!c.onFileUploaded}"
+                     />-->
+    <aura:attribute name="accept" type="List" default="['.xlsx', '.xls']"/>
+    <aura:attribute name="multiple" type="Boolean" default="false"/>
+    <aura:attribute name="disabled" type="Boolean" default="false"/>
+    <aura:attribute name="recordId" type="Id"/>
+    <aura:handler name="init" value="{!this}" action="c.doInit"/>
+    
+    
+    <aura:if isTrue="{!v.recordId != null}">
+    <lightning:fileUpload  name="fileUploader"
+                          label= "Carica un file excel"
+                          multiple="{!v.multiple}"
+                          disabled="{!v.disabled}"
+                          recordId="{!v.recordId}"
+                          accept=".xls, .xlsx"
+                          onuploadfinished="{! c.handleUploadFinished }"/>
+    </aura:if>
+    
+    <br/>
+    
+    <h1>entro 2 minuti dal caricamento inizierà la chiusura delle posizioni.</h1>
+</aura:component>

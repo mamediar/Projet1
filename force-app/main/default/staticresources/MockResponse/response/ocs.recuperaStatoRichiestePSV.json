@@ -1,0 +1,14 @@
+{
+  "resultCode":0,
+  "resultMessage" : "Ok",
+  "recuperaStatoRichiestePSVResponse":{
+	"elencoStatiRichieste":[
+		{"progressivo" : "",
+		"stato" : "30",
+		"blocco" : "",
+		"dataAzione" : "24052019" ,
+		"codAzione" : "REV"	
+		}
+]
+   }
+}

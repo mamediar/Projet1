@@ -1,0 +1,17 @@
+<aura:component implements="lightning:actionOverride" access="global">
+    
+    <lightning:layout class="slds-welcome-mat__content slds-align_absolute-center"> 
+        
+        <lightning:layoutItem size="2"></lightning:layoutItem>
+        <lightning:layoutItem size="8">
+                <div class="slds-welcome-mat__info-content">
+                    <!-- <div class="slds-align_absolute-center slds-m-top_small slds-welcome-mat__info-title slds-text-color_default">Azione non consentita per il profilo</div> -->
+                    <div class="my-message">Azione non consentita per il profilo</div>
+                    <br/>
+            		<lightning:button variant="destructive" onclick="{!c.goBack}">torna indietro</lightning:button>
+                </div>
+        </lightning:layoutItem>
+		<lightning:layoutItem size="2"></lightning:layoutItem>
+	</lightning:layout>
+
+</aura:component>

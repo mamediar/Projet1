@@ -1,0 +1,3 @@
+<aura:event type="APPLICATION">
+    <aura:attribute name="note" type="String" />
+</aura:event>

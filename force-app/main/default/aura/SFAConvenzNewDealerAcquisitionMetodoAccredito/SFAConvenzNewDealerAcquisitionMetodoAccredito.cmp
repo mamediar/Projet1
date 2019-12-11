@@ -1,0 +1,156 @@
+<aura:component controller="SFAConvenz_NDA_MetodoAccreditoCtroller" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes,forceCommunity:searchInterface" access="global">
+
+    
+<aura:attribute name="recordId" type="String" /> 
+<aura:attribute name="dealerId" type="String"/> 
+<aura:attribute name="CCSelezionatoId" type="String"/> 
+<aura:attribute name="problemaChiamataServizioCalcolaIBAN" type="Boolean" default="false"/>
+<aura:attribute name="messaggioChiamataServizioCalcolaIBAN" type="String" default=""/>     
+<aura:attribute name="formatoIBANverificato" type="Boolean" default="false"/>    
+<aura:attribute name="isIBANvalido" type="Boolean" default="true"/>   
+<aura:attribute name="problemaChiamataServizioCensimentoCC" type="Boolean" default="false"/>    
+<aura:attribute name="messaggioChiamataServizioCensimentoCC" type="String" default=""/>         
+<aura:attribute name="erroreSalvataggioCC" type="Boolean"/>     
+<aura:attribute name="isOpen" type="Boolean" default="false"/>     
+<aura:attribute name="columnsCC" type="List"/>   
+<aura:attribute name="CCList" type="Object" />    
+<aura:attribute name="CCNuovoId" type="String" default="" />    
+<aura:attribute name="buttonAvantiDisabled" type="Boolean" default="true"/> 
+    
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+    
+	<aura:handler event="c:XCS_IbanReady" action="{!c.handleIbanReadyEvent}"/>
+    
+    <aura:attribute name="spinnerCounter" type="Integer" default="0"/>
+    <c:SpinnerComponent aura:id="spinnerComponent" spinnerCounter="{!v.spinnerCounter}"/>    
+      
+    	<lightning:card variant="Narrow" title="Condizioni commerciali e anagrafica dealer" iconName="action:record" footer=" ">
+        <p class="slds-p-horizontal_small"> 
+          <div class="slds-box">
+              <p>          
+    			<lightning:card variant="Narrow" title="Dati Aggiuntivi" iconName="action:add_relationship" footer=" ">
+        	<p class="slds-p-horizontal_small">    
+   			 <lightning:recordEditForm aura:id="FormDatiAggiuntivi" recordId="{!v.dealerId}" objectApiName="Account" onerror="{!c.handleError}" >                         
+        		<lightning:layout horizontalAlign="spread" multipleRows="true">
+           
+                    <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="4">
+                        <lightning:inputField aura:id="Gestione_PV__c" fieldName="Gestione_PV__c"/>
+                    </lightning:layoutItem>                                        
+                    
+                    <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="4">
+                        <lightning:inputField aura:id="Gestione_VE__c" fieldName="Gestione_VE__c" />
+                    </lightning:layoutItem>   
+                    
+                    <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="4">
+                        <lightning:inputField aura:id="Pagamento_provvigioni__c" fieldName="Pagamento_provvigioni__c" />
+                    </lightning:layoutItem>                             
+                    
+                    <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="4">
+                        <lightning:inputField aura:id="DocumentiObbligatori__c" fieldName="DocumentiObbligatori__c" />
+                    </lightning:layoutItem>   
+                    
+                    <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="4">
+                        <lightning:inputField aura:id="DestinatarioProforma__c" fieldName="DestinatarioProforma__c" />
+                    </lightning:layoutItem> 
+                    
+                    <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="4">
+                        <lightning:inputField aura:id="DestinatarioRappel__c" fieldName="DestinatarioRappel__c" />
+                    </lightning:layoutItem>                                                        
+                    
+                    <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="4">
+                        <lightning:inputField aura:id="PagamentoTerzi__c" fieldName="PagamentoTerzi__c" />
+                    </lightning:layoutItem> 
+                    
+                    <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="4">   
+                        <lightning:inputField aura:id="ErogatoMese__c" fieldName="ErogatoMese__c" />   
+                    </lightning:layoutItem>                                                                                
+                    
+                    <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="4">
+                        <lightning:inputField aura:id="TerzoDaLiquidare__c" fieldName="TerzoDaLiquidare__c" />
+                    </lightning:layoutItem>    
+                    
+                    <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="4">
+                        <lightning:inputField aura:id="VolumeAffari__c" fieldName="VolumeAffari__c" />
+                    </lightning:layoutItem>                    
+                                
+                </lightning:layout>                                                                                                                    
+            </lightning:recordEditForm>    
+        </p>
+    </lightning:card>
+    
+    			<lightning:card variant="Narrow" title="Dati di conto corrente" iconName="action:update" footer=" ">
+        			<p class="slds-p-horizontal_small">  
+                        
+             			<!--DATATABLE CONTI CORRENTE-->
+    					<lightning:card variant="Narrow" title="Iban inseriti" iconName="action:approval" footer=" ">
+        				<p class="slds-p-horizontal_small">                
+                                <lightning:datatable
+                                              keyField="id"
+                                              data="{! v.CCList}"
+                                              columns="{! v.columnsCC }"
+                                              hideCheckboxColumn="true"
+                                              onrowaction="{! c.handleRowActionCC}"/>
+                    	</p>
+                		</lightning:card>
+                        
+             			<!--FORM DI INSERIMENTO NUOVO IBAN-->
+                        <lightning:card variant="Narrow" title="Inserisci nuovo iban" iconName="action:new" footer=" ">
+                            <p class="slds-p-horizontal_small">                        	
+                                <c:XCS_Iban accountId="{!v.dealerId}"
+                                            labelButtonSalva="Inserisci"
+                                            CCId="{!v.CCNuovoId}"   
+                                            showDatiAggiuntiviCC="true"
+                                            salvaCCsuOCS="true"/>
+                            </p>
+                        </lightning:card>
+                        
+                        <!--MODALE DI AGGIORNAMENTO-->
+                        <aura:if isTrue="{!v.isOpen}">
+                            <div class="slds-modal slds-fade-in-open">
+                                <div class="slds-modal__container">
+                                    <div class="slds-modal__header">
+                                        <h2 class="title slds-text-heading--medium">Aggiorna dati iban</h2>
+                                    </div>
+                                    <div class="slds-modal__content slds-p-around--medium">
+                                        <c:XCS_Iban accountId="{!v.dealerId}"
+                                                    labelButtonSalva="Aggiorna"
+                                                    CCId="{!v.CCSelezionatoId}"   
+                                                    showDatiAggiuntiviCC="true"
+                                                    salvaCCsuOCS="true"/>
+                                        
+                                    </div>
+                                    <div class="slds-modal__footer">
+                                        <lightning:button variant="neutral" iconName="utility:close" label="Chiudi"
+                                                          onclick="{!c.closeModel}"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-backdrop slds-backdrop_open"></div>
+                        </aura:if>                          
+                        
+                        
+                     </p>
+                </lightning:card>    
+              </p>
+          </div>   
+
+                <lightning:button label="Conferma Dati Aggiuntivi"
+                                  variant="destructive"
+                                  class="slds-m-top_medium"
+                                  onclick="{!c.actionButtonConfermaDatiAgg}"/>   
+                
+                 <c:SFAConvenzionamentoBottoniAvantiIndietro newStepAvanti="GestioneDossierDealer_DocumentiObbligatori"                                                             
+                                                             newStepIndietro="NewDealerAcquisition_InteseEDocumenti"
+                                                             newOggettoAvanti="Gestione Dossier"
+                                                             newCategoriaAvanti="1879"
+                                                             newDispositionExternalIdAvanti="DP1908"
+                                                             buttonAvantiDisabled="{!v.buttonAvantiDisabled}"
+                                                             recordId="{!v.recordId}"/>                
+            
+          
+        </p>
+    </lightning:card>     
+    
+
+	
+</aura:component>

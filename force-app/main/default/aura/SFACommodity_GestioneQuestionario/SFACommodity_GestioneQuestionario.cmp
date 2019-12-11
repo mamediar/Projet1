@@ -1,0 +1,57 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+	
+    <aura:attribute name="question1Options" type="List" default="[
+                                                                     {'label': '', 'value': 'null'},
+                                                                     {'label': 'Si', 'value': 'Si'},
+                                                                     {'label': 'No', 'value': 'No'},
+                                                                     ]"/>
+    <aura:attribute name="question1Value" type="String" default=""/>
+
+    <aura:attribute name="question2Options" type="List" default="[
+                                                                     {'label': '', 'value': 'null'},
+                                                                     {'label': 'Casa', 'value': 'Casa'},
+                                                                     {'label': 'Cell', 'value': 'Cell'},
+                                                                     {'label': 'Lavoro', 'value': 'Lavoro'},
+                                                                     {'label': 'Nessuno', 'value': 'Nessuno'},
+                                                                     ]"/>
+    <aura:attribute name="question2Value" type="String" default=""/>
+    
+    <aura:attribute name="question3Options" type="List" default="[
+                                                                     {'label': '', 'value': 'null'},
+                                                                     {'label': 'Si', 'value': 'Si'},
+                                                                     {'label': 'No', 'value': 'No'},
+                                                                     ]"/>
+    <aura:attribute name="question3Value" type="String" default=""/>
+    
+    
+    
+    
+    
+    <lightning:combobox name="question1" 
+                        label="Siete riusciti a contattare il Cliente ?" 
+                        value="{!v.question1Value}" 
+                        options="{!v.question1Options}" 
+                        onchange="{!c.handleQ1 }" />
+
+    
+    <aura:if isTrue="{!v.question1Value=='Si'}">
+        <br/>
+            <lightning:combobox name="question2" 
+                                label="Su quale telefono è stato contattato il cliente ?" 
+                                value="{!v.question2Value}"
+                                options="{!v.question2Options}" 
+                                onchange="{!c.handleQ2 }" />
+    </aura:if>
+
+    <aura:if isTrue="{!v.question1Value=='Si'}">
+        <br/>
+            <lightning:combobox name="question3" 
+                                label="E' stata aggiornata l'anagrafica del cliente (nuovo recapito utile, modifica numero ...) ?" 
+                                value="{!v.question3Value}"
+                                options="{!v.question3Options}" 
+                                onchange="{!c.handleQ3 }" />
+    </aura:if>
+    
+    
+    
+</aura:component>

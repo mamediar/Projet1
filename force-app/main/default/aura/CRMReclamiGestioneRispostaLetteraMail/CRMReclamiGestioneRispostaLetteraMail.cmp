@@ -1,0 +1,132 @@
+<aura:component controller="CRMReclamiGestioneRisLetMailCtrl"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" 
+                access="global" 
+                >
+    
+    <aura:attribute name="clienteSelezionato" type="OCSCliente"/>
+    <aura:attribute name="praticaSelezionata" type="Object"/>
+    <aura:attribute name="campiCase" type="Case"/>
+    <aura:attribute name="aziendaSelezionata" type="String"/>
+    <aura:attribute name="isTableLoading" type="Boolean" default="true"/>
+    <aura:attribute name="fileList" type="Attachment[]" />
+    <aura:attribute name="mailText" type="String"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="selectedRows" type="List" />
+    <aura:attribute name="isNotSelectableAttach" type="Boolean"/>
+    <aura:attribute name="canDeleteAttach" type="Boolean"/>
+    <aura:attribute name="canUploadAttach" type="Boolean"/>
+    <aura:attribute name="showCheckAllegati" type="Boolean" default="true"/>
+    <aura:attribute name="areAllegatiChecked" type="Boolean" default="false"/>
+    <aura:attribute name="allegatiSelezionati" type="Attachment[]" />
+    <aura:attribute name="ricercaText" type="String"/>
+    <aura:attribute name="buttonLabel" type="String"/>
+    
+    <aura:attribute name="destinatari" type="destinatari__mdt[]"/>
+    <aura:attribute name="destinatariFiltrati" type="destinatari__mdt[]"/>
+    <aura:attribute name="aa" type="String" default=""/>
+    <aura:attribute name="aaPills" type="List"/>
+    <aura:attribute name="cc" type="String" default=""/>
+    <aura:attribute name="ccPills" type="List"/>
+    <aura:attribute name="bcc" type="String" default=""/>
+    <aura:attribute name="bccPills" type="List"/>
+    <aura:attribute name="showSpinner" type="Boolean" default="false"/>
+    <aura:attribute name="reset" type="Boolean" default="false"/>
+    <aura:attribute name="ckallegati" type="List" default="[
+    {'label': 'Presa Visione Allegati', 'value': 'true'}
+    ]"/>
+    <aura:attribute name="valuecheckallegati" type="List" default=""/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+
+    
+    <aura:if isTrue="{!v.showSpinner}">
+        <div class="exampleHolder">
+            <lightning:spinner alternativeText="Loading" size="large" />
+        </div>
+    </aura:if>
+    
+    
+    <div style="margin-left:15px;margin-right:15px;">
+        <div class="slds-grid slds-gutters">
+           
+          
+            <div class="slds-p-horizontal_small slds-size_2-of-3 slds-medium-size_2-of-3 slds-large-size_2-of-3">
+                <div class="slds-col">
+                    
+                    <lightning:input label="A:" value="{!v.aa}"/> 
+                    <lightning:input label="CC:" value="{!v.cc}"/>
+                    <lightning:input label="BCC:" value="{!v.bcc}"/>
+                    <br/>
+                    <lightning:textarea label="Messaggio:" value="{!v.mailText}"/>
+                    
+                </div>
+            
+            
+
+                <div class="slds-col">
+                    <aura:if isTrue="{!not(v.reset)}">
+                        <c:CRMReclamiInserimentoAllegatiContainer aura:id="inserimentoAllegati"
+                                                                  fileList="{!v.fileList}"
+                                                                  isNotSelectable="{!v.isNotSelectableAttach}"
+                                                                  canDelete="{!v.canDeleteAttach}"
+                                                                  canUpload="{!v.canUploadAttach}"
+                                                                  allegatiSelezionati="{!v.allegatiSelezionati}"
+                                                                  />
+                    </aura:if>
+                    <br/>
+                    <div style="display:flex">
+                        <div style="margin-top: 10px">
+                            <lightning:checkboxGroup name="CheckboxAllegati"
+                                                    label="" 
+                                                    options="{! v.ckallegati }"
+                                                    value="{! v.valuecheckallegati }"
+                                                    
+                                                    />
+                        </div>
+                        
+                        <lightning:button label="{!v.buttonLabel}" 
+                                        onclick="{!c.inviaRisposta}"
+                                        class="slds-m-top_small"
+                                        variant="brand"
+                                        aura:id="btn-InviaEmail"
+                                        />
+                    </div>               
+
+                </div>
+            </div>
+            
+             <div class="slds-p-horizontal_small slds-size_1-of-3 slds-medium-size_1-of-3 slds-large-size_1-of-3">
+                <div class="slds-col">
+                    
+                    
+                    <lightning:input label="Cerca destinatario:" value="{!v.ricercaText}" onchange="{!c.doRicercaDestinatario}"/>
+                    
+                    <div class="slds-p-top_medium slds-p-bottom_medium">
+                        <lightning:button label="Aggiungi A:" variant="brand" onclick="{!c.addAddress}"/>  
+                        <lightning:button label="Aggiungi CC:" variant="brand" onclick="{!c.addAddress}"/>  
+                        <lightning:button label="Aggiungi BCC:" variant="brand" onclick="{!c.addAddress}"/> 
+                       <!-- <lightning:button label="Reset" variant="brand" onclick="{!c.reset}"/>-->
+                    </div>
+                    
+                    <aura:if isTrue="{!v.isTableLoading}">
+                        <lightning:spinner />
+                        
+                        <aura:set attribute="else">
+                            <div style="height: 300px;">
+                                <lightning:datatable aura:id="table"
+                                                     keyField="Id"
+                                                     data="{!v.destinatariFiltrati}"
+                                                     columns="{!v.columns}"
+                                                     selectedRows="{!v.selectedRows}"
+                                                     />
+                                
+                            </div>
+                            
+                        </aura:set>
+                    </aura:if>
+                </div>
+            </div> 
+        </div>
+    </div>
+    
+</aura:component>

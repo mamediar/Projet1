@@ -1,0 +1,25 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes">
+    <aura:attribute name="menuItem" type="String" />
+    <aura:attribute name="viewName" type="String" />
+    
+    <aura:attribute name="nomeCmpSelezionato" type="String" default="false"/>
+    
+    <aura:handler name="openFlow" event="c:openFlow" action="{!c.handleComponentEvent}"/>
+    <c:MenuComposingCmp menuItem="{!v.menuItem}" viewName="{!v.viewName}"/>
+    <aura:if isTrue="{!v.nomeCmpSelezionato == 'PostvenditaFlowLauncher'}">
+       <div class="slds-is-relative">
+        <c:PVInserimento/>
+       </div> 
+    </aura:if>
+    <aura:if isTrue="{!v.nomeCmpSelezionato == 'CRMReclamiInserimentoContainer'}">
+        <c:CRMReclamiInserimentoContainer/>
+    </aura:if>
+    <aura:if isTrue="{!v.nomeCmpSelezionato == 'RitiroContrattiMassivo'}">
+        <c:RitiroContrattiMassivo/>
+    </aura:if>
+    <aura:if isTrue="{!v.nomeCmpSelezionato == 'LavoriInCorso'}">
+        <ui:message title="Warning" severity="warning" closable="true" class="slds-m-around--xx-large">
+            LAVORI IN CORSO
+	</ui:message>
+    </aura:if>
+</aura:component>

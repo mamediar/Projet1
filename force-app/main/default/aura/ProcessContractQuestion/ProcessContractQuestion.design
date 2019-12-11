@@ -1,0 +1,15 @@
+<design:component>
+	<design:attribute name="barcodeCartella" label="oldBarcode"/>
+    <design:attribute name="barcodeContratto" label="barcodeContratto"/>
+    <design:attribute name="contratto" label="contratto"/>
+    <design:attribute name="firstQ" label="firstQ"/>
+    <design:attribute name="secondQ" label="secondQ"/>
+    <design:attribute name="thirdQ" label="thirdQ"/>
+    <design:attribute name="accountName" label="accountName" />
+    <design:attribute name="lotto" label="lotto" />
+    <design:attribute name="conto" label="conto" />
+    <design:attribute name="contoprocessati" label ="contoprocessati"/>
+    <design:attribute name="messaggio" label ="messaggio"/>
+    
+    
+</design:component>

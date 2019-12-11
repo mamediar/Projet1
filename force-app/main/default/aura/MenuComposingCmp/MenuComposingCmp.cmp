@@ -1,0 +1,13 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" controller="MenuComposingController">
+	<aura:attribute name="menuItem" type="String" />
+    <aura:attribute name="viewName" type="String" />
+    <aura:attribute name="itemList" type="List" />
+    <aura:registerEvent name="openFlow" type="c:openFlow"/>
+  
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <lightning:buttonGroup>
+        <aura:iteration items="{!v.itemList}" var="item">
+            <lightning:button label="{!item.Label}" value="{!item.Destination__c}" onclick="{!c.doClick}" class="slds-truncate"/>
+        </aura:iteration>
+    </lightning:buttonGroup>
+</aura:component>

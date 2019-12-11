@@ -1,0 +1,41 @@
+<aura:component controller="GDSAssignTicketController" 
+                implements="force:appHostable,lightning:availableForFlowScreens,force:hasRecordId,force:lightningQuickAction" 
+                access="global">
+    
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="idcliente" type="String"/>
+    <aura:attribute name="testo" type="String" default=""/>
+    <aura:attribute name="notaAssign" type="String" default=""/>
+    <aura:attribute name="contattoSelezionato" type="Case"/>
+    <aura:attribute name="lastName" type="string" default=""/>
+    <aura:attribute name="firstName" type="string" default=""/>
+    <aura:attribute name="fiscalCode" type="string" default="" />
+    <aura:attribute name="dataNascita" type="Date" />
+    <aura:attribute name="datiTabella" type="Object[]"/>
+    <aura:attribute name="contattiTable" type="Case[]"/>
+    <aura:attribute name="esito" type="String" default=''/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="disposition" type="XCS_Disposition__c"/>
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/> 
+    
+    <lightning:input aura:id="lastName" type="string" label="Cognome" name="lastName" value="{!v.lastName}"/>    
+    <lightning:input aura:id="firstName" type="string" label="Nome" name="firstName" value="{!v.firstName}"/>
+    <lightning:input aura:id="fiscalCode" type="string" label="Codice Fiscale" name="fiscalCode" value="{!v.fiscalCode}"/>
+    <lightning:input aura:id="dataNascita" type="Date" label="Data Di Nascita" name="dataNascita" value="{!v.dataNascita}"/>    
+    
+    <br/>
+    <lightning:button variant="destructive" label="Cerca" title="avanti" onclick="{! c.SearchCustomer }"/>
+    
+    <lightning:datatable data="{! v.datiTabella }"
+                         isLoading="false"
+                         columns="{! v.columns }"
+                         keyField="Id"
+                         maxRowSelection="1"
+                         onrowselection="{! c.selectContact }"
+                         showRowNumberColumn="true"
+                         />  
+    <b>
+    <lightning:button variant="destructive" label="Abbina" title="avanti" onclick="{! c.abbinaContact }"/>
+    </b>
+
+</aura:component>

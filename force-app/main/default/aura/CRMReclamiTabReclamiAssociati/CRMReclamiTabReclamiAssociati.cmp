@@ -1,0 +1,30 @@
+<aura:component controller="CRMReclamiTabReclamiAssociatiController" implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId" 
+                access="global">
+    
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="reclamiColumns" type="List"/>
+    <aura:attribute name="reclamiData" type="Object"/>
+    <aura:attribute name="idReclamoAssociatoSelezionato" type="String"/>
+    
+    <lightning:navigation aura:id="navigation"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>  
+    
+    <lightning:datatable keyField="Id"
+                         resizeColumnDisabled="true"                         
+                         columns="{! v.reclamiColumns }" 
+                         data="{! v.reclamiData }"
+						 maxRowSelection="1" 
+                         selectedRows="{!v.selectedRows}"
+                         showRowNumberColumn="true"
+                         onrowselection="{! c.getRowId }" 
+                         />                         
+                         
+    <div class="slds-m-top_small">
+    <lightning:button label="Vai al reclamo selezionato" 
+                      onclick="{!c.navigateToReclamoAssociato}"
+                      variant="brand"
+                      />
+                         
+    </div>
+</aura:component>

@@ -1,0 +1,21 @@
+<aura:component controller= "SFAPraticheIrregFlagsForGDVCntroller" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes" access="global">
+    <aura:attribute name="recordId" type="String"/>
+    
+    <aura:attribute name="flagTargaTelaioDiversi" type="Boolean" />
+    <aura:attribute name="flagModuloInterazioneVeicoliMI" type="Boolean" />
+    <aura:attribute name="flagImportante" type="Boolean" />
+    <aura:attribute name="flagSospensioneAttivitaTemporaneaGDV" type="Boolean" />    
+   
+    <aura:handler name="init" value="{! this }" action="{!c.init}"/>
+    <p>Targa telaio diversi:</p>
+    <ui:outputCheckbox aura:id="output1" value="{!v.flagTargaTelaioDiversi}"/>
+    <p>Modulo interazione veicoli MI:</p>
+    <ui:outputCheckbox aura:id="output2" value="{!v.flagModuloInterazioneVeicoliMI}"/>    
+ 
+	<ui:inputCheckbox aura:id="checkbox1" label="Importante:" value="{!v.flagImportante}" change="{!c.onFlagImp}"/> 
+    <ui:inputCheckbox aura:id="checkbox2" label="Sospensione attività temporanea GDV:" value="{!v.flagSospensioneAttivitaTemporaneaGDV}" change="{!c.onFlagSosp}"/>
+
+
+
+	
+</aura:component>

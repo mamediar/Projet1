@@ -1,0 +1,165 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" access="global" controller="GUA_GestioneContactCnt">
+    <ltng:require scripts="{!$Resource.callapseDiv}" afterScriptsLoaded="{!c.afterScriptsLoaded}" />
+    <!--   <aura:handler event="c:GUA_SearchByCodiceDealerEvt" action="{!c.handleCaseSearch}" />  -->
+    <aura:attribute name="isFoundDealer" type="Boolean" default="false" />
+    <aura:attribute name="isOpenedModal" type="Boolean" default="false" />
+    <aura:attribute name="caseDealer" type="Case" />
+    <aura:attribute name="datiAggiuntivi" type="Object" />
+    <aura:attribute name="isOpen" type="Boolean" default="false" />
+    <aura:registerEvent name="guaSearchDealerEvt" type="c:Gua_SearchDealerEvt" />
+
+
+
+
+    <div class="slds-p-top_x-small">
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_1-of-3">
+                <h1 style="font-size: 30px;">Scheda Dealer </h1>
+            </div>
+            <div class="slds-col slds-size_2-of-3">
+                <lightning:layout horizontalAlign="end">
+                    <lightning:layoutItem>
+                        <div class="button-command slds-p-bottom_x-small">
+
+                            <!--  <lightning:button variant="variant" label="Crea Ticket Altri Uffici" onclick="{!c.creaTicketAltriUffici}" class="slds-button slds-button_text-destructive" />
+                            <lightning:button variant="variant" label="Crea Ticket Filiale" onclick="{!c.creaTicketFiliale}" class="slds-button slds-button_text-destructive" />
+                           <lightning:button class="" variant="neutral" onclick="{!c.showModal}">
+                                <span>
+                                                                                <lightning:icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default"               
+                                                                                iconName="utility:search" size="x-small" alternativeText="icon" />
+                                                           </span> Informazioni Dealer
+                            </lightning:button>   -->
+
+
+
+
+
+                        </div>
+                    </lightning:layoutItem>
+
+                </lightning:layout>
+            </div>
+        </div>
+
+        <div class="slds-section slds-is-open  ">
+
+            <aura:if isTrue="{!v.isOpen}">
+                <c:GUA_DetailDealerHandlerCmp datiAggiuntivi="{!v.datiAggiuntivi}" isDealer="false" caseDealer="{!v.caseDealer}" />
+            </aura:if>
+
+            <!--     <lightning:layout horizontalAlign="spread">
+                <lightning:layoutItem>   GUA_DetailDealerHandlerCmp
+                    <h1 style="font-size: 20px;"> Riepilogo</h1>
+                </lightning:layoutItem>
+                <lightning:layoutItem>
+
+                </lightning:layoutItem>
+
+            </lightning:layout>
+
+            <div aria-hidden="false" class="slds-section__content slds-box">
+
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_1-of-3">
+                        <span style="font-size: 20px;">Dati Aggiuntivi</span>
+
+                    </div>
+                    <div class="slds-col slds-size_1-of-3 slds-border_left">
+                        <span style="font-size: 20px;">Informazioni Dealer
+                                                                            
+                                                                                <lightning:icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default"
+                                                                                  iconName="utility:search" size="x-small" alternativeText="icon" />
+                                                                                
+                                                                  </span>
+                        <aura:if isTrue="{!v.isFoundDealer}">
+                            <dl>
+
+                                <dt>Ragione Sociale:</dt>
+                                <dd></dd>
+                                <dt class="slds-p-top_small">Indirizzo::</dt>
+                                <dd></dd>
+                                <dt class="slds-p-top_small">Telefono:</dt>
+                                <dd></dd>
+                                <dt class="slds-p-top_small">Cellulare:</dt>
+                                <dd></dd>
+                                <dt class="slds-p-top_small">Fax:</dt>
+                                <dd></dd>
+                                <dt class="slds-p-top_small">Email:</dt>
+                                <dd></dd>
+                                <dt class="slds-p-top_small">Dematerializzazzione PASSCOM:</dt>
+                                <dd>Description for first label</dd>
+                            </dl>
+                        </aura:if>
+                    </div>
+                    <div class="slds-col slds-size_1-of-3 slds-border_left">
+                        <span style="font-size: 20px;">Riferimenti Compass</span>
+                        <aura:if isTrue="{!v.isFoundDealer}">
+                            <dl>
+                                <dt>Filiale di Riferimento:</dt>
+                                <dd>Description for first label</dd>
+                                <dt class="slds-p-top_small">Indirizzo::</dt>
+                                <dd>Description for second label</dd>
+                                <dt class="slds-p-top_small">Telefono:</dt>
+                                <dd>{!v.caseDealer.DealerPersonaRiferimentoTelefono__c}</dd>
+                                <dt class="slds-p-top_small">Fax:</dt>
+                                <dd>{!v.caseDealer.DealerPersonaRiferimentoCellulare__c}</dd>
+                                <dt class="slds-p-top_small">Email:</dt>
+                                <dd>{!v.caseDealer.DealerPersonaRiferimentoEmail__c}</dd>
+                                <dt class="slds-p-top_small">Capo Filiale:</dt>
+                                <dd></dd>
+                                <dt class="slds-p-top_small">Unità Affari:</dt>
+                                <dd> </dd>
+                                <dt class="slds-p-top_small">La filiale è disponibile sabato:</dt>
+                                <dd>Description for first label</dd>
+                            </dl>
+                        </aura:if>
+                    </div>
+                </div>
+
+
+
+            </div>   -->
+
+
+        </div>
+
+        <lightning:tabset selectedTabId="two">
+            <lightning:tab label="Dettagllo Dealer" id="one">
+                <c:GUA_Dettaglio_DealerCmp />
+            </lightning:tab>
+
+            <lightning:tab label="Ultime Chiamata" id="two">
+                Two Content !
+            </lightning:tab>
+
+            <lightning:tab label="Utenza Passcom" id="three">
+                Three Content !
+            </lightning:tab>
+            <lightning:tab label="Produzione" id="four">
+                <c:GUA_ProduzioneCmp />
+            </lightning:tab>
+            <lightning:tab label="Ultime Pratiche" id="five">
+
+            </lightning:tab>
+
+            <lightning:tab label="Ultime Carte" id="six">
+                Three Content !
+            </lightning:tab>
+            <lightning:tab label="Attivita Dealer" id="seven">
+                Three Content !
+            </lightning:tab>
+            <lightning:tab label="FAQ" id="eight">
+
+            </lightning:tab>
+
+        </lightning:tabset>
+
+
+
+    </div>
+
+
+    <c:GUA_SearchInformazioniDealerCmp isOpenedModal="{! v.isOpenedModal}" />
+
+
+</aura:component>

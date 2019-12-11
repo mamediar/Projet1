@@ -1,0 +1,7 @@
+<!--
+ - Created by PC on 3/26/2019.
+ -->
+
+<aura:event type="APPLICATION" description="eventNavToIntervistaRisposteAssicurativo">
+    <aura:attribute name="riposta" type="Risposte__c" description="object risposta"/>
+</aura:event>

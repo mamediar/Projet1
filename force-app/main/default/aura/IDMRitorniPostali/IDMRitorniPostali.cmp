@@ -1,0 +1,92 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId" controller="CRMRitorniPostali">
+    <aura:attribute name="caseRecord" type="Object"/>
+    <aura:attribute name="record" type="Object"/>
+    
+    <aura:attribute name="recordLoadError" type="String"/>
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="ritornoPostaleId" type="Id" />
+    <aura:attribute name="ritorniPostaliRecord" type="Object"/>
+
+    <aura:attribute name="IDMCheckboxValue" type="Boolean" default="false" />
+    <aura:attribute name="IDMSentValue" type="Boolean" default="false" />
+    <aura:attribute name="IDMArchiveValue" type="Boolean" default="false" />
+    
+    <aura:attribute name="finalResultMessage" type="String" default="" />
+    
+    <force:recordData aura:id="recordLoaderCase"
+        recordId="{!v.recordId}"
+        fields="Subject,RecordTypeId,RecordType.Name,Categoria_Riferimento__r.External_Id__c,Disposition__r.External_Id__c"
+        targetFields="{!v.caseRecord}"
+        targetRecord="{!v.record}" 
+        targetError="{!v.recordLoadError}"
+        mode="VIEW"
+        layoutType="FULL"
+    />
+
+    <force:recordData aura:id="recordLoaderRitornoPostale"
+        recordId="{!v.ritornoPostaleId}"
+        fields="OriginalCap__c, OriginalAddress__c, OriginalCity__c, OriginalProv__c, NewCap__c, NewAddress__c, NewProv__c,NewCity__c"
+        targetFields="{!v.ritorniPostaliRecord}"
+        targetRecord="{!v.record}" 
+        targetError="{!v.recordLoadError}"
+        mode="VIEW"
+        layoutType="FULL"
+    />
+    <!--
+    ERRORE CARICAMENTO {! v.recordLoadError}
+	CASE DATA {!v.caseRecord.Subject } {!v.caseRecord.RecordTypeId} {!v.caseRecord.RecordType.Name} {!v.Categoria_Riferimento__r.External_Id__c}
+    -->
+    
+    <aura:attribute name="note" type="String" default=""/> 
+    
+    <!-- RITORNI POSTALI -->
+    <aura:attribute name="ritorniPostaliFormField" type="String[]" default="['OCSAnag__c','LoanType__c','LoanNumber__c',
+    'TipoPagamento__c','Branch_id__c','LetterId__c','LetterTypeId__c',
+    'ReturnedReason__c','CatId__c','Original_Address__c','Sent_Address__c']" />
+    
+    <aura:handler name="init" value="this" action="{!c.doInit}" /> 
+    
+    <!-- SHOW DETAIL RITORNI POSTALI-->    
+    <div class="slds-var-p-around_x-small">
+        <aura:if isTrue="{! v.finalResultMessage==''}">   
+                    
+        <b>Ritorni postali - Attesa Rientro Documentazione Poste</b>
+        <!-- CASE -->
+        <div class="slds-var-p-around_x-small">            
+                    <lightning:recordViewForm recordId="{!v.recordId}" objectApiName="Case" >                                 
+                           <!-- <lightning:outputField fieldName="CaseNumber" />-->
+                            <!--<lightning:outputField fieldName="Categoria_Riferimento__c" />-->
+                    </lightning:recordViewForm>                
+            
+                <aura:if isTrue="{! not( empty(v.ritornoPostaleId))}" >                
+                    <c:RitorniPostaliHeaderForm ritornoPostaleId="{!v.ritornoPostaleId}" />                                                                                     
+                    
+                </aura:if>            
+        </div>
+        <div class="slds-var-p-vertical_x-small" >
+            <div class="slds-box slds-box_small">
+                <!--component x utente IDM-->   
+                <lightning:input type="checkbox" label=" Documentazione rientrata da Poste" name="IDMCheckbox" checked="{!v.IDMCheckboxValue}" required="true" aura:id="checkboxRequired"/>
+                <aura:if isTrue="{!v.IDMCheckboxValue}" > <!-- check esito Attesa Doc Post--> <!--{! v.caseRecord.Disposition__r.External_Id__c}-->
+                    <aura:if isTrue="{! v.caseRecord.Disposition__r.External_Id__c=='DP2287'}" >
+                        <b>Reinvia la documentazione al seguente indirizzo</b>
+                        <!-- string union indirizzo-->
+                        {! v.NewAddress__c	+' ' + v.NewCap__c+ ' ' +v.NewCity__c+ ' ' +v.NewProv__c}
+                        <lightning:input type="checkbox" label=" Documentazione reinviata al Cliente" name="IDMSentValue" checked="{!v.IDMSentValue}" required="true" aura:id="checkboxRequired"/>
+                        <aura:set attribute="else"> <!-- NOT Attesa documento poste-->                            
+                                <b>Archivia documentazione</b>
+                                <lightning:input type="checkbox" label=" Documentazione Archiviata" name="IDMArchiveValue" checked="{!v.IDMArchiveValue}" required="true" aura:id="checkboxRequired"/>
+                        </aura:set>
+                    </aura:if>                                            
+                </aura:if> 
+            </div>
+        <!-- NOTE -->        
+        <lightning:textarea label="Note" name="note" value="{!v.note}" />   
+        <lightning:button variant="destructive" name="next" label="Continua" onclick="{!c.doNext}" />
+    </div>       
+    </aura:if> 
+    <aura:if isTrue="{!v.finalResultMessage!=''}">   
+        <h2>{!v.finalResultMessage}</h2>
+    </aura:if>
+</div>
+</aura:component>

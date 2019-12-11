@@ -1,0 +1,22 @@
+<aura:component controller='RiempiCasellaController' implements="force:appHostable,flexipage:availableForAllPageTypes" access="global" >
+    <aura:attribute name="options" type="String[]" />
+    <aura:attribute name="codaSelezionata" type="String"/>
+    <aura:attribute name="config" type="String[]" />
+    <aura:attribute name="pageReference" type="Object"/>
+    <aura:attribute name="visibileRiempiCasella" type="Boolean" default="true"/>
+    <aura:attribute name="configQueue" type="object"/>
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/> 
+    <!-- BOTTONE SEMPRE VISIBILE DA CAPIRE EVENTUALI LOGICHE-->
+    <lightning:select name='picklistQueue' label="Seleziona Coda" aura:id='picklist' value="{!v.codaSelezionata}"  > <!--onchange="{!c.componentComparsa}" -->
+        <option>-</option>
+        <aura:iteration  items="{!v.options}" var="option">
+            <option text="{!option.Group.Name}" value="{!option.Group.DeveloperName}"/>     
+        </aura:iteration>
+    </lightning:select>
+    <lightning:navigation aura:id="navService"/>
+	<!--<aura:if isTrue="{!v.visibileRiempiCasella}">-->        
+    <aura:if isTrue="{!v.codaSelezionata !='-'}">
+         <lightning:button  label="Riempi Casella" onclick="{!c.uclick}" variant="destructive" />
+    </aura:if>
+	{!v.body}
+</aura:component>

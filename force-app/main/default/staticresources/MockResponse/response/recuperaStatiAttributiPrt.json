@@ -1,0 +1,13 @@
+{
+    "resultCode": 0,
+    "resultMessage": "Ok",
+    "recuperaStatiAttributiPrtResponse": {
+        "elencoPratiche": [{
+            "tipoPratica": "CA",
+            "numPratica": "33190097388",
+            "statoPratica": "60",
+            "attributoPratica": "RT",
+            "canale": "MAE"
+        }]
+    }
+}

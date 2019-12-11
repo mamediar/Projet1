@@ -1,0 +1,10 @@
+<aura:component>
+
+    <aura:attribute name="account" type="Account"/>
+
+	<lightning:card title="Fissa Appuntamento" class="slds-card_boundary">
+        <aura:set attribute="actions">
+            <lightning:button variant="brand" label="Fissa Appuntamento" title="Fissa Appuntamento" onclick="{!c.invokeFissaAppuntamento}"/>
+        </aura:set>
+    </lightning:card>
+</aura:component>

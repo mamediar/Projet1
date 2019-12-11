@@ -1,0 +1,33 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" 
+                access="global" 
+                >
+    
+    <aura:attribute name="mittentiList" type="XCS_Mittente__c[]"/>
+    <aura:attribute name="mittenteSelezionatoListaMitt" type="XCS_Mittente__c"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="stepInserimentoMittenti" type="String"/>
+    <aura:attribute name="toastMsg" type="String"/>
+ 
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    
+    <aura:if isTrue="{!v.mittentiList.length>0}">
+        <lightning:datatable data="{!v.mittentiList}"
+                             columns="{!v.columns}"
+                             keyField="Id"
+                             onrowselection="{!c.onRowSelection}"
+                             maxRowSelection="1"
+                             />
+        <div class="slds-p-top_x-small">
+            <lightning:button label="Modifica"
+                              variant="brand"
+                              onclick="{!c.modificaMittente}"
+                              />
+            
+            <lightning:button label="Elimina"
+                              variant="brand"
+                              onclick="{!c.eliminaMittente}"
+                              />
+        </div>
+    </aura:if>
+</aura:component>

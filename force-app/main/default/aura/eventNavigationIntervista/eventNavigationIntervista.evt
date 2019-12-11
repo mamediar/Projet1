@@ -1,0 +1,4 @@
+<aura:event type="APPLICATION" description="eventNavigationInterview">
+     <aura:attribute name="IntervistaIntegrativo" type="Intervista_integrativo__c"/>
+     <aura:attribute name="productsLimites" type="Map" />
+</aura:event>

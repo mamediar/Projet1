@@ -1,0 +1,199 @@
+ActivityId,"BccAddress","CcAddress","CreatedById","CreatedDate","FromAddress","FromName","HasAttachment","Id","MessageDate","ParentId","RelatedToId","Status","Subject","TextBody","ToAddress"
+,"","","0051t000000QxGyAAK","2019-01-15T18:03:57.000Z","forwarding-noreply@google.com","Team di Gmail","false","02s0Q0000008CGcQAM","2019-01-15T18:03:51.000Z","5000Q000001wubUQAQ","5000Q000001wubUQAQ","1","(N. 738386242) Gmail Conferma inoltro - Posta ricevuta da dylan.inner@gmail.com","dylan.inner@gmail.com ha richiesto di inoltrare automaticamente la
+posta al tuo indirizzo email
+dylan.inner@2zpwo86klenfc91yhztdwhsu5bhtxcxqtjjm75k2awantpf8zv.0q-pncuau.cs109.case.sandbox.salesforce.com.
+Codice di conferma: 738386242
+
+Per consentire a dylan.inner@gmail.com di inoltrare automaticamente la
+posta al tuo indirizzo,
+fai clic sul collegamento sotto per confermare la richiesta:
+
+https://mail-settings.google.com/mail/vf-%5BANGjdJ9sE-ZLZaMFoMwSTHyUN2oHUDrLlKHl5Vt81EpxbL9yct0L4z_Q9FISWzwCapL6NTWZMe58StGuMwJ_WPNTp2dZplnINKCDMFMX--WfTc0t8vS4Wphc39PPlfFdvSRLWp7Dzp1MbSlWZSclBaVMd7rCWYEh3IPqNOw3rRLfxXPJyRHkP0qDNOtBzph48BvTC_STzJKhInN4RKwV%5D-RRduEsa4FYgp8CKwM1FBnKwULYE
+
+Se fai clic sul link e non funziona, copia e incolla il link in una
+nuova finestra del browser. Se non riesci ad accedere al link, puoi
+inviare il codice di conferma
+738386242 a dylan.inner@gmail.com.
+
+Grazie per aver utilizzato Gmail!
+
+Cordiali saluti,
+
+Il team di Gmail
+
+Se non approvi questa richiesta, non sono necessarie ulteriori
+operazioni da parte tua.
+dylan.inner@gmail.com non puÃ² inoltrare automaticamente messaggi al
+tuo indirizzo email
+a meno che tu non confermi la richiesta facendo clic sul link
+riportato sopra. Se hai fatto clic sul link involontariamente, ma non
+desideri consentire a dylan.inner@gmail.com di
+inviare automaticamente messaggi al tuo indirizzo, fai clic sul link
+seguente per annullare questa
+verifica:
+ï¿¼https://mail-settings.google.com/mail/uf-%5BANGjdJ91ofdpptHUoSs52cuQlrPeGzcGQ9iRtT1TeNAwoxgA5_k7YypTBKiYnj8WENUKDuKebEGLk5ONzWsxOgcdp9reRjgdN5PCyQeG2SjaZ7kYkZGLaEwSm24G1oGML_AcUdwftz23doXW-X6lm6d7L0__n-rpY9w8zrnj1F7TW3PLR3HV97xsW23AaZX3tVMS2LymuZYejhoasPN1%5D-RRduEsa4FYgp8CKwM1FBnKwULYE
+
+Per ulteriori informazioni sui motivi per cui puoi aver ricevuto
+questo messaggio, visita questa pagina:
+http://support.google.com/mail/bin/answer.py?answer=184973.
+
+Non rispondere a questo messaggio. Se desideri contattare il team di
+Google.com, esegui l'accesso al tuo account e fai clic su ""Guida""
+nella parte superiore di qualunque pagina. Quindi fai clic su
+Contattaci"" nella parte inferiore della pagina del Centro assistenza.","dylan.inner@gmail.com"
+,"","","0051t000000QxGyAAK","2019-01-16T17:16:23.000Z","lorenzo.patricelli@lynxspa.com","Lorenzo Patricelli","false","02s0Q0000008FYjQAM","2019-01-16T17:16:18.000Z","5000Q000001x2AjQAI","5000Q000001x2AjQAI","1","Prova Gestione Mail","Ciao, leggimi e sii felice","dylan.inner@gmail.com"
+,"","","0051t000000QxGyAAK","2019-01-17T09:59:31.000Z","lorenzo.patricelli@lynxspa.com","Lorenzo Patricelli","false","02s0Q0000008GucQAE","2019-01-17T09:59:27.000Z","5000Q000001x6NfQAI","5000Q000001x6NfQAI","1","indirizzo email mockato sull apex","","dylan.inner@gmail.com"
+,"","","0051t000000QxGyAAK","2019-01-17T10:19:23.000Z","lorenzo.patricelli@lynxspa.com","Lorenzo Patricelli","false","02s0Q0000008GxWQAU","2019-01-17T10:19:19.000Z","5000Q000001x6gSQAQ","5000Q000001x6gSQAQ","1","Crea case senza process builder","","dylan.inner@gmail.com"
+,"","","0051t000000QxGyAAK","2019-01-17T10:22:31.000Z","lorenzo.patricelli@lynxspa.com","Lorenzo Patricelli","false","02s0Q0000008GxvQAE","2019-01-17T10:22:27.000Z","5000Q000001x6hLQAQ","5000Q000001x6hLQAQ","1","Funge","","dylan.inner@gmail.com"
+,"","","0051t000000QxGyAAK","2019-01-17T10:23:35.000Z","lorenzo.patricelli@lynxspa.com","Lorenzo Patricelli","false","02s0Q0000008GyAQAU","2019-01-17T10:23:30.000Z","5000Q000001x6hfQAA","5000Q000001x6hfQAA","1","Email per il calcolo dello smistamento nella giusta coda","","dylan.inner@gmail.com"
+,"","","0051t000000QxGyAAK","2019-01-17T10:51:55.000Z","lorenzo.patricelli@lynxspa.com","Lorenzo Patricelli","false","02s0Q0000008H2vQAE","2019-01-17T10:51:51.000Z","5000Q000001x6peQAA","5000Q000001x6peQAA","1","Email da assegnare alla coda giusta","","dylan.inner@gmail.com"
+,"","","0051t000000QxGyAAK","2019-01-17T10:52:21.000Z","lorenzo.patricelli@lynxspa.com","Lorenzo Patricelli","false","02s0Q0000008H35QAE","2019-01-17T10:52:17.000Z","5000Q000001x6poQAA","5000Q000001x6poQAA","1","Email da Assegnare alla coda vol 2","","dylan.inner@gmail.com"
+,"","","0051t000000QxGyAAK","2019-01-19T18:24:02.000Z","pinbot@inspire.pinterest.com","Pinterest","false","02s0Q0000008JnlQAE","2019-01-19T18:23:54.000Z","5000Q000001xHTtQAM","5000Q000001xHTtQAM","1","Hai 18 nuovi Pin che ti aspettano","Per visualizzare questo contenuto, apri l'URL indicato di seguito nel browser: https://post.pinterest.com/f/a/EcVfQcoeBRETs9qbs0HAeQ~~/AAAAAQA~/RgReJfA6PwRXCXBpbnRlcmVzdEIKABE6a0NcRo1hilIVZHlsYW4uaW5uZXJAZ21haWwuY29tWAQAAAAA?target=https%3A%2F%2Fwww.pinterest.com%2Fsecure%2Fautologin%2F%3Fod%3DwW3SXgoQysLxMjRnn8dtMLT6acCpSCvs5ghdpEotQHvLaIuPzsilx0bBt6CRuJrewp5S3BAdr5TX%250AWEpcvp5eNkxcybGAzEugtPufic0JT7x3gu9ODv5W18dBI2dM4ySSUoO8gZbuDk4uK2Zf8WVg9Q%253D%253D%250A%26amp%3Buser_id%3DNzYyNjU2NjU1NTU2MDUyOTEx%250A%26amp%3Bnext%3D%252F%253Futm_campaign%253Dhomefeednewpins%2526e_t%253D64d7e6a7afee43a19526d2ee5dfe706c%2526utm_medium%253D2025%2526utm_source%253D31%2526e_t_s%253Dcta
+Pinterest
+
+
+572 7th Street, San Francisco, CA, 94103
+
+Centro assistenza: https://post.pinterest.com/f/a/d0Bl8CXO0uRz99w6A1AcIw~~/AAAAAQA~/RgReJfA6PwRXCXBpbnRlcmVzdEIKABE6a0NcRo1hilIVZHlsYW4uaW5uZXJAZ21haWwuY29tWAQAAAAA?target=https%3A%2F%2Fwww.pinterest.com%2Fhelp%2F
+
+Norme sulla privacy: https://post.pinterest.com/f/a/5ibAFKE--svmyqmxeufsag~~/AAAAAQA~/RgReJfA6PwRXCXBpbnRlcmVzdEIKABE6a0NcRo1hilIVZHlsYW4uaW5uZXJAZ21haWwuY29tWAQAAAAA?target=https%3A%2F%2Fwww.pinterest.com%2F_%2F_%2Fabout%2Fprivacy%2F
+
+Termini e condizioni: https://post.pinterest.com/f/a/46aoz-Oy-1U0hHD18Ijdww~~/AAAAAQA~/RgReJfA6PwRXCXBpbnRlcmVzdEIKABE6a0NcRo1hilIVZHlsYW4uaW5uZXJAZ21haWwuY29tWAQAAAAA?target=https%3A%2F%2Fwww.pinterest.com%2F_%2F_%2Fabout%2Fterms-service%2F
+
+Annulla iscrizione da questa email: https://post.pinterest.com/f/a/NpclzOE8SHAnvhExqWyaOA~~/AAAAAQA~/RgReJfA6PwRXCXBpbnRlcmVzdEIKABE6a0NcRo1hilIVZHlsYW4uaW5uZXJAZ21haWwuY29tWAQAAAAA?target=https%3A%2F%2Fwww.pinterest.com%2Femail%2Funsubscribe%2F%3Fod%3DyqSdLKy%252BGrcUcNl9tE2876Gu9QuDjbrZf1VQdNElezVzLu1SeUx4SbNZfWER4xvYai9GCXvGLiL6%250AQoV%252FHpvfm5LIvYV9OZPvuNSnQ%252FGk%252FOSdeC0VjRK2MGqzZw6GKa8wvkGZJDU%252FiWc8dqEpNHp%252B9l6F%250AJOxuJ8TOHCE%252FxjWiuWYcWjPT6ExHqT2P3oGyV2PRbnMZ6aChzH9AzoEpWP%252BzS6K3MEqj4R61JHn8%250A3z40J0cExhrGf2SqUlEkEr%252B8tuwFoEp8QMYbLXDphhFnzl1KnE5LPH8oaGUP5Op8X%252BoJbHHGet5p%250AnNUsRWp6uXQgBezAj4yt3v8%252FKq107T9fNM7G%252FZMvIV3eICJL9%252FE4uoWTB0RKwrpO%252BQfVCDUB%252B72o%250APcG7zl5Hunpjo5Wr6dAetGyVbH%252F94klUc1vqWCDdJf%252BmFoc%253D%250A%26amp%3Buser_id%3DNzYyNjU2NjU1NTU2MDUyOTEx%250A","dylan.inner@gmail.com"
+,"","","0051t000000QxGyAAK","2019-01-19T20:37:49.000Z","just-eat@email.just-eat.it","Just Eat","false","02s0Q0000008JyKQAU","2019-01-19T20:37:43.000Z","5000Q000001xHV1QAM","5000Q000001xHV1QAM","1","Il tuo ordine da Pizzeria Karas","Grazie per il tuo ordine, Dylan --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------","dylan.inner@gmail.com"
+,"","","0051t000000QxGyAAK","2019-01-20T17:27:19.000Z","notifications@sketchfab.com","Sketchfab","false","02s0Q0000008KIcQAM","2019-01-20T17:27:06.000Z","5000Q000001xIyTQAU","5000Q000001xIyTQAU","1","Your weekly digest","Weekly Digest: Uploads from your contacts, Popular Models, Who to follow and Blog articles!
+
+Who to follow
+
+You may be interested by the great 3D models from these members:
+
+
+Piter Hillewaert
+Polenta
+snegi5566
+LewisSanderson
+jeebs
+
+Popular models
+
+
+DEF Gladiator
+by Alessandro Gi
+Centitaur - Gia...
+by FIREDRA6ON
+Mech King
+by Igotron
+
+Mi-8MT Mi-17MT ...
+by pukamakara
+The Office - Dw...
+by turrican85
+Hermano Ciervo
+by pebetron
+
+Browse all popular
+
+On the blog
+The Sketchfab Store turns 1
+Art Spotlight: Oni Chan Maskless
+Art Spotlight: Bunker Assault
+Connecting with the Past Through Toys
+Art Spotlight: Peace Lilies
+
+You received this email because you have signed up on Sketchfab.com.
+
+Sketchfab Inc â€¢ 1123 Broadway, ste 501, New York, NY 10010
+
+Click here to unsubscribe from these emails or manage your notifications preferences in your account.","dylan.inner@gmail.com"
+,"","","0051t000000QxGyAAK","2019-01-21T08:53:11.000Z","forwarding-noreply@google.com","Team di Gmail","false","02s0Q0000008KkcQAE","2019-01-21T08:53:09.000Z","5000Q000001xLa4QAE","5000Q000001xLa4QAE","1","(N. 19821986) Gmail Conferma inoltro - Posta ricevuta da emailprovasales@gmail.com","emailprovasales@gmail.com ha richiesto di inoltrare automaticamente la
+posta al tuo indirizzo email
+emailprovasales@l-9ldv9ipvsoeqszzlll6qwsy2j7gqonzd32l8f9zbbza8mj8g3.0q-pncuau.cs109.case.sandbox.salesforce.com.
+Codice di conferma: 19821986
+
+Per consentire a emailprovasales@gmail.com di inoltrare
+automaticamente la posta al tuo indirizzo,
+fai clic sul collegamento sotto per confermare la richiesta:
+
+https://mail-settings.google.com/mail/vf-%5BANGjdJ8Hu-70WFk9Sh3SGZIEeSgXahUiUEDZNZhnCqrh9VFjsHf4tD7g3V9HcTMa48b0_TRWWvk-D281Ammzf_nSblK54QPVYuA0lhbHW2QXdSzWHgdV8a27lRoZ-YA4-JAt6w8FXV3K4zxZAvLMUujevVjZ4xpq__9Y7l5xG5fstANMkh7k4aYa5sSeBCMZf8mloMry56ZQcRAOORWi%5D-M5G_Oe8jf87Vly2LxoDQkuy1eTc
+
+Se fai clic sul link e non funziona, copia e incolla il link in una
+nuova finestra del browser. Se non riesci ad accedere al link, puoi
+inviare il codice di conferma
+19821986 a emailprovasales@gmail.com.
+
+Grazie per aver utilizzato Gmail!
+
+Cordiali saluti,
+
+Il team di Gmail
+
+Se non approvi questa richiesta, non sono necessarie ulteriori
+operazioni da parte tua.
+emailprovasales@gmail.com non puÃ² inoltrare automaticamente messaggi
+al tuo indirizzo email
+a meno che tu non confermi la richiesta facendo clic sul link
+riportato sopra. Se hai fatto clic sul link involontariamente, ma non
+desideri consentire a emailprovasales@gmail.com di
+inviare automaticamente messaggi al tuo indirizzo, fai clic sul link
+seguente per annullare questa
+verifica:
+ï¿¼https://mail-settings.google.com/mail/uf-%5BANGjdJ-EHEyjZIxaIlEFiHzgNHQvZMioo92M_EG9h0Yl9aC6C2ww3kuQr2iukKQi-8M71VHHiXiNtVNebjKdQ9ycmljqokM4ZZfRVI-oIDljlRo_q4pMm4IDqzCWSWwzSHFv0PzJh6i7LGONutcJVofsI5ShHPKuCB3Fx71QhJdcE_lNOtKiwLTyGESyX8jH7-lpX17yjt-WQZpWEwCQ%5D-M5G_Oe8jf87Vly2LxoDQkuy1eTc
+
+Per ulteriori informazioni sui motivi per cui puoi aver ricevuto
+questo messaggio, visita questa pagina:
+http://support.google.com/mail/bin/answer.py?answer=184973.
+
+Non rispondere a questo messaggio. Se desideri contattare il team di
+Google.com, esegui l'accesso al tuo account e fai clic su ""Guida""
+nella parte superiore di qualunque pagina. Quindi fai clic su
+Contattaci"" nella parte inferiore della pagina del Centro assistenza.","emailprovasales@gmail.com"
+,"","","0051t000000QxGyAAK","2019-01-21T09:19:41.000Z","forwarding-noreply@google.com","Team di Gmail","false","02s0Q0000008KmTQAU","2019-01-21T09:19:39.000Z","5000Q000001xLe1QAE","5000Q000001xLe1QAE","1","(N. 703383831) Gmail Conferma inoltro - Posta ricevuta da emailprovasales@gmail.com","emailprovasales@gmail.com ha richiesto di inoltrare automaticamente la
+posta al tuo indirizzo email
+emailprovasales@l-9ldv9ipvsoeqszzlll6qwsy2j7gqonzd32l8f9zbbza8mj8g3.0q-pncuau.cs109.case.sandbox.salesforce.com.
+Codice di conferma: 703383831
+
+Per consentire a emailprovasales@gmail.com di inoltrare
+automaticamente la posta al tuo indirizzo,
+fai clic sul collegamento sotto per confermare la richiesta:
+
+https://mail-settings.google.com/mail/vf-%5BANGjdJ85O5wLA_29U-cr3GMVMPKdEJSYIvea2aSPi8hhG7p6asz-vElH1MO8RqO1sjFpUrkFBI8FfQpjeDB-gJOXWTJ_QT7NwJfhuwfLbs21OZDE7KD5-BoziTNqmqJqNJYUbDRg4niKd6OBNnJmFT1erJPCMp0AhELqXYjFRwIKebFklEzFzjxRS5eMCC_OYcpgTIY_8mD73oy4VPb8%5D-H8Q46_o2UBW5DwRXZJEqyw-wnqY
+
+Se fai clic sul link e non funziona, copia e incolla il link in una
+nuova finestra del browser. Se non riesci ad accedere al link, puoi
+inviare il codice di conferma
+703383831 a emailprovasales@gmail.com.
+
+Grazie per aver utilizzato Gmail!
+
+Cordiali saluti,
+
+Il team di Gmail
+
+Se non approvi questa richiesta, non sono necessarie ulteriori
+operazioni da parte tua.
+emailprovasales@gmail.com non puÃ² inoltrare automaticamente messaggi
+al tuo indirizzo email
+a meno che tu non confermi la richiesta facendo clic sul link
+riportato sopra. Se hai fatto clic sul link involontariamente, ma non
+desideri consentire a emailprovasales@gmail.com di
+inviare automaticamente messaggi al tuo indirizzo, fai clic sul link
+seguente per annullare questa
+verifica:
+ï¿¼https://mail-settings.google.com/mail/uf-%5BANGjdJ9d8QlHf0VG3DQkELoptI-G7FkdC6Ofdz6Rv9aflTiJKSvMspZ5Q-K3TdolJ1o8sylajYjsl2y-dm1CbAcLOp_IQkxjV-3otWIxmu5cuiP_UMBG0bHCxIjK-wH1kfGD_YbjuJqNISXmh0GuuYkWWoLPf_d8HH6vOqtD1w9K72J7rVzWy_wCtEqR7SZaFTM-X53nR9Z1AmxxpkSQ%5D-H8Q46_o2UBW5DwRXZJEqyw-wnqY
+
+Per ulteriori informazioni sui motivi per cui puoi aver ricevuto
+questo messaggio, visita questa pagina:
+http://support.google.com/mail/bin/answer.py?answer=184973.
+
+Non rispondere a questo messaggio. Se desideri contattare il team di
+Google.com, esegui l'accesso al tuo account e fai clic su ""Guida""
+nella parte superiore di qualunque pagina. Quindi fai clic su
+Contattaci"" nella parte inferiore della pagina del Centro assistenza.","emailprovasales@gmail.com"
+,"","","0051t000000QxGyAAK","2019-01-21T09:26:35.000Z","lorenzo.patricelli@lynxspa.com","Lorenzo Patricelli","false","02s0Q0000008Kn7QAE","2019-01-21T09:26:31.000Z","5000Q000001xLfOQAU","5000Q000001xLfOQAU","1","Reclamo maglietta stretta","","emailprovasales@gmail.com"
+,"","","0051t000000QxGyAAK","2019-01-21T09:27:08.000Z","lorenzo.patricelli@lynxspa.com","Lorenzo Patricelli","false","02s0Q0000008KnCQAU","2019-01-21T09:27:04.000Z","5000Q000001xLfYQAU","5000Q000001xLfYQAU","1","Supporto tecnico telecomando cancello","","emailprovasales@gmail.com"
+,"","","0051t000000QxGyAAK","2019-01-21T09:27:28.000Z","lorenzo.patricelli@lynxspa.com","Lorenzo Patricelli","false","02s0Q0000008KnHQAU","2019-01-21T09:27:25.000Z","5000Q000001xLfiQAE","5000Q000001xLfiQAE","0","Preventivo non preventivato","","emailprovasales@gmail.com"
+,"","","0051t000000QxGyAAK","2019-01-21T09:28:46.000Z","lorenzo.patricelli@lynxspa.com","Lorenzo Patricelli","false","02s0Q0000008KnMQAU","2019-01-21T09:28:43.000Z","5000Q000001xLfxQAE","5000Q000001xLfxQAE","0","Mancata erogazione liquiditÃ ","","emailprovasales@gmail.com"
+,"","","0051t000000QxGyAAK","2019-01-21T09:30:02.000Z","lorenzo.patricelli@lynxspa.com","Lorenzo Patricelli","false","02s0Q0000008KnRQAU","2019-01-21T09:29:55.000Z","5000Q000001xLgMQAU","5000Q000001xLgMQAU","0","Problema proxy","","emailprovasales@gmail.com"
+,"","","0051t000000QxGyAAK","2019-01-21T09:30:28.000Z","lorenzo.patricelli@lynxspa.com","Lorenzo Patricelli","false","02s0Q0000008KnWQAU","2019-01-21T09:30:24.000Z","5000Q000001xLgRQAU","5000Q000001xLgRQAU","0","Collo bottiglietta d'acqua troppo stretto","","emailprovasales@gmail.com"
+,"","","0051t000000QxGyAAK","2019-01-21T09:31:11.000Z","lorenzo.patricelli@lynxspa.com","Lorenzo Patricelli","false","02s0Q0000008KnqQAE","2019-01-21T09:31:08.000Z","5000Q000001xLggQAE","5000Q000001xLggQAE","0","Deltaplano non plana","","emailprovasales@gmail.com"

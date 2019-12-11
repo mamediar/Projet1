@@ -1,0 +1,28 @@
+.THIS .messageBox{
+    max-width: 15rem !important;
+    width:90% !important;
+    
+}
+
+
+.THIS .slds-modal__container{
+    max-width: 70rem !important;
+    width:80% !important;
+}
+
+
+.THIS .hidelabel .slds-form-element__label{
+    display: none; 
+    visibility: hidden;
+}
+
+.THIS .slds-button_icon-bare{
+display: none;
+}
+
+.THIS .slds-truncate {
+    text-overflow: inherit;
+    white-space: normal;
+    word-wrap: break-word;
+    overflow-wrap: break-word; 
+}

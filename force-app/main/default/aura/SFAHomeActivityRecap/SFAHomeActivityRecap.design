@@ -1,0 +1,4 @@
+<design:component>
+    <design:attribute name="configurationName" label="Configuration Developer Name"/>
+	<design:attribute name="rowsNumber" label="Rows Number" default="15"/>
+</design:component>

@@ -1,0 +1,114 @@
+<aura:component controller="GiustificaUscitaNotaSpeseClass" implements="flexipage:availableForAllPageTypes">
+
+    <aura:attribute name="step" type="String"/>
+    <aura:attribute name="notaSpese" type="SFA_NotaSpese__c"/>
+    <aura:attribute name="orariMyHr" type="List" default="['manuale']"/>
+    <aura:attribute name="orarioInizioMyHr" type="Object" default="manuale"/>
+    <aura:attribute name="orarioFineMyHr" type="Object" default="manuale"/> 
+    <aura:attribute name="initWrapper" type="Object"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.onInit}"/>
+    
+ 
+    <lightning:card title="Giustifica Uscita">
+        <aura:set attribute="actions">
+                <lightning:buttonIcon iconName="utility:back" onclick="{!c.backToDealerPianificaNotaSpese}" variant="border-filled"/>
+        </aura:set>
+        <c:SpinnerComponent aura:id="spinnerComponent"/> 
+        <lightning:layout verticalAlign="center" multipleRows="true">
+            <lightning:layoutItem size="12">
+                <lightning:layout>
+                    <lightning:layoutItem size="2" class="slds-p-around_x-small">
+                        <lightning:input type="date" name="data" label="Data Uscita" value="{!v.notaSpese.Date__c}" aura:id="dataTimbratureId"
+                            required="true" onchange="{!c.getSchedules}" readonly="true"/>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="2" class="slds-p-around_x-small">
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="2" class="slds-p-around_x-small">
+                        <lightning:select name="selectInizioHR" aura:id="selectInizioHR" value="{!v.orarioInizioMyHr}"
+                        label="Inizio MY HR" onchange="{!c.insertInizioHR}">
+                            <option text="manuale" value="manuale"/>
+                            <aura:iteration items="{!v.orariMyHr}" var="orario">
+                                <option text="{!orario.label}" value="{!orario.value}" />
+                            </aura:iteration>  
+                        </lightning:select>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="2" class="slds-p-around_x-small">
+                        <lightning:input type="time" min="06:00:00.000Z" max="21:00:00.000Z" name="customInizioMyHr" value="{!v.notaSpese.OraInizioUscita__c}" aura:id="timbraturaId"
+                        label="Inizio manuale" disabled="{!(v.orarioInizioMyHr == 'manuale' || empty(v.orariMyHr)) ? false : true}" required="true"/>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="2" class="slds-p-around_x-small">
+                        <lightning:select name="selectFineHR" aura:id="selectFineHR" value="{!v.orarioFineMyHr}"
+                        label="Fine MY HR" onchange="{!c.insertFineHR}">
+                            <option text="manuale" value="manuale"/>
+                            <aura:iteration items="{!v.orariMyHr}" var="orario">
+                                <option text="{!orario.label}" value="{!orario.value}" />
+                            </aura:iteration>
+                        </lightning:select>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="2" class="slds-p-around_x-small">
+                        <lightning:input type="time" min="06:00:00.000Z" max="21:00:00.000Z" name="customFineMyHr" value="{!v.notaSpese.OraFineUscita__c}" aura:id="timbraturaId"
+                        label="Fine Manuale" disabled="{!(v.orarioFineMyHr == 'manuale' || empty(v.orariMyHr)) ? false : true}" required="true"/>
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="12">
+                <lightning:layout>
+                    <lightning:layoutItem size="4" class="slds-p-around_x-small">
+                        <lightning:textarea name="ComuniVisitati" label="Comuni visitati" value="{!v.notaSpese.Tratta__c}" required="true"/>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="2" class="slds-p-around_x-small">
+                            <lightning:input type="number" min="0.01" step="0.01" name="KmPercorsi" value="{!v.initWrapper.kmPercorsi}" label="Km Percorsi" required="true"/>
+                    </lightning:layoutItem>
+                    <aura:if isTrue="{!!(v.notaSpese.TipoAuto__c == 'NA' || v.notaSpese.TipoAuto__c == 'NAA' || v.notaSpese.TipoAuto__c == 'A')}">
+                        <lightning:layoutItem size="2" class="slds-p-around_x-small">
+                            <lightning:input pattern="(\b[A-Z][A-Z][0-9][0-9][0-9][A-Z][A-Z]\b)" name="Targa" label="Targa" 
+                            value="{!v.notaSpese.TargaVeicolo__c}" aura:id="timbraturaId" maxlength="7" required="true" onchange="{!c.upperCaseConverter}" messageWhenPatternMismatch="Targa non valida"/> 
+                        </lightning:layoutItem>
+                    </aura:if>
+                </lightning:layout>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="12">
+                <lightning:layout>
+                    <lightning:layoutItem size="2" class="slds-p-around_x-small">
+                        <lightning:select aura:id="picklistAutoId" name="select" label="Seleziona Auto" value="{!v.notaSpese.TipoAuto__c}" required="true">
+                            <aura:iteration items="{!v.initWrapper.autoPicklist}" var="auto">
+                                <option text="{!auto.label}" value="{!auto.value}" selected="{!auto.Value == v.notaSpese.TipoAuto__c}"/>
+                            </aura:iteration>
+                        </lightning:select>
+                    </lightning:layoutItem>
+                    <aura:if isTrue="{!v.notaSpese.TipoAuto__c == 'F'}">
+                        <lightning:layoutItem size="2" class="slds-p-around_x-small">
+                            <lightning:input name="KmRifornimento" type="number" min="0.01" step="0.01" label="Km Rifornimento" value="{!v.notaSpese.KmRifornimento__c}" aura:id="rifornimentoFillsId" 
+                            required="{! !empty(v.notaSpese.LuogoRifornimento__c) || !empty(v.notaSpese.ImportoRifornimento__c) || !empty(v.notaSpese.KmRifornimento__c)}"
+                            onblur="{!c.checkRifornimentoFills}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem size="2" class="slds-p-around_x-small">
+                            <lightning:input name="LuogoRifornimento" label="Luogo Rifornimento" value="{!v.notaSpese.LuogoRifornimento__c}" aura:id="rifornimentoFillsId"
+                            required="{! !empty(v.notaSpese.LuogoRifornimento__c) || !empty(v.notaSpese.ImportoRifornimento__c) || !empty(v.notaSpese.KmRifornimento__c)}"
+                            onblur="{!c.checkRifornimentoFills}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem size="2" class="slds-p-around_x-small">
+                            <lightning:input name="ImportoRifornimento" type="number" min="0.01" step="0.01" label="Importo Rifornimento" value="{!v.notaSpese.ImportoRifornimento__c}" aura:id="rifornimentoFillsId"
+                            required="{! !empty(v.notaSpese.LuogoRifornimento__c) || !empty(v.notaSpese.ImportoRifornimento__c) || !empty(v.notaSpese.KmRifornimento__c)}"
+                            onblur="{!c.checkRifornimentoFills}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem size="2" class="slds-p-around_x-small">
+                            <lightning:input aura:id="timbraturaId" type="number" min="0.01" step="0.01" name="KmInizio" value="{!v.notaSpese.KmInizioUscita__c}" label="Km Inizio" required="true" onblur="{!c.evaluateKmFine}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem size="2" class="slds-p-around_x-small">
+                            <lightning:input aura:id="timbraturaId" type="number" min="0.01" step="0.01" name="KmFine" value="{!v.notaSpese.KmFineUscita__c}" label="Km Fine" required="true"/>
+                        </lightning:layoutItem>
+                    </aura:if>
+                    </lightning:layout>
+            </lightning:layoutItem>
+        </lightning:layout>   
+        <lightning:layout>       
+            <lightning:layoutItem size="12" padding="around-small">
+                <lightning:button label="Conferma" title="Conferma" onclick="{!c.confermaNotaSpese}"/>
+            </lightning:layoutItem>
+        </lightning:layout>  
+    </lightning:card>
+   
+
+</aura:component>

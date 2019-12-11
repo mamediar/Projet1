@@ -1,0 +1,48 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId" controller="GUA_DettaglioDealerCnt" access="global">
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="caseDealer" type="Case" default="{'sobjectType' : 'Case' }"/>
+    <aura:attribute name="datiAggiuntivi" type="Object" />
+    <aura:attribute type="Account" name="filialeCase" default="" />
+    <aura:attribute type="Boolean" name="isDealer" default="false" />
+    <aura:attribute type="Boolean" name="isOpenModel" default="false" />
+    <aura:attribute type="Boolean" name="isNotSearchInformazioniDealer" default="true" />
+    <aura:attribute type="String" name="dispoDay" default="" />
+    <aura:attribute type="User" name="capoFiliale" default="" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.handleManageContact}"/>
+    
+    <div class="slds-text-body_regular">Contact Inbound</div>
+    <article class="slds-card">
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <span class="slds-icon_container slds-icon-standard-account" title="account">
+                        <span class="slds-assistive-text"></span>
+                    </span>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col">
+                                <div class="slds-grid slds-gutters">
+                                    <span><lightning:icon iconName="standard:event" alternativeText="Event" /></span> &nbsp;&nbsp;
+                                    <span class="slds-text-heading_medium">Scheda Dealer</span>
+                                </div>
+                            </div>
+                            <div class="slds-col">
+                                <div class="button-command slds-p-bottom_x-small slds-float_right">
+                                    <lightning:button variant="variant" label="Ricerca Dealer" onclick="{!c.cercaDealer}" class="slds-button slds-button_text-destructive" />
+                                </div>
+                            </div>
+                        </div>
+                    </h2>
+                </div>
+            </header>
+        </div>
+    </article>
+    <c:GUA_SearchInformazioniDealerCmp isOpenedModal="{!v.isOpenModel}" isNotSearchInformazioniDealer="{!v.isNotSearchInformazioniDealer}"/>
+    <aura:if isTrue="{!v.isNotSearchInformazioniDealer}">
+        <c:GUA_DetailDealerHandlerCmp caseDealer="{!v.caseDealer}" isNotInbound='false' datiAggiuntivi="{!v.datiAggiuntivi}" isDealer="{!v.isDealer}" filialeCase="{!v.filialeCase}" capoFiliales="{!v.capoFiliale}" dispositionDay="{!v.dispoDay}"/>
+        <c:GUA_Dettaglio2Contact isNotDealerInbound = "false" contactDetails="{!v.caseDealer}" />
+    </aura:if>
+</aura:component>

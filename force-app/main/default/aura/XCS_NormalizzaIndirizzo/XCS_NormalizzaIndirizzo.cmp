@@ -1,0 +1,55 @@
+<aura:component controller="XCS_NormalizzaIndirizzoController" 
+                implements="force:appHostable,flexipage:availableForAllPageTypes"
+                access="global"> 
+    
+    <aura:attribute name="showAlwaysModale" type="Boolean" description="Flag che mostra la modale anche laddovè ci sia solo un indirizzo.È un parametro da passare nell event"/>
+    
+    <aura:attribute name="showModale" type="Boolean" description="Flag che controlla la lunghezza della response e mostra la modale qualora ci siano più indirizzi"/>
+    
+    <aura:attribute name="indirizzoInput" type="XCS_Indirizzo" description="È l oggetto XCS_Indirizzo che viene passato a questo componente tramite l evento
+                                                                            XCS_InviaIndirizzoEvent. Questo oggetto contruisce la request per la chiamata al servizio OCS"/>
+    
+    <aura:attribute name="indirizzoOutput" type="XCS_Indirizzo" description="È l oggetto XCS_Indirizzo che questo componente ritorna al componente chiamante tramite l evento
+                                                                             XCS_RiceviIndirizzoEvent"/>
+    
+    <aura:attribute name="indirizziData" type="XCS_Indirizzo[]" description="Sono i dati mostrati dalla DataTable"/>   
+    
+    <aura:attribute name="selectedIndirizzo" type="XCS_Indirizzo" description="È la riga selezionata della Datatable"/>
+    
+    <aura:attribute name="columns" type="List" description="Colonne DataTable" default="[{label: 'Indirizzo', fieldName: 'indirizzo', type: 'text'},
+                                                                                        {label: 'Località', fieldName: 'localita', type: 'text'},
+                                                                                        {label: 'CAP', fieldName: 'cap', type: 'text'},
+                                                                                        {label: 'Provincia', fieldName: 'provincia', type: 'text'}]"/>
+    
+    <aura:handler event="c:XCS_InviaIndirizzoEvent" action="{!c.handleEvent}" description="Evento che riceve l oggetto XCS_Indirizzo da utilizzare come input per la request del web service: normalizzaIndirizzo" />
+    
+    <aura:if isTrue="{!v.showModale}">
+        <div class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <h2 class="title slds-text-heading--medium">Selezionare un indirizzo</h2>
+                </div>
+                <div class="slds-modal__content slds-p-around--medium">                                     
+                    <lightning:datatable aura:id="table"
+                                         keyField="indirizzo"
+                                         data="{! v.indirizziData}"
+                                         columns="{! v.columns}"
+                                         maxRowSelection="1"
+                                         selectedRows="{!v.selectedIndirizzo}"   
+                                         onrowselection="{!c.handleIndirizzo}"/>     
+                    
+                </div>
+                <div class="slds-modal__footer">
+                    <lightning:button variant="brand" label="Annulla"  iconName="utility:close"
+                                      onclick="{!c.annullaModale}"/>
+                    <lightning:button variant="brand" label="Conferma" iconName="utility:check"
+                                      onclick="{!c.closeModale}"/>
+                    
+                    
+                </div>
+            </div>
+        </div>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>             
+    
+</aura:component>

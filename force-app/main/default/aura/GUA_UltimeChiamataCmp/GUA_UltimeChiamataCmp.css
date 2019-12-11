@@ -1,0 +1,11 @@
+.THIS .color_black {
+    text-align: center;
+    background-color: #0c0c0c;
+    color: #fff;
+    font-size: 14px;
+}
+
+.THIS .slds-col.slds-size_1-of-10 {
+    margin-top: 15px;
+    padding-left: 35px;
+}

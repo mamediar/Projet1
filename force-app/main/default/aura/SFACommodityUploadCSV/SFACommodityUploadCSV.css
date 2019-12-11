@@ -1,0 +1,29 @@
+.THIS .notUploading {
+    visibility: hidden;
+}
+
+.THIS .uploading {
+    visibility: visible;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.THIS .errorRow{
+    background : #FFCC33;
+    color : black;
+}
+
+.THIS .okRow{
+    background : #FFFFFF;
+    color : black;
+}
+
+.THIS .modal_detail_row{
+    flex-direction: row;
+    max-width:  100%;
+    width: auto;
+}
+
+.THIS .scroll_detail_row{
+    overflow-x: scroll;
+}

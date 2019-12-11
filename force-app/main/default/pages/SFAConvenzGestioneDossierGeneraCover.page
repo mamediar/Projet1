@@ -1,0 +1,96 @@
+<apex:page renderAs="PDF" controller="SFAConvenzGestDossierGeneraCoverCtrller" action="{!getDocumenti}" applyBodyTag="false">
+	<head>
+        <style>
+            html {
+              height: 100%;
+            }
+            
+            body {
+            font-family: 'Arial Unicode MS';
+              min-height: 100%;
+            font-size: 12px;
+            }
+            .checklist{
+            	font-size: 11px;
+            }
+            #footer {
+                position : absolute;
+                bottom : 0;
+                height : 40px;
+                margin-top : 40px;
+                font-size: 11px;
+            }
+        </style>
+    </head>
+
+    <body>
+    <table>
+    <tr>
+    <td>
+    <BarcodeZone:ACBarcodeZone Value="{!barCode}"
+ 					BrcdType="code128"
+ 					BrcdHeight="40"
+ 					BarsWidth="2"
+ 				/> 
+    </td>
+    <td align="right">
+
+        <div style="text-align:right"><apex:image value="{!$Resource.CompassLogo}" width="175" height="100" /></div>
+    </td>
+    </tr>
+    </table>
+
+             <div ><br/>
+                Ragione Sociale: <apex:outputText value=" {!ragioneSociale}"/><br/>
+                OCS Code:<apex:outputText value=" {!ocsCode}"/><br/>
+                Ref. No:<apex:outputText value=" {!numeroRiferimento}"/><br/><br/>
+            </div>
+
+
+        <div>Checklist:</div>
+        <div>
+            <apex:outputText styleClass="checklist" value="REINVIO DOSSIER" Rendered="{!isDossierReinviato == true}"/>
+        </div>
+
+        <apex:repeat value="{!lstObbligatori}" var="obb">
+            <div>
+                -<apex:outputText styleClass="checklist" value=" {!obb}"/>
+            </div>
+        </apex:repeat>
+        <apex:repeat value="{!lstCollegati}" var="col">
+            <div>
+                -<apex:outputText styleClass="checklist" value=" {!col}"/>
+            </div>
+        </apex:repeat>
+        <apex:repeat value="{!lstAddizionali}" var="add">
+            <div>
+                -<apex:outputText styleClass="checklist" value=" {!add}"/>
+            </div>
+        </apex:repeat>
+        <div>
+            <apex:outputText styleClass="checklist" value="- Documenti aggiuntivi specificati nelle note" Rendered="{!lstStrNoteSize2 > 0}"/>
+        </div>
+        <div><br/><br/>
+            <apex:outputText styleClass="checklist" value="Note / Documenti aggiuntivi:" Rendered="{!lstStrNoteSize > 0}"/>
+        </div>
+        <apex:repeat value="{!lstStrNote}" var="note">
+            <div>
+                <apex:outputText styleClass="checklist" value="{!note}" Rendered="{!lstStrNoteSize > 0}"/>
+            </div>
+        </apex:repeat>
+        <div id="footer">
+            <table style="width:100%">
+                <tr>
+                    <td style="width: 80%" valign="top" align="left">
+                        <div>Branch Name: {!nomeFiliale}</div>
+                        <div>Branch ID: {!ocsCodeFiliale}</div>
+                    </td>
+                    <td style="width: 20%" valign="top" align="right">
+                        <div>{!dateTimeNow}</div>
+                    </td>
+            
+                </tr>
+        	</table>
+		</div>      
+	</body>
+</apex:page>

@@ -1,0 +1,25 @@
+{  
+   "resultCode":0,
+   "resultMessage":"Ok",
+   "recuperaDatiClienteResponse":{  
+      "telefonoCasa":"0432 502058",
+      "telefonoAlternativo":"",
+      "telCellulare":"335 6343911",
+      "fax":"",
+      "privacyOffCommInterne":"S",
+      "privacyOffCommIntAut":"S",
+      "privacyOffCommEsterne":"S",
+      "privacyOffCommEstAut":"S",
+      "privacyServiziAltri":"S",
+      "privacyDatiSensibili":"S",
+      "privacyIstruttPratiche":"S",
+      "privacyRilevQualita":"S",
+      "privacyConsInfoSic":"S",
+      "privacyRichCanc":" ",
+      "privacyDataIstruttPratiche":"20141003",
+      "privacyDataOfferte":"20141003",
+      "privacyDataSensibili":"20141003",
+      "privacyDataConsSic":"20151201",
+      "privacyNoteConsSic":"                                                            "
+   }
+}

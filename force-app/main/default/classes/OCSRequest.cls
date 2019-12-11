@@ -1,0 +1,5 @@
+public virtual class OCSRequest extends APIRequest
+{
+	public String serviceId {get; set;}
+    public Map<String, String> companyType = new Map<String, String>{'value' => 'COMPASS'};
+}

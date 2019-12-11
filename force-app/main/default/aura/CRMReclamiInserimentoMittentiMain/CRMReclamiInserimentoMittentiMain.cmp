@@ -1,0 +1,65 @@
+<aura:component controller="CRMReclamiInserimentoMittentiMainCtrl"
+                implements="force:appHostable,flexipage:availableForAllPageTypes" 
+                access="global" 
+                >
+    
+    <!--Oggetti mittente, proprietà: da,nomeCognomeMittente,indirizzoMittente,
+ cittaMittente,provinciaMittente,capMittente-->
+    <aura:attribute name="mittentiList" type="XCS_Mittente__c[]"/>
+    <aura:attribute name="mittenteSelezionatoListaMitt" type="XCS_Mittente__c"/>
+    <aura:attribute name="aziendaSelezionata" type="String"/>
+    <aura:attribute name="stepInserimentoMittenti" type="String"/>
+    <aura:attribute name="clienteSelezionato" type="OCSCliente"/>
+    <aura:attribute name="praticaSelezionata" type="Object"/>
+    <aura:attribute name="ClienteCopiato" type="integer"/>
+    <aura:attribute name="CoobligatoCopiato" type="integer"/>
+    <aura:attribute name="listaCoobbligati" type="OCSCliente"/>
+    <aura:attribute name="CaseEsistente" type="Case"/>
+
+    <aura:attribute name="toastMsg" type="String"/>
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/> 
+    
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    
+    
+    <!--Pulsantiera-->
+    <lightning:layout>
+        <lightning:layoutItem>
+            <lightning:button label="Nuovo"
+                              variant="brand"
+                              onclick="{!c.nuovo}"
+                              />
+        </lightning:layoutItem>
+        <lightning:layoutItem>
+            <div class="slds-p-left_x-small">
+                <lightning:button label="Copia Cliente"
+                                  variant="brand"
+                                  onclick="{!c.copiaCliente}"
+                                  />
+            </div>
+        </lightning:layoutItem>
+        <lightning:layoutItem>
+            <div class="slds-p-left_x-small">
+                <aura:if isTrue="{!v.aziendaSelezionata=='Compass'}">
+                    <lightning:button label="Copia Coobbligato"
+                                      variant="brand"
+                                      onclick="{!c.copiaCoobbligato}"
+                                      />
+                </aura:if>
+            </div>
+        </lightning:layoutItem>
+    </lightning:layout>
+    
+    <!--Picklist aggiunta Filiale/Ufficio-->
+    <c:CRMReclamiInserimentoMittentiFilUff aziendaSelezionata="{!v.aziendaSelezionata}"
+                                           mittentiList="{!v.mittentiList}"
+                                           />
+    
+    <!--Lista Mittenti-->
+    <div class="slds-p-top_x-small">
+        <c:CRMReclamiInserimentoiListaMittenti mittenteSelezionatoListaMitt="{!v.mittenteSelezionatoListaMitt}"
+                                               stepInserimentoMittenti="{!v.stepInserimentoMittenti}"
+                                               mittentiList="{!v.mittentiList}"
+                                               />
+    </div>    
+</aura:component>

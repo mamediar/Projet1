@@ -1,0 +1,271 @@
+<aura:component controller="CRMReclamiInvioRichiestaFeTCtrl" 
+                implements="lightning:isUrlAddressable,force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" 
+                access="global" >  
+    
+   
+    <aura:registerEvent name="appEvent" type="ltng:sendMessage"/>
+    <lightning:navigation aura:id="navService"/>
+    <aura:handler event="lightning:openFiles" action="{! c.handleOpenFiles }" />
+    <aura:attribute name="reclamo" type="Case"/>
+    <aura:attribute name="cliente" type="Account"/>
+    <aura:attribute name="codCliente" type="String"/>
+    <aura:attribute name="objectId" type="String" />
+    <aura:attribute name="accountId" type="String"/>
+    <aura:attribute name="frodeAccertata" type="String"/>
+    <aura:attribute name="testoStandard" type="String"/>
+    <aura:attribute name="fileList" type="Attachment[]"/>
+    <aura:attribute name="staticFileList" type="Attachment[]"/>
+    <aura:attribute name="listaTitoli" type="List"/>
+    <aura:attribute name="categoria" type="Object"/>
+    <aura:attribute name="isTesto" type="Boolean" default="false"/>
+    <aura:attribute name="firmaDigitale" type="String"/>
+    <aura:attribute name="filesVecchi" type="List"/>
+    <aura:attribute name="idf" type="String"/>
+    <aura:attribute name="url" type="String"/>
+    <aura:attribute name="type" type="String" default="CRM"/>
+    <aura:attribute name="msg" type="String"/>
+    <aura:attribute name="createdDateLocale" type="String"/>
+    <aura:attribute name="lastModifiedDateLocale" type="String"/>
+     <aura:attribute name="messaggioEmail" type="String"/>
+     <aura:attribute name="token" type="String"/>
+    
+    
+    <aura:attribute name="listaMessaggi" type="Map"/>
+    <aura:attribute name="title" type="String"/>
+    
+    <aura:attribute name="optionsFrode" type="List" default="[
+                                                             {'label': 'Si', 'value': 'Si'},
+                                                             {'label': 'No', 'value': 'No'}    
+                                                             ]"/>
+    
+    <aura:attribute name="optionsTestoStandard" type="List" default="[
+                                                                     {'label': 'Si', 'value': 'Si'},
+                                                                     {'label': 'No', 'value': 'No'}    
+                                                                     ]"/>
+    <aura:attribute name="messaggio" type="String"/>
+    <aura:attribute name="testoStandardValue" type="String" default='Seleziona'/>
+    <aura:attribute name="categoriaId" type="String"/>
+    <aura:attribute name="listaTesti" type="XCS_Testo_Comunicazione__c[]"/>
+    <aura:attribute name="modalitaList" type="List"/>
+    <aura:attribute name="quantitaFile" type="Integer"/>
+    <aura:attribute name="showModal" type="Boolean" default="false"/>
+    <aura:attribute name="isNotSent" type="Boolean" default="true"/>
+     <aura:attribute name="spinner" type="Boolean" default="false"/>
+    
+    
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    <aura:handler name="change" value="{!v.staticFileList}" action="{!c.isFileChange }"/>
+    
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    
+    <aura:if isTrue="{!v.isNotSent}">
+        <aura:if isTrue="{!v.spinner}">
+                <lightning:spinner alternativeText="Loading" size="large" />
+        </aura:if>
+        <div class="slds-box slds-text-heading_medium slds-align_absolute-center">    
+            <p>RECLAMO COMPASS</p>
+        </div>
+        <lightning:layout>
+            <lightning:layoutItem size="6">            
+                <div class="slds-box slds-text-heading_medium">                    
+                </div>
+                <div class="slds-grid slds-grid_align-space slds-box">
+                    <div class="slds-col slds-size_5-of-12 slds-p-horizontal_medium">                                            
+                        <b>Numero Caso</b>: {!v.reclamo.CaseNumber}
+                        <br/>
+                        <b>Numero reclamo</b>: {!v.reclamo.Numero_Reclamo__c}
+                        <br/>
+                        <b>Data creazione</b>: {!v.createdDateLocale}
+                        <br/>
+                        <b>Data ultima modifica</b>: {!v.lastModifiedDateLocale}
+                        <br/>
+                        <b>Stato</b>: {!v.reclamo.Status}
+                    </div>
+                </div>
+                
+            </lightning:layoutItem>
+            <lightning:layoutItem size="6">            
+                <div class="slds-box slds-text-heading_medium">                
+                </div>
+                <div class="slds-grid slds-grid_align-space slds-box">
+                    <div class="slds-col slds-size_5-of-12 slds-p-horizontal_medium">                                                                
+                        <b>Nome</b>: {!v.cliente.FirstName}
+                        <br/>
+                        <b>Cognome</b>: {!v.cliente.LastName}
+                        <br/>
+                        <b>CIP</b>: {!v.cliente.OCS_External_Id__c}
+                        <br/>
+                        <b>Numero Pratica</b>: {!v.reclamo.NumeroPratica__c}
+                        <br/>
+                        <b>Categoria</b>: {!v.categoria.Name}    
+                    </div>
+                </div>
+                
+            </lightning:layoutItem> 
+        </lightning:layout>    
+        <lightning:layout>
+            <lightning:layoutItem size="2"></lightning:layoutItem>
+            <lightning:layoutItem size="8">
+                <br></br>
+                <div>                 
+                    <p style="font-weight:bold; text-align:center"><lightning:formattedText value="Richiesta" /></p>
+                    <br/>
+                    <p><lightning:formattedText value="{!v.messaggioEmail}"/></p>
+                </div>
+                <br></br>
+               <!-- <lightning:combobox name="frodeAccertata" 
+                                    label="Frode accertata?"
+                                    placeholder="Seleziona" 
+                                    value="{!v.frodeAccertata}"
+                                    options="{! v.optionsFrode }" 
+                                    onchange="{! c.isFrodeAccertata }"
+                                    required="true"
+                                    />                        
+                
+                
+                
+              <!
+ <lightning:combobox name="testoStandard" 
+                                    label="Rispondere con testo standard?"
+                                    placeholder="Seleziona" 
+                                    value="{!v.testoStandard}"
+                                    options="{! v.optionsTestoStandard }" 
+                                    onchange="{! c.isTestoStandard}"
+                                    required="true"
+                                    />
+-->
+                
+                
+                
+             <!--   <aura:if isTrue="{!v.isTesto}">
+                    
+                    
+                    
+                    <lightning:combobox aura:id="standardTxt"
+                                        name="testoStandard" 
+                                        label="Selezionare il testo standard"
+                                        placeholder="Seleziona" 
+                                        value=""
+                                        options="{! v.listaTitoli }" 
+                                        onchange="{! c.inserisciTestoStandard}"
+                                        /> 
+                    
+                </aura:if>-->
+                
+                
+                
+                
+                
+                
+                <!-- <c:CRMReclamiInserimentoAllegatiContainer fileList="{!v.fileList}"/> -->                        
+                
+               
+                
+            </lightning:layoutItem>
+        </lightning:layout>
+        <lightning:layout>
+            <lightning:layoutItem size="2"></lightning:layoutItem>
+            <lightning:layoutItem size="8">
+                <lightning:textarea aura:id="messaggio"
+                                    value="{!v.messaggio}"
+                                    label="Messaggio" 
+                                    placeholder="inserire il testo..." 
+                                    class="tallTextArea slds-m-top_medium slds-m-left_large"  />            
+            </lightning:layoutItem>
+            
+        </lightning:layout>
+        <lightning:layout>
+            <lightning:layoutItem size="3"></lightning:layoutItem>
+            <lightning:layoutItem size="6">
+                <lightning:input aura:id="firma-digitale"
+                                 name="firma"
+                                 class="slds-destructive"
+                                 label="Firma Digitale"
+                                 value="{!v.firmaDigitale}"/>            
+                
+                <div class="slds-m-top_medium">
+                    <button class="slds-button slds-button--destructive"
+                            onclick="{!c.inviaRisposta}">
+                        Invia risposta
+                    </button>
+                </div>
+                <c:XCSGestioneAllegati fileList="{!v.staticFileList}"
+                                       canDelete="false"
+                                       showList="true"/>
+            </lightning:layoutItem>
+        </lightning:layout>
+        
+        <!--
+        <lightning:card>
+    <div>
+        div div div
+    <td> <a href="" id="{!v.fileList[0].Id}" onclick="{!c.OpenFile}">{!v.fileList[0].Title}</a></td>  
+        </div>
+        </lightning:card>
+-->
+        
+        <aura:iteration items="{!v.OpenFile}" var="f">  
+            attenzione!
+            <tr>  
+                
+                <td> <a href="" id="{!f.Id}" onclick="{!c.createRecord}">{!f.Name}</a></td>  
+                <td><lightning:formattedDateTime value="{!f.CreatedDate}"  year="2-digit" month="2-digit" day="2-digit" hour="2-digit" minute="2-digit" second="2-digit"/></td>
+                <td>{!f.Description}</td>  
+            </tr>  
+        </aura:iteration>
+        
+ 
+        
+        <!--START MODAL-->
+        <aura:if isTrue="{!v.showModal}">
+            <div aura:id="modalDiv">
+                <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                         aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                    <div class="slds-modal__container slds-is-relative modal-width">
+                        <header class="slds-modal__header">
+                            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                    title="Close" onclick="{!c.goBack}">
+                                <lightning:icon iconName="utility:close" size="small" alternativeText="Close"
+                                                variant="inverse" />
+                            </button>
+                            
+                            <!--HEADER TITLE MODAL-->
+                            
+                            <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Invio Risposta</h2>
+                            
+                            <!--END HEADER TITLE MODAL-->
+                            
+                        </header>
+                        
+                        <!--BODY MODAL-->
+                        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                            Sei sicuro?
+                            
+                        </div>
+                        <!--END BODY MODAL-->
+                        
+                        <footer class="slds-modal__footer">
+                            <button class="slds-button slds-button_neutral" onclick="{!c.invia}">Si</button>
+                            <button class="slds-button slds-button_neutral" onclick="{!c.goBack}">No</button>
+                        </footer>
+                        
+                        
+                    </div>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open"></div>
+                
+            </div>
+        </aura:if>
+        <!-- END MODAL -->
+        
+        
+        <aura:set attribute="else">
+            <div class="slds-align_absolute-center">            
+                Messaggio Inviato.
+            </div>
+        </aura:set>
+        
+    </aura:if>
+    
+    
+</aura:component>

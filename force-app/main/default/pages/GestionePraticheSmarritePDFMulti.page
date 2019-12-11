@@ -1,0 +1,94 @@
+<apex:page renderAs="PDF" controller="GestionePraticheSmarritePDFController" action="{!init}" applyBodyTag="false">
+  <head>
+    <style>
+      body {
+        font-family: Arial Unicode MS;
+        font-weight: normal;
+      }
+      .bold {
+        font-family: sans-serif;
+        font-weight: bold;
+      }
+      .intestazione {
+        text-align: center;
+      }
+      .DICHIARA {
+        text-align: center;
+      }
+      .denunciante {
+        padding-left: 65%;
+      }
+      .pieDiPagina {
+        padding-top: 100px;
+      }
+    </style>
+  </head>
+  <body>
+
+    <br/>
+
+    <div class="intestazione">
+      Dichiarazione sostitutiva di certificazione<br/>
+      (Art. 46 D.P.R. 445 del 28 dicembre 2000)
+    </div>
+
+    <br/><br/><br/>
+
+    <div class="primoParagrafo">
+      Il sottoscritto, Gian Luca Sichel, nato a Piacenza il 19.06.1968 e domiciliato per la carica in Milano,<br/>
+      Via Caldera n. 21, in qualita' di Legale Rappresentante della Societa' Compass Banca S.p.A. con sede legale in Milano, Via Caldera n. 21, P.I. 00864530159
+      <br/><br/>
+      Consapevole delle sanzioni penali, nel caso di dichiarazioni non veritiere, di formazione o uso di atti falsi richiamante dall'Art. 76 del D.P.R. 445 del 28 dicembre 2000
+    </div>
+
+    <br/><br/>
+
+    <div class="DICHIARA bold">
+      DICHIARA
+    </div>
+
+    <br/><br/>
+
+    <div class="secondoParagrafo">
+      per tutti gli effetti di legge lo smarrimento in luogo e data imprecisati, dei contratti in originale:
+      <br/><br/>
+      (Fare riferimento alla lista di contratti smarriti nella pagina seguente.)
+      <br/><br/>
+      Dichiara inoltre di essere informato, ai sensi e per gli effetti di cui all'Art. 10 del D.Lgs 196/2003 che i dati personali raccolti saranno trattati, anche con strumenti informatici, esclusivamente nell'ambito del procedimento per il quale la
+      presente dichiarazione viene resa
+      <br/><br/><br/>
+      Milano,.............
+    </div>
+    <br/><br/>
+
+    <div class="denunciante">
+      Il Denunciante
+      <br/><br/>
+      ..............................
+    </div>
+
+    <br/><br/>
+
+    <div class="terzoParagrafo bold">
+      <b>
+        La presente dichiarazione non necessita dell'autenticazione della firma e sostituisce a tutti gli effetti le normali certificazioni richieste o destinate ad una pubblica amministrazione nonche' ai gestori di pubblici servizi e ai privati che vi
+        consentono.
+      </b>
+    </div>
+
+    <div class="pieDiPagina">
+   		 {!uniqCode}
+    </div>
+
+    <br/><br/>
+
+    <apex:repeat value="{!contractList}" var="i">
+      n {!i.ContractNumber__c} intestato a {!i.AccountName__c}, {!i.AccountFiscalCode__c} , nato a {!i.AccountBirthcity__c} PROV {!i.AccountProvince__c} il {!i.AccountBirthdate__c} e residente a {!i.AccountCity__c}
+      <br/><br/><br/>
+    </apex:repeat>
+
+    <div class="pieDiPagina">
+  		{!uniqCode}
+    </div>
+  </body>
+</apex:page>

@@ -1,0 +1,6 @@
+<aura:event type="APPLICATION" description="Event template">
+    <aura:attribute name="disposition" type="XCS_Disposition__c"/>
+    <aura:attribute name="note" type="String"/>
+    <aura:attribute name="apexClass" type="String"/>
+    <aura:attribute name="apexResult" type="XCSDispositionResult" />
+</aura:event>

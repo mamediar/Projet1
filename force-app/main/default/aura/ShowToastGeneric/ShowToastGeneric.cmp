@@ -1,0 +1,11 @@
+<aura:component implements="force:lightningQuickAction,force:hasRecordId,lightning:availableForFlowScreens">
+	
+    <aura:attribute name="type" type="String"/>
+    <aura:attribute name="messagge" type="String"/>
+    <aura:attribute name="title" type="String"/>
+    <aura:attribute name="booleanFineFlow" type="boolean"/>
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    
+    
+    <br></br><br></br><br></br><br></br>
+</aura:component>

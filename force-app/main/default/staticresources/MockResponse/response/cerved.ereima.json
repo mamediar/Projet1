@@ -1,0 +1,82 @@
+{
+   "statusCode":200,
+   "status":"OK",
+   "s2xResponse":{
+      "s2xStatus":{
+         "s2xTime":"2019 03 21 10:21:56",
+         "s2xRetCode":"0",
+         "s2xRequestId":"52102199",
+         "s2xDescription":"OK"
+      },
+      "s2xInfo":{
+         "s2xRequest":{
+            "s2xServiceName":"EREIMA_1",
+            "s2xReturn":"1",
+            "s2xParams":":DIV=E+TYPE=I+OUTPUT=XML:CFI+03064670791+++++X+",
+            "s2xParamDef":{
+               "ParamTypeKey":"CFI",
+               "ParamTaxCode":"03064670791",
+               "ParamFlagHeadOfficeFilter":"X"
+            },
+            "s2xOptionDef":{
+               "TYPE":"I",
+               "OUTPUT":"XML",
+               "DIV":"E"
+            }
+         },
+         "s2xAccount":{
+            "s2xUnitsOfMeasurement":"PZ",
+            "s2xSearchResult":"Descrizione del prodotto",
+            "s2xQuantity":"1",
+            "s2xProductCode":"CART1X11PD11",
+            "s2xPrice":"0",
+            "s2xOperationType":"A",
+            "s2xBalanceRemaining":"1000000"
+         }
+      },
+      "s2xData":{
+         "ResearchIndicator":{
+            "ReportResults":{
+               "NumberRecordsExtractedFromDatabase":"1",
+               "NumberFilteredItemsFromStatus":"0",
+               "NumberFilteredItemsFromHeadOffice":"0",
+               "NumberFilteredItemsFromCompanyName":"0",
+               "NumberFilteredItemsFromCityCouncil":"0"
+            },
+            "Indicator":"Y",
+            "CompanyIdentification":[
+               {
+                  "VATRegistrationNoCompany":"03064670791",
+                  "SpecialSections":{
+                     "Code":"RIO"
+                  },
+                  "RegistrationNo":null,
+                  "RegisteredHeadOfficeProvinceCode":"CZ",
+                  "REARegistrationDate":"20091019",
+                  "REANo":"185479",
+                  "PreviousPositionCode":"RI",
+                  "OtherInformationCompany":{
+                     "ToponymDescription":"VIA",
+                     "StreetNo":"12",
+                     "MainActivityCodeDescription":"Commercio all'ingrosso e al dettaglio di motocicli e ciclomotori",
+                     "MainActivityCode":"454011",
+                     "FirstTwoCharactersMainActivityCode":"45",
+                     "CATECOADescription":"Commercio all'ingrosso e al dettaglio di motocicli e ciclomotori",
+                     "BirthMunicipality":"SOVERATO",
+                     "Address":"MICELI"
+                  },
+                  "Name":"FC MOTO DI CHIEFARI FRANCESCO E C. SAS",
+                  "LegalFormCode":"AS",
+                  "ISTATMunicipalityCode":"CZ137",
+                  "InformationTransferts":null,
+                  "FlagPresenceRecord20":"1",
+                  "FlagMemberGroupFarmer":"N",
+                  "CompanyTaxCode":"03064670791",
+                  "CoCProvinceCode":"CZ",
+                  "BusinessStatus":"L"
+               }
+            ]
+         }
+      }
+   }
+}

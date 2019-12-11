@@ -1,0 +1,13 @@
+<aura:component controller="SFAConvenzionamNDAMessageFilialeCntrller" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes,force:hasSObjectName">
+                                                                   
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="message" type="String" default="" />   
+    
+  
+    <aura:handler name="init" value="{! this }" action="{! c.doInit }" />
+
+    <ui:outputText value="{!v.message}"/> 
+    
+    
+        
+</aura:component>

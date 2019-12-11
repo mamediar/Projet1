@@ -1,0 +1,61 @@
+<aura:component controller="XCSReclamiFormContattoSconosciutoCtrl"
+                implements="force:appHostable,flexipage:availableForAllPageTypes" 
+                access="global"
+                >
+    
+    <!--
+  Nel componente è contenuto un form per l'inserimento dati di campi differenti.
+  Viene effettuato un doppio controllo sui campi:
+  CONTROLLO 1 = se almeno un campo è vuoto, non viene permesso di schiacciare il bottone "Abbina contatto".
+     -->
+    
+    <aura:attribute name="aziendaSelezionata" type="String" />
+    <aura:attribute name="cognome" type="String"/>
+    <aura:attribute name="nome" type="String"/>
+    <aura:attribute name="codFiscale" type="String"/>
+    <aura:attribute name="dataNascita" type="String"/>
+    <aura:attribute name="indirizzo" type="String" />
+    <aura:attribute name="localita" type="String" />
+    <aura:attribute name="cap" type="String" />
+    <aura:attribute name="email" type="String"/>
+    <aura:attribute name="telefonoCasa" type="String" />
+    <aura:attribute name="telCellulare" type="String" />
+    <aura:attribute name="isSconosciuto" type="Boolean" default="false"/>
+    <aura:attribute name="clienteSelezionato" type="OCSCliente"/>
+    <aura:attribute name="listaClienti" type="OCSCliente[]"/>
+    
+    <aura:attribute name="popMsg" type="String"/>
+    <aura:attribute name="toastMsg" type="String"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    
+    <div style="margin-left:15px;margin-right:15px;">
+    <div class="slds-p-horizontal_small slds-size_2-of-5 slds-medium-size_2-of-5 slds-large-size_2-of-5 border-right2 height160">
+            
+    <lightning:input type="string" label="Indirizzo" pattern="^[a-zA-Z\s]+, [0-9\sa-zA-Z.\s0-9]*$" name="Indirizzo" value="{!v.indirizzo}" messageWhenPatternMismatch="Il campo deve avere un formato di questo tipo 'via roma, 21'"/>
+    <lightning:input type="string" label="Comune" pattern="^[a-zA-Z\s]*$" name="comune" value="{!v.localita}" messageWhenPatternMismatch="Il campo ha un formato non corretto"/>
+    <!--<lightning:input type="string" label="Cap" name="cap" value="{!v.cap}"/>-->
+    <lightning:input aura:id="cap" pattern="[0-9]{5}" type="text" label="Cap" name="cap" value="{!v.cap}" onchange="{!c.checkLength}" messageWhenPatternMismatch="Il campo deve essere composto necessariamente da 5 numeri"/>
+    
+    <!--<lightning:input type="string" label="Email" name="email" value="{!v.email}"/>-->
+    <lightning:input aura:id="field" type="email" label="Email" name="email" value="{!v.email}" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$" messageWhenPatternMismatch="Il campo deve avere un formato di questo tipo 'email@example.com' o 'email@example.it'"/>
+    
+    <!--<lightning:input type="string" label="Tel. Fisso" name="telFisso" value="{!v.telefonoCasa}"/>-->
+    <lightning:input aura:id="field" type="text" label="Tel. Fisso" name="telFisso" value="{!v.telefonoCasa}" pattern="^[0-9]*$" onchange="{!c.checkLength}" messageWhenPatternMismatch="Il campo deve essere numerico"/>
+    
+    <!--<lightning:input type="string" label="Tel. Cell" name="telCell" value="{!v.telCellulare}"/>-->
+    <lightning:input aura:id="field" type="text" label="Tel. Cell" name="telCell" value="{!v.telCellulare}" pattern="^[0-9]*$" onchange="{!c.checkLength}" messageWhenPatternMismatch="Il campo deve essere numerico"/>
+    
+    <!--<div class="slds-p-left_x-small  slds-p-top_medium">-->
+    <div class="slds-p-top_medium">
+    <lightning:button label="Assegna a sconosciuto"               
+                      variant="brand" 
+                      onclick="{!c.onButtonPressed}"
+                      />
+    </div>
+  
+</div>
+</div>
+</aura:component>

@@ -1,0 +1,3 @@
+<aura:event type="APPLICATION" description="eventNavigationAssicurativo">
+     <aura:attribute name="Id" type="String"/>
+</aura:event>

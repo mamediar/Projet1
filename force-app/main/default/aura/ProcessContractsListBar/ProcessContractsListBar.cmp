@@ -1,0 +1,71 @@
+<aura:component controller="ProcessContractsListBarController" implements="force:lightningQuickAction,force:hasRecordId,lightning:availableForFlowScreens">
+   	<aura:attribute name="lotto" type="SFALotto__c"/>
+    <aura:attribute name="barcodeCartella" type="String"/>
+    <aura:attribute name="accountName" type="String"/>
+    <aura:attribute name="contractList" type="Contract[]"/>
+    <aura:attribute name="contractfromprocessed" type="Contract[]"/>
+    <aura:attribute name="contractfromevident" type="Contract[]"/>
+    <aura:attribute name="contractfordatatable" type="Contract[]"/>
+    <aura:attribute name="countMissingContract" type="Integer"/>
+    <aura:attribute name="contratto" type="Contract"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="countContract" type ="Integer"/>
+    <aura:attribute name="countContractProcessed" type ="Integer"/>
+    <aura:attribute name="isIn" type="Boolean" default="false"/>
+    <aura:attribute name="checkError" type ="Boolean" default ="false"/>
+    <aura:attribute name="checkTrovato" type = "Boolean" default ="false" />
+    <aura:attribute name="checkMessage" type = "Boolean" default ="false" />
+    <aura:attribute name="checkMessage2" type = "Boolean" default ="false" /> 
+    <aura:attribute name="checkEndActivity" type="Boolean" default ="false" />
+    <aura:attribute name="messaggio" type ="String" />
+    <aura:attribute name="messaggio2" type ="String" />
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    <aura:handler name="barCodeEvent" event="c:BarCodeReady" action="{!c.checkBarcode}"/>     
+    
+    <div class="slds-m-bottom--x-small">Acquisire il bar code dei contratti.</div>		
+    <div class="slds-grid slds-gutters">        
+        	<div class="slds-col slds-size_6-of-12">
+                <div class="slds-m-bottom--x-small"><b>Branch:</b></div>
+                <div class="slds-m-bottom--x-small"><b>OCS Lot ID:</b></div>
+                <div class="slds-m-bottom--x-small"><b>Total Contracts in Lot:</b></div>                
+                <div class="slds-m-bottom--x-small"><b>Processed Contracts:</b></div>                
+        	</div>
+        	<div class="slds-col slds-size_6-of-12">
+                <div class="slds-m-bottom--x-small">{!v.accountName}</div>
+                <div class="slds-m-bottom--x-small">{!v.lotto.OCSLottoId__c}</div>
+                <div class="slds-m-bottom--x-small">{!v.countContract}</div>                
+        		<div class="slds-m-bottom--x-small">{!v.countContractProcessed}</div>                
+        	</div>
+    </div>
+    <c:BarCode placeholder="Scannerizza il barcode"
+              length="14"
+              label="Posizionarsi con il cursore sul campo e acquisire il barcode della cover:"/>
+    
+    <aura:if isTrue="{!v.checkError}">                
+        <ui:message title="Attenzione" severity="warning" closable="false">                    
+            Il Barcode non è conforme allo standard.                                        
+        </ui:message>                                      
+    </aura:if>   
+    <aura:if isTrue="{!v.checkMessage}"> 
+        <ui:message title="Attenzione" severity="warning" closable="false">        
+            <aura:if isTrue="{! not(empty(v.messaggio))}">    
+                {!v.messaggio}    <br/> 
+            </aura:if>   
+            {!v.messaggio2}
+        </ui:message>       
+    </aura:if>                                
+    
+    <lightning:datatable
+                         keyField="Id"
+                         sortDirection="desc"     
+                         sortBy="IconFormula__c"
+                         data="{!v.contractfordatatable }"
+                         columns="{! v.columns }"
+                         hideCheckboxColumn="true"
+                         resizeColumnDisabled="true"
+                         />
+
+    
+ 	 <lightning:button variant="destructive" label="Completa" title="avanti" onclick="{! c.endActivity }"/>
+    
+</aura:component>

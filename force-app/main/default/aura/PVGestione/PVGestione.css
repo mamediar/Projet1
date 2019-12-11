@@ -1,0 +1,20 @@
+.THIS   .slds-truncate {
+    white-space: normal!important;
+    overflow-wrap: break-word!important;
+    word-wrap: break-word!important;
+}
+
+.THIS .slds-has-button-menu .slds-th__action {
+    padding-right: 0.5rem;
+}
+
+.THIS .table-pv lightning-primitive-header-actions {
+            display: none;
+}
+
+.THIS .table-pv-75{
+    font-size: 0.70rem;
+}
+.THIS .table-pv-75 thead th span {
+    font-size: 0.75rem;
+}

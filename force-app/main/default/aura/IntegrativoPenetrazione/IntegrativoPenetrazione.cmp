@@ -1,0 +1,564 @@
+<aura:component controller="IntegrativoPenetrazioneCnt"
+    implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+    access="global">
+
+    <!--AURA ATTRIBUTI-->
+
+  <aura:attribute name="customSettings" type="COM_Comodity_Questionario__c[]" />
+  <aura:attribute name="productsLimites" type="Map" default='{}'/>
+    <aura:attribute name='nomeCliente' type='String' default='' />
+    <aura:attribute name="limitedIntermediario" type="String[]" default='[]' />
+    <aura:attribute name='telefono' type='String' default='' />
+    <aura:attribute name='prodotto' type='String' default='' />
+    <aura:attribute name="prodottoFilter" type="String" />
+    <aura:attribute name='dataContatto' type='DateTime' default='' />
+    <aura:attribute name='dateLiquidazione' type='DateTime' default='' />
+    <aura:attribute name='dataUltimaModifico' type='DateTime' default='' />
+    <aura:attribute name="dataIntervistaList" type="Intervista_integrativo__c[]" />
+    <aura:attribute name="paginationList" type="Intervista_integrativo__c[]" />
+    <aura:attribute name="objectList" type="Intervista_integrativo__c[]" />
+    <aura:attribute name="loadFilterList" type="Intervista_integrativo__c[]"/> <!-- list pour filtrer les données-->
+    <aura:attribute name="dataByFiliali" type="sObject[]" default='[]' />
+    <aura:attribute name="dataInitial" type="sObject[]" default='[]' />
+    <aura:attribute name='dataName' type='String' />
+    <aura:attribute name='currentDate' type='Datetime' />
+    <aura:attribute name='dateColor' type='Datetime' />
+    <aura:attribute name='curDate' type='Datetime' />
+    <aura:attribute name="Richiami" type="boolean" default="false" />
+    <aura:attribute name="filterList" type="String" default='[]' />
+    <aura:attribute name="ToIntervista" type="boolean" default="false" />
+    <aura:attribute name='numeroPratriche' type='String' default='' />
+    <aura:attribute name='chiusoConforme' type='String' default='' />
+    <aura:attribute name='chiusoNonConforme' type='String' default='' />
+    <aura:attribute name="nuovaIntervista" type="Intervista_integrativo__c" default="{'sobjectype': 'Intervista_integrativo__c',
+                                                                                        'Type__c':'',
+                                                                                        'Stato__c':'',
+                                                                                        'Status__c':'',                                                                                                    'Regione__c':'',
+                                                                                        'Ragione_Sociale_Intermediario__c':'',
+                                                                                        'Plc_Tipo_Prodotto__c':'',
+                                                                                        'Plc_Prodotto__c':'',
+                                                                                        'Plc_Num_Pratica__c':'',
+                                                                                        'Plc_intervista__c':'',
+                                                                                        'Plc_Convenzionato__c':'',
+                                                                                        'Plc_Cliente__c':'',
+                                                                                        'Plc_Agente__c':'',
+                                                                                        'Num_Rate__c':'',
+                                                                                        'Name':'',
+                                                                                        'Imp_Rata__c':'',
+                                                                                        'Imp_Liquidato__c':'',
+                                                                                        'Imp_Capitale__c':'',
+                                                                                        'Durata_Sanitarie__c':'',
+                                                                                        'Data_Liquidazione__c':'',
+                                                                                        'CodiceServizio5__c':'',
+                                                                                        'CodiceServizio4__c':'',
+                                                                                        'CodiceServizio3__c':'',
+                                                                                        'CodiceServizio2__c':'',
+                                                                                        'CodiceServizio1__c':'',
+                                                                                        'COM_Num_Non_Risponde__c':'',
+                                                                                        'Area__c':'',
+                                                                                        'Ac_Telefono_Sede__c':'',
+                                                                                        'Ac_Telefono_Cel__c':'',
+                                                                                        'Ac_Telefono__c':'',
+                                                                                        'Ac_Telefono_2__c':'',
+                                                                                        'Ac_Sesso__c':'',
+                                                                                        'Ac_Rag_Sociale_2__c':'',
+                                                                                        'Ac_Rag_Sociale_1__c':'',
+                                                                                        'Ragione_Sociale_Intermediario__c':'',
+                                                                                        'Ac_Provincia__c':'',
+                                                                                        'Ac_Nascita_Luogo__c':'',
+                                                                                        'Ac_Nascita_Data__c':'',
+                                                                                        'Ac_Localita__c':'',
+                                                                                        'Ac_Indirizzo_1__c':'',
+                                                                                        'Note__c':'',
+                                                                                        'COM_Data_Esito__c':'',
+                                                                                        'COM_Richiamare_il__c':'',
+                                                                                        'COM_Intervista_Number__c':'',
+                                                                                        'COM_Ultimo_Esito__c':'',
+                                                                                        'Ac_Cap__c':''}" />
+
+    <!-- ATTRIBUTI RELATIVI ALLA PAGINAZIONE -->
+    <aura:attribute name="totalPage" type="Integer" default="1" />
+    <aura:attribute name="currentPage" type="Integer" default="1" />
+    <aura:attribute name="totalRecord" type="integer" default="0" />
+    <aura:attribute name="onInit" type="boolean" default="true" />
+    <aura:attribute name="pages" type="integer[]" />
+    <aura:attribute name="pageSize" type="Integer" default="10" />
+    <aura:attribute name="start" type="Integer" default="0" />
+    <aura:attribute name="end" type="Integer" default="0" />
+    <aura:attribute name="dashbord" type="Map" default="{}" />
+
+    <!-- ATTRIBUTI FOR SORT TABLE -->
+    <aura:attribute name="isAsc" type="boolean" default="true"
+        description="boolean flag for pass sorting condition to apex class" />
+    <aura:attribute name="arrowDirection" type="string" default="arrowup"
+        description="Use for change arrow sign direction on header based on click" />
+    <aura:attribute name="sortField" type="string" default="Cliente"
+        description="Use for show/hide arraow sign on header based on conditions" />
+
+    <!-- SPINNER -->
+    <!-- <aura:handler event="aura:waiting" action="{!c.showSpinner}" /> -->
+    <!-- <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}" /> -->
+
+    <aura:attribute name="toggleSpinner" type="boolean" default="false" />
+    <aura:attribute name="SpinnerSearch" type="boolean" default="false" />
+    <aura:attribute name="choiceColorPratiche" type="String" default="rgb(245, 190, 195)" />
+    <!-- Handler Init -->
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    <!--  <aura:registerEvent name="eventNavigationIntervista" type="c:eventNavigationIntervista" />-->
+    <aura:registerEvent name="esclusioniEvent" type="c:eventNavigateToEsclusioni"/>
+    <div class="slds-card slds-m-top_x-medium slds-m-bottom_x-small lds-p-left_x-small slds-p-right_x-small ">
+        <div class="slds-card__body">
+                <div class="slds-clearfix">
+                    <div class="slds-float_right">
+                            <button class="slds-button slds-button_brand btn-blue" onclick="{!c.esclusioni}">Commodity Integrativo Esclusioni</button>
+                    </div>
+                </div>
+        </div>
+    </div>
+
+
+    
+    <div class="slds-col slds-size_12-of-12 ">
+        <div class="slds-page-header">
+            <div class="slds-page-header__row">
+                <div class="slds-page-header__col-title">
+                    <div class="slds-grid slds-gutters slds-wrap">
+                        <div class="slds-col slds-size_3-of-12 slds-small-size--1-of-2 slds-medium-size--2-of-12">
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="status">Filtra per</label>
+                                <div class="slds-form-element__control">
+                                    <div class="slds-select_container">
+                                        <select class="slds-select" id="status" name="province" value="{!null}"
+                                            onchange="{!c.filterIntervista}">
+                                            <option value="Pratiche liquidate">Pratiche liquidate</option>
+                                            <option value="Tutti i contatti eseguiti">Tutti i contatti eseguiti</option>
+                                            <option value="Richiami">Richiami</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-wrap slds-gutters">
+                        <div class="slds-col slds-size_3-of-12 slds-small-size--1-of-2 slds-medium-size--2-of-12">
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="idDateDA">Filtra per data liquidazione Da:
+                                </label>
+                                <div class="slds-form-element__control">
+                                    <lightning:input aura:id="idDateDA"  id="idDateDA" messageWhenBadInput="You must say foo"
+                                        variant="label-hidden" class="date" type="date" name="date" value="{!null}" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_3-of-12 slds-small-size--1-of-2 slds-medium-size--2-of-12">
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" for="idDateA">A: </label>
+                                <div class="slds-form-element__control">
+                                    <lightning:input aura:id="idDateA"  variant="label-hidden"
+                                        class="date" type="date" name="date" value="{!null}" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-12 slds-small-size--1-of-2 slds-medium-size--2-of-12">
+                            <label class="slds-form-element__label" for="idDateDA">&nbsp;</label>
+                            <div class="slds-form-element">
+                                <button class="slds-button slds-button_brand"
+                                    onclick="{!c.filtraPerData}">Filtra</button>
+                            </div>
+                        </div> 
+                       
+                    </div>
+
+
+
+
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-m-top_large slds-col">
+                            <button class="slds-button slds-button_success" onclick="{!c.downloadCsvAllChiuse}">
+                                <lightning:icon iconName="doctype:excel" size="small" /> Esportare excel Chiuse</button>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <button class="slds-button slds-button_success" onclick="{!c.downloadCsv}">
+                                <lightning:icon iconName="doctype:excel" size="small" /> Esportare excel Completo</button>
+                                                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Datatable -->
+        <div class="slds-table--header-fixed_container" style=" width:100%;">
+            <div class="slds-scrollable_y slds-scrollable--x">
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                    <thead>
+                        <tr class="slds-text-heading--label slds-line-height_reset">
+                            <th class="slds-is-sortable slds-text-title--caps" scope="col" onclick="{!c.sortCliente}">
+                                <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                                    <span class="slds-assistive-text">Sort</span>
+                                    <span class="slds-truncate" title="">Cliente</span>
+                                    <aura:if isTrue="{!v.sortField=='Cliente'}">
+                                        <span>
+                                            <aura:if isTrue="{!v.isAsc}">&nbsp; &#9660;
+                                                <aura:set attribute="else"> &nbsp; &#9650;
+                                                </aura:set>
+                                            </aura:if>
+                                        </span>
+                                    </aura:if>
+                                </a>
+                            </th>
+                            <th scope="col" onclick="{!c.sortTelephono}">
+                                <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                                    <span class="slds-truncate" title="">Telefono</span>
+                                    <aura:if isTrue="{!v.sortField=='Telefono'}">
+                                        <span>
+                                            <aura:if isTrue="{!v.isAsc}">&nbsp; &#9660;
+                                                <aura:set attribute="else"> &nbsp; &#9650;
+                                                </aura:set>
+                                            </aura:if>
+                                        </span>
+                                    </aura:if>
+                                </a>
+                            </th>
+                            <th scope="col" onclick="{!c.sortDataContatto}">
+                                <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                                    <span class="slds-truncate" title="">Data Contatto</span>
+                                    <aura:if isTrue="{!v.sortField=='DataContatto'}">
+                                        <span>
+                                            <aura:if isTrue="{!v.isAsc}">&nbsp; &#9660;
+                                                <aura:set attribute="else"> &nbsp; &#9650;
+                                                </aura:set>
+                                            </aura:if>
+                                        </span>
+                                    </aura:if>
+                                </a>
+                            </th>
+                            <th scope="col" onclick="{!c.sortIntermediario}">
+                                <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                                    <span class="slds-truncate" title="">Intermediario</span>
+                                    <aura:if isTrue="{!v.sortField=='Intermediario'}">
+                                        <span>
+                                            <aura:if isTrue="{!v.isAsc}">&nbsp; &#9660;
+                                                <aura:set attribute="else"> &nbsp; &#9650;
+                                                </aura:set>
+                                            </aura:if>
+                                        </span>
+                                    </aura:if>
+                                </a>
+                            </th>
+                            <th scope="col" onclick="{!c.sortUtente}">
+                                <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                                    <span class="slds-truncate" title="">Utente</span>
+                                    <aura:if isTrue="{!v.sortField == 'Utente'}">
+                                        <span>
+                                            <aura:if isTrue="{!v.isAsc}">&nbsp; &#9660;
+                                                <aura:set attribute="else"> &nbsp; &#9650;
+                                                </aura:set>
+                                            </aura:if>
+                                        </span>
+                                    </aura:if>
+                                </a>
+                            </th>
+                            <!--
+                                            <th scope="col">
+                                                <span class="slds-truncate" title="Utente">Utente</span>
+                                            </th> -->
+                            <th scope="col" onclick="{!c.sortDataLiquidazione}">
+                                <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                                    <span class="slds-truncate" title="">Data liquidazione</span>
+                                    <aura:if isTrue="{!v.sortField=='DataLiquidazione'}">
+                                        <span>
+                                            <aura:if isTrue="{!v.isAsc}">&nbsp; &#9660;
+                                                <aura:set attribute="else"> &nbsp; &#9650;
+                                                </aura:set>
+                                            </aura:if>
+                                        </span>
+                                    </aura:if>
+                                </a>
+                            </th>
+                            <th scope="col" onclick="{!c.sortDataUltimaModifica}">
+                                <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                                    <span class="slds-truncate" title="">Data Ultima Modifica </span>
+                                    <aura:if isTrue="{!v.sortField=='DataUltimaModifica'}">
+                                        <span>
+                                            <aura:if isTrue="{!v.isAsc}">&nbsp; &#9660;
+                                                <aura:set attribute="else"> &nbsp; &#9650;
+                                                </aura:set>
+                                            </aura:if>
+                                        </span>
+                                    </aura:if>
+                                </a>
+                            </th>
+                            <th scope="col" onclick="{!c.sortProdotto}">
+                                <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                                    <span class="slds-truncate" title="">product</span>
+                                    <aura:if isTrue="{!v.sortField=='Prodotto'}">
+                                        <span>
+                                            <aura:if isTrue="{!v.isAsc}">&nbsp; &#9660;
+                                                <aura:set attribute="else"> &nbsp; &#9650;
+                                                </aura:set>
+                                            </aura:if>
+                                        </span>
+                                    </aura:if>
+                                </a>
+                            </th>
+                            <th scope="col" onclick="{!c.sortUltimoEsito}">
+                                <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                                    <span class="slds-truncate" title="">Ultimo Esito</span>
+                                    <aura:if isTrue="{!v.sortField=='UltimoEsito'}">
+                                        <span>
+                                            <aura:if isTrue="{!v.isAsc}">&nbsp; &#9660;
+                                                <aura:set attribute="else"> &nbsp; &#9650;
+                                                </aura:set>
+                                            </aura:if>
+                                        </span>
+                                    </aura:if>
+                                </a>
+                            </th>
+                            <th scope="col" onclick="{!c.sortRichiamareIl}">
+                                <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                                    <span class="slds-truncate" title="">Richiamare il</span>
+                                    <aura:if isTrue="{!v.sortField=='RichiamareIl'}">
+                                        <span>
+                                            <aura:if isTrue="{!v.isAsc}">&nbsp; &#9660;
+                                                <aura:set attribute="else"> &nbsp; &#9650;
+                                                </aura:set>
+                                            </aura:if>
+                                        </span>
+                                    </aura:if>
+                                </a>
+                            </th>
+                            <th scope="col" onclick="{!c.sortNote}">
+                                <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                                    <span class="slds-truncate" title="">Note</span>
+                                    <aura:if isTrue="{!v.sortField=='Note'}">
+                                        <span>
+                                            <aura:if isTrue="{!v.isAsc}">&nbsp; &#9660;
+                                                <aura:set attribute="else"> &nbsp; &#9650;
+                                                </aura:set>
+                                            </aura:if>
+                                        </span>
+                                    </aura:if>
+                                </a>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <aura:iteration items="{!v.paginationList}" var="intervista" indexVar="i">
+                         <aura:if isTrue="{!(v.Richiami)}">
+                            <tr class="valueOnTable">
+                                <th scope="row">
+                                    <div class="slds-truncate" value="{!intervista.Id}" id="{!i}" title="">
+                                        <a href="" data-index="{!i}" onclick="{!c.intervistaDetail}">
+                                            {!intervista.Ac_Rag_Sociale_1__c}
+                                        </a>
+                                    </div>
+                                </th>
+                                <th scope="row">
+                                    <div class="slds-truncate" title="">
+                                        {!intervista.Ac_Telefono_Cel__c}
+                                    </div>
+                                </th>
+                                <th scope="row">
+                                    <div title="">
+                                        <ui:outputDate format="dd/MM/yyyy"
+                                            value="{!intervista.LastModifiedDate}" />
+                                    </div>
+                                </th>
+                                <th scope="row">
+                                    <div class="slds-truncate" title="">
+                                        {!intervista.Ragione_Sociale_Intermediario__c}
+                                    </div>
+                                </th>
+                                <th scope="row">
+                                    <div class="slds-truncate" title="">
+                                        {!intervista.Owner.Name}
+                                    </div>
+                                </th>
+                                <th scope="row">
+                                    <div title="">
+                                        <ui:outputDate format="dd/MM/yyyy" value="{!intervista.Data_Liquidazione__c}" />
+                                    </div>
+                                </th>
+                                <th scope="row">
+                                    <div title="">
+                                        <ui:outputDate format="dd/MM/yyyy" value="{!intervista.LastModifiedDate}" />
+                                    </div>
+                                </th>
+                                <th scope="row">
+                                    <div class="slds-truncate" title="">
+                                        {!intervista.Plc_Tipo_Prodotto__c}
+                                    </div>
+                                </th>
+                                <th scope="row">
+                                    <div class="slds-truncate" title="">
+                                        {!intervista.Stato__c =='vuoto' ? '' : intervista.Stato__c }
+                                    </div>
+                                </th>
+                                <th scope="row">
+                                    <div title="">
+                                        <ui:outputDateTime format="dd/MM/yyyy HH:mm"
+                                            value="{!intervista.COM_Richiamare_il__c}" />
+                                    </div>
+                                </th>
+                                <th scope="row">
+                                    <div class="slds-truncate" title="">
+                                        {!intervista.Note__c}
+                                    </div>
+                                </th>
+                            </tr>
+                            <aura:set attribute="else">
+   
+                                <aura:if isTrue="{!(v.dateColor  >= intervista.COM_Richiamare_il__c)}">
+                                <!-- <aura:if isTrue="{!  1800000 >= intervista.COM_Richiamare_il__c - v.currentDate }"> -->
+                             <tr class="slds-hint-parent" style="background-color: rgb(245, 190, 195);">
+                                    <th scope="row">
+                                            <div class="slds-truncate" value="{!intervista.Id}" id="{!i}" title="">
+                                                <a href="" data-index="{!i}" onclick="{!c.intervistaDetail}">
+                                                    {!intervista.Ac_Rag_Sociale_1__c}
+                                                </a>
+                                            </div>
+                                        </th>
+                                        <th scope="row">
+                                            <div class="slds-truncate" title="">
+                                                {!intervista.Ac_Telefono_Cel__c}
+                                            </div>
+                                        </th>
+                                        <th scope="row">
+                                            <div title="">
+                                                <ui:outputDate format="dd/MM/yyyy"
+                                                    value="{!intervista.LastModifiedDate}" />
+                                            </div>
+                                        </th>
+                                        <th scope="row">
+                                            <div class="slds-truncate" title="">
+                                                {!intervista.Ragione_Sociale_Intermediario__c}
+                                            </div>
+                                        </th>
+                                        <th scope="row">
+                                            <div class="slds-truncate" title="">
+                                                {!intervista.Owner.Name}
+                                            </div>
+                                        </th>
+                                        <th scope="row">
+                                            <div title="">
+                                                <ui:outputDate format="dd/MM/yyyy" value="{!intervista.Data_Liquidazione__c}" />
+                                            </div>
+                                        </th>
+                                        <th scope="row">
+                                            <div title="">
+                                                <ui:outputDate format="dd/MM/yyyy" value="{!intervista.LastModifiedDate}" />
+                                            </div>
+                                        </th>
+                                        <th scope="row">
+                                            <div class="slds-truncate" title="">
+                                                {!intervista.Plc_Tipo_Prodotto__c}
+                                            </div>
+                                        </th>
+                                        <th scope="row">
+                                            <div class="slds-truncate" title="">
+                                                {!intervista.Stato__c =='vuoto' ? '' : intervista.Stato__c }
+                                            </div>
+                                        </th>
+                                        <th scope="row">
+                                            <div title="">
+                                                <ui:outputDateTime format="dd/MM/yyyy HH:mm"
+                                                    value="{!intervista.COM_Richiamare_il__c}" />
+                                            </div>
+                                        </th>
+                                        <th scope="row">
+                                            <div class="slds-truncate" title="">
+                                                {!intervista.Note__c}
+                                            </div>
+                                        </th>
+                                    </tr>
+                                    <aura:set attribute="else">
+                                            <tr class="slds-hint-parent" style="background-color: #fff;">
+                                                    <th scope="row">
+                                                            <div class="slds-truncate" value="{!intervista.Id}" id="{!i}" title="">
+                                                                <a href="" data-index="{!i}" onclick="{!c.intervistaDetail}">
+                                                                    {!intervista.Ac_Rag_Sociale_1__c}
+                                                                </a>
+                                                            </div>
+                                                        </th>
+                                                        <th scope="row">
+                                                            <div class="slds-truncate" title="">
+                                                                {!intervista.Ac_Telefono_Cel__c}
+                                                            </div>
+                                                        </th>
+                                                        <th scope="row">
+                                                            <div title="">
+                                                                <ui:outputDate format="dd/MM/yyyy"
+                                                                    value="{!intervista.LastModifiedDate}" />
+                                                            </div>
+                                                        </th>
+                                                        <th scope="row">
+                                                            <div class="slds-truncate" title="">
+                                                                {!intervista.Ragione_Sociale_Intermediario__c}
+                                                            </div>
+                                                        </th>
+                                                        <th scope="row">
+                                                            <div class="slds-truncate" title="">
+                                                                {!intervista.Owner.Name}
+                                                            </div>
+                                                        </th>
+                                                        <th scope="row">
+                                                            <div title="">
+                                                                <ui:outputDate format="dd/MM/yyyy" value="{!intervista.Data_Liquidazione__c}" />
+                                                            </div>
+                                                        </th>
+                                                        <th scope="row">
+                                                            <div title="">
+                                                                <ui:outputDate format="dd/MM/yyyy" value="{!intervista.LastModifiedDate}" />
+                                                            </div>
+                                                        </th>
+                                                        <th scope="row">
+                                                            <div class="slds-truncate" title="">
+                                                                {!intervista.Plc_Tipo_Prodotto__c}
+                                                            </div>
+                                                        </th>
+                                                        <th scope="row">
+                                                            <div class="slds-truncate" title="">
+                                                                {!intervista.Stato__c =='vuoto' ? '' : intervista.Stato__c }
+                                                            </div>
+                                                        </th>
+                                                        <th scope="row">
+                                                            <div title="">
+                                                                <ui:outputDateTime format="dd/MM/yyyy HH:mm"
+                                                                    value="{!intervista.COM_Richiamare_il__c}" />
+                                                            </div>
+                                                        </th>
+                                                        <th scope="row">
+                                                            <div class="slds-truncate" title="">
+                                                                {!intervista.Note__c}
+                                                            </div>
+                                                        </th>
+                                                        </tr>  
+                                </aura:set>
+                                </aura:if>
+                            </aura:set>
+                        </aura:if>
+                        </aura:iteration>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <br />
+   
+        <!--SS_Pagination-->
+        <div class="slds-grid slds-wrap" style="margin-top: 1%">
+            <div class="slds-size_1-of-3">
+                <div class="padding-top" style="margin-top: 1%">
+                    <p class="slds-truncate">&nbsp;&nbsp;</p>
+                </div>
+            </div>
+            <div class="slds-size_1-of-3">
+                <div class=" slds-text-align_center slds-m-around_x-small">
+                    <c:FilialiPagination objectList="{!v.objectList}" paginationList="{!v.paginationList}"
+                        pageSize="{!v.pageSize}" start="{!v.start}" end="{!v.end}" totalPage="{!v.totalPage}"
+                        currentPage="{!v.currentPage}" totalRecord="{!v.totalRecord}" pages="{!v.pages}" />
+                </div>
+            </div>
+            <div class="slds-size_1-of-3">
+            </div>
+        </div>
+    </div>
+</aura:component>

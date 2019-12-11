@@ -1,0 +1,213 @@
+<aura:component
+                controller="IntegrativoPenetrazioneCnt"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+                access="global">
+    <aura:attribute name="previousQuestion" type="Integer"/>
+    <aura:attribute name="intervistaIntegrativo" type="Intervista_integrativo__c"/>
+    <aura:attribute name="soddisfatto" type="String" default=""/>
+    <aura:attribute name="recedere" type="String" default=""/>
+    <aura:attribute name="motivazione" type="String" default="" />
+    <aura:attribute name="noteRecesso" type="String" default="" />
+    <aura:attribute name="noteSoddisfatto" type="String" default="" />
+    <aura:attribute name="risposte" type="Risposte__c" default="{'sobjectype':'Risposte__c',
+                                                                'D0__c':'',
+                                                                'D1__c':'',
+                                                                'D2__c':'',
+                                                                'D3__c':'',
+                                                                'D4__c':'',
+                                                                'D5__c':'',
+                                                                'D6__c':'',
+                                                                'D7__c':'',
+                                                                'D8__c':'',
+                                                                'Intervista_integrativo__c':''
+                                                                }"/>
+    <aura:attribute name="showMotivazione" type="Boolean" default="false" />
+    
+    
+    <div
+         class="slds-card slds-m-top_x-large slds-m-bottom_x-large lds-p-left_x-small 
+                slds-p-right_x-small slds-p-top_large"
+         >
+        <!-- <lightning:button
+        label="Indietro"
+        onclick="{!c.redirect}"
+        variant="brand"
+        class=" slds-m-left_large slds-m-top_large slds-m-bottom_large"
+      /> -->
+        
+        <div>
+            <div class="slds-m-around_x-large">
+                <div class="slds-m-top_small slds-m-bottom_small question">
+                    <h2 class="slds-text-heading_medium">Domanda:</h2>
+                    <p>
+                        Un’ultima domanda {!v.intervistaIntegrativo.Ac_Sesso__c == 'M' ? 'Sig. ' : 'Sig.ra '} {! v.intervistaIntegrativo.Ac_Rag_Sociale_1__c} : si ritiene soddisfatto della modalità di proposizione e vendita
+                        della copertura assicurativa facoltativa?
+                    </p>
+                </div>
+                <div class="slds-m-top_x-large slds-m-bottom_small riposta">
+                    <h2 class="slds-text-heading_medium">Risposta:</h2>
+                    <table
+                           class="slds-table slds-table_bordered slds-table_cell-buffer slds-no-row-hover"
+                           >
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <lightning:input
+                                                     type="radio"
+                                                     name="soddisfatto"
+                                                     label="Si"
+                                                     value="Si"
+                                                     onchange="{!c.setSoddisfatto}"
+                                                     />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <lightning:input
+                                                     type="radio"
+                                                     name="soddisfatto"
+                                                     label="No"
+                                                     value="No"
+                                                     onchange="{!c.setSoddisfatto}"
+                                                     />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <lightning:textarea name="noteSoddisfatto" label="" aura:id="idQuestionNote" value="{!v.noteSoddisfatto}" />
+                                </td>
+                            </tr>
+                            
+                            <div class="slds-theme--shade">
+                                <tr>
+                                    <td>
+                                        <p>
+                                            <strong>TRACCIATURA RECESSO</strong> (nessuna domanda al cliente, solo tracciatura)                    
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p>Il cliente esprime il desiderio di recedere?</p>
+                                    </td>
+                                </tr>
+                                
+                                <tr>
+                                    <td>
+                                        <lightning:input
+                                                         aura:id="assTracc"
+                                                         type="radio"
+                                                         name="recedere"
+                                                         label="Si"
+                                                         value="Si"
+                                                         disabled="true"
+                                                         onchange="{!c.setRecedere}"
+                                                         />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <lightning:input
+                                                         aura:id="assTracc"
+                                                         type="radio"
+                                                         name="recedere"
+                                                         label="No"
+                                                         value="No"
+                                                         disabled="true"
+                                                         onchange="{!c.setRecedere}"
+                                                         />
+                                    </td>
+                                </tr>
+                                <aura:if isTrue="{!v.showMotivazione}">
+                                    <tr>
+                                        <div class="motivazione">
+                                            <td>
+                                                <p><strong>Motivazione:</strong></p>
+                                                <lightning:input
+                                                                 aura:id="assTracc"
+                                                                 type="radio"
+                                                                 name="motivazione"
+                                                                 label="Non sapeva di aver sottoscritto assicurazione"
+                                                                 value="Non sapeva di aver sottoscritto assicurazione"
+                                                                 onchange="{!c.setMotivazione}"
+                                                                 />
+                                                <br/>
+                                                <lightning:input
+                                                                 aura:id="assTracc"
+                                                                 type="radio"
+                                                                 name="motivazione"
+                                                                 label="Non ritiene utile la copertura offerta"
+                                                                 value="Non ritiene utile la copertura offerta"
+                                                                 onchange="{!c.setMotivazione}"
+                                                                 />
+                                                <br/>
+                                                <lightning:input
+                                                                 aura:id="assTracc"
+                                                                 type="radio"
+                                                                 name="motivazione"
+                                                                 label="Ripensamento generale"
+                                                                 value="Ripensamento generale"
+                                                                 onchange="{!c.setMotivazione}"
+                                                                 />
+                                                <br/>
+                                                <lightning:input
+                                                                 aura:id="assTracc"
+                                                                 type="radio"
+                                                                 name="motivazione"
+                                                                 label="Altro"
+                                                                 value="Altro"
+                                                                 onchange="{!c.setMotivazione}"
+                                                                 />
+                                            </td>
+                                        </div>
+                                    </tr>
+                                </aura:if>
+                                <tr>
+                                    <td>
+                                        <p><u>Inserite note aggiuntive spontanee</u> e fine tracciatura</p>
+                                    </td>
+                                </tr>
+                                
+                                
+                                <tr>
+                                    <td>
+                                        <lightning:textarea aura:id="assTraccNote" name="input1" variant="label-hidden" value="{!v.noteRecesso}" required="false" disabled="true"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                        <td>
+                                            <div class="slds-m-top_small slds-m-bottom_small question" style="background-color: inherit !important;">
+                                                <p>
+                                                    Ben {!v.intervistaIntegrativo.Ac_Sesso__c == 'M' ? 'Sig. ' : 'Sig.ra '} {! v.intervistaIntegrativo.Ac_Rag_Sociale_1__c}, la ringrazio per il tempo che mi ha dedicato e le ricordo che, per quaisiasi informazione o necessità,
+                                                    può sempre rivolgersi alla filiale presso cui ha sottoscritto il prestito,
+                                                    può contattare il nostro Servizio Clienti al n° 02/48244412 (chiedere se vuole prendere nota) o può accedere al sito <a href="https://www.compass.it/" target="_blank"> www.compass.it</a>
+                                                </p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                            </div>
+                        </tbody>
+                    </table>
+                    
+                    <div class="slds-box-btn">
+                        <lightning:button
+                                          label="Concludi Intervista"
+                                          variant="success"
+                                          disabled="true"
+                                          aura:id="validateBtn"
+                                          onclick="{!c.concludiIntervista}"
+                                          />
+                        <lightning:button
+                        label="Indietro"
+                        variant="destructive"
+                        disabled="false"
+                        aura:id="indietroBtn"
+                        onclick="{!c.cancelRiposta}"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</aura:component>

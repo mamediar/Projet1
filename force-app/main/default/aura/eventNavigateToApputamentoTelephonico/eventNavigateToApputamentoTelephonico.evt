@@ -1,0 +1,5 @@
+<!--
+ - Created by Salimata NGOM on 13/03/2019.
+ -->
+<aura:event type="APPLICATION" description="eventNavigateToApputamentoTelephonico">
+</aura:event>

@@ -1,0 +1,46 @@
+{
+   "statusCode":200,
+   "status":"OK",
+   "resultMessage":"Ok",
+   "resultCode":0,
+   "recuperaLogAzioniIntermediarioResponse":{
+      "elenco":[
+         {
+            "utenteForzatura":"          ",
+            "utente":"9K        ",
+            "stato":"AT",
+            "procedura":"CC",
+            "pratica":"0",
+            "ora":"164933",
+            "note02":"                                                                      ",
+            "note01":"                                                                      ",
+            "irregolarita":"  ",
+            "intermediario":"15671240",
+            "forzatura":"N",
+            "dataUltimoStatoFL":"0",
+            "dataUltimoAttrSS":"0",
+            "dataRiferimento":"20190601",
+            "data":"20190601",
+            "attributo":"  "
+         },
+         {
+            "utenteForzatura":"          ",
+            "utente":"00        ",
+            "stato":"IS",
+            "procedura":"CC",
+            "pratica":"0",
+            "ora":"200305",
+            "note02":"                                                                      ",
+            "note01":"                                                                      ",
+            "irregolarita":"  ",
+            "intermediario":"15671240",
+            "forzatura":"N",
+            "dataUltimoStatoFL":"0",
+            "dataUltimoAttrSS":"0",
+            "dataRiferimento":"20150914",
+            "data":"20150914",
+            "attributo":"  "
+         }
+      ]
+   }
+}

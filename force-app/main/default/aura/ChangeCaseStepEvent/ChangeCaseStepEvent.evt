@@ -1,0 +1,5 @@
+<aura:event type="APPLICATION" description="Event template" >
+    <aura:attribute name="categoria" type="String"/>
+    <aura:attribute name="stepLavorazione" type="String"/>
+    <aura:attribute name="dispositionExternalId" type="String"/>
+</aura:event>

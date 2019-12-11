@@ -1,0 +1,5 @@
+<apex:page contentType=" 	text/plain#{!title}.txt"  controller="SinistriAssicurativiCtrl">
+
+        {!body}
+  
+</apex:page>

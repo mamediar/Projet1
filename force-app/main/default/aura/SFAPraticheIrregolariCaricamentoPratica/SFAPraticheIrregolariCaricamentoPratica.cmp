@@ -1,0 +1,155 @@
+<aura:component controller= "SFAPraticheIrregolariCaricamController" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes">
+    
+    <aura:attribute name="caseNumber" type="String"/>
+    <aura:attribute name="caseId" type="String"/>
+    <aura:attribute name="hasCaseDescription" type="Boolean" default="false"/>
+    <aura:attribute name="isCasePending" type="Boolean" default="false"/>
+    <aura:attribute name="disableButtonInviaEmail" type="Boolean" default="false"/>   
+    <aura:attribute name="templatesEmailVisible" type="Boolean" default="false"/>
+	<aura:attribute name="myText" type="String" default=""/>   
+	<aura:attribute name="emailFiliali" type="List" default=""/>
+    <aura:attribute name="emailCoordinatoriArea" type="List" default=""/>
+    <aura:attribute name="emailRegionalManager" type="List" default=""/>
+    <aura:attribute name="indirizziMailFiliali" type="Map" default=""/>
+    <aura:attribute name="indirizziMailCoordinatori" type="Map" default=""/>
+	<aura:attribute name="indirizziMailRegional" type="Map" default=""/>
+    <aura:attribute name="emailTemplateFiliale" type="String" default=""/>
+    <aura:attribute name="emailTemplateRegionalManager" type="String" default=""/>
+    <aura:attribute name="emailTemplateCoordinatoriArea" type="String" default=""/>
+ 
+   
+    
+    
+    <aura:attribute name="dataScadenza" type="Date" />
+    <aura:attribute name="fileContents" type="String" />
+    <aura:attribute name="fileName" type="String" />
+    <aura:attribute name="fileExtension" type="String" />
+
+    <aura:attribute name="url" type="String"/>
+    <aura:attribute name="pageReference" type="Object"/>
+    <lightning:navigation aura:id="navService"/>    
+    
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+      
+        <lightning:card variant="Narrow" title="Pratiche irregolari" iconName="standard:account" footer=" ">
+            
+        <p class="slds-p-horizontal_small"> 
+            <!--div class="slds-text-align_center" -->			
+            	<aura:if isTrue="{!v.isCasePending}">
+        
+                <aura:if isTrue="{!v.hasCaseDescription}">
+                    <div class="messaggioDiCortesia"><b>Attenzione:</b> si è verificato un problema durante il caricamento del caso <span class="slds-m-top_medium"> <b><a href="{!v.url}">{!v.caseNumber}</a></b></span>.
+                        <br></br> Cliccare sul numero per visualizzare l'errore oppure rieseguire un nuovo caricamento.</div>   <br></br>
+                    <lightning:button class="slds-align_absolute-center" aura:id="PreparaNuovoCaricamentoId" label="Prepara un nuovo caricamento" disabled="false" variant="destructive" onclick="{!c.chiudiCasoCaricatoConErrore}" />
+        
+                <aura:set attribute="else">
+                    <div class="messaggioDiCortesia">Caricamento del caso <span class="slds-m-top_medium">numero <b><a href="{!v.url}">{!v.caseNumber}</a></b></span> in corso. <br></br>
+                        Attendere... <br></br><br></br><br></br><br></br>
+                        <!--E' necessario attenderne il completamento per poter caricare un nuovo file.-->
+                     <!--img src="{!$Resource.TargheGDVgifCaricamento}"></img-->
+                     <div class="slds-align_absolute-center" style="height: 4rem;"> 
+                         <div role="alert" class="slds-spinner slds-spinner_medium slds-spinner_inline" > 
+                             <span class="slds-assistive-text">Loading</span> 
+                             <div class="slds-spinner__dot-a"></div> 
+                             <div class="slds-spinner__dot-b"></div> </div> </div>
+
+                    </div>
+                    
+                </aura:set>
+                    
+                </aura:if>
+        
+            <aura:set attribute="else">
+        		<br></br>
+                <lightning:input aura:id="fileUploadId" class="slds-file-selector__dropzone slds-file-selector__dropzone .slds-file-selector__text" type="file" label="Carica file" name="file" multiple="false" accept=".csv" onchange="{!c.loadFile}"/>
+                
+                <div class="slds-size_2-of-12 slds-m-top_medium">
+                    <ui:inputDate aura:id="dataScadenza" value="{!v.dataScadenza}" displayDatePicker="true" format="dd/MM/yyyy" label="Data scadenza" required="true"/>
+                </div>
+                <br></br>
+                <div class="slds-m-top_medium">
+                    <lightning:button aura:id="uploadFileButtonId" label="Avvia caricamento" variant="destructive" onclick="{!c.uploadFile}" />
+                </div>
+                
+                <br></br>
+                <aura:if isTrue="{!and(v.caseNumber != null, v.caseNumber != undefined)}">
+                    <div class="slds-m-top_large">Ultimo caso inserito: <span>numero <b><a href="{!v.url}">{!v.caseNumber}</a></b></span></div>            
+                    
+                    <div class="slds-m-top_medium">
+                        <!--lightning:button aura:id="InviaEmailId" label="Invia mail" disabled="{!v.disableButtonInviaEmail}" variant="destructive" onclick="{!c.inviaEmail}" /-->
+                        <lightning:button aura:id="PreparazioneInvioEmailId" label="Preparazione invio mail" disabled="false" variant="destructive" onclick="{!c.visualizzaTemplatesEmail}" />
+                    </div>
+        
+                    
+                    <aura:if isTrue="{!v.templatesEmailVisible}"> 
+                        <div class="slds-m-top_large">
+                            <lightning:tabset selectedTabId="two">
+                                <lightning:tab label="MAIL REGIONAL:" id="one">                            
+                                    <div class="slds-form-element__control">
+                                        <pre><lightning:formattedRichText aura:id="richText1" value="{!v.emailTemplateRegionalManager}"/></pre>                        
+                                    </div>
+                                   <table class="slds-table slds-table--bordered">   
+                                     <tbody>                                  
+                                         <aura:iteration items="{!v.emailRegionalManager}" var="cus" indexVar="key">  
+                                             <tr>   
+                                                 <td>{!cus.key}</td>    
+                                                 <td>{!cus.value}</td>  
+                                             </tr>  
+                                         </aura:iteration>                                  
+                                     </tbody>
+                                   </table>                                                                                    
+                                </lightning:tab>
+                                
+                                <lightning:tab label="MAIL AREA:" id="two">                            
+                                    <div class="slds-form-element__control">
+                                        <pre><lightning:formattedRichText aura:id="richText1" value="{!v.emailTemplateCoordinatoriArea}"/></pre>                        
+                                    </div>
+                                   <table class="slds-table slds-table--bordered">   
+                                     <tbody>                                  
+                                         <aura:iteration items="{!v.emailCoordinatoriArea}" var="cus" indexVar="key">  
+                                             <tr>   
+                                                 <td>{!cus.key}</td>    
+                                                 <td>{!cus.value}</td>  
+                                             </tr>  
+                                         </aura:iteration>                                  
+                                     </tbody>
+                                   </table>                                                                                    
+                                </lightning:tab>
+                                
+                                <lightning:tab label="MAIL FILIALE:" id="three">                           
+                                    <div class="slds-form-element__control">
+                                        <pre><lightning:formattedRichText aura:id="richText1" value="{!v.emailTemplateFiliale}"/></pre>                        
+                                    </div>
+                                   <table class="slds-table slds-table--bordered">   
+                                     <tbody>                                  
+                                         <aura:iteration items="{!v.emailFiliali}" var="cus" indexVar="key">  
+                                             <tr>   
+                                                 <td>{!cus.key}</td>    
+                                                 <td>{!cus.value}</td>  
+                                             </tr>  
+                                         </aura:iteration>                                  
+                                     </tbody>
+                                   </table>                            
+                              </lightning:tab>
+                            </lightning:tabset>
+                     
+                    </div>
+                        
+                        <div class="slds-m-top_large">
+                            <lightning:button aura:id="InviaEmailId" label="Invia mail" disabled="{!v.disableButtonInviaEmail}" variant="destructive" onclick="{!c.inviaEmail}" />
+                            <!--lightning:button aura:id="InviaEmailId" label="Invia mail" disabled="false" variant="destructive" onclick="{!c.inviaEmail}" /-->
+                        </div>   
+                        <ui:outputText value="{!v.myText}"/>
+                        
+                   </aura:if>     
+                        
+                </aura:if>
+        
+            </aura:set>
+        
+            </aura:if> 
+            <!--/div-->    
+        </p>
+    	</lightning:card>
+            
+</aura:component>

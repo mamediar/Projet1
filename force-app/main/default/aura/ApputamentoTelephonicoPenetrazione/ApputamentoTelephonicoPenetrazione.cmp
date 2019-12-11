@@ -1,0 +1,71 @@
+<aura:component controller="IntegrativoPenetrazioneCnt" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+       access="global">
+    <!--AURA ATTRIBUTI-->
+    <aura:attribute name='clienteIntervista' type='Intervista_integrativo__c' default="{'sobjectype':'Intervista_integrativo__c',
+                                                                                           'Ac_Rag_Sociale_1__c':'test',
+                                                                                           'Data_Liquidazione__c':'',
+                                                                                           'Num_Rate__c':'',
+                                                                                           'Ac_Telefono__c':'',
+                                                                                           'Ac_Telefono_2__c':'',
+                                                                                           'CodiceServizio1__c':'codice',
+                                                                                           'CodiceServizio2__c':'',
+                                                                                           'CodiceServizio3__c':'',
+                                                                                           'CodiceServizio4__c':'',
+                                                                                           'Name':'',
+                                                                                           'Ragione_Sociale_Intermediario__c':'Intermediario',
+                                                                                           'COM_Ultimo_Esito__c':'',
+                                                                                           'Stato__c':'',
+                                                                                           'Status__c':''}" />
+    <aura:attribute name="textApputamento" type="String" default="" />
+    <aura:attribute name="richiamareDate" type="Date" />
+    <aura:attribute name="richiamareTime" type="Time" />
+    <aura:attribute name="richiamarenote" type="String" />
+    <aura:attribute name="previousQuestion" type="Integer" />
+<div
+      class="slds-card slds-m-top_x-large slds-m-bottom_x-large lds-p-left_x-small 
+                        slds-p-right_x-small slds-p-top_large"
+    >
+    <div class="slds-m-around_x-large">
+    <div class="slds-m-top_small slds-m-bottom_small question">
+        <p>{! v.textApputamento}</p>
+    </div>
+          <div class="slds-m-top_x-large slds-m-bottom_small">
+        <fieldset class="slds-box slds-theme--default ">
+            <div class="">
+                    <div class="apputamento_quezione"></div>
+                    <form class="slds-form--stacked">
+                        <div class=" slds-form-element__control slds-grid slds-gutters">
+                            <label>Date Time</label>
+                            <div class="slds-form-element__control slds-col">
+                                <lightning:input aura:id="richiamare" type="date" name="date" label="" variant="label-hidden" class="date"
+                                     value="{!v.richiamareDate}" />
+                            </div>
+                            <div class="slds-form-element__control slds-col">
+                                <lightning:input aura:id="richiamare" type="time" name="time" label="" variant="label-hidden" class="time"
+                                     value="{!v.richiamareTime}" />
+                            </div>
+                        </div>
+                        <div class="slds-form-element__control slds-col">
+                                <lightning:textarea aura:id="richiamare" name="input1" label="Note" value="{!v.richiamarenote}" />
+                        </div>
+                        <br/> <br/>
+                        <div style="width:100%!Important"
+                            class="slds-col slds-size_1-of-1 slds-large-size_3-of-3 stylePag">
+                            <lightning:button class="slds-button slds-button_brand buttonPage"
+                                onclick="{!c.clickCreate}" label="Salva Appuntamento"/>
+                            <lightning:button
+                                label="Indietro"
+                                onclick="{!c.redirect}"
+                                variant="brand"
+                                class=" slds-m-left_large slds-m-top_large slds-m-bottom_large"
+                                />
+                            <!-- <lightning:button class="slds-button slds-button_brand buttonPage" onclick="{!c.notInterested}"
+                                label="not interested" />   -->  
+                        </div>
+                    </form>
+            </div>
+        </fieldset>
+        </div>
+    </div>
+</div>
+</aura:component>

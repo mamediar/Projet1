@@ -1,0 +1,31 @@
+.THIS.noIntBottomPadding > div.slds-card__body{
+    padding-bottom:0px;
+    margin-bottom: 0px;
+}
+
+.THIS.noExtTopPadding{
+    margin-top: 0px;
+    height: 100%;
+}
+
+.THIS .draftPillClass .slds-pill__action{
+    background-color:rgb(255, 183, 93);
+}
+
+.THIS .hideCancelButton .slds-button_icon-bare{
+    display: none;
+}
+
+.THIS .greyPillColorizer .slds-pill__action{
+    background-color: grey;
+    color: white;
+}
+
+.THIS .dateTextSize{
+    font-size: 0.7em;
+}
+
+.THIS.greyDayColorizer{
+    background-color: lightgrey;
+    opacity: 0.4;
+}

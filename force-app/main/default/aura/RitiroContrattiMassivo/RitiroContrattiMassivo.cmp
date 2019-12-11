@@ -1,0 +1,55 @@
+<aura:component controller="RitiroContrattiMassivoController" 
+                implements="force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes">
+    
+    <aura:attribute name="contracts" type="List"/>
+    <aura:attribute name="ctrResults" type="List"/>
+    <aura:attribute name="endUpdate" type="Boolean" default="false"/>
+    <aura:attribute name="notFound" type="Boolean" default="false"/>
+    <aura:attribute name="showTable" type="Boolean" default="false"/>
+    <aura:attribute name="textValue" type="String" default=""/>
+    
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/> 
+    <aura:handler name="barCodeEvent" event="c:BarCodeReady" action="{!c.barcodeEvent}"/>
+    
+    <lightning:card class="container">
+    	
+        <aura:if isTrue="{!v.notFound}">                
+            <ui:message title="Attenzione" severity="warning" closable="false">                    
+                Il Barcode inserito non corrisponde ad alcun contratto da ritirare.                                             
+            </ui:message>                                      
+        </aura:if>
+        
+        <div style="width:400px; position:relative; padding-left:10px; ">
+            <c:BarCode 	inputIdContract="{!v.textValue}"
+                       	placeholder="Scannerizza il barcode di un contratto da ritirare."
+                   		length="14"
+                   		label="Barcode:"/>
+        </div>
+        <br/>
+        <aura:if isTrue="{!v.showTable}">
+            <table style="width:100%" class="slds-m-left_small slds-m-top_small slds-m-bottom_small slds-m-right_small">
+                <tr class="slds-border_top 
+                           slds-border_bottom 
+                           slds-border_right 
+                           slds-border_left">
+                    <td class="slds-size_1-of-7 slds-border_right"><b>N° Pratica</b></td>
+                    <td class="slds-size_1-of-12 slds-border_right"><b>Stato</b></td>
+                    <td class="slds-size_2-of-5"><b>Dettagli</b></td>
+                </tr>
+                <aura:iteration items="{!v.ctrResults}" var="res">
+                    <tr class="slds-border_top slds-border_bottom slds-border_right slds-border_left">
+                        <td class="slds-size_1-of-7 slds-border_right">{!res.contract.ContractNumber__c}</td>
+                        <aura:if isTrue="{!res.isOk}">
+                            <td class="slds-size_1-of-12 slds-border_right"><lightning:icon iconName="utility:success" variant="success" size="x-small"/></td>
+                            <td class="slds-size_2-of-5">Ritiro eseguito con successo</td>
+                            <aura:set attribute="else">
+                                <td class="slds-size_1-of-12 slds-border_right"><lightning:icon iconName="utility:clear" variant="error" size="x-small"/></td>
+                                <td class="slds-size_2-of-5">Errore nel ritiro</td>
+                            </aura:set>
+                        </aura:if>
+                    </tr>
+                </aura:iteration>
+        	</table>
+        </aura:if>
+    </lightning:card>
+</aura:component>

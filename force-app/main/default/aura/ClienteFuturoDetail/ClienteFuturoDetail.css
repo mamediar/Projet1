@@ -1,0 +1,48 @@
+.THIS .nonRispondeAlTelefono {
+    background-color:#F3A333;
+    border:1px solid #F3A333;
+}
+.THIS .Irreperibile {
+    background-color:#6a89e5;
+    border:1px solid #6a89e5;
+}
+
+.THIS .question h2,.THIS .riposta h2{
+    font-weight:bold;
+    margin-bottom: 15px;
+}
+
+.THIS .indietro{
+    color: #6a89e5;
+}
+.THIS .radio_design{
+    margin-top: 0.5rem; 
+    margin-left: 5rem;
+}
+.THIS .nonRispondeAlTelefono {
+    background-color:#F3A333;
+    border:1px solid #F3A333;
+}
+.THIS .Irreperibile {
+    background-color:#CB4E4A;
+    border:1px solid #CB4E4A;
+}
+.THIS .question {
+    background-color:#E6E6E6;
+    padding:2%;
+    border-left:4px solid #6a89e5;
+}
+.THIS .button {
+    background-color: #6a89e5;
+}
+.THIS .badgeNote {
+    background-color: rgb(203, 229, 253)
+}
+.THIS .badgeValutazioneNeagativo {
+    background-color: rgb(250, 99, 99); 
+    margin-left: -25%
+}
+.THIS .badgeValutazionePositivo {
+    background-color: rgb(130, 245, 126);
+    margin-left: -25%
+}

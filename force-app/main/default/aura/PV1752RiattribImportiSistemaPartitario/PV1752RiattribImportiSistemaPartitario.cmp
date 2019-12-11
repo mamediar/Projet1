@@ -1,0 +1,97 @@
+<!--
+  @Component Name     : PV1752RiattribImportiSistemaPartitario.cmp
+  @Description        : 
+  @Author             : sabrina vitali
+  @Group              : 
+  @Last Modified By   : sabrina vitali
+  @Last Modified On   : 29/10/2019, 11:05:31
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    21/8/2019, 11:50:45   sabrina vitali     Initial Version
+-->
+<aura:component extends="c:PVSubComponentBase" controller='PV1752RiattrImpSistPartitarioInserimento' access='global'>
+    <aura:handler name='init' value='{!this}' action='{!c.init}' />
+
+    <!-- attributi PV -->
+    <aura:attribute name="today" type="Date" />
+    <aura:attribute name="rimborso" type="Boolean"/>
+    <aura:attribute name="erroriModRimborso" type="String"/> 
+    <aura:attribute name="notaModalitaRimborso" type="String"/> 
+    <aura:attribute name="modalitaRimborso" type="String"/>
+
+    <!-- popolamento combo -->
+    <aura:attribute name="optionsRimborso" type="List" default="[                                                                                                                      
+                                                               {'label': 'Si', 'value': 'true'},                                                                                  
+                                                               {'label': 'No', 'value': 'false'},                                                                                  
+                                                             ]"/>                                                                                                           
+
+    <!--Main-->             
+    <lightning:card class='slds-form_stacked'>                                                                          
+        <div class="slds-grid slds-container_medium slds-align_left slds-wrap">                                                                
+            <div class="slds-size_4-of-12">        
+                <lightning:input    aura:id="importo" 
+                                    type="number" 
+                                    name="importo" 
+                                    label="Importo" 
+                                    formatter="currency" step="0.01"
+                                    required="true"/>
+            </div>                    
+            <div class="slds-size_4-of-12">  
+                <lightning:input    type="Date" 
+                                    aura:id="dataIncasso" 
+                                    label="Data Incasso"
+                                    name="dataIncasso" 
+                                    max="{!v.today}"
+                                    required="true"/>
+            </div>           
+        </div>    
+        <div class="slds-grid slds-container_medium slds-align_left slds-wrap">                                                                
+            <div class="slds-size_4-of-12">        
+                <lightning:input    aura:id="rataOrigine" 
+                                    type="number" 
+                                    name="rataOrigine" 
+                                    label="Num.rata di origine" 
+                                    required="true"/>
+            </div>                    
+            <div class="slds-size_4-of-12">  
+                <lightning:input    aura:id="rataDestinazione" 
+                                    type="number" 
+                                    name="rataDestinazione" 
+                                    label="Num.rata destinazione" 
+                                    required="true"/>
+            </div>                    
+        </div>    
+        <div class="slds-grid slds-container_medium slds-align_left slds-wrap">                                                                
+            <div class="slds-size_4-of-12">        
+                <lightning:combobox     aura:id="rimborso" 
+                                        name="rimborso" 
+                                        label="con rimborso"                                                                                                   
+                                        placeholder="Seleziona"                                                                                                                 
+                                        value="{!v.rimborso}"                                                                                                
+                                        variant="standard"                                                                                                                      
+                                        dropdownAlignment="Left"                                                                                                                
+                                        options="{!v.optionsRimborso}"
+                                        required="true"/>            
+            </div>                    
+        </div>
+        <div class="slds-grid slds-container_medium slds-align_left slds-wrap">                                                                    
+            <div class="slds-size_12-of-12">        
+                <aura:if isTrue="{!v.rimborso}">
+                    <c:PVModalitaRimborso   labelOptions="Modalità rimborso"
+                                            OCSClienteSelezionato="{!v.PVForm.cliente}" 
+                                            praticaSelezionata="{!v.PVForm.pratica}"
+                                            aura:id="modRimborso" 
+                                            errori="{!v.erroriModRimborso}"
+                                            modalitaPagamentoSelected="{!v.modalitaRimborso}" 
+                                            note="{!v.notaModalitaRimborso}" 
+                                            required="true">
+                    </c:PVModalitaRimborso>                    
+                </aura:if>
+            </div>
+        </div>
+    </lightning:card>
+    <!-- /main -->
+
+</aura:component>

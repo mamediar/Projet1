@@ -1,0 +1,577 @@
+<!--
+ - Created by Salimata NGOM on 13/03/2019.
+ -->
+
+<aura:component description="IntervistaDomandeComp" 
+                controller="IntervistaDomandeApexClass" access="global">
+    <!--AURA ATTRIBUTI-->
+    <aura:attribute name="Domanda1" type="String"/>
+    <aura:attribute name="Domanda2" type="String"/>
+    <aura:attribute name="Domanda3" type="String"/>
+    <aura:attribute name="Domanda4" type="String"/>
+    <aura:attribute name="Domanda5" type="String"/>
+    <aura:attribute name="Domanda6" type="String"/>
+    <aura:attribute name="Domanda7" type="String"/>
+    <aura:attribute name="Domanda8" type="String"/>
+    <aura:attribute name="attributeName" type="String"/>
+    <aura:attribute name="listDomande" type="COM_Domande__c[]"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="idKey" type="integer" default="-1"/>
+    <aura:attribute name="checkValues" type="String[]"/>
+    <aura:attribute name="nuovaIntervista" type="COM_Intervista__c"/>
+    <aura:attribute name="ObjectName" type="String" default="Risposte__c" access="global"/>
+    <aura:attribute name="Domanda1ValuePicklist" type="String" default="Type" access="global"/>
+    <!-- Field Name as String-->
+    <aura:attribute name="Domanda1Picklist" type="String[]"/>  <!-- Picklist Values of Type Field -->
+    <aura:attribute name="Domanda2Picklist" type="String[]"/>  <!-- Picklist Values of Type Field -->
+    <aura:attribute name="Domanda3Picklist" type="String[]"/>  <!-- Picklist Values of Type Field -->
+    <aura:attribute name="Domanda4Picklist" type="String[]"/>  <!-- Picklist Values of Type Field -->
+    <aura:attribute name="Domanda5Picklist" type="String[]"/>  <!-- Picklist Values of Type Field -->
+    <aura:attribute name="Domanda6Picklist" type="String[]"/>  <!-- Picklist Values of Type Field -->
+    <aura:attribute name="Domanda7Picklist" type="String[]"/>  <!-- Picklist Values of Type Field -->
+    <aura:attribute name="Domanda8Picklist" type="String[]"/>  <!-- Picklist Values of Type Field -->
+
+    <aura:attribute name="Type" type="String" default="Contratto__c" access="global"/>  <!-- Field Name as String-->
+    
+    <aura:attribute name="CINZ_Flag" type="boolean" default="false"/>
+    <aura:attribute name="nuovaIntervistaDomandeComp" type="COM_Intervista__c" default="{'sobjectype':'COM_Intervista__c',
+                                                                                'COM_NomeCliente__c':'',
+                                                                                'Name':'',
+                                                                                'COM_N_Telefono_Cel__c':'',
+                                                                                'COM_NTelefono1__c':'',
+                                                                                'COM_CSER_Descrizione1__c':'',
+                                                                                'COM_CSER_Descrizione3__c':'',
+                                                                                'COM_Esito__c':'',
+                                                                                'COM_CRMRichiamare_il__c':'',
+                                                                                'COM_Filiale__c':'',
+                                                                                'COM_D_Carico__c':'',
+                                                                                'COM_Stato_Avanzamento_Intervista__c':'',
+                                                                                'COM_N_Telefono2__c':'',
+                                                                                'COM_CSER_Descrizione2__c':'',
+                                                                                'COM_CSER_Descrizione4__c':'',
+                                                                                'COM_Data_Esito__c':'',
+                                                                                'COM_D_liquid__c':'',
+                                                                                'COM_Status__c':'',
+                                                                                'COM_Status_ASS__c':'',
+                                                                                'COM_Intervista_Accettata__c':'',
+                                                                                'COM_interview_accepted__c':'',
+                                                                                'Ritiro_Doc__c':''
+                                                                                }" />
+    
+
+    <aura:attribute name="rispondeQuezione" type="Risposte__c" default="{'sobjectType':'Risposte__c',
+                                                                          'Contratto1__c':'',
+                                                                          'Secci1__c':'',
+                                                                          'Precontratto1__c':'',
+                                                                          'Questionario_assicurativo1__c':'',
+                                                                          'Contratto_Assicurazione__c':'',
+                                                                          'Documenti_Assicurazione1__c':'',
+                                                                          'Soddisfazione_Cliente1__c':'',
+                                                                          'Count_Negativi__c':'0',
+                                                                          'Count_Positivi__c':'0',
+                                                                          'Intervista__c':'',
+                                                                          'COM_Note_Contratto__c':'',
+                                                                          'COM_Note_Secci__c':'',
+                                                                          'COM_Note_Precontratto__c':'',
+                                                                          'COM_Note_Questionario_Assicurativo__c':'',
+                                                                          'COM_Note_Contratto_Assicurazione__c':'',
+                                                                          'COM_Note_Documenti_Assicurazione__c':'',
+                                                                          'COM_Note_Soddisfazione_Cliente__c':''}"/>
+    <aura:attribute name="risponde" type="Risposte__c"/>
+    <aura:attribute name="risposta" type="Risposte__c" default="{'sobjectType':'Risposte__c',
+                                                                          'Contratto1__c':'',
+                                                                          'Secci1__c':'',
+                                                                          'Precontratto1__c':'',
+                                                                          'Questionario_assicurativo1__c':'',
+                                                                          'Contratto_Assicurazione__c':'',
+                                                                          'Documenti_Assicurazione1__c':'',
+                                                                          'Soddisfazione_Cliente1__c':'',
+                                                                          'Count_Negativi__c':'0',
+                                                                          'Count_Positivi__c':'0',
+                                                                          'Intervista__c':'',
+                                                                          'COM_Note_Contratto__c':' ',
+                                                                          'COM_Note_Secci__c':' ',
+                                                                          'COM_Note_Precontratto__c':'',
+                                                                          'COM_Note_Questionario_Assicurativo__c':'',
+                                                                          'COM_Note_Contratto_Assicurazione__c':'',
+                                                                          'COM_Note_Documenti_Assicurazione__c':'',
+                                                                          'COM_Note_Soddisfazione_Cliente__c':''}" />
+    
+    <aura:registerEvent name="eventNavigateToIntervistaRisposteComp" type="c:eventNavigateToIntervistaRisposteComp"/>
+    <aura:attribute name="ParentAttributeOfChild" type="String"/>
+    <aura:attribute name="ParentAttributeOfChild1" type="String"/>
+    <aura:attribute name="ParentAttributeOfChild2" type="String"/>
+    
+    
+    <aura:attribute name="IsRispostaSi" type="boolean" default="false"/>
+    <aura:attribute name="TypeOfDML" type="String"/>
+    <aura:attribute name="UpdateResponse" type="boolean" default="false"/>
+    <aura:attribute name="isRispostaEx" type="boolean" default="false"/>
+    <aura:attribute name="RenderFilialiPostaQuestion" type="boolean" default="false"/>
+    
+    <aura:attribute name="Note1" type="String" />
+    <aura:attribute name="Note2" type="String" />
+    <aura:attribute name="Note3" type="String" />
+    <aura:attribute name="Note4" type="String" />
+    <aura:attribute name="Note5" type="String" />
+    <aura:attribute name="Note6" type="String" />
+    <aura:attribute name="Note7" type="String" />
+
+    <div>
+        <!--start domanda 1-->
+        <article class="slds-card">
+            <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                    <div class="slds-media__figure">
+                            <span class="slds-icon_container slds-icon-standard-account" title="domanda">
+                                  <lightning:icon iconName="standard:task" size="medium"/>
+                            <span class="slds-assistive-text">domande</span>
+                            </span>
+                    </div>
+                    <div class="slds-media__body">
+                        <h2 class="slds-card__header-title">
+                            <a href="javascript:void(0);" class="slds-card__header-link slds-truncate"
+                               title="Name  domande">
+                                <span>1.</span><!--{!domanda.Name}</span>-->
+                                {!Domanda1}
+                            </a><br/>
+                        </h2>
+                        <p>{!v.Domanda1}</p>
+                    </div>
+                </header>
+            </div>
+
+            <div class="slds-card__body slds-card__body_inner">
+                <div class="slds-grid">
+                    <div class="slds-size_1-of-2 slds-float--left">
+                        <aura:if isTrue="{!not(empty(v.risposta))}">
+                            <select id="domanda1" >
+                                <option value="{!v.risposta.Contratto1__c}"
+                                        selected="{!v.risposta.Contratto1__c.selected}" >
+                                     {!v.risposta.Contratto1__c}</option>
+                                <aura:iteration items="{!v.Domanda1Picklist}" var="val">
+                                    <aura:if isTrue="{!not(v.risposta.Contratto1__c==val)}">
+                                        <option value="{!val}" selected="{!val.selected}"> {!val}</option>
+                                    </aura:if>
+                                </aura:iteration>
+                            </select>
+                            <aura:set attribute="else">
+                                <select id="domanda1" onchange="{!c.OnChangeQuestion1}">
+                                    <aura:iteration items="{!v.Domanda1Picklist}" var="val">
+                                        <option value="{!val}" selected="{!val.selected}"> {!val}</option>
+                                    </aura:iteration>
+                                </select>
+                            </aura:set>
+                        </aura:if>
+                    </div>
+                    <div class="slds-size_1-of-2 slds-float--right">
+                         <ui:inputTextArea label="Note" aura:id="NomeDomanda1" value="{!v.Note1}"/>
+                    </div>
+                </div>
+            </div>
+        </article>
+        <!--end domanda1-->
+        <!--start domanda2-->
+        <article class="slds-card">
+            <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                    <div class="slds-media__figure">
+                            <span class="slds-icon_container slds-icon-standard-account" title="domanda">
+                                  <lightning:icon iconName="standard:task" size="medium"/>
+                            <span class="slds-assistive-text">domande</span>
+                            </span>
+                    </div>
+                    <div class="slds-media__body">
+                        <h2 class="slds-card__header-title">
+                            <a href="javascript:void(0);" class="slds-card__header-link slds-truncate"
+                               title="Name  domande">
+                                <span>2.</span><!--{!domanda.Name}</span>-->
+                                {!Domanda2}
+                            </a><br/>
+                        </h2>
+                        <p>{!v.Domanda2}</p>
+                    </div>
+                </header>
+            </div>
+
+            <div class="slds-card__body slds-card__body_inner">
+                <div class="slds-grid">
+                    <div class="slds-size_1-of-2 slds-float--left">
+                        <aura:if isTrue="{!not(empty(v.risposta))}">
+                            <select id="domanda2">
+                                <option value="{!v.risposta.Secci1__c}"
+                                        selected="{!v.risposta.Secci1__c.selected}">
+                                     {!v.risposta.Secci1__c}</option>
+                                <aura:iteration items="{!v.Domanda2Picklist}" var="val">
+                                    <aura:if isTrue="{!not(v.risposta.Secci1__c==val)}">
+                                        <option value="{!val}" selected="{!val.selected}"> {!val}</option>
+                                    </aura:if>
+                                </aura:iteration>
+                            </select>
+                            <aura:set attribute="else">
+                                <select id="domanda2">
+                                    <aura:iteration items="{!v.Domanda2Picklist}" var="val">
+                                        <option value="{!val}" selected="{!val.selected}"> {!val}</option>
+                                    </aura:iteration>
+                                </select>
+                            </aura:set>
+                        </aura:if>
+                    </div>
+                    <div class="slds-size_1-of-2 slds-float--right">
+                         <ui:inputTextArea label="Note" aura:id="NomeDomanda2" value="{!v.Note2}"/>
+                    </div>
+                </div>
+            </div>
+
+        </article>
+        <!--end domanda2-->
+        <!--start domanda3-->
+        <article class="slds-card">
+            <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                    <div class="slds-media__figure">
+                            <span class="slds-icon_container slds-icon-standard-account" title="domanda">
+                                  <lightning:icon iconName="standard:task" size="medium"/>
+                            <span class="slds-assistive-text">domande</span>
+                            </span>
+                    </div>
+                    <div class="slds-media__body">
+                        <h2 class="slds-card__header-title">
+                            <a href="javascript:void(0);" class="slds-card__header-link slds-truncate"
+                               title="Name  domande">
+                                <span>3.</span><!--{!domanda.Name}</span>-->
+                                {!Domanda3}
+                            </a><br/>
+                        </h2>
+                        <p>{!v.Domanda3}</p>
+                    </div>
+                </header>
+            </div>
+
+            <div class="slds-card__body slds-card__body_inner">
+                <div class="slds-grid">
+                    <div class="slds-size_1-of-2 slds-float--left">
+                        <aura:if isTrue="{!not(empty(v.risposta))}">
+                            <select id="domanda3">
+                                <option value="{!v.risposta.Precontratto1__c}"
+                                        selected="{!v.risposta.Precontratto1__c.selected}">
+                                     {!v.risposta.Precontratto1__c}</option>
+                                <aura:iteration items="{!v.Domanda3Picklist}" var="val">
+                                    <aura:if isTrue="{!not(v.risposta.Precontratto1__c==val)}">
+                                        <option value="{!val}" selected="{!val.selected}"> {!val}</option>
+                                    </aura:if>
+                                </aura:iteration>
+                            </select>
+                            <aura:set attribute="else">
+                                <select id="domanda3">
+                                    <aura:iteration items="{!v.Domanda3Picklist}" var="val">
+                                        <option value="{!val}" selected="{!val.selected}"> {!val}</option>
+                                    </aura:iteration>
+                                </select>
+                            </aura:set>
+                        </aura:if>
+                    </div>
+                    <div class="slds-size_1-of-2 slds-float--right">
+                         <ui:inputTextArea label="Note" aura:id="NomeDomanda3" value="{!v.Note3}"/>
+                    </div>
+                </div>
+            </div>
+
+        </article>
+        <!--end domanda3-->
+        <!--start domanda4-->
+        <article class="slds-card">
+            <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                    <div class="slds-media__figure">
+                            <span class="slds-icon_container slds-icon-standard-account" title="domanda">
+                                  <lightning:icon iconName="standard:task" size="medium"/>
+                            <span class="slds-assistive-text">domande</span>
+                            </span>
+                    </div>
+                    <div class="slds-media__body">
+                        <h2 class="slds-card__header-title">
+                            <a href="javascript:void(0);" class="slds-card__header-link slds-truncate"
+                               title="Name  domande">
+                                <span>4.</span><!--{!domanda.Name}</span>-->
+                                {!Domanda4}
+                            </a><br/>
+                        </h2>
+                        <p>{!v.Domanda4}</p>
+                    </div>
+                </header>
+            </div>
+
+            <div class="slds-card__body slds-card__body_inner">
+                <div class="slds-grid">
+                    <div class="slds-size_1-of-2 slds-float--left">
+                        <aura:if isTrue="{!not(empty(v.risposta))}">
+                            <select id="domanda4">
+                                <option value="{!v.risposta.Questionario_assicurativo1__c}"
+                                        selected="{!v.risposta.Questionario_assicurativo1__c.selected}">
+                                     {!v.risposta.Questionario_assicurativo1__c}</option>
+                                <aura:iteration items="{!v.Domanda4Picklist}" var="val">
+                                    <aura:if isTrue="{!not(v.risposta.Questionario_assicurativo1__c==val)}">
+                                        <option value="{!val}" selected="{!val.selected}"> {!val}</option>
+                                    </aura:if>
+                                </aura:iteration>
+                            </select>
+                            <aura:set attribute="else">
+                                <select id="domanda4">
+                                    <aura:iteration items="{!v.Domanda4Picklist}" var="val">
+                                        <option value="{!val}" selected="{!val.selected}"> {!val}</option>
+                                    </aura:iteration>
+                                </select>
+                            </aura:set>
+                        </aura:if>
+                    </div>
+                    <div class="slds-size_1-of-2 slds-float--right">
+                         <ui:inputTextArea label="Note" aura:id="NomeDomanda4" value="{!v.Note4}"/>
+                    </div>
+                </div>
+            </div>
+
+        </article>
+        <!--end domanda4-->
+        <!--start domanda5-->
+        <article class="slds-card">
+            <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                    <div class="slds-media__figure">
+                            <span class="slds-icon_container slds-icon-standard-account" title="domanda">
+                                  <lightning:icon iconName="standard:task" size="medium"/>
+                            <span class="slds-assistive-text">domande</span>
+                            </span>
+                    </div>
+                    <div class="slds-media__body">
+                        <h2 class="slds-card__header-title">
+                            <a href="javascript:void(0);" class="slds-card__header-link slds-truncate"
+                               title="Name  domande">
+                                <span>5.</span><!--{!domanda.Name}</span>-->
+                                {!Domanda5}
+                            </a><br/>
+                        </h2>
+                        <p>{!v.Domanda5}</p>
+                    </div>
+                </header>
+            </div>
+
+            <div class="slds-card__body slds-card__body_inner">
+                <div class="slds-grid">
+                    <div class="slds-size_1-of-2 slds-float--left">
+                        <aura:if isTrue="{!not(empty(v.risposta))}">
+                            <select id="domanda5">
+                                <option value="{!v.risposta.Contratto_Assicurazione__c}"
+                                        selected="{!v.risposta.Contratto_Assicurazione__c.selected}">
+                                     {!v.risposta.Contratto_Assicurazione__c}</option>
+                                <aura:iteration items="{!v.Domanda5Picklist}" var="val">
+                                    <aura:if isTrue="{!not(v.risposta.Contratto_Assicurazione__c==val)}">
+                                        <option value="{!val}" selected="{!val.selected}"> {!val}</option>
+                                    </aura:if>
+                                </aura:iteration>
+                            </select>
+                            <aura:set attribute="else">
+                                <select id="domanda5" onchange="{!c.OnChangeQuestion5}">
+                                    <aura:iteration items="{!v.Domanda5Picklist}" var="val">
+                                        <option value="{!val}" selected="{!val.selected}"> {!val}</option>
+                                    </aura:iteration>
+                                </select>
+                            </aura:set>
+                        </aura:if>
+                    </div>
+                    <div class="slds-size_1-of-2 slds-float--right">
+                         <ui:inputTextArea label="Note" aura:id="NomeDomanda5" value="{!v.Note5}"/>
+                    </div>
+                </div>
+            </div>
+
+        </article>
+        <!--end domanda5-->
+        <!--start domanda6-->
+        <article class="slds-card">
+            <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                    <div class="slds-media__figure">
+                            <span class="slds-icon_container slds-icon-standard-account" title="domanda">
+                                  <lightning:icon iconName="standard:task" size="medium"/>
+                            <span class="slds-assistive-text">domande</span>
+                            </span>
+                    </div>
+                    <div class="slds-media__body">
+                        <h2 class="slds-card__header-title">
+                            <a href="javascript:void(0);" class="slds-card__header-link slds-truncate"
+                               title="Name  domande">
+                                <span>6.</span><!--{!domanda.Name}</span>-->
+                                {!Domanda6}
+                            </a><br/>
+                        </h2>
+                        <p>{!v.Domanda6}</p>
+                    </div>
+                </header>
+            </div>
+
+            <div class="slds-card__body slds-card__body_inner">
+                <div class="slds-grid">
+                    <div class="slds-size_1-of-2 slds-float--left">
+                        <aura:if isTrue="{!not(empty(v.risposta))}">
+                            <select id="domanda6">
+                                <option value="{!v.risposta.Documenti_Assicurazione1__c}"
+                                        selected="{!v.risposta.Documenti_Assicurazione1__c.selected}">
+                                     {!v.risposta.Documenti_Assicurazione1__c}</option>
+                                <aura:iteration items="{!v.Domanda6Picklist}" var="val">
+                                    <aura:if isTrue="{!not(v.risposta.Documenti_Assicurazione1__c==val)}">
+                                        <option value="{!val}" selected="{!val.selected}"> {!val}</option>
+                                    </aura:if>
+                                </aura:iteration>
+                            </select>
+                            <aura:set attribute="else">
+                                <select id="domanda6" onchange="{!c.OnChangeQuestion6}">
+                                    <aura:iteration items="{!v.Domanda6Picklist}" var="val">
+                                        <option value="{!val}" selected="{!val.selected}"> {!val}</option>
+                                    </aura:iteration>
+                                </select>
+                            </aura:set>
+                        </aura:if>
+                    </div>
+                    <div class="slds-size_1-of-2 slds-float--right">
+                         <ui:inputTextArea label="Note" aura:id="NomeDomanda6" value="{!v.Note6}"/>
+                    </div>
+                </div>
+            </div>
+
+        </article>
+        <!--end domanda6-->
+        <!--start domanda7-->
+        <article class="slds-card">
+            <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                    <div class="slds-media__figure">
+                            <span class="slds-icon_container slds-icon-standard-account" title="domanda">
+                                  <lightning:icon iconName="standard:task" size="medium"/>
+                            <span class="slds-assistive-text">domande</span>
+                            </span>
+                    </div>
+                    <div class="slds-media__body">
+                        <h2 class="slds-card__header-title">
+                            <a href="javascript:void(0);" class="slds-card__header-link slds-truncate"
+                               title="Name  domande">
+                                <span>7.</span><!--{!domanda.Name}</span>-->
+                                {!Domanda7}
+                            </a><br/>
+                        </h2>
+                        <p>{!v.Domanda7}</p>
+                    </div>
+                </header>
+            </div>
+
+            <div class="slds-card__body slds-card__body_inner">
+                <div class="slds-grid">
+                    <div class="slds-size_1-of-2 slds-float--left">
+                        <aura:if isTrue="{!not(empty(v.risposta))}">
+                            <select id="domanda7">
+                                <option value="{!v.risposta.Soddisfazione_Cliente1__c}"
+                                        selected="{!v.risposta.Soddisfazione_Cliente1__c.selected}">
+                                     {!v.risposta.Soddisfazione_Cliente1__c}</option>
+                                <aura:iteration items="{!v.Domanda7Picklist}" var="val">
+                                    <aura:if isTrue="{!not(v.risposta.Soddisfazione_Cliente1__c==val)}">
+                                        <option value="{!val}" selected="{!val.selected}"> {!val}</option>
+                                    </aura:if>
+                                </aura:iteration>
+                            </select>
+                            <aura:set attribute="else">
+                                <select id="domanda7" >
+                                    <aura:iteration items="{!v.Domanda7Picklist}" var="val">
+                                        <option value="{!val}" selected="{!val.selected}"> {!val}</option>
+                                    </aura:iteration>
+                                </select>
+                            </aura:set>
+                        </aura:if>
+                    </div>
+                    <div class="slds-size_1-of-2 slds-float--right">
+                         <ui:inputTextArea label="Note" aura:id="NomeDomanda7" value="{!v.Note7}"/>
+                    </div>
+                </div>
+            </div>
+            <aura:if isTrue="{!v.RenderFilialiPostaQuestion}" >
+              <article class="slds-card">
+                <div class="slds-card__header slds-grid">
+                   <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                    <div class="slds-media__figure">
+                            <span class="slds-icon_container slds-icon-standard-account" title="domanda">
+                                  <lightning:icon iconName="standard:task" size="medium"/>
+                            <span class="slds-assistive-text">domande</span>
+                            </span>
+                    </div>
+                    <div class="slds-media__body">
+                        <h2 class="slds-card__header-title">
+                            <a href="javascript:void(0);" class="slds-card__header-link slds-truncate"
+                               title="Name  domande">
+                                <span>Domanda Aggiuntiva</span>
+                            </a><br/>
+                        </h2>
+                        <p>Ci sono alcuni documenti che non risultano in suo possesso e che dobbiamo inviarle,preferisce recuperarli direttamente nella filiale
+                           di {!v.nuovaIntervista.COM_MD_Filiale__r.Name} oppure li spediamo al suo indirizzo di residenza? </p>
+                    </div>
+                </header>
+              </div>
+
+                <div class="slds-card__body slds-card__body_inner">
+                   <div class="slds-grid">
+                      <div class="slds-size_1-of-2 slds-float--left">
+                           <aura:if isTrue="{!not(empty(v.risposta))}">
+                            <select id="domanda8">
+                                <option value="{!v.risposta.COM_Filiale_Posta__c}"
+                                        selected="{!v.risposta.COM_Filiale_Posta__c.selected}">
+                                     {!v.risposta.COM_Filiale_Posta__c}</option>
+                                <aura:iteration items="{!v.Domanda8Picklist}" var="val">
+                                    <aura:if isTrue="{!not(v.risposta.COM_Filiale_Posta__c==val)}">
+                                        <option value="{!val}" selected="{!val.selected}"> {!val}</option>
+                                    </aura:if>
+                                </aura:iteration>
+                            </select>
+                            <aura:set attribute="else">
+                                <select id="domanda8">
+                                    <aura:iteration items="{!v.Domanda8Picklist}" var="val">
+                                        <option value="{!val}" selected="{!val.selected}"> {!val}</option>
+                                    </aura:iteration>
+                                </select>
+                            </aura:set>
+                        </aura:if>
+                      </div>
+                   </div>
+                </div>
+                &nbsp;&nbsp;<p style="color:#FF0000">Perfetto Sig. {!v.nuovaIntervista.COM_NomeCliente__r.Name}, ho registrato la sua scelta.</p>
+              </article>
+        </aura:if>
+            <!-- ULTIMA FRASE -->
+            <div class="slds-card__body slds-carc__body_inner">
+                 <div class="slds-grid">
+                      <div class="slds-size_1-of-2 slds-float--left">
+                           <p style="color:#FF0000">L’intervista è terminata. La ringrazio della collaborazione e le auguro una buona giornata/ serata.</p>
+                      </div>
+                 </div>
+            </div>
+        </article>
+        <!--end domanda7-->
+        <!-- </aura:iteration> -->
+        <!-- LastQuestion Filiali/Posta -->
+        
+        
+
+        <div class="slds-float--right" style="margin-top:1%; display:flex;">
+            <lightning:button class="slds-button slds-button_brand buttonPage"
+                              onclick="{!c.Cancella}"
+                              label="Cancella"/>
+            
+            <aura:if isTrue="{!not(v.CINZ_Flag)}">
+                  <lightning:button class="slds-button slds-button_brand buttonPage " onclick="{!c.salvareDomande}"
+                              label="Concludi Intervista"/>        
+            </aura:if>
+            <aura:if isTrue="{!v.CINZ_Flag}">
+                    <lightning:button class="slds-button slds-button_brand buttonPage " onclick="{!c.ContinuaIntervistaAssicurativo}"
+                              label="Continua Intervista Assicurativo"/>
+            </aura:if>
+        </div>
+
+    </div>
+</aura:component>

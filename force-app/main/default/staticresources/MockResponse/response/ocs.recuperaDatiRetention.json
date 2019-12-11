@@ -1,0 +1,44 @@
+{
+	"resultCode":0,
+	"resultMessage":"Ok",
+	"recuperaDatiRetentionResponse":{
+	   "elencoPratiche":[
+		{
+		  "tipoPratica":"CO",
+		  "numPratica":"16132993",
+		  "statoPratica":"91",
+		  "attributoPratica":"",
+		  "dataPrimaScadenza":"20160615",
+		  "dataUltimaScadenza":"20210515",
+		  "codProdotto":"PE",
+		  "desProdotto":"Prestiti con estinzione",
+		  "modalitaPagamento":"RI",
+		  "importoFinanziato":"3000000",
+		  "montante":"3115800",
+		  "saldoPratica":"0",
+		  "dataEstinzione":"20180821",
+		  "dataLiquidazione":"20160503",
+		  "codCliente":"10963362",
+		  "agente":"12"
+	},
+	{
+		  "tipoPratica":"CO",
+		  "numPratica":"16145",
+		  "statoPratica":"80",
+		  "attributoPratica":"",
+		  "dataPrimaScadenza":"20160615",
+		  "dataUltimaScadenza":"20210515",
+		  "codProdotto":"PE",
+		  "desProdotto":"Prestiti con estinzione",
+		  "modalitaPagamento":"RI",
+		  "importoFinanziato":"3000000",
+		  "montante":"3115800",
+		  "saldoPratica":"0",
+		  "dataEstinzione":"20180821",
+		  "dataLiquidazione":"20160503",
+		  "codCliente":"10963362",
+		  "agente":"12"
+	}
+     ]
+   }
+}

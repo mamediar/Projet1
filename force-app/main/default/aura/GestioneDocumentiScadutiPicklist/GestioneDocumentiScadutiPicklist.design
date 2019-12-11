@@ -1,0 +1,8 @@
+<design:component>
+	<design:attribute name='saveCase' label='saveCase' />
+    <design:attribute name='esito' label='esito' />
+    <design:attribute name='recordId' label='recordId'/>
+    <design:attribute name="noteValue" label="noteValue"/>
+    <design:attribute name="notaDaPassare" label="notaDaPassare"/>
+    <design:attribute name="disposition" label="disposition"/>
+</design:component>

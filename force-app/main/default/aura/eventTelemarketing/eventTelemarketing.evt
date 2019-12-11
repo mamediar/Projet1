@@ -1,0 +1,13 @@
+<aura:event type="APPLICATION" description="Event template" >
+<aura:attribute type="String" name="statoCarta" description="stato della carta"/>
+<aura:attribute type="String" name="disp" description="controllo disponibilità"/>
+    <aura:attribute type="String" name="activity"/>
+    <aura:attribute type="String" name="stato"/>
+    <aura:attribute type="String" name="NomeProd"/>
+    <aura:attribute type="String" name="fido"/>
+    <aura:attribute type="String" name="dispSA"/>
+    <aura:attribute type="String" name="fidoPR"/>
+    <aura:attribute type="String" name="fidoSA"/>
+   
+    
+</aura:event>

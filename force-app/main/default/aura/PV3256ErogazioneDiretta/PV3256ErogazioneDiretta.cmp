@@ -1,0 +1,324 @@
+<!--
+  @Component Name     : PV3256ErogazioneDiretta.cmp
+  @Description        : 
+  @Author             : Andrea Vanelli
+  @Group              : 
+  @Last Modified By   : Federico Negro
+  @Last Modified On   : 29/10/2019, 16:05:42
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    2019-6-19 13:41:57   Andrea Vanelli     Initial Version
+-->
+<aura:component extends="c:PVSubComponentBase" access='global' controller='PV3256ErogazioneDirettaInserimento'>
+
+    <!-- Attributi del PV specifico -->
+    <aura:attribute name='isPraticaAttiva' type='Boolean' />
+    <aura:attribute name="OCSGenericRecuperaDati" type="OCSGenericRecuperaDatiInvoker.genericRecuperaDatiResponseDTO" />
+    <aura:attribute name="date_1" type="String" />
+    <aura:attribute name="date_2" type="String" />
+    <aura:attribute name="date_3" type="String" />
+    <aura:attribute name='cpayLoaded' type='Boolean' default="false" />
+    <aura:attribute name="CpayFlag" type="Boolean" default="false" />
+    <aura:attribute name="contoSelezionato" type="OCSPratica" />
+
+    <!-- Attributi del PV in maschera -->
+    <aura:attribute name="importoErogabile" type="String" />
+
+    <aura:attribute name="optionsCampagna" type="List" default="[                                                                                                                      
+    {'label': 'BP5', 'value': 'BP5'},                                                                                  
+    {'label': 'BD5', 'value': 'BD5'},]" />
+
+
+    <!-- Attributi mostrati solo in alcuni casi -->
+    <aura:attribute name="parteDinamicaScript" type="String" />
+    <aura:attribute name="parteDinamicaScriptCommissione" type="String" />
+    <aura:attribute name="commissioneSuImportoBP" type="String" />
+    <aura:attribute name="scriptSMS" type="String" />
+    <aura:attribute name="praticheListCPAY" type="OCSPratica[]" />
+    <aura:attribute name="praticheTableColumnsCPAY" type="List" default="[{label: 'IBAN', fieldName: 'iban', type: 'text'},
+    {label: 'Stato Conto', fieldName: 'statoPratica', type: 'text'}]" />
+    <aura:attribute name="scriptGDPR" type="String"
+        default="AI SENSI DEL REGOLAMENTO UE 2016/679 “REGOLAMENTO GDPR” E DELLA NORMATIVA NAZIONALE VIGENTE IN MATERIA DI PROTEZIONE DEI DATI PERSONALI, COMPASS BANCA S.P.A., IN QUALITA' DI TITOLARE DEL TRATTAMENTO, LA INFORMA CHE I DATI RACCOLTI E REGISTRATI NEL CORSO DI QUESTA TELEFONATA SARANNO TRATTATI PER ISTRUIRE LA SUA RICHIESTA DI ANTICIPO CONTANTE CON ADDEBITO SULLA SUA CARTA DI CREDITO. PRESO ATTO DELL'INFORMATIVA ACCONSENTE ALLA REGISTRAZIONE ED AI TRATTAMENTI? cliente: SI/NO" />
+
+
+    <!-- Markup Body -->
+    <lightning:card class='slds-form_stacked'>
+
+        <!-- FORM DA COMPILARE -->
+        <lightning:layout class="slds-wrap" multipleRows="true">
+            <lightning:layoutItem size="6" padding="horizontal-small">
+                <lightning:input name="importoErogabile" value='{!v.importoErogabile}' placeholder="0" disabled='true'
+                    required="true" label='Importo minimo erogabile' />
+                <lightning:input type="number" required="true" onblur="{!c.calcolaCommissione}" aura:id="importo"
+                    name="importo" label="Importo" value='{!v.PVForm.importo}' formatter="currency" step="0.01" />
+            </lightning:layoutItem>
+
+            <lightning:layoutItem size="6" padding="horizontal-small">
+                <aura:if isTrue="{!v.cartaDatiFinanziariData.emettitore == '3'}">
+                    <span>
+                        <lightning:combobox name="Campagna" placeholder="Seleziona" value="{!v.PVForm.codiceCampagna}"
+                            variant="standard" dropdownAlignment="Left" options="{!v.optionsCampagna}"
+                            label='Campagna' />
+                    </span>
+                    <lightning:input name="numeroRate" value='{!v.PVForm.numRate}' placeholder="Inserire un valore"
+                        aura:id="numeroRate" maxlength="3" required="true" label='Numero Rate' pattern="[0-9]*" />
+                    <aura:set attribute="else">
+                        <lightning:input name="campagna" value='{!v.PVForm.codiceCampagna}' label='Campagna' />
+                    </aura:set>
+                </aura:if>
+
+            </lightning:layoutItem>
+
+            <lightning:layoutItem size="12" padding="horizontal-small">
+                <lightning:input type="checkbox" aura:id='flagCpayMatrix' label='Eroga su conto Cpay'
+                    name='flagCpayMatrix' onchange="{!c.mostraMatrixCPAY}" checked="{!v.CpayFlag}" />
+
+                <aura:if isTrue="{!v.cpayLoaded}">
+                    <aura:if isTrue="{!v.praticheListCPAY.length>0}">
+                        <div
+                            class="slds-box slds-text-align_center slds-text-color_error slds-theme_shade slds-text-heading_small">
+                            CONTI CPAY</div>
+                        <lightning:datatable data="{!v.praticheListCPAY}" columns="{!v.praticheTableColumnsCPAY}"
+                            keyField="iban" maxRowSelection="1" onrowselection="{!c.selectConto}" />
+                        <p></p><br />
+                        <aura:set attribute="else">
+                            <p class="slds-cell-buffer_left slds-text-color_destructive">IL CLIENTE SELEZIONATO
+                                NON
+                                DISPONE DI CONTI CPAY ATTIVI</p><br />
+                        </aura:set>
+                    </aura:if>
+                </aura:if>
+            </lightning:layoutItem>
+             <!-- Conferma conto visibile solo se RID e non CPAY -->
+            <aura:if isTrue="{!v.CpayFlag}">
+                <aura:set attribute="else">
+                    <aura:if isTrue="{!v.cartaDatiFinanziariData.pagamento == 'RI'}">
+                        <lightning:layoutItem size="12" padding="horizontal-small">
+                            Mi conferma che le sue coordinate bancarie sono: conto corrente n.
+                            <lightning:input type="checkbox" aura:id='confermaConto'
+                                label='{!v.cartaDatiFinanziariData.contoCorrente}' name='confermaConto' />
+                        </lightning:layoutItem>
+                    </aura:if>
+                </aura:set>
+            </aura:if>
+        </lightning:layout>
+
+        <aura:if isTrue="{!v.cartaDatiFinanziariData.emettitore == '3'}">
+            <!-- SCRIPT DA MOSTRARE PER CARTE BANCOPOSTA -->
+            <lightning:card title="Registrazione Della Chiamata - Script Carta Bancoposta" iconName="action:script"
+                variant="base">
+                <p>
+                    In caso di rimborso rateale su carta BancoPosta+ il Cliente sceglie un piano di ammortamento
+                    fisso
+                    con rate di importo minimo pari a €30 tra i seguenti:
+                </p><br />
+                <p> - Per importi ≥ 180€ e Minore di 360€ : 6 mesi </p>
+                <p> - Per importi ≥ 360€ e Minore di 540€ : 6/12 mesi </p>
+                <p> - Per importi ≥ 540€ e Minore di 720€ : 6/12/18 mesi </p>
+                <p> - Per importi ≥ 720€ : 6/12/18/24 mesi </p><br />
+
+                <p> Bene sig./sig.ra per sua maggior tutela registrerò una parte della telefonata dove le
+                    chiedero' i
+                    suoi
+                    dati personali e i dati relativi alla sua carta di credito.
+                </p><br />
+
+                <p>{!v.scriptGDPR} </p><br />
+
+                <p> Il servizio di Bonifico in Conto o Anticipo Contante consiste nel trasferire una somma di
+                    denaro dal
+                    fido della sua
+                    carta direttamente sul suo conto BancoPosta, con l’opportunità di rimborsarla in comode rate
+                    al
+                    costo mensile di 50
+                    centesimi di Euro ogni 100€ trasferiti.</p><br />
+                <!-- informazione sulla commissione calcolata nel JS -->
+                <p>{!v.parteDinamicaScriptCommissione}</p><br />
+
+                <p> E' interessato a procedere con la richiesta di un Bonifico in conto? cliente: SI/NO
+                </p><br />
+
+                <p> In caso affermativo:</p>
+                <p> Quale importo vuole trasferire dalla carta al conto? cliente: xxxxxxx
+                </p><br />
+                <p>
+                    <table class="slds-table slds-no-row-hover">
+                        <tbody>
+                            <tr class="slds-hint-parent">
+                                <td class="slds-cell-buffer_left slds-text-color_destructive">
+                                    <div>- MI PUO' DIRE IL SUO NOME E COGNOME ?</div>
+                                </td>
+                                <td class="slds-cell-buffer_left">
+                                    <div>cliente: {!v.PVForm.cliente.nome},
+                                        {!v.PVForm.cliente.cognome}
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="slds-hint-parent">
+                                <td class="slds-cell-buffer_left slds-text-color_destructive">
+                                    <div>- MI PUO' DIRE LA SUA DATA DI NASCITA?</div>
+                                </td>
+                                <td class="slds-cell-buffer_left">
+                                    <div>cliente: {!v.PVForm.cliente.dataNascitaItaliana}</div>
+                                </td>
+                            </tr>
+                            <tr class="slds-hint-parent">
+                                <td class="slds-cell-buffer_left slds-text-color_destructive">
+                                    <div>- MI PUO' DIRE IL NUMERO COMPLETO DELLA SUA CARTA DI CREDITO?</div>
+                                </td>
+                                <td class="slds-cell-buffer_left">
+                                    <div>cliente: {!v.cartaDatiFinanziariData.pan}</div>
+                                </td>
+                            </tr>
+                            <tr class="slds-hint-parent">
+                                <td class="slds-cell-buffer_left slds-text-color_destructive">
+                                    <div>- MI PUO' DIRE LA SCADENZA DELLA SUA CARTA DI CREDITO?</div>
+                                </td>
+                                <td class="slds-cell-buffer_left">
+                                    <div>cliente: {!v.cartaDatiFinanziariData.dataScadenzaSlashed}</div>
+                                </td>
+                            </tr>
+                            <tr class="slds-hint-parent">
+                                <td class="slds-cell-buffer_left slds-text-color_destructive">
+                                    <div>- MI CONFERMA CHE L'IMPORTO DA TRASFERIRE è {!v.PVForm.importo} €</div>
+                                </td>
+                                <td class="slds-cell-buffer_left">
+                                    <div>cliente: SI/NO</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </p><br />
+                <p>Le ricordo che è stata effettuata la transazione per l'importo di euro {!v.PVForm.importo} € che
+                    rimborserà in {!v.PVForm.numRate}
+                    rate
+                    con commissione mensile di {!v.commissioneSuImportoBP}€ e che visualizzerà questa operazione
+                    nell' e/c che riceverà
+                    intorno al 10 del mese prossimo.</p>
+                <p>
+                    Le ricordo infine che la somma richiesta le verrà accreditata entro 3 giorni lavorativi sul
+                    suo
+                    conto BancoPosta
+                </p><br />
+                <!-- informazione sulla commissione calcolata nel JS -->
+                <p>{!v.parteDinamicaScriptCommissione}</p><br />
+            </lightning:card>
+
+            <aura:set attribute="else">
+                <!-- SCRIPT DA MOSTRARE PER CARTE COMPASS NON BANCOPOSTA -->
+                <lightning:card title="Registrazione Della Chiamata - Script Carta Compass" iconName="action:script"
+                    variant="base">
+                    <p> Bene sig./sig.ra per sua maggior tutela registrerò una parte della telefonata dove le
+                        chiedero'
+                        i
+                        suoi
+                        dati personali e i dati relativi alla sua carta di credito.
+                    </p><br />
+
+                    <p>{!v.scriptGDPR} </p><br />
+
+                    <p> Il servizio di Anticipo Contante consiste nel trasferire una somma di denaro dal fido
+                        della sua
+                        carta .
+
+                    </p><br />
+                    <!-- informazione sulla commissione calcolata nel JS -->
+                    <p>{!v.parteDinamicaScriptCommissione}</p><br />
+                    <p>
+                        <table class="slds-table slds-no-row-hover">
+                            <tbody>
+                                <tr class="slds-hint-parent">
+                                    <td class="slds-cell-buffer_left slds-text-color_destructive">
+                                        <div>- MI PUO' DIRE IL SUO NOME E COGNOME ?</div>
+                                    </td>
+                                    <td class="slds-cell-buffer_left">
+                                        <div>cliente: {!v.PVForm.cliente.nome},
+                                            {!v.PVForm.cliente.cognome}
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td class="slds-cell-buffer_left slds-text-color_destructive">
+                                        <div>- MI PUO' DIRE LA SUA DATA DI NASCITA?</div>
+                                    </td>
+                                    <td class="slds-cell-buffer_left">
+                                        <div>cliente: {!v.PVForm.cliente.dataNascitaItaliana}</div>
+                                    </td>
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td class="slds-cell-buffer_left slds-text-color_destructive">
+                                        <div>- MI PUO' DIRE IL NUMERO COMPLETO DELLA SUA CARTA DI CREDITO?</div>
+                                    </td>
+                                    <td class="slds-cell-buffer_left">
+                                        <div>cliente: {!v.cartaDatiFinanziariData.pan}</div>
+                                    </td>
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td class="slds-cell-buffer_left slds-text-color_destructive">
+                                        <div>- MI PUO' DIRE LA SCADENZA DELLA SUA CARTA DI CREDITO?</div>
+                                    </td>
+                                    <td class="slds-cell-buffer_left">
+                                        <div>cliente: {!v.cartaDatiFinanziariData.dataScadenzaSlashed}</div>
+                                    </td>
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td class="slds-cell-buffer_left slds-text-color_destructive">
+                                        <div>- MI CONFERMA CHE L'IMPORTO DA TRASFERIRE è {!v.PVForm.importo} €</div>
+                                    </td>
+                                    <td class="slds-cell-buffer_left">
+                                        <div>cliente: SI/NO</div>
+                                    </td>
+                                </tr>
+                                <tr class="slds-hint-parent">
+                                    <td class="slds-cell-buffer_left slds-text-color_destructive">
+                                        <div>- MI CONFERMA CHE IL TIPO DI BONIFICO E' bancario/domiciliato in
+                                            posta?
+                                        </div>
+                                    </td>
+                                    <td class="slds-cell-buffer_left">
+                                        <div>cliente: SI/NO</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </p><br />
+                    <p>Le ricordo che è stata effettuata la transazione per l'importo di euro {!v.PVForm.importo}€ con
+                        rimborso o alle condizioni economiche previste dalla sua carta. Visualizzerà
+                        questa
+                        operazione nell'e/c che riceverà direttamente a casa entro il 10 del mese prossimo.
+                    </p><br />
+                    <!-- informazione sulla commissione calcolata nel JS -->
+                    <p>{!v.parteDinamicaScriptCommissione}</p><br />
+                    <!-- informazione calcolata nel JS date dinamiche -->
+                    <p>{!v.parteDinamicaScript}</p>
+                </lightning:card>
+
+            </aura:set>
+        </aura:if>
+
+
+
+        <lightning:card title="Comunicazione di Conferma" iconName="action:email" variant="base">
+            <aura:if isTrue="{!and(v.PVForm.cliente.telCellulare != '', v.PVForm.cliente.telCellulare != null)}">
+                <p>per inviarle l'SMS di conferma dell'avvenuta erogazione, mi conferma che il suo numero di
+                    cellulare
+                    è: {!v.PVForm.cliente.telCellulare}?</p><br />
+                <lightning:layout class="slds-wrap" multipleRows="true">
+                    <lightning:layoutItem size="6" padding="horizontal-small">
+                        <lightning:input type="checkbox" aura:id='SMScheckbox' label='Conferma numero cellulare'
+                            name='SMS' />
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="6" padding="horizontal-small">
+                        <p>ANTEPRIMA MESSAGGIO:</p><br />
+                        <p>{!v.scriptSMS}</p>
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </aura:if>
+        </lightning:card>
+
+
+    </lightning:card> <!-- /main -->
+
+</aura:component>

@@ -1,0 +1,110 @@
+<!--
+  @Component Name     : PV3261VariazioneTelefoni.cmp
+  @Description        : 
+  @Author             : SabrinaVitali.SFDoc
+  @Group              : 
+  @Last Modified By   : sabrina vitali
+  @Last Modified On   : 18/9/2019, 10:06:44
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    16/7/2019, 15:55:50   SabrinaVitali.SFDoc     Initial Version
+-->
+<aura:component extends="c:PVSubComponentBase" controller="PV3261VariazioneTelefoniInserimento"> 
+    <!-- valori originali -->
+    <aura:attribute name="telCellulareOrig" type="String"/>
+    <aura:attribute name="telefonoAlternativoOrig" type="String"/>
+    <aura:attribute name="telefonoCasaOrig" type="String"/>
+    <aura:attribute name="faxOrig" type="String"/>
+
+    <aura:attribute name="variazioneTelefoniCheckOutput" type="PV3261VariazioneTelefoniInserimento.VariazioneTelefoniCheckOutput" />
+
+    <!-- valori di controllo da passare al form -->
+    <aura:attribute name="annulla" type="String" default="N"/>
+    <aura:attribute name="variazioneCel" type="String" default="N"/>
+    <aura:attribute name="forzatura" type="String" default="N"/>
+    <aura:attribute name="flagFisso" type="String" default=""/>
+    <aura:attribute name="flagCellulare" type="String" default=""/>
+    <aura:attribute name="flagAlternativo" type="String" default=""/>
+    <aura:attribute name="flagFax" type="String" default=""/>
+    <aura:attribute name="variazioni" type="String" default=""/>
+
+    <!-- popolamento combo -->
+    <aura:attribute name='operatoreTelefonico' type='String' default='' />
+    <aura:attribute name="optionsOperatoreTelefonico" type="List" default="[                                                                                                              
+                    {'label': 'TIM', 'value': '1'},                                                                 
+                    {'label': 'Vodafone', 'value': '2'},                                                                       
+                    {'label': 'Wind', 'value': '3'},                                                                          
+                    {'label': 'H3G', 'value': '4'},                                                             
+                    {'label': 'PosteMobile', 'value': '7'},                                                             
+                                                                            ]" />
+
+    <!-- main -->
+    <lightning:card class='slds-form_stacked'>
+        <lightning:card title="Leggere Testo Privacy al cliente" iconName="action:script" variant="base">
+            <p>Compass le comunica che i dati personali integrativi, che ci vorrà fornire saranno oggetto di
+                trattamento secondo
+                l'informativa privacy consegnataLe in sede di stipula contrattuale e nei limiti del consenso da Lei
+                prestato.</p><br />
+        </lightning:card>
+
+        <lightning:layout class="slds-wrap" multipleRows="true">
+            <lightning:layoutItem size="12" padding="horizontal-small">
+                <lightning:input type="checkbox" aura:id='checkbox'
+                    label='confermare di aver comunicato al cliente la PRIVACY' name='checkbox'
+                    required='true' onchange="{!c.verifyCheckPrivacy}" />
+            </lightning:layoutItem>
+        </lightning:layout>
+
+
+        <lightning:card class='slds-form_stacked'>
+            <div class="slds-grid slds-container_medium slds-align_absolute-center slds-wrap">
+                <div class="slds-size_6-of-12">
+                    <span>Abitazione Attuale: {!v.telefonoCasaOrig}</span>
+                </div>
+                <div class="slds-size_6-of-12">
+                    <span><lightning:input aura:id="abitazione" name="abitazione" pattern="[0-9]{1,14}$" type="tel" value='{!v.variazioneTelefoniCheckOutput.datiCliente.telefonoCasa}' /></span>
+                </div>
+                <div class="slds-size_6-of-12">
+                    <span>Cellulare Attuale: {!v.telCellulareOrig}</span>
+                </div>
+                <div class="slds-size_6-of-12">
+                    <span><lightning:input aura:id="cellulare" name="cellulare" pattern="^[3][0-9]{4,14}$" type="tel" value='{!v.variazioneTelefoniCheckOutput.datiCliente.telCellulare}' /></span>
+                </div>
+                <div class="slds-size_6-of-12">
+                    <span></span>
+                </div>
+                <div class="slds-size_6-of-12">
+                    <span><lightning:combobox name="operatoreTelefonico" placeholder="Operatore telefonico"
+                        value="{!v.operatoreTelefonico}" variant="standard"
+                        dropdownAlignment="Left" options="{!v.optionsOperatoreTelefonico}" />
+                    </span>
+                </div>
+                <div class="slds-size_6-of-12">
+                    <span>Alternativo Attuale: {!v.telefonoAlternativoOrig}</span>
+                </div>
+                <div class="slds-size_6-of-12">
+                    <span><lightning:input aura:id="alternativo" name="alternativo" pattern="[0-9]{1,14}$" type="tel" value='{!v.variazioneTelefoniCheckOutput.datiCliente.telefonoAlternativo}' /></span>
+                </div>
+                <div class="slds-size_6-of-12">
+                    <span>Fax Attuale: {!v.faxOrig}</span>
+                </div>
+                <div class="slds-size_6-of-12">
+                    <span><lightning:input aura:id="fax" name="fax" pattern="[0-9]{1,14}$" type="tel" value='{!v.variazioneTelefoniCheckOutput.datiCliente.fax}' /></span>
+                </div>
+                <div class="slds-size_12-of-12">
+                    <span><lightning:input type="checkbox" aura:id='checkboxForzaPrefissi' label='Forzare i prefissi non riconosciuti?' name='checkboxForzaPrefissi' /></span>
+                </div>
+                <aura:if isTrue="{!v.variazioneTelefoniCheckOutput.richiestaFaxShow}">
+                    <div class="slds-size_12-of-12">
+                        <span>{!v.variazioneTelefoniCheckOutput.messaggioFax}</span>
+                    </div>
+                    <div class="slds-size_12-of-12">
+                        <span><lightning:input type="checkbox" aura:id='checkboxFax' label='il fax è stato ricevuto?' name='checkboxFax' /></span>
+                    </div>
+                </aura:if>
+            </div>
+        </lightning:card>
+    </lightning:card> <!-- /main -->
+</aura:component>

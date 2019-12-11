@@ -1,0 +1,127 @@
+<aura:component controller="RitiroContrattiPerDealerController"
+                implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes"
+                >
+    
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="colonne" type="String" default="Barcode__c,AccountName__c"/>
+    <aura:attribute name="columns" type="List" default="[{'label': 'Bar Code', 'fieldName': 'Barcode__c', 'type': 'text'},
+                                                        {'label': 'Nome', 'fieldName': 'AccountName__c', 'type': 'text'}]"/>
+    
+    <aura:attribute name="stato" type="String" default="402"/>
+    <aura:attribute name="selectedRows" type="Contract[]" />
+    <aura:attribute name="ok" type="Boolean"/>
+    <aura:attribute name="title" type="String" default="Ritiro Contratti"/>
+    <aura:attribute name="contractList" type="Contract[]"/>
+    <aura:attribute name="resList" type="List"/>
+    <aura:attribute name="isButtonDisabled" type="Boolean" default="true"/>
+    <aura:attribute name="dealer" type="String"/>
+    <aura:attribute name="nContracts" type="Integer" default="0"/>
+    <aura:attribute name="pContracts" type="Integer" default="0"/>
+    <aura:attribute name="variant" type="String"/>
+    <aura:attribute name="note" type="String"/>
+    <aura:attribute name="showNotFoundMessage" type="Boolean" default="false"/>
+    <aura:attribute name="barcodeValue" type="String" />
+    <aura:attribute name="cmp" type="Aura.Component">
+        <table>
+            <aura:iteration items="{!v.resList}" var="res">
+                <tr>
+                    <td class="slds-size_1-of-12"><b>Pratica {!res.contract.ContractNumber__c}</b></td>
+                    <td class="slds-size_1-of-3">
+                        <aura:if isTrue="{!res.koDocuments.length==0}">
+                            <b>OK</b>
+                            <aura:set attribute="else">
+                                <b>KO</b>
+                            </aura:set>
+                        </aura:if>
+                    </td>
+                </tr>
+                <aura:iteration items="{!res.okDocuments}" var="doc">
+                    <tr>
+                        <td class="slds-size_1-of-12" style="text-align:center">{!doc.codiceDocumento}</td>
+                        <td class="slds-size_1-of-7">{!doc.response.errore}</td>
+                    </tr>
+                </aura:iteration>
+                <aura:iteration items="{!res.koDocuments}" var="doc">
+                    <tr>
+                        <td class="slds-size_1-of-12" style="text-align:center">{!doc.codiceDocumento}</td>
+                        <td class="slds-size_1-of-7">{!doc.response.errore}</td>
+                    </tr>
+                </aura:iteration>
+            </aura:iteration>
+        </table>
+        
+        <lightning:textarea label="Note:" value="{!v.note}" placeholder="Inserisci qui le note"/>
+    </aura:attribute>
+    
+    <aura:registerEvent name="reInit" type="c:reInit"/>
+    <aura:handler name="reInit" action="{! c.init }"/>
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    <aura:handler name="change" value="{!v.selectedRows}" action="{!c.onListChange}"/>
+    
+    <aura:attribute name="barCode" type="String"/>
+    <aura:handler name="barCodeEvent" event="c:BarCodeReady" action="{!c.checkIsIn}" />
+    
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    
+    <lightning:card class="container">
+        
+        <aura:set attribute="title">
+            <lightning:icon iconName="standard:case" size="small"/>
+            <b style="margin-left:10px;">{! v.title }</b>
+        </aura:set>
+        
+        <div style="padding-left:10px;" class="slds-m-right_small">
+            <table>
+                <tr style="border:2px solid; border-color:gainsboro">
+                    <td>Dealer:</td>
+                    <td>{!v.dealer}</td>
+                </tr>
+                
+                <tr style="border:2px solid; border-color:gainsboro">
+                    <td style="width:50%">Numero di contratti:</td>
+                    <td style="text-align: left;">{!v.nContracts}</td>
+                </tr>
+                
+                <tr style="border:2px solid; border-color:gainsboro">
+                    <td style="width:50%">Contratti processati:</td>
+                    <td style="text-align: left;">{!v.pContracts}</td>
+                </tr>
+            </table>
+        </div>
+        
+        <aura:if isTrue="{!v.showNotFoundMessage}">
+        	<ui:message severity="warning" title="Attenzione">
+            	Il contratto non è presente in questo elenco.
+            </ui:message>
+        </aura:if>
+        
+        <div style="width:400px; position:relative; padding-left:10px; ">
+            <c:BarCode placeholder="Scannerizza il barcode di un contratto da ritirare."
+                       length="14"
+                       label="Barcode:"
+                       inputIdContract="{!v.barcodeValue}"
+                       />
+        </div>
+        
+        <c:SFAContractList recordId="{!v.recordId}"
+                           colonne="{!v.colonne}"
+                           stato="{!v.stato}"
+                           selectedRows="{!v.selectedRows}"
+                           columns="{!v.columns}"
+                           barCode="{!v.barCode}"
+                           contractList="{!v.contractList}"/>
+        
+        <div style="margin-top:5px; padding-left:10px;">
+            <lightning:button label="Ritiro Contratti Selezionati"
+                              variant="brand" onclick="{!c.handleClick}"
+                              disabled="{!v.isButtonDisabled}"
+                              />
+        </div>
+        
+        <c:Modal aura:id="modal"
+                 variant="{!v.variant}"
+                 component="{!v.cmp}" 
+                 action="{!c.closeCallback}" 
+                 disableCloseButton="true"/>
+    </lightning:card>
+</aura:component>

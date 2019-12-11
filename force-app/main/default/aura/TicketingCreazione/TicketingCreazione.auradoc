@@ -1,0 +1,6 @@
+<aura:documentation>
+	<aura:description>Documentation</aura:description>
+	<aura:example name="TicketingCreazione" ref="TicketingCreazione" label="TicketingCreazione">
+		TicketingCreazione
+	</aura:example>
+</aura:documentation>

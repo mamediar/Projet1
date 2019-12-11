@@ -1,0 +1,51 @@
+<aura:component controller="CRMReclamiInserimentoDettagliSelCodaCtrl"
+                implements="force:appHostable,flexipage:availableForAllPageTypes" 
+                access="global" 
+                >
+    
+    
+    
+    <aura:attribute name="aziendaSelezionata" type="String"/>
+    <aura:attribute name="tipo" type="String"/>
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="categoriaDettagli" type="XCS_Categoria__c"/>
+    <aura:attribute name="delegaPresente" type="Boolean"/>
+    <aura:attribute name="inadempimentoStage" type="String" default=""/>
+    <aura:attribute name="reclamoCompleto" type="Boolean" default="false"/>
+    <aura:attribute name="listaCodeTot" type="CodaXSocieta__mdt[]"/>
+    <aura:attribute name="listaCodeFiltrata" type="CodaXSocieta__mdt[]"/>
+    <aura:attribute name="codaSelezionata" type="CodaXSocieta__mdt"/>
+    <aura:attribute name="isLoading" type="Integer" default="0"/>
+    <aura:attribute name="codaTemp" type="CodaXSocieta__mdt"/>
+    <aura:attribute name="codaDettagli" type="String" description="Id dell'oggetto Coda"/>
+    <aura:attribute name="campiCase" type="Object"/>
+    
+    <aura:method name="refresh" action="{!c.init}"/>
+    
+     <aura:if isTrue="{!not(v.isLoading==0)}">
+            <lightning:spinner />
+        </aura:if>
+    
+
+    <aura:if isTrue="{!not(v.recordId == null)}">
+        
+        <lightning:select  aura:id="codaSelect" label="Coda:" value="{!v.codaTemp.DeveloperName}" onchange="{!c.changeQueue}">          
+            <aura:iteration items="{!v.listaCodeFiltrata}" var="coda">
+                <option value="{!coda.DeveloperName}">{!coda.Label}</option> 
+
+            </aura:iteration>
+        </lightning:select>
+        
+        <aura:set attribute="else">
+            
+        <lightning:select  aura:id="codaSelect" label="Coda:" value="{!v.codaSelezionata.DeveloperName}">          
+            <aura:iteration items="{!v.listaCodeFiltrata}" var="coda">
+                <option value="{!coda.DeveloperName}">{!coda.Label}</option> 
+            </aura:iteration>
+        </lightning:select>
+            
+        </aura:set>
+        
+    </aura:if>
+
+</aura:component>

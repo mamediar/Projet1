@@ -1,0 +1,37 @@
+.THIS .noHeader > header.slds-card__header{
+    display: none;
+    
+}
+
+.THIS .headerCard > div.slds-card__body{
+    padding-bottom:0px;
+    margin-bottom: 0px;
+    text-align: center;
+    align-self: center;
+    
+}
+
+.THIS .borderRow{
+    border: 1px solid rgb(0, 0, 0);
+    border-radius: 0.3rem;
+}
+
+.THIS .borderRowTopSides{
+    border-top: 1px solid rgb(0, 0, 0);
+    border-left: 1px solid rgb(0, 0, 0);
+    border-right: 1px solid rgb(0, 0, 0);
+    border-top-left-radius: 0.3rem;
+    border-top-right-radius: 0.3rem;
+}
+
+.THIS .borderRowBottomSides{
+    border-bottom: 1px solid rgb(0, 0, 0);
+    border-left: 1px solid rgb(0, 0, 0);
+    border-right: 1px solid rgb(0, 0, 0);
+    border-bottom-left-radius: 0.3rem;
+    border-bottom-right-radius: 0.3rem;
+}
+
+.THIS .fullHeightRow{
+    height: 100%;
+}

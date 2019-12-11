@@ -1,0 +1,21 @@
+<aura:component controller="LinkEvoController" implements="flexipage:availableForAllPageTypes">
+    
+    <aura:attribute name="evoUrl" type="String" />
+    
+    <aura:attribute name="task" type="String" default=""/>
+    <aura:attribute name="linkage" type="String" default="DEFAULT"/>
+    <aura:attribute name="urlritorno" type="String" default="closewindow"/>
+    <aura:attribute name="codiceCliente" type="String" default =""/>
+    <aura:attribute name="numeroPratica" type="String" default ="" />
+    <aura:attribute name="office" type="String" />
+    <aura:attribute name="infoPre" type="String" default=""/>
+    <aura:attribute name="infoPost" type="String" default=""/>
+    <aura:attribute name="force" type="boolean" default= "false" />
+    
+    <lightning:button aura:id="apriSchermataEVOButton"
+                      label="Apri schermata EVO"
+                      variant="destructive"
+                      onclick="{!c.navigate}"
+                      />
+    
+</aura:component>

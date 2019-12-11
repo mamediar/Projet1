@@ -1,0 +1,163 @@
+<aura:component controller="SFACommodityUploadCSVController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global">
+
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+
+    <aura:attribute name="tipologia_lista" type="List" access="PRIVATE"/>
+    <aura:attribute name="tipo_lista_selezionata" type="String" access="PRIVATE"/>
+    <aura:attribute name="tipologia_prodotti" type="List" access="PRIVATE"/>
+    <aura:attribute name="prodotto_selezionato" type="String" access="PRIVATE"/>
+    <aura:attribute name="fileToBeUploaded" type="Object[]"/>
+    <aura:attribute name="targetFileName" type="String"  description="Name of the file"/>
+    <aura:attribute name="filename" type="String" />
+    <aura:attribute name="timestamp" type="String" />
+    <aura:attribute name="fileContentData" type="String"/>    
+    <aura:attribute name="showUpload" type="Boolean" default="false"/>
+    <aura:attribute name="showMain" type="Boolean" default="false"/>
+    <aura:attribute name="showSectionError" type="Boolean" default="false"/>
+    <aura:attribute name="showConfirm" type="Boolean" default="false"/> 
+    <aura:attribute name="disableSelect" type="Boolean" default="false"/> 
+    <aura:attribute name="showSpinner" type="Boolean" default="false"/>    
+    <aura:attribute name="errorsRecords" type="Object[]"/>
+    <aura:attribute name="columnsError" type="List"/>
+    <aura:attribute name="msg" type="String" />
+    <aura:attribute name="errormsg" type="String" />
+    <aura:attribute name="tracciato" type="String" default=""/>
+    <aura:attribute name="numOK" type="Integer" default="0"/>
+    <aura:attribute name="numError" type="Integer" default="0"/>
+    <aura:attribute name="showModal" type="Boolean" default="false"/> 
+    <aura:attribute name="headerList" type="List" />  
+    <aura:attribute name="rowFieldList" type="Object[]" />  
+    
+    <lightning:notificationsLibrary aura:id="notifLib"/> 
+
+    <div class="slds-box slds-theme_default slds-m-bottom_small">
+  
+        <!-- SPINNER-->
+        <div style="max-height: fit-content;">
+                
+                    <aura:if isTrue="{!v.showSpinner}">
+                            <lightning:spinner alternativeText="Loading" size="large"/>
+                    </aura:if>        
+        </div>          
+              
+        <!-- BODY-->
+        <div class="slds-grid slds-wrap">
+            <div class="slds-form-element slds-col slds-size_5-of-12">
+                <div class="slds-form-element__control">
+                    <lightning:select aura:id="tipo_lista" name="tipo_lista" label="Tipo Lista: " onchange="{!c.selectedTipoFile}" disabled="{!v.disableSelect}">
+                        <option value="">Scegli...</option>
+                        <aura:iteration items="{!v.tipologia_lista}" var="option">
+                            <option text="{!option}" value="{!option}"/>
+                        </aura:iteration>
+                    </lightning:select>    
+                </div>
+            </div>
+        </div>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-form-element slds-col slds-size_5-of-12">
+                <div class="slds-form-element__control">
+                    <lightning:select aura:id="prodotto" name="prodotto" label="Prodotto: " onchange="{!c.selectedProdotto}" disabled="{!v.disableSelect}">
+                        <option value="">Scegli...</option>
+                        <aura:iteration items="{!v.tipologia_prodotti}" var="option">
+                            <option text="{!option}" value="{!option}"/>
+                        </aura:iteration>
+                    </lightning:select>    
+                </div>
+            </div>
+        </div>
+        <br/>
+        <div>
+            <aura:if isTrue="{!v.showUpload}">
+                <div class="slds-grid slds-wrap slds-col">
+                        <lightning:input aura:id="file-input" type="file"
+                                        files="{!v.fileToBeUploaded}"
+                                        onchange="{!c.onFileUploaded}"
+                                        accept=".csv"
+                                        label="File da caricare"
+                                        name="file" multiple="true"/>
+                </div>
+                <aura:if isTrue="{!v.showMain}">
+                    <ui:outputRichText class="uiOutputRichText slds-m-around--large" value="{!v.targetFileName}"/> 
+                    <div class="slds-p-around--large slds-align--absolute-center">
+                        <lightning:button label="Elabora" variant="brand" onclick="{!c.processFileContent}"
+                                        />
+                        <lightning:button label="Cancella" variant="brand" 
+                                        onclick="{!c.cancel}" /> 
+                    </div>
+                </aura:if>
+            </aura:if>  
+        </div> 
+
+        <br/>
+        <aura:if isTrue="{!v.showSectionError}">
+            <lightning:card>
+                <aura:set attribute="title">Verifica Records CSV&nbsp;&nbsp;&nbsp;{!v.tracciato}
+                </aura:set>
+                <lightning:layout multipleRows="true">
+                    <aura:if isTrue="{!not(empty(v.errorsRecords))}">
+                        <lightning:layoutItem padding="around-small" size="12">
+                                    <div style="height: 300px">
+                                        <lightning:datatable
+                                        aura:id="errorDataTable"
+                                        columns="{! v.columnsError }"
+                                        data="{! v.errorsRecords }"
+                                        keyField="Id"
+                                        onrowaction="{! c.handleRowAction  }"
+                                        hideCheckboxColumn="true" />
+                                    </div>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small" size="12">
+                                <span class="slds-p-horizontal_small">
+                                   <center>Record totali : <b>{!(v.numOK+v.numError)}</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Corretti : <b>{!v.numOK}</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Errati : <b>{!v.numError}</b></center> 
+                                </span>
+                        </lightning:layoutItem>
+                    </aura:if>
+                </lightning:layout>    
+                <aura:set attribute="footer">
+                    <aura:if isTrue="{!v.showConfirm}">
+                                 <button class="slds-button slds-button_success" onclick="{!c.confirm}">Conferma</button>
+                    </aura:if>  
+               </aura:set>
+        </lightning:card>
+        </aura:if>
+
+
+        <!-- MODAL DETTAGLIO RECORD-->
+        <aura:if isTrue="{!v.showModal}">
+
+
+                <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                         aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                    
+                    <div class="slds-modal__container">
+                        <header class="slds-modal__header slds-modal__header_empty">
+                        </header>
+                        <div class="slds-modal__content slds-p-around_medium scroll_detail_row" id="modal-content-id-1">   
+                            
+                            <table class="slds-table slds-table_bordered">
+                                    <aura:iteration items="{!v.rowFieldList}" var="itemRow" >
+                                            <tr class="slds-line-height_reset">
+                                            <td class="" scope="col">
+                                                <b>
+                                                    <div class="slds-truncate">{!itemRow.header}</div>
+                                                </b>
+                                            </td>
+                                            <td class="" scope="col">
+                                                    <div class="slds-truncate">{!itemRow.row}</div>
+                                            </td>
+                                    </tr>
+                                </aura:iteration>
+                                </table>
+                        </div>
+                        <footer class="slds-modal__footer">
+                                <button class="slds-button slds-button_neutral" onclick="{!c.closeModal}">Chiudi</button>
+                        </footer>
+                     </div>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open"></div>    
+        
+        </aura:if>
+
+    </div> 
+       
+</aura:component>

@@ -1,0 +1,61 @@
+<aura:component controller="RecuperaEstrattoContoPDFcontroller" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+    <aura:attribute name="annoCor" type="String" />
+    <aura:attribute name="meseCor" type="String" />
+    <aura:attribute name="spinner" type="boolean" default="false"/>
+    <aura:attribute name="codCliente" type="String" />
+    <aura:attribute name="numeroPratica" type="String" />
+    <aura:attribute name="anno" type="String" default="{!v.annoCor}"/>
+    <aura:attribute name="mese" type="String" default="{!v.meseCor}"/> 
+    <aura:attribute name="NameFile" type="String" />
+    <aura:attribute name="UrlPdf" type="String" />
+    <aura:attribute name="Pdfavailable" type="boolean" default="false"/>
+    
+    <aura:if isTrue="{!v.spinner}">
+        <div aura:id="spinnerId" class="slds-spinner_container">
+            <div class="slds-spinner slds-spinner_large slds-is-relative" >
+                <span class="slds-assistive-text">Loading...</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </aura:if>
+    
+    <lightning:card title="Recupera Estratto Conto">   
+        <lightning:layout horizontalAlign="center" >
+            
+            <lightning:layoutItem padding="around-small">
+                <label>Codice Cliente:</label>
+                <ui:inputText value="{!v.codCliente}" size="2" placeholder="" required="true"/>
+                <label>Numero Pratica:</label>
+                <ui:inputText value="{!v.numeroPratica}" size="2" placeholder="" required="true"/>
+            </lightning:layoutItem>
+            
+            <lightning:layoutItem padding="around-small">
+                <label>Anno:</label>
+                <ui:inputText value="{!v.anno}" size="1" placeholder="" required="true"/>
+                <label>Mese:</label>
+                <ui:inputText value="{!v.mese}" size="1" placeholder=""  required="true"/>
+            </lightning:layoutItem> 
+            
+        </lightning:layout>
+        <aura:set attribute="footer">            
+            <div class="col-md-4 text-center">
+                <div class="col-md-4 text-center">
+                    <lightning:button label="Annulla" />
+                    <lightning:button label="Recupera Estratto Conto" onclick="{!c.recuperaEstrattoConto}" />
+                </div>
+            </div>           
+        </aura:set> 
+        
+        <lightning:layout horizontalAlign="center">
+            <aura:if isTrue="{!v.Pdfavailable}">
+                <lightning:layoutItem padding="around-small" class="custom-box">
+                	<a download="{!v.NameFile}" href="{!v.UrlPdf}">Download PDF - {!v.NameFile}</a>
+                </lightning:layoutItem>
+            </aura:if>
+        </lightning:layout>
+    </lightning:card>
+      
+</aura:component>

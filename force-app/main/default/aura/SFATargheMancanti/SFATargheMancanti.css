@@ -1,0 +1,15 @@
+.THIS .slds-file-selector__dropzone .slds-file-selector__text{ 
+    display: none;
+}
+.THIS .slds-file-selector__dropzone{ 
+    border: none;
+}
+
+.THIS .messaggioDiCortesia {
+    text-align: center;
+    font-size: 16pt;
+}
+
+.THIS .centraComponent {
+    height: 6000px;
+}

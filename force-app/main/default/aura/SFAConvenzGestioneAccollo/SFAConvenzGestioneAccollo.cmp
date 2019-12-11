@@ -1,0 +1,243 @@
+<aura:component controller="SFAConvenzGestioneAccolloController" implements="force:hasRecordId,force:hasSObjectName,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes">
+	<aura:attribute name="recordId" type="String" />
+    <aura:attribute name="sObjectName" type="String" />
+    <aura:attribute name="dossier" type="Dossier__c" />
+    <aura:attribute name="dealerId" type="String" />
+    <aura:attribute name="dealerMasterId" type="String" />
+    <aura:attribute name="tipoQuestionario" type="String" /> 
+    <aura:attribute name="dossierURL" type="String"/> 
+
+    <aura:attribute name="lstDossierDocumentoObbligatori" type="List"/> 
+    <aura:attribute name="lstTipoAccollo" type="List" />
+    <aura:attribute name="lstDossierDocumentoAddizionali" type="List"/>
+    <aura:attribute name="mapIdRispostaDocumentoAddizionali" type="Map"/>
+
+    <aura:attribute name="messageNonLavorazione" type="String"/> 
+    <aura:attribute name="isInManoAFiliale" type="Boolean" default="true"/>
+
+    <aura:attribute name="updateStepLavorazioneData" type="Object"/>
+
+    <aura:attribute name="lstSelectedRowsObbligatori" type="List"/>
+    <aura:attribute name="lstSelectedRowsAddizionali" type="List"/>
+    
+     <aura:attribute name="lstSelectedTipoAccollo" type="List"/>
+    <aura:attribute name="lstSelectedRowsAddizionali2" type="List"/>
+    
+    <aura:attribute name="showButtonAvvisaIDM" type="Boolean" default="false"/>   
+
+    <aura:attribute name="note" type="String"/> 
+
+    <aura:attribute name="spinnerCounter" type="Integer" default="0"/>
+
+    <aura:attribute name="columnsObbligatori" type="List"
+      default='[{"label": "Nome documento", "fieldName": "Document__c", "type": "text"}]'
+
+    />
+
+    <aura:attribute name="columnsAddizionali" type="List"
+      default='[{"label": "Nome documento", "fieldName": "Document__c", "type": "text"}]'
+
+    />
+	<aura:attribute name="columnsTipologia" type="List"
+      default='[{"label": "Tipologia", "fieldName": "Accollo_Type_Desc_Abrev__c", "type": "text"}]'
+
+    />
+    <aura:attribute name="errorCode" type="Integer" />
+
+    <aura:attribute name="step" type="String" />
+
+    <aura:attribute name="url" type="String"/>
+    <aura:attribute name="pageReference" type="Object"/>
+    <lightning:navigation aura:id="navService"/>
+
+    <aura:handler name="init" value="{! this }" action="{! c.doInit }"/>
+
+    <c:SpinnerComponent aura:id="spinnerComponent" spinnerCounter="{!v.spinnerCounter}"/>
+
+    <aura:if isTrue="{!v.isInManoAFiliale}">
+
+        <aura:if isTrue="{!v.errorCode == -1}">
+            <div>Completare su ocs il convenzionamento del dealer e procedere con l’attivazione. <br/>A seguito dell’attivazione andare in Activity List e gestire l’attività di gestione Dossier che il sistema ha generato in automatico.
+            </div>
+        </aura:if>
+
+        <aura:if isTrue="{!v.errorCode == -2}">
+            <div>E' necessario inserire un accollo.
+            </div>
+        </aura:if>
+
+        <aura:if isTrue="{!v.errorCode == -3}">
+            <div>Per i punti vendita è necessario creare un accollo. Aprire un ticket agli uffici di sede per la chiusura dell'attività SFA.
+            </div>
+ 
+       </aura:if>
+       
+            
+        	<div class="slds-m-top_medium slds-m-bottom_medium"><b>GESTIONE ACCOLLO </b></div>
+		
+        	<div class="slds-grid slds-gutters">
+            	<div class="slds-col slds-size_4-of-12 tx-right"><span class="label"><b>Dati Anagrafici Dealer:</b></span>
+				<div>
+                	<lightning:recordViewForm recordId="{!v.dealerId}" objectApiName="Account" >  <!--onload="{!c.recordLoaded}"-->
+                    <lightning:layout horizontalAlign="spread" multipleRows="true">
+            
+                            <label for="ragioneSociale" class="slds-form-element__label slds-no-flex">Ragione Sociale</label>
+                        <lightning:layoutItem flexibility="grow" size="12">
+                            <lightning:outputField aura:id="ragioneSociale" fieldName="Name" disabled="true" variant="label-hidden"/>
+                        </lightning:layoutItem>
+
+                        <label for="OCS_External_Id__c" class="slds-form-element__label slds-no-flex">Codice OCS</label>
+                        <lightning:layoutItem flexibility="grow" size="12">
+                            <lightning:outputField aura:id="OCS_External_Id" fieldName="OCS_External_Id__c" disabled="true" variant="label-hidden"/>
+                        </lightning:layoutItem>                                            
+                        
+                        
+                        <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                            <lightning:outputField aura:id="Partita_IVA__c" fieldName="Partita_IVA__c"/>
+                        </lightning:layoutItem>
+ 
+                    </lightning:layout>
+                	</lightning:recordViewForm>
+				</div>           
+            	</div>
+                <aura:if isTrue="{!v.tipoQuestionario=='PV'}">
+            		<div class="slds-col slds-size_4-of-12 tx-left"><span class="label"><b>Dati Anagrafici Master:</b></span>
+            		<div> 
+              			<lightning:recordViewForm recordId="{!v.dealerMasterId}" objectApiName="Account" >  <!--onload="{!c.recordLoaded}"-->
+                        <lightning:layout horizontalAlign="spread" multipleRows="true">
+            
+                       	 	<label for="ragioneSociale" class="slds-form-element__label slds-no-flex">Ragione Sociale</label>
+                        	<lightning:layoutItem flexibility="grow" size="12">
+                            	<lightning:outputField aura:id="ragioneSociale" fieldName="Name" disabled="true" variant="label-hidden"/>
+                        	</lightning:layoutItem>
+
+                        	<label for="OCS_External_Id__c" class="slds-form-element__label slds-no-flex">Codice OCS</label>
+                        	<lightning:layoutItem flexibility="grow" size="12">
+                           	 	<lightning:outputField aura:id="OCS_External_Id" fieldName="OCS_External_Id__c" disabled="true" variant="label-hidden"/>
+                                </lightning:layoutItem>                                            
+                        	
+                        	<lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                            	<lightning:outputField aura:id="Partita_IVA__c" fieldName="Partita_IVA__c"/>
+                        	</lightning:layoutItem>
+
+                    	</lightning:layout>
+                		</lightning:recordViewForm>
+        			</div>
+                	</div> 
+            </aura:if>      
+            <div class="slds-col slds-size_4-of-12"></div> <!-- colonna spazio  -->
+        </div> 
+  <aura:if isTrue="{!v.step == 'GestioneAccolloDealer_DocumentiObbligatori'}">
+		<div class="slds-col slds-size_6-of-12">     
+        <div class="slds-m-top_medium slds-m-bottom_medium"><b>Tipi di Accollo </b></div>
+
+    	   <lightning:datatable 
+                    aura:id="listaTipoAccollo"
+                    resizeColumnDisabled = "false"
+                    isLoading = "false"
+                    keyField="Id"
+                    data="{! v.lstTipoAccollo }"
+                    columns="{! v.columnsTipologia }"
+                    onrowselection="{! c.handleRowSelectionTipoAccollo}"
+                    hideCheckboxColumn="false"
+                    selectedRows="{!v.lstSelectedTipoAccollo}"
+                />
+        
+         <div class="slds-m-top_large">Verificare e selezionare i documenti dei quali si è in possesso.</div>
+
+                <div class="slds-m-top_large slds-m-bottom_large"><b>Documenti Obbligatori</b></div>
+
+                <lightning:datatable 
+                    aura:id="listaDocumentoObbligatori"
+                    resizeColumnDisabled = "false"
+                    isLoading = "false"
+                    keyField="Id"
+                    data="{! v.lstDossierDocumentoObbligatori }"
+                    columns="{! v.columnsObbligatori }"
+                    onrowselection="{! c.handleRowSelectionObbligatori }"
+                    hideCheckboxColumn="false"
+                    selectedRows="{!v.lstSelectedRowsObbligatori}"
+                />
+                
+				<div class="slds-m-top_large slds-m-bottom_large"><b>Documenti Addizionali</b></div>            
+				
+            <lightning:datatable 
+                aura:id="listaDocumentoAddizionali"
+                resizeColumnDisabled = "false"
+                isLoading = "false"
+                keyField="Id"
+                data="{! v.lstDossierDocumentoAddizionali }"
+                columns="{! v.columnsAddizionali }"
+                onrowselection="{! c.handleRowSelectionAddizionali }"              
+                hideCheckboxColumn="False"
+                selectedRows="{!v.lstSelectedRowsAddizionali}"
+            />
+            <lightning:button class="slds-button slds-button_brand buttonPage slds-m-top_large" onclick="{!c.handleSalvaSelezioneObbligatori}" label="Salva Modifiche" />
+            <lightning:button class="slds-button slds-button_brand buttonPage slds-m-top_large" onclick="{!c.handleProcedi}" label="Procedi >>" />
+     		<lightning:button class="slds-button slds-button_brand buttonPage slds-m-top_large" onclick="{!c.actionButtonAnnulla}" label="Annulla" />  
+    </div> 
+       </aura:if>
+
+ 		<aura:if isTrue="{!v.step == 'GestioneAccolloDealer_RiepilogoDocumentiMancanti'}">
+            <div>
+                
+            <div class="slds-m-top_medium slds-m-bottom_medium"><b>Esito:</b></div>   
+            <div class="slds-m-top_medium slds-m-bottom_medium">Dealer Accollo Incompleto</div>
+                <br/>
+                <aura:if isTrue="{!not(empty(v.updateStepLavorazioneData.lstDocumentoObbligatori))}">
+                    <div class="slds-m-top_medium slds-m-bottom_xx-small"><b>Documenti obbligatori mancanti:</b></div>
+                    <aura:iteration items="{!v.updateStepLavorazioneData.lstDocumentoObbligatori}" var="docObb">
+                        <div>{!docObb.Document__c}</div>
+                    </aura:iteration>
+                </aura:if>
+
+                <aura:if isTrue="{!not(empty(v.updateStepLavorazioneData.lstDocumentoAddizionali))}">
+                    <div class="slds-m-top_medium slds-m-bottom_xx-small"><b>Domande aggiuntive non risposte</b></div>
+                    <aura:iteration items="{!v.updateStepLavorazioneData.lstDocumentoAddizionali}" var="docAgg">
+                        <div>{!docAgg.Document__c}</div>
+                    </aura:iteration>
+                </aura:if>
+            </div>
+            <br/>
+            <div class="slds-m-top_large slds-m-bottom_medium">Procedi per completare il Accollo in un secondo momento. Oppure Premi Indietro per tornare alla selezione documenti</div>
+            <lightning:button class="slds-button slds-button_brand buttonPage" label="Indietro" onclick="{!c.handleTornaAdObbligatori}"/>
+            <lightning:button class="slds-button slds-button_brand buttonPage" label="Procedi >>" onclick="{!c.handleProcediToListaCase}"/>
+            <lightning:button class="slds-button slds-button_brand buttonPage" label="Annulla" onclick="{!c.actionButtonAnnulla}"/>  
+            
+
+        </aura:if>
+            <aura:if isTrue="{!v.step == 'GestioneAccolloDealer_StampaCover'}">
+
+            <div class="slds-m-top_medium slds-m-bottom_medium"><b>Esito:</b></div>   
+            <div class="slds-m-top_medium slds-m-bottom_medium">Dealer Accollo Completo</div>
+
+            <div class="slds-m-top_large slds-m-bottom_large">
+                <a id="a" href="{!v.dossierURL}" target="_blank">
+                    <lightning:button aura:id="dossierButton"
+                                    label="Visualizza Cover Accollo" 
+                                    title="Visualizza Cover Accollo" 
+                                    class="slds-button slds-button_brand buttonPage slds-m-top_large"
+                                    />
+                </a>
+             </div>
+                
+             <lightning:button class="slds-button slds-button_brand buttonPage" label="Indietro" onclick="{!c.handleTornaAdObbligatori}"/>
+             <lightning:button class="slds-button slds-button_brand buttonPage" onclick="{!c.handleAssignToIDM}" label="Invia a IDM" />
+             <lightning:button class="slds-button slds-button_brand buttonPage"  onclick="{!c.actionButtonAnnulla}" label="Annulla" />     
+             <aura:if isTrue="{!v.showButtonAvvisaIDM}">
+                 <br></br>
+                 <lightning:button class="slds-button slds-button_brand buttonPage slds-m-top_large" onclick="{!c.handleSendToIDM}" label="Avvisa IDM: nessuna documentazione in spedizione" />
+              </aura:if>
+              
+			
+           
+            
+			
+        </aura:if>
+
+    <aura:set attribute="else">
+            <ui:outputText value="{!v.messageNonLavorazione}"/> 
+    </aura:set>
+
+    </aura:if>
+</aura:component>

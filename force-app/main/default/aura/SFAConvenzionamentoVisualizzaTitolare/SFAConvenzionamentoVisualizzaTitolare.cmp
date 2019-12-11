@@ -1,0 +1,76 @@
+<aura:component controller="SFAConvenz_NDA_VisualizTitolareCtroller" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes,forceCommunity:searchInterface" access="global">
+
+    
+<aura:attribute name="recordId" type="String" /> 
+<aura:attribute name="titolareId" type="String"/> 
+    
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+    <aura:registerEvent name="ChangeCaseStepEvent" type="c:ChangeCaseStepEvent"/>
+    
+    <lightning:card variant="Narrow" title="Informazioni del Titolare" iconName="standard:contact" footer=" ">
+        <p class="slds-p-horizontal_small">    
+   			 <lightning:recordEditForm aura:id="FormTitolare" recordId="{! v.titolareId}" objectApiName="Contact" onerror="{!c.handleError}" >                         
+        		<lightning:layout horizontalAlign="spread" multipleRows="true">
+            
+                    <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                        <lightning:outputField aura:id="LastName" fieldName="LastName"/>
+                    </lightning:layoutItem>                                        
+                    
+                    <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                        <lightning:outputField aura:id="FirstName" fieldName="FirstName" />
+                    </lightning:layoutItem>   
+                    
+                    <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                        <lightning:outputField aura:id="Codice_Fiscale__c" fieldName="Codice_Fiscale__c" />
+                    </lightning:layoutItem>                             
+                    
+                    <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                        <lightning:outputField aura:id="Birthdate" fieldName="Birthdate" />
+                    </lightning:layoutItem>   
+                    
+                    <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                        <lightning:outputField aura:id="Provincia_Nascita__c" fieldName="Provincia_Nascita__c" />
+                    </lightning:layoutItem> 
+                    
+                    <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                        <lightning:outputField aura:id="Luogo_Nascita__c" fieldName="Luogo_Nascita__c" />
+                    </lightning:layoutItem>                                                        
+                    
+                    <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                        <lightning:outputField aura:id="Sesso__c" fieldName="Sesso__c" />
+                    </lightning:layoutItem> 
+                    
+                    <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                        <lightning:outputField aura:id="Email" fieldName="Email" />
+                    </lightning:layoutItem>                                                                                
+                    
+                    <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="12">
+                        <lightning:outputField aura:id="MailingAddress" fieldName="MailingAddress" />
+                    </lightning:layoutItem>            
+                   
+
+                    <lightning:layout multipleRows="true">
+                            <lightning:layoutItem size="" padding="around-small"  class="slds-p-left_none"> 
+                        <c:SFAConvenzionamentoBottoniAvantiIndietro isBottoneAvantiVisible="false"
+                                                                    newStepIndietro="NewDealerAcquisition_InteseEDocumenti"   
+                                                                    recordId="{!v.recordId}"/>                                 
+                        	</lightning:layoutItem>
+                            <lightning:layoutItem size="1" padding="around-small" class="slds-p-left_none"> 
+                            <lightning:button label="Avanti"
+                                              variant="destructive"
+                                              class="slds-m-top_medium"
+                                              onclick="{!c.actionButtonAvanti}"/>                                  
+                        	</lightning:layoutItem>
+            		</lightning:layout>                     
+            
+                       
+            
+                </lightning:layout>                                                                                                                    
+            </lightning:recordEditForm>    
+        </p>
+    </lightning:card>
+    
+    
+    
+	
+</aura:component>

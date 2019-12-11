@@ -1,0 +1,56 @@
+<aura:component controller="InvioLottiController" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens">
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="lotList" type="SFALotto__c[]"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="selectedRows" type="SFALotto__c[]" />
+    <aura:attribute name="errorFlag" type="Boolean" default="false" />
+    <aura:attribute name="selectedIds" type="SFALotto__c[]"/>
+    <aura:attribute name="showFooter" type="Boolean" default="true" />
+    <aura:attribute name="showList" type="Boolean" default="false" />
+    <aura:attribute name="isListEmpty" type="Boolean" default="true" />
+    <aura:attribute name="closeCase" type="Boolean" default="false" />
+    <aura:attribute name="isButtonDisabled" type="Boolean" default="true" />
+    <aura:attribute name="textValue" type="String" default=""/>
+    <aura:attribute name="loaded" type="Boolean" default="false"/>
+    
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    <aura:handler name="barCodeEvent" event="c:BarCodeReady" action="{!c.checkIsIn}"/>
+    
+    <aura:if isTrue="{!v.loaded}">
+        <c:BarCode placeholder="Scannerizza il barcode di un lotto da inviare"
+                   length="18"
+                   label="Barcode:"
+                   inputIdContract="{!v.textValue}"
+                   />
+        
+        <aura:if isTrue="{!v.errorFlag}">
+            <ui:message title="Attenzione" severity="warning" closable="false">
+                Il Barcode inserito non corrisponde ad alcun lotto da inviare.
+            </ui:message>
+        </aura:if>
+        
+        <aura:if isTrue="{!v.showList}">
+            <div class="slds-m-top_xx-small">
+                <lightning:datatable
+                                     keyField="Id"
+                                     sortBy="OCSLottoId__c"
+                                     sortDirection="asc"
+                                     data="{!v.lotList }"
+                                     columns="{! v.columns }"
+                                     resizeColumnDisabled="true"
+                                     selectedRows="{!v.selectedIds}"
+                                     onrowselection="{!c.updateSelectedRows}"
+                                     />
+            </div>
+        </aura:if>
+        <div class="button_container">
+            <lightning:button aura:id="NEXT" label="Avanti"
+                              variant="brand" onclick="{!c.navigateFlow}"
+                              disabled="{!v.isButtonDisabled}" class="slds-m-top--small next "
+                              />
+        </div>
+        <aura:set attribute="else">
+        	<lightning:spinner alternativeText="Loading" size="medium"/>
+        </aura:set>
+    </aura:if>
+</aura:component>

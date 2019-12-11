@@ -1,0 +1,117 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" 
+                access="global" 
+                >
+	
+    <aura:attribute name="praticaSelezionata" type="Object"/>
+
+    <div style="margin-left:15px;margin-right:15px;">
+        
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col">
+                    <lightning:input label="Data Contratto (Sottoscrizione):"
+                    value="{!v.praticaSelezionata.dataContratto}"
+                    readonly="true"
+                    />
+            </div>
+            <div class="slds-col">
+                    <lightning:input label="Data Estinzione Anticipata:"
+                    value="{!v.praticaSelezionata.dataEstinzioneAnticipata}"
+                    readonly="true"
+                    />
+            </div>
+            <div class="slds-col">
+                    <lightning:input label="ATC:"
+                    value="{!v.praticaSelezionata.aziendaRagSoc}"
+                    readonly="true"
+                    />
+            </div>
+        </div>
+
+        <hr style="margin:0%"></hr>
+
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col">
+                    <lightning:input label="Agente:"
+                    value="{!v.praticaSelezionata.agenteCod+' '+v.praticaSelezionata.agenteRagSoc}"
+                    readonly="true"
+                    />
+            </div>
+            <div class="slds-col">
+                    <lightning:input label="Subagente:"
+                    value="{!v.praticaSelezionata.subAgenteCod+' '+v.praticaSelezionata.subAgenteRagSoc}"
+                    readonly="true"
+                    />
+            </div>
+            <div class="slds-col">
+                    <lightning:input label="Banca Segnalatrice:"
+                    value="{!v.praticaSelezionata.bancaCod+' '+v.praticaSelezionata.bancaRagSoc}"
+                    readonly="true"
+                    />
+            </div>
+        </div>
+
+        <hr style="margin:0%"></hr>
+
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col">
+                    <lightning:input label="Filiale Segnalatrice:"
+                    value="{!v.praticaSelezionata.filBancaCod+' '+v.praticaSelezionata.filBancaRagSoc}"
+                    readonly="true"
+                    />
+            </div>
+            <div class="slds-col">
+                    <lightning:input label="Assicurazione Impiego/Pensione:"
+                    value="{!v.praticaSelezionata.assicImpiegoRagSoc}"
+                    readonly="true"
+                    />
+            </div>
+            <div class="slds-col">
+                    <lightning:input label="Assicurazione Vita:"
+                    value="{!v.praticaSelezionata.assicVitaRagSoc}"
+                    readonly="true"
+                    />
+            </div>
+        </div>
+        <hr style="margin:0%"></hr>
+    </div>
+
+
+    <!--
+    <lightning:input label="Data Contratto (Sottoscrizione):"
+                     value="{!v.praticaSelezionata.dataContratto}"
+                     readonly="true"
+                     />
+    <lightning:input label="Data Estinzione Anticipata:"
+                     value="{!v.praticaSelezionata.dataEstinzioneAnticipata}"
+                     readonly="true"
+                     />
+    <lightning:input label="ATC:"
+                     value="{!v.praticaSelezionata.aziendaRagSoc}"
+                     readonly="true"
+                     />
+    <lightning:input label="Agente:"
+                     value="{!v.praticaSelezionata.agenteCod+' '+v.praticaSelezionata.agenteRagSoc}"
+                     readonly="true"
+                     />
+    <lightning:input label="Subagente:"
+                     value="{!v.praticaSelezionata.subAgenteCod+' '+v.praticaSelezionata.subAgenteRagSoc}"
+                     readonly="true"
+                     />
+    <lightning:input label="Banca Segnalatrice:"
+                     value="{!v.praticaSelezionata.bancaCod+' '+v.praticaSelezionata.bancaRagSoc}"
+                     readonly="true"
+                     />
+    <lightning:input label="Filiale Segnalatrice:"
+                     value="{!v.praticaSelezionata.filBancaCod+' '+v.praticaSelezionata.filBancaRagSoc}"
+                     readonly="true"
+                     />
+    <lightning:input label="Assicurazione Impiego/Pensione:"
+                     value="{!v.praticaSelezionata.assicImpiegoCod+' '+v.praticaSelezionata.assicImpiegoRagSoc}"
+                     readonly="true"
+                     />
+    <lightning:input label="Assicurazione Vita:"
+                     value="{!v.praticaSelezionata.assicVitaCod+' '+v.praticaSelezionata.assicVitaRagSoc}"
+                     readonly="true"
+                     />
+    -->
+</aura:component>

@@ -1,0 +1,8 @@
+<design:component>
+    <!-- INPUT -->
+    <design:attribute name="recordId" label="Record ID" />
+    
+    <!-- OUTPUT -->
+    <design:attribute name="contractList"  label="Lista Contratti" />
+    <design:attribute name="emptyList"  label="Lista Vuota" />
+</design:component>

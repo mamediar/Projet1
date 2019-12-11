@@ -1,0 +1,6 @@
+.THIS.noStandardHeaderCustomTab{
+    top: -90px;
+}
+.THIS.noHeader>header{
+     display: none;
+}

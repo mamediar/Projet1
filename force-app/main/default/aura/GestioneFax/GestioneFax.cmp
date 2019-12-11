@@ -1,0 +1,4 @@
+<aura:component implements="force:hasRecordId,flexipage:availableForAllPageTypes">
+    <aura:attribute name="recordId" type="String" />
+    <c:GestioneFaxPrelavorazione recordId="{!v.recordId}"/>
+</aura:component>

@@ -1,0 +1,266 @@
+<aura:component controller="GD_RicercaPerNominativo" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global">
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" />
+    <aura:attribute name="searchText" type="String" default="" />
+    <aura:attribute name="stato" type="String" default="" />
+    <aura:attribute name="note" type="String" default="" />
+    <aura:attribute name="showPopup" type="Boolean" default="false" />
+    <aura:attribute name="showDetail" type="Boolean" default="false" />
+    <aura:attribute name="courses" type="IVASS_Dealer_Courses__c[]" default="[]" />
+    <aura:attribute name="allStatus" type="List" default="" />
+    <aura:attribute name="iscritto" type="IVASS_Dealer_courses_Iscritti__c" default="" />
+    <aura:attribute name="results" type="IVASS_Dealer_courses_Iscritti__c[]" default="[]" />
+    <aura:attribute name="allResults" type="IVASS_Dealer_courses_Iscritti__c[]" default="[]" />
+    <aura:attribute name="listToProcess" type="IVASS_Dealer_courses_Iscritti__c[]" default="[]" />
+
+    <lightning:card title="Inserire il codice Referente per visualizzare tutti i corsi à cui è attualmente iscritto">
+        <div class="slds-m-bottom_x-small slds-p-left_x-small slds-p-right_x-small slds-p-top_small">
+            <lightning:layout>
+                <lightning:layoutItem padding="around-small" size="6">
+                    <div class="slds-form-element slds-lookup" data-select="single">
+                        <div class="slds-form-element__control">
+                            <div class="slds-input-has-icon slds-input-has-icon--right">
+                                <lightning:buttonIcon iconName="utility:search" variant="bare" onclick="{! c.handleClick }" alternativeText="Search" class="slds-input__icon" />
+                                <ui:inputText value="{!v.searchText}" class="slds-lookup__search-input slds-input" placeholder="Search" />
+                            </div>
+                        </div>
+                    </div>
+                </lightning:layoutItem>
+                <lightning:layoutItem padding="around-small" size="6">
+                    <lightning:button aura:id="eliminata" onclick="{!c.filterEliminata}" variant="brand" label="Visualizza Eliminata" disabled="true" />
+                    <lightning:button aura:id="tutti" onclick="{!c.filterAll}" variant="success" label="Visualizza Tutti" disabled="true" />
+                </lightning:layoutItem>
+            </lightning:layout>
+        </div>
+    </lightning:card>
+    <lightning:card title="Risultati di ricerca">
+        <div class="slds-m-bottom_x-small slds-p-left_x-small slds-p-right_x-small slds-p-top_small">
+            <div class="slds-scrollable_y slds-scrollable--x">
+                <table aria-multiselectable="true" class="slds-table slds-table--bordered slds-table--cell-buffer slds-max-medium-table--stacked-horizontal">
+                    <thead>
+                        <tr class="slds-text-heading--label">
+                            <th scope="row" class="slds-text-align_right" style="width:3.25rem;">
+                                <div class="slds-form-element">
+                                    <div class="slds-form-element__control">
+                                        <label class="slds-checkbox">
+                                            <ui:inputCheckbox text="" change="{!c.selectAllCheckbox}" aura:id="checkAll"/>
+                                            <span class="slds-checkbox_faux"></span>
+                                            <span class="slds-form-element__label text"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </th>
+                            <th scope="col" class="nobordertop">
+                                <span class="slds-truncate"> Regione</span>
+                            </th>
+                            <th scope="col" class="nobordertop">
+                                <span class="slds-truncate"> Area</span>
+                            </th>
+                            <th scope="col" class="nobordertop">
+                                <span class="slds-truncate"> Filiale</span>
+                            </th>
+                            <th scope="col" class="nobordertop">
+                                <span class="slds-truncate"> Cod. Intermediario</span>
+                            </th>
+                            <th scope="col" class="nobordertop">
+                                <span class="slds-truncate"> Rag. Soc.</span>
+                            </th>
+                            <th scope="col" class="nobordertop">
+                                <span class="slds-truncate"> Cod. Referente</span>
+                            </th>
+                            <th scope="col" class="nobordertop">
+                                <span class="slds-truncate"> Cognome</span>
+                            </th>
+                            <th scope="col" class="nobordertop">
+                                <span class="slds-truncate"> Nome</span>
+                            </th>
+                            <th scope="col" class="nobordertop">
+                                <span class="slds-truncate"> CF</span>
+                            </th>
+                            <th scope="col" class="nobordertop">
+                                <span class="slds-truncate"> Corso</span>
+                            </th>
+                            <th scope="col" class="nobordertop">
+                                <span class="slds-truncate"> Cod. Assofin</span>
+                            </th>
+                            <th scope="col" class="nobordertop">
+                                <span class="slds-truncate"> Data Iscrizione</span>
+                            </th>
+                            <th scope="col" class="nobordertop">
+                                <span class="slds-truncate"> Stato Corso</span>
+                            </th>
+                            <th scope="col" class="nobordertop">
+                                <span class="slds-truncate"> Note</span>
+                            </th>
+                            <th scope="col" class="nobordertop">
+                                <span class="slds-truncate"> Esito Outsoucer</span>
+                            </th>
+                            <th scope="col" class="nobordertop">
+                                <span class="slds-truncate"> Note x Outsoucer</span>
+                            </th>
+                            <th scope="col" class="nobordertop">
+                                <span class="slds-truncate"> Tempo totale</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <aura:iteration items="{!v.results}" var="result" indexVar="index">
+                            <tr aria-selected="false" class="slds-hint-parent">
+                                <th scope="row" class="slds-text-align_right" style="width:3.25rem;">
+                                    <div class="slds-form-element">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-checkbox" data-index="{!index}">
+                                                <ui:inputCheckbox change="{!c.checkboxSelect}" aura:id="selectAll" text="{!index}"/>
+                                                <span class="slds-checkbox_faux"></span>
+                                                <span class="slds-form-element__label text"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </th>
+
+                                <th scope="row">
+                                    <div class="slds-truncate"> {!result.Regione__c}</div>
+                                </th>
+                                <th scope="row">
+                                    <div class="slds-truncate"> {!result.Area__c}</div>
+                                </th>
+                                <th scope="row">
+                                    <div class="slds-truncate"> {!result.Filiale__c}</div>
+                                </th>
+                                <th scope="row">
+                                    <div class="slds-truncate"> {!result.Codice_Intermediario__c}</div>
+                                </th>
+                                <th scope="row">
+                                    <div class="slds-truncate"> {!result.Ragione_Sociale__c}</div>
+                                </th>
+                                <th scope="row">
+                                    <div class="slds-truncate"> {!result.Name}</div>
+                                </th>
+                                <th scope="row">
+                                    <div class="slds-truncate"> {!result.Cognome__c}</div>
+                                </th>
+                                <th scope="row">
+                                    <div class="slds-truncate"> {!result.Nome__c}</div>
+                                </th>
+                                <th scope="row">
+                                    <div class="slds-truncate"> {!result.Codice_Fiscale__c}</div>
+                                </th>
+                                <th scope="row">
+                                    <div class="slds-truncate"> {!result.Corso__r.Name}</div>
+                                </th>
+                                <th scope="row">
+                                    <div class="slds-truncate"> {!result.Corso__r.Codice_Assofin__c}</div>
+                                </th>
+                                <th scope="row">
+                                    <div class="slds-truncate"> {!result.Data_Iscrizione__c}</div>
+                                </th>
+                                <th scope="row">
+                                    <div class="slds-truncate"> {!result.Stato_Corso__c}</div>
+                                </th>
+                                <th scope="row">
+                                    <div class="slds-truncate"> {!result.Note__c}</div>
+                                </th>
+                                <th scope="row">
+                                    <div class="slds-truncate"> {!result.Esito_Outsourcer__c}</div>
+                                </th>
+                                <th scope="row">
+                                    <div class="slds-truncate"> {!result.Note_x_Outsourcer__c}</div>
+                                </th>
+                                <th scope="row">
+                                    <div class="slds-truncate"> Total</div>
+                                </th>
+
+                            </tr>
+                        </aura:iteration>
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </lightning:card>
+    <lightning:card>
+        <div class="slds-m-bottom_x-small slds-p-left_x-small slds-p-right_x-small">
+
+            <lightning:layout>
+                <lightning:layoutItem padding="around-small" size="4">
+                    <lightning:button label="Crea Report" iconName="doctype:excel" disabled="true" aura:id="btnReport" class="slds-button slds-button_success" onclick="{!c.downloadCsv}" />
+                </lightning:layoutItem>
+                <lightning:layoutItem padding="around-small" size="4">
+                    <lightning:select disabled="true" aura:id="select" class="label-hidden" name="select" variant="label-hidden" onchange="{! c.onChange }">
+                        <option text="Seleziona uno stato" value="" disabled="true" />
+                        <aura:iteration items="{!v.allStatus}" var="option">
+                            <option text="{!option}" value="{!option}" />
+                        </aura:iteration>
+                    </lightning:select>
+                </lightning:layoutItem>
+                <lightning:layoutItem padding="around-small" size="4">
+                    <lightning:button label="Conferma Esito" disabled="true" aura:id="btnConferma" class="slds-button slds-button_success" onclick="{!c.confermaEsito}" />
+                    <lightning:button label="Modifica Anagrafica" disabled="true" aura:id="btnModifica" class="slds-button slds-button_brand" onclick="{!c.modifica}" />
+                </lightning:layoutItem>
+            </lightning:layout>
+
+
+        </div>
+    </lightning:card>
+    <aura:if isTrue="{!v.showDetail}">
+        <lightning:card>
+            <div class="slds-m-bottom_x-small slds-p-left_x-small slds-p-right_x-small">
+
+                <lightning:layout>
+                    <lightning:layoutItem padding="around-small" size="6">
+                        <lightning:textarea name="esitoNote" class="textnote" label="" aura:id="noteText" value="{!v.note}" />
+                        <div class="slds-grid slds-grid_vertical-align-center slds-col_bump-left">
+
+                            <lightning:button aura:id="btnConfermaNote" disabled="false" onclick="{!c.confermaNote}" variant="success" label="Conferma Note" />
+                        </div>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem padding="around-small" size="6">
+                        <aura:if isTrue="{!v.showPopup}">
+                            <div class="slds-card">
+                                <div class="slds-card__header slds-grid">
+                                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                        <div class="slds-media__figure">
+                                            <span class="slds-assistive-text">Dettagli Iscritto</span>
+                                        </div>
+                                        <div class="slds-media__body">
+                                            <h2 class="slds-card__header-title">
+                                                <span>Dettagli Iscritto</span>
+                                            </h2>
+                                        </div>
+                                        <div class="slds-no-flex">
+                                            <button class="slds-button slds-button_destructive" onclick="{!c.annullaPopup}">X</button>
+                                        </div>
+                                    </header>
+                                </div>
+                                <div class="slds-card__body slds-card__body_inner">
+                                    <div class="slds-m-bottom_x-small slds-p-left_x-small slds-p-right_x-small">
+                                        <div class="">
+                                            <lightning:input name="email1" label="Email Convenzionato" value="{! v.iscritto.Email_Referente__c}" />
+                                            <lightning:input name="email2" label="Email Referente" value="{! v.iscritto.Email_Referente__c}" />
+                                            <lightning:input name="user" label="Username" value="{! v.iscritto.Utenza__c}" />
+                                            <lightning:input name="pass" label="Password" value="{! v.iscritto.Password__c}" />
+                                            <ui:inputCheckbox aura:id="checkbox" label="Invio Outsourcer" change="{!c.onCheck}" />
+                                            <!-- <lightning:input type="checkbox" label="Invio Outsourcer" change="{!c.onCheck}" aura:id="outsourcer" name="invio"/> -->
+                                            <lightning:select name="select" label="Corso" value="{!v.iscritto.Corso__c}" aura:id="selectCorso">
+                                                <aura:iteration items="{! v.courses}" var="course">
+                                                    <option value="{!course.Id}">{!course.Name}</option>
+                                                </aura:iteration>
+                                            </lightning:select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <footer class="slds-card__footer">
+                                    <lightning:button onclick="{!c.annullaPopup}" variant="brand" label="Annulla" />
+                                    <lightning:button onclick="{!c.modificaPopup}" variant="success" label="Modifica" />
+                                    <lightning:button onclick="{!c.eliminaPopup}" variant="destructive" label="Elimina" />
+                                </footer>
+                            </div>
+                        </aura:if>
+                    </lightning:layoutItem>
+                </lightning:layout>
+
+
+            </div>
+        </lightning:card>
+    </aura:if>
+</aura:component>

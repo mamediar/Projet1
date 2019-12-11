@@ -1,0 +1,151 @@
+<aura:component controller="GD_ElencoAttestatoRicevuto" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global">
+    <aura:attribute name="searchText" type="String" default="" />
+    <aura:attribute name="CodOCS" type="String" default="" />
+    <aura:attribute name="telefono" type="String" />
+    <aura:attribute name="codOcsString" type="String" default='' />
+    <aura:attribute name="allStatus" type="List" default="" />
+    <aura:attribute name="codiceReferente" type="String" default='' />
+    <aura:attribute name="Result" type="List" description="use for store and display dealer list return from server" />
+    <aura:attribute name="searchKeyword" type="String" description="use for store user search input" />
+    <aura:registerEvent name="navigate" type="c:NavigateSearchToListAttestatoRicevuto" />
+    <aura:attribute name="listdealer" type="IVASS_Dealer_courses_Iscritti__c" default="{'sObjectType':'IVASS_Dealer_courses_Iscritti__c',
+                                                                                        'Name':'',
+                                                                                        'Ragione_Sociale__c':'',
+                                                                                        'Dealer__r':'',
+                                                                                        'Cognome__c':'',
+                                                                                        'Nome__c':'',
+                                                                                        'Codice_Intermediario__c':''}" />
+    <aura:attribute name="results" type="IVASS_Dealer_courses_Iscritti__c[]" default="[]" />
+    <aura:attribute name="listToProcess" type="IVASS_Dealer_courses_Iscritti__c[]" default="[]" />
+    <aura:attribute name="courses" type="IVASS_Dealer_courses_Iscritti__c[]" default="[]" />
+    <aura:attribute name="attachments" type="IVASS_Dealer_courses_attachments__c[]" default="[]" />
+    <aura:attribute name="iscritto" type="IVASS_Dealer_courses_Iscritti__c" default="{}" />
+    <aura:attribute name="pickListValuesList" type="String[]" default="[]" />
+
+    <lightning:card title="">
+        <!--<div class="slds-text-heading_medium slds-p-around_small slds-text-align_center" style="font-weight:bold">Elenco Nominativi con Attestato Ricevuto</div>-->
+
+        <div class="slds-page-header slds-m-left_medium slds-m-right_medium">
+            <!-- LAYOUT GRID -->
+            <div class="slds-grid">
+                <!-- GRID COL -->
+                <div class="slds-col slds-has-flexi-truncate">
+                    <h1 class="slds-page-header__title slds-m-right_small slds-align-middle slds-truncate" title="My Contacts">Elenco Nominativi con Attestato Ricevuto</h1>
+                </div>
+            </div>
+        </div>
+        <div class="slds-m-bottom_x-small slds-p-around_x-small">
+            <lightning:layout>
+                <lightning:layoutItem padding="around-small" size="12">
+                    <div class="slds-grid slds-gutters slds-wrapper slds-m-bottom_medium">
+                        <div class="slds-col">
+                            <lightning:input value="{!v.codOcsString}" required="false" aura:id="searchCodOCS" label="Codice OCS" />
+                        </div>
+                        <div class="slds-col">
+                            <lightning:input value="{!v.listdealer.Ragione_Sociale__c}" required="false" aura:id="searchRagSoc" label="Ragione Sociale" />
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-gutters slds-wrapper slds-m-bottom_medium">
+                        <div class="slds-col">
+                            <lightning:input value="{!v.listdealer.Name}" required="false" aura:id="searchCodReferente" label="Codice Referente" />
+                        </div>
+                        <div class="slds-col">
+                            <lightning:input value="{!v.listdealer.Cognome__c}" required="false" aura:id="searchCognome" label="Cognome" />
+                        </div>
+                        <div class="slds-col">
+                            <lightning:input value="{!v.listdealer.Nome__c}" required="false" aura:id="searchNome" label="Nome" />
+                        </div>
+                    </div>
+
+                    <div class="slds-m-top_medium">
+
+                        <lightning:button onclick="{!c.resetFilter}" variant="neutral" label="Reset Filtri" iconPosition="left" iconName="utility:reset" />
+                        <lightning:button onclick="{!c.Search}" variant="brand" label="Applica Filtri" iconPosition="center" iconName="utility:search" />
+
+                    </div>
+                </lightning:layoutItem>
+
+            </lightning:layout>
+        </div>
+        <div class="slds-m-bottom_x-small slds-p-left_x-small slds-p-right_x-small slds-p-top_small">
+            <div class="slds-scrollable_y slds-scrollable--x">
+                <table aria-multiselectable="true" class="slds-table slds-table--bordered slds-table--cell-buffer slds-max-medium-table--stacked-horizontal">
+                    <thead>
+                        <tr class="slds-text-heading--label">
+                            <th scope="col" class="nobordertop">
+                                <span class="slds-truncate"> </span>
+                            </th>
+                            <th scope="col" class="nobordertop">
+                                <span class="slds-truncate"> Codice Referente</span>
+                            </th>
+                            <th scope="col" class="nobordertop">
+                                <span class="slds-truncate"> Cognome</span>
+                            </th>
+                            <th scope="col" class="nobordertop">
+                                <span class="slds-truncate"> Nome</span>
+                            </th>
+                            <th scope="col" class="nobordertop">
+                                <span class="slds-truncate"> Codice Intermediario</span>
+                            </th>
+                            <th scope="col" class="nobordertop">
+                                <span class="slds-truncate"> Nome Intermediario</span>
+                            </th>
+                            <th scope="col" class="nobordertop">
+                                <span class="slds-truncate"> Esito Contatto</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <aura:iteration items="{!v.results}" var="result" indexVar="indexval">
+                            <tr aria-selected="false" class="slds-hint-parent">
+                                <td scope="row">
+                                    <div class="slds-truncate">
+                                        <ui:inputRadio aura:id="{!result.Name}" name="select" text="{!indexval + '__' +result.Name}" change="{!c.onRadioChange}" />
+                                    </div>
+                                </td>
+                                <td scope="row">
+                                    <div class="slds-truncate"> {!result.Name}</div>
+                                </td>
+                                <td scope="row">
+                                    <div class="slds-truncate"> {!result.Cognome__c}</div>
+                                </td>
+                                <td scope="row">
+                                    <div class="slds-truncate"> {!result.Nome__c}</div>
+                                </td>
+                                <td scope="row">
+                                    <div class="slds-truncate"> {!result.Codice_Intermediario__c} </div>
+                                </td>
+                                <td scope="row">
+                                    <div class="slds-truncate"> {!result.Nome_Dealer__c} </div>
+                                </td>
+                                <td scope="row">
+                                    <div class="slds-truncate"> {!result.Stato_Corso__c} </div>
+                                </td>
+
+                            </tr>
+                        </aura:iteration>
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <div class="slds-m-bottom_x-small slds-p-left_x-small slds-p-right_x-small">
+
+            <lightning:layout>
+                <lightning:layoutItem padding="around-small" size="4">
+                    <lightning:button label="Crea Report XLS" iconName="doctype:excel" aura:id="btnReport" class="slds-button slds-button_success" onclick="{!c.downloadCsv}" />
+                </lightning:layoutItem>
+                <!--  <lightning:layoutItem padding="around-small" size="4">
+                    <lightning:button label="Indietro" onclick="" />
+                </lightning:layoutItem> -->
+            </lightning:layout>
+
+
+        </div>
+    </lightning:card>
+    <lightning:card title="">
+        <c:GD_DettagliAttestatoRicevuto attachments="{!v.attachments}" courses="{!v.courses}" iscritto="{!v.iscritto}" pickListValuesList="{!v.pickListValuesList}" />
+    </lightning:card>
+</aura:component>

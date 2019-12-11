@@ -1,0 +1,41 @@
+<aura:component controller="PostvenditaFlowLauncherController" implements="lightning:isUrlAddressable,force:appHostable,flexipage:availableForAllPageTypes">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="utenteSelezionato" type="String"/>
+    <aura:attribute name="visibilityComboPV" type="Boolean" default="true"/>
+    <aura:attribute name="listTipologia" type="List"/>	
+    <aura:attribute name="listSottotipologia" type="List"/>
+    <aura:attribute name="tipologiaSelezionata" type="String"/>	
+    <aura:attribute name="sottotipologiaSelezionata" type="String" />
+    <aura:attribute name="QueueName" type="String" />
+    <aura:attribute name="RecordType" type="String" />
+    <aura:attribute name="Subject" type="String" />
+    
+    <aura:if isTrue="{!v.visibilityComboPV}">
+    	<lightning:card title="Attività di Postvendita" class="slds-m-top--medium slds-size--1-of-2">
+            <aura:set attribute="actions">
+                <lightning:button label="Continua" disabled="{!v.sottotipologiaSelezionata == ''}" onclick="{!c.lanciaFlowPostvendita}"/>
+            </aura:set>
+            <p class="slds-p-horizontal_small">
+                <div class="slds-grid">
+                    <div class="slds-col">
+                        <lightning:select name="tipologia" label="Seleziona una tipologia:" onchange="{!c.selezionaTipologia}" aura:id="tipologia" value="{!v.tipologiaSelezionata}">
+                            <aura:iteration items="{!v.listTipologia}" var="tipologia">
+                                <option text="{!tipologia.label}" value="{!tipologia.label}"/>
+                            </aura:iteration>
+                        </lightning:select>
+                    </div>
+                    <div class="slds-col">
+                        <lightning:select name="sottotipologia" label="Seleziona una sottotipologia:" aura:id="sottotipologia" value="{!v.sottotipologiaSelezionata}">
+                            <option text="" value=""/>
+                            <aura:iteration items="{!v.listSottotipologia}" var="sottotipologia" indexVar="idx">
+                                <option text="{!sottotipologia.Label}" value="{!idx}"/>
+                            </aura:iteration>
+                        </lightning:select>
+                    </div>
+                </div>
+            </p>
+        </lightning:card>
+    </aura:if>
+    
+	<lightning:flow aura:id="theflow" />
+</aura:component>

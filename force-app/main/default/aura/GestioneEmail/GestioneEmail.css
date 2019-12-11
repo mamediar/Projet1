@@ -1,0 +1,23 @@
+.THIS .slds-button_icon-bare{
+    display: none !important;
+}
+
+.THIS .onClickRotation{ 
+    /*border: 1px solid #dddbda;        
+    border-radius: .25rem;*/
+    transition: transform .5s ease-out;    
+}
+
+.THIS .slds-text-heading_medium {
+    width: 550px;
+    font-family: "Helvetica Neue", "Arial",  sans-serif;
+    font-style: Elephant;
+    font-weight: 100;
+    font-variant-ligatures: normal;
+    font-size: 2rem;
+    letter-spacing: 1px;
+}
+
+/*.THIS .onClickRotation.active{        
+    transform: rotate(360deg);
+}*/

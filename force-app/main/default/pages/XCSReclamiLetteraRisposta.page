@@ -1,0 +1,38 @@
+<apex:page standardController="Case"
+           extensions="XCSReclamiLetteraRispostaCtrl"
+           applyBodyTag="false"
+           contentType="application/msword;charset=UTF-8#Lettera.doc"
+           >
+    <body>
+        
+        <apex:repeat value="{!listaMittentiTesto}" var="mittente">
+            <div style="page-break-after: always;">
+                
+                
+                <apex:outputText escape="true" value="{!mittente}"/>
+                <br/>
+                <br/>
+                <br/>
+                <span style="font-weight:bold;">{!data}</span>
+                <br/>
+                <br/>
+                <br/>
+                <div>
+                    <apex:outputText escape="true" value="{!body}"/>
+                </div>
+                <br/>
+                <br/>
+                <br/>
+                {!firma}
+                <apex:outputPanel rendered="{!putFirma}">
+                    <div style="position:absolute; bottom:0;">
+                        <apex:image id="theImage" url="{!baseURL}/servlet/servlet.ImageServer?id={!idDocumento}&oid={!idOrganizzazione}" width="350" height="200" />
+                        
+                    </div>
+                </apex:outputPanel>
+            </div>
+            <div style="page-break-after: always;"/>
+            <br style="page-break-before: always"/>
+        </apex:repeat>
+    </body>
+</apex:page>

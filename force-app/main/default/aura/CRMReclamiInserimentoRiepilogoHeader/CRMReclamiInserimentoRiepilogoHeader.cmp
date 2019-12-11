@@ -1,0 +1,128 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" 
+                access="global" 
+                >
+    <aura:attribute name="clienteSelezionato" type="OCSCliente"/>
+    <aura:attribute name="dataNascita" type="String"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+
+ 
+
+    <div style="margin-left:15px;margin-right:15px;">
+
+    <div class="slds-page-header slds-page-header_record-home">
+        <div class="slds-page-header__row">
+          <div class="slds-page-header__col-title">
+            <div class="slds-media">
+              <div class="slds-media__figure">
+                <span class="slds-icon_container ">
+                    <lightning:icon iconName="standard:note" size="medium" /> 
+                </span>
+              </div>
+              <div class="slds-media__body">
+                <div class="slds-page-header__name">
+                  <div class="slds-page-header__name-title">
+                    <h1>
+                        <!--<span>Dati cliente selezionato</span>-->
+                        <span class="slds-page-header__title " title="Dati cliente selezionato:">{!v.clienteSelezionato.denominazione}</span>
+                        <span class="slds-page-header__name-meta">{!v.clienteSelezionato.indirizzo + ' ' + v.clienteSelezionato.localita + ' ' + v.clienteSelezionato.provincia + ' ' + v.clienteSelezionato.cap}</span> 
+                    </h1>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="slds-page-header__row slds-page-header__row_gutters">
+          <div class="slds-page-header__col-details">
+            <ul class="slds-page-header__detail-row">
+
+              <li class="slds-page-header__detail-block">
+                    <lightning:input label="Cod. cliente:" value="{!v.clienteSelezionato.codCliente}" readonly="true"/>
+                    <lightning:input label="Email:" value="{!v.clienteSelezionato.email}" readonly="true"/>
+              </li>
+
+              <li class="slds-page-header__detail-block">
+                    <lightning:input label="Sesso:" value="{!v.clienteSelezionato.sesso}" readonly="true"/>
+                    <lightning:input label="Nato il:" value="{!v.dataNascita}" readonly="true"/>
+              </li>
+              <li class="slds-page-header__detail-block">
+                    <lightning:input label="Tel.:" value="{!v.clienteSelezionato.telefonoCasa}" readonly="true"/>
+                    <lightning:input label="Cell.:" value="{!v.clienteSelezionato.telCellulare}" readonly="true"/>
+              </li>
+
+              
+
+            </ul>
+          </div>
+        </div>
+      </div>
+      </div>
+      
+    <!--
+    <lightning:layout>
+        <lightning:layoutItem flexibility="grow">
+            <lightning:input label="Dati cliente selezionato:"
+                             value="{!v.clienteSelezionato.denominazione}"
+                             readonly="true"
+                             />
+        </lightning:layoutItem>
+    </lightning:layout>
+    
+    <lightning:layout>
+        <lightning:layoutItem flexibility="grow">
+            <lightning:input label="Sesso:"
+                             value="{!v.clienteSelezionato.sesso}"
+                             readonly="true"
+                             />
+        </lightning:layoutItem>
+        
+        <lightning:layoutItem flexibility="grow">
+            <lightning:input label="Nato il:"
+                             value="{!v.dataNascita}"
+                             readonly="true"
+                             />
+        </lightning:layoutItem>
+        
+        <lightning:layoutItem flexibility="grow">
+            <lightning:input label="Cod. cliente:"
+                             value="{!v.clienteSelezionato.codCliente}"
+                             readonly="true"
+                             />
+        </lightning:layoutItem>
+    </lightning:layout>
+    
+    <lightning:layout>
+        <lightning:layoutItem flexibility="grow">
+            <lightning:input label="Indir.:"
+                             value="{!v.clienteSelezionato.indirizzo + ' ' + v.clienteSelezionato.localita + ' ' + v.clienteSelezionato.provincia + ' ' + v.clienteSelezionato.cap}"
+                             readonly="true"
+                             />
+        </lightning:layoutItem>
+    </lightning:layout>
+    
+    <lightning:layout>
+        <lightning:layoutItem flexibility="grow">
+            <lightning:input label="Tel.:"
+                             value="{!v.clienteSelezionato.telefonoCasa}"
+                             readonly="true"
+                             />
+        </lightning:layoutItem>
+        
+        <lightning:layoutItem flexibility="grow">
+            <lightning:input label="Cell.:"
+                             value="{!v.clienteSelezionato.telCellulare}"
+                             readonly="true"
+                             />
+        </lightning:layoutItem>
+        
+        <lightning:layoutItem flexibility="grow">
+            <lightning:input label="Email:"
+                             value="{!v.clienteSelezionato.email}"
+                             readonly="true"
+                             />
+        </lightning:layoutItem>
+    </lightning:layout>
+    -->
+
+</aura:component>

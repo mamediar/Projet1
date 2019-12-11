@@ -1,0 +1,86 @@
+<aura:component controller="SFAPianificazioneClass" implements="flexipage:availableForAllPageTypes">
+    <aura:attribute name="WrapperRowListAM" type="SFA_Slot__c[]"/>
+    <aura:attribute name="WrapperRowListPM" type="SFA_Slot__c[]"/>
+    <aura:attribute name="targetDate" type="Date"/>
+    <aura:attribute name="today" type="Date"/>
+    <aura:attribute name="previusDate" type="Date"/>
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+
+    <lightning:card title="La mia pianificazione" iconName="utility:event">
+    <c:SpinnerComponent aura:id="spinnerComponent"/>
+        <lightning:layout>       
+            <lightning:layoutItem size="12">
+                <lightning:layout>
+                    <lightning:layoutItem size="9" class="slds-p-around_xx-small">
+                        <lightning:input type="date" name="data" label="Data" value="{!v.targetDate}"/>
+                    </lightning:layoutItem>     
+                    <lightning:layoutItem size="3" class="slds-p-around_xx-small">   
+                        <lightning:button variant="brand" label="Cerca" class="slds-m-left_x-small slds-m-top_large" onclick="{!c.init}"/>
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </lightning:layoutItem>
+        </lightning:layout>
+        <lightning:layout multipleRows="true">       
+            <lightning:layoutItem size="12">    
+                <lightning:layout>
+                    <lightning:layoutItem size="2" class="slds-p-around_xx-small">
+                        <lightning:card class="slds-card_boundary maxHeight headerCard" >
+                            <aura:text value="AM"></aura:text>
+                        </lightning:card>
+                    </lightning:layoutItem>  
+                    <lightning:layoutItem size="10" class="slds-p-around_xx-small">
+                        <lightning:card class="slds-card_boundary maxHeight " >
+                            <aura:iteration items="{!v.WrapperRowListAM}" var="WrapperRow" indexVar="index">
+                                <p>
+                                    <ul style="list-style-type:disc" class="slds-p-left_large">
+                                        <li>
+                                            <b>
+                                                <lightning:formattedText value="{! !WrapperRow.slot.Type  ? WrapperRow.slot.XCS_Zone__r.Name : WrapperRow.slot.Type}" />
+                                            </b>
+                                            <aura:if isTrue="{! !WrapperRow.slot.Type}">    
+                                                <a id="{!WrapperRow.slot.Id}" href="" title=" Pianifica" onclick="{!c.navigateToPianifica}"> Pianifica</a>
+                                            </aura:if>
+                                        </li>
+                                    </ul>
+                                    <aura:if isTrue="{! !WrapperRow.slot.Type}">    
+                                            <lightning:formattedText class="slds-p-left_x-large" value="{! 'Dealer pianificati '+ WrapperRow.dealerPianificati+' - Dealer non pianificati '+ WrapperRow.dealerNonPianificati}"/>
+                                    </aura:if>
+                                </p>
+                            </aura:iteration>  
+                        </lightning:card>
+                    </lightning:layoutItem> 
+                </lightning:layout>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="12">
+                <lightning:layout>
+                    <lightning:layoutItem size="2" class="slds-p-around_xx-small">
+                        <lightning:card class="slds-card_boundary maxHeight headerCard">
+                            <aura:text value="PM"></aura:text>
+                        </lightning:card>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="10" class="slds-p-around_xx-small">
+                        <lightning:card class="slds-card_boundary maxHeight">
+                            <aura:iteration items="{!v.WrapperRowListPM}" var="WrapperRow">
+                                <p>
+                                    <ul style="list-style-type:disc" class="slds-p-left_large">
+                                        <li>
+                                            <b>
+                                                <lightning:formattedText value="{! !WrapperRow.slot.Type  ? WrapperRow.slot.XCS_Zone__r.Name : WrapperRow.slot.Type}" />
+                                            </b>
+                                            <aura:if isTrue="{! !WrapperRow.slot.Type}">    
+                                                <a id="{!WrapperRow.slot.Id}" href="" title=" Pianifica" onclick="{!c.navigateToPianifica}"> Pianifica</a>
+                                            </aura:if>
+                                        </li>
+                                    </ul>
+                                    <aura:if isTrue="{! !WrapperRow.slot.Type}">    
+                                            <lightning:formattedText class="slds-p-left_x-large" value="{! 'Dealer pianificati '+ WrapperRow.dealerPianificati+' - Dealer non pianificati '+ WrapperRow.dealerNonPianificati}"/>
+                                    </aura:if>
+                                </p>
+                            </aura:iteration>
+                        </lightning:card>
+                    </lightning:layoutItem> 
+                </lightning:layout>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </lightning:card>
+</aura:component>

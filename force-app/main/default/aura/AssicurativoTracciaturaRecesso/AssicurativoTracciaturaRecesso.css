@@ -1,0 +1,28 @@
+.THIS .slds-card{
+    padding-left: 0% !important;
+    clear: none;
+    margin: 0.5%;
+    height: auto;
+}
+
+.THIS .color__background_gray{
+
+    background-color: #cccccc;
+    border: 1px;
+    padding: 1%;
+}
+
+.THIS .slds-form_horizontal{
+    padding-left: 0% !important;
+    clear: none;
+}
+
+.THIS .slds-form-element{
+    padding-left: 0% !important;
+    clear: none;
+}
+
+.THIS .slds-form-element__control{
+    padding-left: 0% !important;
+    clear: none;
+}

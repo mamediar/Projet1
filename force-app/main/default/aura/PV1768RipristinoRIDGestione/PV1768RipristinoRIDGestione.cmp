@@ -1,0 +1,55 @@
+<!--
+  @Component Name     : PV1768RipristinoRIDGestione.cmp
+  @Description        : 
+  @Author             : sabrina vitali
+  @Group              : 
+  @Last Modified By   : sabrina vitali
+  @Last Modified On   : 29/10/2019, 14:22:09
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    31/7/2019, 17:57:22   sabrina vitali     Initial Version
+-->
+<aura:component controller='PV1768RipristinoRIDGestione' implements="flexipage:availableForAllPageTypes,force:hasRecordId" access='global'>
+    <aura:handler name='init' value='{!this}' action='{!c.doInit}' />
+    <aura:attribute name="parent" type="Aura.Component" required="true" description="componente padre per accedere ai metodi comuni"/>
+    <aura:method name="save" action="{!c.save}" description="Metodo richiamato dal bottone del componente padre"></aura:method>    
+    
+    <!-- Attributi -->
+    <!-- da parent -->
+    <aura:attribute name="theCase" type="Case" />
+    <aura:attribute name="dispositionSelezionato" type="XCS_Disposition__c"/>
+    <aura:attribute name='note' type='String' />    
+    <aura:attribute name="allegati" type="Attachment[]"/>
+    <aura:attribute name="newStatus" type="String"/>    
+
+    <!-- Attributi gestione-->
+    <aura:attribute name="Branch_Or_Office__c" type="String" default="" />
+    <aura:attribute name="messaggiErrore" type="String" access="Global"/>
+    <aura:attribute name='esito' type='String' />    
+    <aura:attribute name="optionsEsito" type="List" default="[                                                                                                                      
+            {'label': 'OK Ripristino', 'value': 'OK'},                                                                                  
+            {'label': 'KO Ripristino', 'value': 'KO'}]"/>                                                                                                           
+
+
+    <!-- main --> 
+    <lightning:card class='slds-form_stacked'>
+        <aura:if isTrue="{!v.Branch_Or_Office__c == 'BACK'}"> 
+            <div class="slds-grid slds-container_medium slds-align_left slds-wrap">
+                <div class="slds-size_6-of-12">
+                    <lightning:combobox name="esito"
+                                        aura:id="esito"
+                                        label="Esito"                                                                                                    
+                                        placeholder="Seleziona"                                                                                                                 
+                                        variant="standard"      
+                                        value="{!v.esito}"                                                                                                                
+                                        dropdownAlignment="Left"
+                                        required="true"
+                                        options="{!v.optionsEsito}"/>   
+                </div>
+            </div>    
+        </aura:if>    
+    </lightning:card> <!-- /main -->
+
+</aura:component>

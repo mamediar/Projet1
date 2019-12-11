@@ -1,0 +1,94 @@
+<aura:component controller="CRMReclamiInserimentoMittentiNuovoCtrl"
+                implements="force:appHostable,flexipage:availableForAllPageTypes" 
+                access="global" 
+                >
+    
+    <aura:attribute name="aziendaSelezionata" type="String"/>
+    <aura:attribute name="stepInserimentoMittenti" type="String"/>
+    <aura:attribute name="mittentiList" type="XCS_Mittente__c[]"/>
+    <aura:attribute name="mittenteSelezionatoListaMitt" type="XCS_Mittente__c"/>
+    <aura:attribute name="isPrincipale" type="Boolean"/>
+    <aura:attribute name="tipoMittente" type="String"/>
+    <aura:attribute name="nomeCognomeMittente" type="String"/>
+    <aura:attribute name="indirizziValues" type="indirizzi_predefiniti__mdt[]"/>
+    <aura:attribute name="indirizzoPredefinito" type="String"/>
+    <aura:attribute name="indirizzoPredefinitoMittente" type="indirizzi_predefiniti__mdt"/>
+    <aura:attribute name="salutiValues" type="List"/>
+    <aura:attribute name="salutoMittente" type="String"/>
+    <aura:attribute name="indirizzoMittente" type="String"/>
+    <aura:attribute name="cittaMittente" type="String"/>
+    <aura:attribute name="provinciaMittente" type="String"/>
+    <aura:attribute name="capMittente" type="String"/>
+    <aura:attribute name="isOk" type="Boolean"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    
+    <lightning:input type="checkbox" label="Mittente Principale" checked="{!v.isPrincipale}"/>
+    
+    <!--Picklist Tipo-->
+    <lightning:select label="Tipo:"
+                      value="{!v.tipoMittente}"
+                      onchange="{!c.rebuildSalutoValues}"
+                      >
+        <option value="">Seleziona Tipo</option>
+        <option value="AVVOCATO">AVVOCATO</option>
+        <option value="DOTTORE">DOTTORE</option>
+        <option value="ALTRO">ALTRO</option>
+        <option value="AUTORITA">AUTORITA'</option>
+        <option value="SOCIETA">SOCIETA'</option>
+        <aura:if isTrue="{!or(v.aziendaSelezionata=='Compass',v.aziendaSelezionata=='Futuro')}">
+            <option value="INDIRIZZI PREDEFINITI">INDIRIZZI PREDEFINITI</option>
+        </aura:if>
+    </lightning:select>
+    
+    <!--Picklist Indirizzi Predefiniti-->
+    <aura:if isTrue="{!v.tipoMittente=='INDIRIZZI PREDEFINITI'}">
+        <lightning:select label="Indirizzi Predefiniti:"
+                          value="{!v.indirizzoPredefinito}"
+                          onchange="{!c.selectIndirizzo}"
+                          >
+            <option value="">Seleziona Indirizzo</option>
+            <aura:iteration items="{!v.indirizziValues}" var="ind">
+                <option value="{!ind.Name__c}">{!ind.Name__c}</option>
+            </aura:iteration>
+        </lightning:select>
+    </aura:if>
+    
+    <lightning:input type="text" label="Nome e Cognome:" value="{!v.nomeCognomeMittente}"/>
+    
+    <!--Picklist Saluto-->
+        <lightning:select label="Saluto:"
+                          value="{!v.salutoMittente}"
+                          onchange="{!c.checkValues}"
+                          >
+            <option value="">Seleziona Saluto</option>
+            <aura:iteration items="{!v.salutiValues}" var="sal">
+                <option value="{!sal}">{!sal}</option>
+            </aura:iteration>
+        </lightning:select>
+    
+    <lightning:input type="text" label="Via e Numero Civico:" value="{!v.indirizzoMittente}"  />
+    <lightning:input type="text" label="Città:" value="{!v.cittaMittente}" />
+    <lightning:input type="text" label="Provincia:" value="{!v.provinciaMittente}" />
+    <lightning:input type="text" label="CAP:" value="{!v.capMittente}"/>
+    
+    <lightning:layout>
+        <lightning:layoutItem>
+            <div class="slds-p-top_x-small">
+                <lightning:button label="Salva"
+                                  variant="brand"
+                                  onclick="{!c.salva}"
+                                  />
+            </div>
+        </lightning:layoutItem>
+        <lightning:layoutItem>
+            <div class="slds-p-left_x-small slds-p-top_x-small">
+                <lightning:button label="Annulla"
+                                  variant="brand"
+                                  onclick="{!c.annulla}"
+                                  />
+            </div>
+        </lightning:layoutItem>
+    </lightning:layout>
+    
+</aura:component>

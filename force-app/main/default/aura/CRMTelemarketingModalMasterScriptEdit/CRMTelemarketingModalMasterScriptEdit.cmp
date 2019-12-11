@@ -1,0 +1,119 @@
+<aura:component controller="CRMTMKScriptEditController" implements="force:appHostable,flexipage:availableForAllPageTypes" access="global">
+<lightning:notificationsLibrary/>
+<aura:attribute name="desScript" type="String"/>
+<aura:attribute name="descrizioneSel" type="String"/>
+<aura:attribute name="tipologiaSel" type="String"/>
+<aura:attribute name="codiceAzioneSel" type="String"/>
+<aura:attribute name="codiceProdottoSel" type="String"/>
+<aura:attribute name="codiceTMKSel" type="String"/> 
+<aura:attribute name="fileId" type="String"/>                   
+<aura:attribute name="ScriptRecord" type="XCS_Script__c"/>                    
+<aura:attribute name="openModaleScriptEdit" type="boolean"/>
+<aura:attribute name="closeModaleScriptEdit" type="boolean"/>
+<aura:attribute name="showButtonSave" type="boolean"/>
+<aura:attribute name="onchangeBool" type="boolean"/>
+<aura:attribute name="recordId" type="String"/>
+<aura:attribute name="Name" type="String"/>
+<aura:attribute name="text" type="String"/>
+<aura:attribute name="sectiontype" type="String" default="PRD"/>
+<aura:attribute name="sectioncode" type="String" default="{!v.actioncodelvl2}"/>
+<aura:attribute name="tipocampagna" type="String"/>
+<aura:attribute name="codprod" type="String"/>
+<aura:attribute name="actioncode" type="String"/>
+<aura:attribute name="active" type="boolean"/>
+<aura:attribute name="codprodlvl2" type="String"/>
+<aura:attribute name="endDate" type="date"/>
+<aura:attribute name="startdate" type="date"/>
+<aura:attribute name="actioncodelvl2" type="String"/>
+<aura:attribute name="DescrizioneProdotto" type="String"/>
+<aura:attribute name="showButton" type="boolean" default="false"/>
+<aura:attribute name="disabled" type="Boolean" default="false" />
+<aura:attribute name="saved" type="Boolean" default="false" />
+<aura:attribute name="showSpinner" type="Boolean" default="true" />
+<aura:attribute name="idScript" type="String"/>
+<aura:attribute name="showOldDate" type="boolean"/>
+<aura:attribute name="showNewDate" type="boolean"/>
+<aura:attribute name="openForm" type="boolean"/>
+<aura:attribute name="isCC" type="boolean"/> 
+<aura:if isTrue="{!v.openModaleScriptEdit}" >           
+<div class="slds-modal slds-fade-in-open">
+<div class="slds-modal__container">
+<div class="slds-modal__header">
+    <h2 class="title slds-text-heading--medium">Gestione Script</h2>
+</div>
+<div class="slds-modal__content slds-p-around--medium">                                  
+        <c:CRMTelemarketingTableInModal idScript="{!v.idScript}" fileId="{!v.fileId}" codiceAzioneSel="{!v.codiceAzioneSel}" 
+                                                                tipologiaSel="{!v.tipologiaSel}" 
+                                                                codiceProdottoSel="{!v.codiceProdottoSel}"
+                                                                codiceTMKSel="{!v.codiceTMKSel}"
+                                                                descrizioneSel="{!v.descrizioneSel}" 
+                                                                openForm="{!v.openForm}" 
+                                                                showOldDate="{!v.showNewDate}"
+                                                                startDate="{!v.startdate}"
+                                                                endDate="{!v.endDate}"
+                                                                desScript="{!v.DescrizioneProdotto}"
+                                                                tipologiaSelForNew="{!v.tipocampagna}"
+                                                                codiceAzioneSelForNew="{!v.actioncode}"
+                                                                codiceTMKSelForNew="{!v.actioncodelvl2}"
+                                                                codiceProdottoSelForNew="{!v.codprodlvl2}"
+                                                                codiceProdottoPadreSelForNew="{!v.codprod}"
+                                                                descrizioneSelForNew="{!v.DescrizioneProdotto}"
+                                                                showNewDate="{!v.showNewDate}"
+
+                                                                />
+        <aura:if isTrue="{!v.openForm}">                                                        
+        
+            <lightning:recordEditForm
+                onload="{!c.handleLoad}"
+                onsubmit="{!c.handleSubmit}"
+                onsuccess="{!c.handleSuccess}"
+                recordId="{!v.idScript}"
+                objectApiName="XCS_Script__c">
+                <force:recordData aura:id="script" recordUpdated="{!c.handleLoad}"
+        fields="Name, Text__c,ActionCode__c,ActionCodeLvl2__c,CodProdLvl2__c, CodProd__c,TipoCampagna__c, SectionType__c,SectionCode__c,Active__c, StartDate__c,EndDate__c"
+        recordId="{!v.idScript}" 
+        targetFields="{!v.ScriptRecord}" 
+        targetError="{!v.recordLoadError}" mode="EDIT"/>
+                <!-- the messages component is for error messages -->
+                <lightning:messages />
+                <aura:if isTrue="{!v.showOldDate}">
+                <lightning:input aura:id="dataInizio" type="date" onchange="{!c.handleSubmit}" label="Data Inizio" required="true" value="{!v.ScriptRecord.StartDate__c}" />
+                <lightning:input aura:id="dataFine" type="date" onchange="{!c.handleSubmit}" label="Data Fine" required="true" value="{!v.ScriptRecord.EndDate__c}" />
+                </aura:if>
+                <aura:if isTrue="{!v.showNewDate}">
+                        <lightning:input aura:id="dataInizio" type="date" onchange="{!c.handleSubmit}" label="Data Inizio" required="true" value="{!v.startdate}" />
+                        <lightning:input aura:id="dataFine" type="date" onchange="{!c.handleSubmit}" label="Data Fine" required="true" value="{!v.endDate}" />            
+                </aura:if>
+                
+                <lightning:inputField onchange="{!c.handleSubmit}" value="{!v.text}" fieldName="Text__c" />
+                <div class="inline">
+                <lightning:inputField  disabled="true" value="{!v.tipocampagna}" fieldName="TipoCampagna__c" />
+                    <aura:if isTrue="{!v.isCC}">
+                <lightning:inputField  disabled="true" value="{!v.actioncodelvl2}" fieldName="ActionCodeLvl2__c" />
+                        </aura:if>
+                <lightning:inputField  disabled="true" value="{!v.actioncode}" fieldName="ActionCode__c" />
+                <lightning:inputField  disabled="true" value="{!v.codprodlvl2}" fieldName="CodProdLvl2__c" />
+                </div>
+                <lightning:input type="String" label="Descrizione Prodotto" disabled="true" value="{!v.DescrizioneProdotto}"/>
+                <div class="slds-m-top_medium">
+                    <aura:if isTrue="{!v.showButton}">
+                    <lightning:button disabled="{!v.disabled}" variant="brand"  name="save" label="Salva E Clona" onclick="{!c.handleSuccess}"/>
+                    </aura:if>
+                    
+                </div>
+            </lightning:recordEditForm>
+            
+            
+        
+    </aura:if>
+</div>
+<div class="slds-modal__footer">
+    <lightning:button variant="neutral" iconName="utility:close" label="Chiudi" disabled="{!v.disableButtonChiudiModaleIndirizzoDealer}"
+                        onclick="{!c.closeModelIndirizzoDealer}"/>
+</div>
+</div>
+</div>
+<div class="slds-backdrop slds-backdrop_open"></div>
+</aura:if> 
+
+</aura:component>

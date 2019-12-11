@@ -1,0 +1,176 @@
+<aura:component implements="flexipage:availableForAllPageTypes" controller="GUA_GestioneContactCnt" access="global">
+    <!-- <aura:handler event="c:GUA_SearchByCodiceDealerEvt" action="{!c.handleCaseSearch}" /> -->
+    <aura:handler event="c:GUA_QueueToContactEvt" action="{!c.handleManageContact}" />
+    <aura:attribute type="Group" name="queueContact" default="" />
+    <aura:attribute type="Case[]" name="initialListContactsCase" default="" />
+    <aura:attribute type="Case[]" name="contactsCaseList" default="" />
+    <aura:attribute type="Case[]" name="resultatFilter" default="" />
+    <aura:attribute type="List" name="campagnList" default="" />
+    <aura:attribute type="List" name="criterionList" default="" />
+
+    <!-- pagination -->
+    <aura:attribute name="paginationList" type="Case[]" />
+    <aura:attribute name="pageSize" type="Integer" default="14" />
+    <aura:attribute name="totalSize" type="Integer" default="1"/>
+    <aura:attribute name="start" type="Integer" />
+    <aura:attribute name="end" type="Integer" default="1"/>
+
+    <aura:attribute name="isOpenModel" type="boolean" default="false" />
+    <aura:attribute name="criterion" type="String" default="" />
+    <aura:attribute name="campagna" type="String[]" default="" />
+    <aura:registerEvent name="contactDetail" type="c:GUA_EventGestionToDettaglioContactEvt" />
+
+    <aura:attribute type="Group[]" name="listQueus" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <lightning:layout>
+        <lightning:layoutItem>
+            <lightning:button class="slds-m-bottom_medium" variant="neutral" label="Riempi Casella" onclick="{!c.filterContactCase }" />
+            <lightning:button class="slds-m-bottom_medium" variant="neutral" label="Informazione Dealer" />
+            <c:GUA_SearchInformazioniDealerCmp/>
+        </lightning:layoutItem>
+
+    </lightning:layout>
+    <lightning:layout>
+        <lightning:layoutItem size="2">
+            <lightning:card>
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered slds-p-around_xxx-small">
+                    <thead>
+                        <tr class="slds-line-height_reset">
+                            <th style="text-align:center;background-color:#9f201c;color:#fff;"></th>
+                            <th style="text-align:center;background-color:#9f201c;color:#fff;">Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <aura:if isTrue="{!v.listQueus.length>0}">
+                            <aura:iteration items="{!v.listQueus}" var="oneQueue">
+                                <tr>
+                                    <td>
+                                        <span class="slds-radio">
+                                            <lightning:input type="radio" aura:id ="inputSelectQueue" id="selectedQueu" checked="{!oneQueue.checked}" value="{!oneQueue}" name="options" tabindex="-1"
+                                                             onchange="{!c.queuSelected}" aria-labelledby="radio-button-label-01 column-group-header" />
+                                        </span>
+                                    </td>
+                                    <td>{!oneQueue.Name}</td>
+                                </tr>
+                            </aura:iteration>
+                        </aura:if>
+                    </tbody>
+                </table>
+            </lightning:card>
+        </lightning:layoutItem>
+
+        <lightning:layoutItem>
+            <lightning:card>
+                <div class="slds-p-around_xxx-small">
+                    <div style="text-align:center;">
+                        <aura:if isTrue="{!v.contactsCaseList.length>0}">
+
+                            <div>
+                                <!--<lightning:layout>
+                                           <lightning:layoutItem>
+                                                <lightning:button class="slds-m-bottom_medium"
+                                                                  variant="neutral" 
+                                                                  label="Riempi Casella"
+                                                                  onclick="{!c.filterContactCase }" />
+                            
+                                            <c:GUA_SearchInformazioniDealerCmp/>
+                                           </lightning:layoutItem>
+                            
+                                        </lightning:layout>-->
+
+
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                                    <thead>
+                                        <tr class="slds-line-height_reset">
+                                            <th style="text-align:center;background-color:#9f201c;color:#fff;"></th>
+                                            <th style="text-align:center;background-color:#9f201c;color:#fff;">N. Rif.</th>
+                                            <th style="text-align:center;background-color:#9f201c;color:#fff;">Campagna</th>
+                                            <th style="text-align:center;background-color:#9f201c;color:#fff;">Codice Dealer</th>
+                                            <th style="text-align:center;background-color:#9f201c;color:#fff;">Scadenza</th>
+                                            <th style="text-align:center;background-color:#9f201c;color:#fff;">Priorita</th>
+                                            <th style="text-align:center;background-color:#9f201c;color:#fff;">Tentativi</th>
+                                            <th style="text-align:center;background-color:#9f201c;color:#fff;">Schedulato il</th>
+                                            <th style="text-align:center;background-color:#9f201c;color:#fff;">Contattato</th>
+                                            <th style="text-align:center;background-color:#9f201c;color:#fff;">Aggiomato il</th>
+                                            <th style="text-align:center;background-color:#9f201c;color:#fff;">Assagnato a</th>
+                                            <th style="text-align:center;background-color:#9f201c;color:#fff;">Stato </th>
+                                            <th style="text-align:center;background-color:#9f201c;color:#fff;">Esito </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <aura:iteration items="{!v.paginationList}" var="cntactCase">
+                                            <tr>
+                                                <td>
+                                                    <span class="slds-radio">
+                                                        <lightning:input type="radio" id="selectedcntactCase" value="{!cntactCase}" name="options" tabindex="-1"
+                                                                         onchange="{!c.cntSelected}" aria-labelledby="radio-button-label-01 column-group-header" />
+                                                    </span>
+                                                </td>
+                                                <td>{!cntactCase.CaseNumber}</td>
+                                                <td>{!cntactCase.CampaignId__r.Name}</td>
+                                                <td>{!cntactCase.CodiceDealer__c}</td>
+                                                <td>{!cntactCase.Scadenza__c}</td>
+                                                <td>{!cntactCase.Priority}</td>
+                                                <td>{!cntactCase.Tentativo__c}</td>
+                                                <td></td>
+                                                <td>{!cntactCase.Contact.Name}</td>
+                                                <td>{!cntactCase.LastModifiedDate}</td>
+                                                <td>{!cntactCase.Assegnatario__r.Name}</td>
+                                                <td>{!cntactCase.Status}</td>
+                                                <td>{!cntactCase.Esito__c}</td>
+                                            </tr>
+                                        </aura:iteration>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="slds-grid">
+                                <div class="button-command slds-align_absolute-center slds-m-top_medium">
+                                    <lightning:button variant="brand" label="First" disabled="{!v.start == 0}" onclick="{!c.first}" />
+                                    <lightning:button variant="brand" label="Previous" disabled="{!v.start == 0}" onclick="{!c.previous}" />
+                                    <lightning:button variant="brand" label="Next" onclick="{!c.next}" />
+                                    <lightning:button variant="brand" label="Last" onclick="{!c.last}" />
+                                </div>
+                            </div>
+                        </aura:if>
+                    </div>
+                </div>
+            </lightning:card>
+        </lightning:layoutItem>
+    </lightning:layout>
+
+
+    <aura:if isTrue="{!v.isOpenModel}">
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header" style="text-align:center;background-color:#9f201c;color:#fff;">
+                    <lightning:buttonIcon iconName="utility:close" onclick="{!c.closeModel}" alternativeText="close" variant="bare-inverse" class="slds-modal__close" />
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Criteri di riempimento casella</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <div>
+                        <select id="campagnaSelected" class="slds-select" required="true" onchange="{!c.getCampagna}" >
+                            <option value="" selected="false">--</option> 
+                            <aura:iteration items="{!v.campagnList}" var="cmp" >
+                                <option value="{!cmp}" > {!cmp}</option >
+                            </aura:iteration>
+                        </select>
+                    </div>
+                    <div>
+                        <select id="criterionSelected" class="slds-select" required="true" onchange="{!c.getCriterion}">
+                            <option value="" selected="false">--</option>
+                            <aura:iteration items="{!v.criterionList}" var="criterion" >
+                                <option value="{!criterion.val}" > {!criterion.label}</option >
+                            </aura:iteration>
+                        </select>
+                    </div>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning:button variant="neutral" label="Annulla" title="Annulla" onclick="{!c.closeModel}" />
+                    <lightning:button variant="brand" label="OK" title="OK" disabled="{!v.campagna==''||v.criterion==''}" onclick="{!c.showFilter}" />
+                </footer>
+            </div>
+        </section>
+
+    </aura:if>
+</aura:component>

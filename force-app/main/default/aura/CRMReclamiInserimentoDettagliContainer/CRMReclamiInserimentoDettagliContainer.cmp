@@ -1,0 +1,103 @@
+<aura:component controller="CRMReclamiInsDettagliContainerController"
+                implements="force:appHostable,flexipage:availableForAllPageTypes" 
+                access="global" 
+                > 
+    
+    <aura:attribute name="aziendaSelezionata" type="String"/>
+    <aura:attribute name="tipoDettagli" type="String"/>
+    <aura:attribute name="isAssicurazione" type="Boolean"/>
+    <aura:attribute name="delegaPresente" type="Boolean"/>
+    <aura:attribute name="reclamoCompleto" type="Boolean"/>
+    <aura:attribute name="categoriaDettagli" type="XCS_Categoria__c"/>
+    <aura:attribute name="isGrave" type="Boolean"/>
+    <aura:attribute name="codaSelezionata" type="CodaXSocieta__mdt"/>
+    <aura:attribute name="attribuzioneReclamo" type="String[]"/>
+    <aura:attribute name="contattiPrecedenti" type="String[]"/>
+    <aura:attribute name="contattoPrecedente" type="String"/>
+    <aura:attribute name='descrizioneTipo' type='String' default=''/>
+    <aura:attribute name="listaCodeTot" type="CodaXSocieta__mdt[]"/>
+    <aura:attribute name="listaCodeFiltrata" type="CodaXSocieta__mdt[]"/>
+    
+    <aura:attribute name="isHeaderOk" type="Boolean"/>
+    <aura:attribute name="headerMessage" type="String"/>
+    <aura:attribute name="headerOutput" type="Object"/>
+    <aura:attribute name="isRadioOk" type="Boolean"/>
+    <aura:attribute name="radioMessage" type="String"/>
+    <aura:attribute name="radioOutput" type="Object"/>
+    <aura:attribute name="isAggiuntiviOk" type="Boolean"/>
+    <aura:attribute name="aggiuntiviMessage" type="String"/>
+    <aura:attribute name="aggiuntiviOutput" type="Object"/>
+    
+    <aura:attribute name="isOk" type="Boolean"/>
+    <aura:attribute name="errorMessage" type="String" default="Compilare almeno un campo."/>
+    <aura:attribute name="dettagliOutputObj" type="Object"/> <!--Contiene tutti i dati per la creazione del case-->
+    
+    <aura:handler name="change" value="{!v.codaSelezionata}" action="{!c.handleChange}"/>
+    <aura:handler name="change" value="{!v.contattoPrecedente}" action="{!c.handleChange}"/>
+    <aura:handler name="change" value="{!v.isHeaderOk}" action="{!c.handleChange}"/>
+    <aura:handler name="change" value="{!v.isRadioOk}" action="{!c.handleChange}"/>
+    <aura:handler name="change" value="{!v.headerOutput}" action="{!c.handleChange}"/>
+    <aura:handler name="change" value="{!v.radioOutput}" action="{!c.handleChange}"/>
+    <aura:handler name="change" value="{!v.aggiuntiviOutput}" action="{!c.handleChange}"/>
+    <aura:handler name="change" value="{!v.isAggiuntiviOk}" action="{!c.handleChange}"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+
+        <aura:handler name="aggiornaDettagli" event="c:CRMReclamiGestioneApprovazioneEvent" action="{!c.refresh}"/>
+
+    
+    <c:CRMReclamiInserimentoDettagliHeader aura:id="CRMReclamiInserimentoDettagliHeader"
+                                           aziendaSelezionata="{!v.aziendaSelezionata}"
+                                           tipoDettagli="{!v.tipoDettagli}"
+                                           isAssicurazione="{!v.isAssicurazione}"
+                                           categoriaDettagli="{!v.categoriaDettagli}"
+                                           delegaPresente="{!v.delegaPresente}"
+                                           reclamoCompleto="{!v.reclamoCompleto}"
+                                           isGrave="{!v.isGrave}"
+                                           isOk="{!v.isHeaderOk}"
+                                           errorMessage="{!v.headerMessage}"
+                                           outputObj="{!v.headerOutput}"
+                                           descrizioneTipo='{!v.descrizioneTipo}'
+                                           />
+    
+    <c:CRMReclamiInserimentoDettagliSelezioneCoda aura:id="CRMReclamiInserimentoDettagliSelezioneCoda"
+                                                  aziendaSelezionata="{!v.aziendaSelezionata}"
+                                                  categoriaDettagli="{!v.categoriaDettagli}"
+                                                  delegaPresente="{!v.delegaPresente}"
+                                                  reclamoCompleto="{!v.reclamoCompleto}" 
+                                                  codaSelezionata="{!v.codaSelezionata}"
+                                                  tipo="{!v.tipoDettagli}"
+                                                  
+                                                  />
+    
+    <c:CRMReclamiInserimentoDettagliAttribuzioneReclamo attribuzioneReclamo="{!v.attribuzioneReclamo}"
+                                                        />
+    
+    <c:CRMReclamiInserimentoDettagliRadioButtonsContainer aziendaSelezionata="{!v.aziendaSelezionata}"
+                                                          outputObj="{!v.radioOutput}"
+                                                          errorMessage="{!v.radioMessage}"
+                                                          isOk="{!v.isRadioOk}"
+                                                          dettagliOutputObj="{!v.dettagliOutputObj}"
+                                                          />
+    
+    <!--Picklists Contatto Precedente-->
+    <lightning:select label="Contatto Precedente:"
+                      value="{!v.contattoPrecedente}"
+                      onchange="{!c.handleChange}"
+                      >
+        <option value="">Selezionare Valore</option>
+        <aura:iteration items="{!v.contattiPrecedenti}" var="cont">
+            <option value="{!cont}">{!cont}</option>
+        </aura:iteration>
+    </lightning:select>
+    
+    <aura:if isTrue="{!or(v.aziendaSelezionata=='Compass',v.aziendaSelezionata=='Futuro')}">
+        <aura:if isTrue="{!v.isAssicurazione}">
+            <c:CRMReclamiInserimentoDettagliCampiAggiuntivi output="{!v.aggiuntiviOutput}"
+                                                            isOk="{!v.isAggiuntiviOk}"
+                                                            errorMessage="{!v.aggiuntiviMessage}"
+                                                            />
+        </aura:if>
+    </aura:if>
+    
+</aura:component>

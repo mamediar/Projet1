@@ -1,0 +1,22 @@
+<aura:component controller="ovverideEventEditController" 
+                implements="force:appHostable,lightning:actionOverride,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" 
+                access="global" >
+     
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/> 
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="eventRecord" type="Event" />
+    <aura:attribute name="dateActuel" type="datetime" default=""/> 
+    <aura:attribute name="DataglioProductValues" type="Product2" default="" />
+    <aura:attribute name="filialeEvent" type="Object"  />
+
+    <aura:if isTrue="{!v.eventRecord}">
+    	<c:DettaglioAppuntamento detailEvent="{!v.eventRecord}" 
+                                 filialeEvent="{!v.filialeEvent}"
+                                 DataglioProductValues="{!v.DataglioProductValues}"
+                                 showDetail="true"/>
+        <!--c:DettaglioAppuntamento detailEvent="{!v.eventRecord}" dateActuel="{!v.eventRecord.ActivityDateTime}"
+                                 filialeEvent="{!v.filialeEvent}" 
+                                 DataglioProductValues="{!v.DataglioProductValues}" 
+                                 showDetail="true"/-->
+    </aura:if>
+</aura:component>

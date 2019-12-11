@@ -1,0 +1,11 @@
+<aura:component controller="XCSScriptViewerController" implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId">
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="mostraScript" type="Boolean" default="False"/>
+    <aura:attribute name="testoScript" type="String"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <lightning:button variant="Neutral" label="Mostra Script" onclick="{! c.showScript }"/>
+    <br /><br /><aura:if isTrue="{!v.mostraScript}">
+    	<lightning:formattedRichText value="{!v.testoScript}"></lightning:formattedRichText>
+    </aura:if>
+</aura:component>

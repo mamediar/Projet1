@@ -1,0 +1,171 @@
+<aura:component>
+    <aura:handler name="init" value="{!this}" action="{!c.currentMonth}"/> 
+  <aura:attribute name="amministrationList" type="sObject[]" default="[]" />
+  <aura:attribute name="years" type="Integer" default="[]" />
+  <aura:attribute name="currentMonth" type="String" default="" />
+  <aura:attribute name="keyMonth" type="String" default="" />
+  <aura:attribute name="keyYear" type="String" default="" />
+  <aura:attribute name="keyTotal" type="String" default="" />
+  <aura:registerEvent name="heure" type="c:eventFromAdministrationToClient" />
+  <aura:registerEvent name="mostraConttati" type="c:eventGetMostraContattiSource" />
+  <aura:attribute name="Gennaio" type="String" default="Gennaio" />
+  <aura:attribute name="Febbraio" type="String" default="Febbraio" />
+  <aura:attribute name="Marzo" type="String" default="Marzo" />
+  <aura:attribute name="Aprile" type="String" default="Aprile" />
+  <aura:attribute name="Maggio" type="String" default="Maggio" />
+  <aura:attribute name="Giugno" type="String" default="Giugno" />
+  <aura:attribute name="Luglio" type="String" default="Luglio" />
+  <aura:attribute name="Agosto" type="String" default="Agosto" />
+  <aura:attribute name="Settembre" type="String" default="Settembre" />
+  <aura:attribute name="Ottobre" type="String" default="Ottobre" />
+  <aura:attribute name="Novembre" type="String" default="Novembre" />
+  <aura:attribute name="Dicembre" type="String" default="Dicembre" />
+
+
+
+  <div class="slds-box slds-p-around_medium" style="background-color:#fff;">
+    <div class="">
+      <lightning:layout multipleRows="true">
+        <lightning:layoutItem size="2" padding="around-small">
+          <div class="slds-text-heading_medium">Selezionna Mese</div>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="4" padding="around-small">
+          <div class="custom-box">
+            <div class="slds-shrink-none">
+              <select name="year" class="slds-select" id="monthSelect"
+                >
+                <option value="{!v.currentMonth}"> {!v.currentMonth}</option>
+                <aura:if isTrue="{!v.currentMonth !=v.Gennaio}">
+                  <option value="Gennaio">Gennaio</option>
+                  </aura:if>
+                <aura:if isTrue="{!v.currentMonth!=v.Febbraio}">
+               
+                <option value="Febbraio">Febbraio</option>
+ 
+            </aura:if>
+            <aura:if isTrue="{!v.currentMonth!=v.Marzo}">
+      
+                <option value="Marzo">Marzo</option>
+         
+            </aura:if>
+            <aura:if isTrue="{!v.currentMonth!=v.Aprile}">
+           
+                <option value="Aprile">Aprile</option>
+       
+            </aura:if>
+            <aura:if isTrue="{!v.currentMonth!=v.Maggio}">
+              
+                <option value="Maggio">Maggio</option>
+           
+            </aura:if>
+            <aura:if isTrue="{!v.currentMonth!=v.Giugno}">
+              
+                <option value="Giugno">Giugno</option>
+            
+            </aura:if>
+            <aura:if isTrue="{!v.currentMonth!=v.Luglio}">
+             
+                <option value="Luglio">Luglio</option>
+           
+            </aura:if>
+            <aura:if isTrue="{!v.currentMonth!=v.Agosto}">
+              
+                <option value="Agosto">Agosto</option>
+          
+            </aura:if>
+            <aura:if isTrue="{!v.currentMonth!=v.Settembre}">
+             
+                <option value="Settembre">Settembre</option>
+           
+            </aura:if>
+            <aura:if isTrue="{!v.currentMonth!=v.Ottobre}">
+             
+                <option value="Ottobre">Ottobre</option>
+           
+            </aura:if>
+            <aura:if isTrue="{!v.currentMonth!=v.Novembre}">
+            
+                <option value="Novembre">Novembre</option>
+           
+            </aura:if>
+            <aura:if isTrue="{!v.currentMonth!=v.Dicembre}">
+            
+                <option value="Dicembre">Dicembre</option>
+           
+            </aura:if>
+              </select>
+            </div>
+          </div>
+        </lightning:layoutItem>
+      </lightning:layout>
+      <lightning:layout multipleRows="true">
+        <lightning:layoutItem size="2" padding="around-small">
+          <div class="slds-text-heading_medium"> Selezionna Anno</div>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="4" padding="around-small">
+          <div class="custom-box">
+            <div class="slds-shrink-none">
+              <select name="year" class="slds-select" id="yearSelect">
+                <option value="2019">2019</option>
+                <option value="2020">2020</option>
+                <option value="2021">2021</option>
+                <option value="2022">2022</option>
+                <option value="2023">2023</option>
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+                <option value="2026">2026</option>
+                <option value="2027">2027</option>
+                <option value="2028">2028</option>
+                <option value="2029">2029</option>
+                <option value="2030">2030</option>
+                <option value="2031">2031</option>
+                <option value="2032">2032</option>
+                <option value="2033">2033</option>
+                <option value="2034">2034</option>
+                <option value="2035">2035</option>
+                <option value="2036">2036</option>
+                <option value="2037">2037</option>
+                <option value="2038">2038</option>
+                <option value="2039">2039</option>
+                <option value="2040">2040</option>
+              </select>
+            </div>
+          </div>
+        </lightning:layoutItem>
+      </lightning:layout>
+      <lightning:layout multipleRows="true">
+        <lightning:layoutItem size="2" padding="around-small">
+          <div class="slds-text-heading_medium"> Visualizza per</div>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="4" padding="around-small">
+          <div class="custom-box">
+            <div class="slds-shrink-none">
+              <select class="slds-select " id="status" name="province">
+                <option value="Agente">Agente</option>
+                <option value="Totale">Totale</option>
+              </select></div
+            >
+          </div>
+        </lightning:layoutItem>
+      </lightning:layout>
+      <div class="slds-p-around_xx-large">
+        <div>
+          <button
+            class="slds-button slds-m-around_xxx-small slds-float_left slds-button_brand"
+            onclick="{!c.NavigateAdministrationAgente}"
+            style="background-color:#6a89e5;border:1px solid #6a89e5; color:#fff;"
+          >
+            Mostra Target
+          </button>
+        </div>
+        <div>
+          <lightning:button
+            class="bouton slds-m-around_xxx-small slds-float_left"
+            onclick="{!c.NavigateAdministrationCliente }"
+            label="Mostra Contatti Chuisi" name="mostraChuisi" 
+          /> 
+        </div>
+      </div>
+    </div>
+  </div>
+</aura:component>

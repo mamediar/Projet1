@@ -1,0 +1,66 @@
+<!--
+  @Component Name     : PV2870RiemissionePIN.cmp
+  @Description        : 
+  @Author             : sabrina vitali
+  @Group              : 
+  @Last Modified By   : Lorenzo Marzocchi
+  @Last Modified On   : 2019-10-2 17:52:51
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    25/7/2019, 16:15:48   sabrina vitali     Initial Version
+-->
+<aura:component extends="c:PVSubComponentBase" controller="PV2870RiemissionePINInserimento">
+    <!-- Attributi del PV -->
+    <aura:attribute name='indirizzoCompleto' type='String' />
+    <aura:attribute name="infoCartaData" type="OCSRecuperaInfoCartaResponse.RecuperaInfoCartaResponse" />
+
+    <aura:attribute name="options" type="List" default="[
+                                        {'label': 'SI', 'value': 'SI'},
+                                        {'label': 'NO', 'value': 'NO'}
+                                                        ]" />
+
+    <!-- main -->
+    <lightning:card class='slds-form_stacked'>
+
+        <table class="slds-table slds-table_bordered slds-table_col-bordered">
+            <tbody>
+                <tr class="slds-hint-parent">
+                    <td colspan="3" class="slds-cell-buffer_left">
+                        <p class="slds-p-horizontal_small slds-text-color_error slds-text-title_bold">
+                            Se l'indirizzo deve essere aggiornato premere F5 e selezionare Gestione Cliente - Variazione
+                            Indirizzi
+                        </p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <lightning:layout class="slds-wrap" multipleRows="true">
+            <lightning:layoutItem size="6" padding="horizontal-small">
+                <lightning:input name="Dataattivazione" value='{!v.infoCartaData.dataAttivazione}'
+                    label='Data attivazione' disabled="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem size="6" padding="horizontal-small">
+                <lightning:input name="DataPIN" value='{!v.infoCartaData.dataUltimoInvioPin}'
+                    label='Data ultimo invio PIN' disabled="true" />
+            </lightning:layoutItem>
+
+            <lightning:layoutItem size="12" padding="horizontal-small">
+                <lightning:input name="Indirizzo Cliente" value='{!v.indirizzoCompleto}'
+                    placeholder='{!v.indirizzoCompleto}' disabled="true" label="Indirizzo Cliente" />
+            </lightning:layoutItem>
+        </lightning:layout>
+        <div class="slds-grid slds-container_medium slds-align_absolute-center slds-wrap">
+            <div class="slds-size_6-of-12">
+                <span>
+                    <lightning:radioGroup name="indirizzoOk" aura:id="indirizzoOk" label="L'indirizzo è corretto?"
+                        options="{! v.options}" type="radio" required="true" />
+                </span>
+            </div>
+            <div class="slds-size_6-of-12">
+                <span></span>
+            </div>
+        </div>
+    </lightning:card> <!-- /main -->
+</aura:component>

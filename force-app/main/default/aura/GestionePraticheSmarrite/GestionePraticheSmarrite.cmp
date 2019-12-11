@@ -1,0 +1,64 @@
+<aura:component controller="GestionePraticheSmarriteController" 
+                implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId"
+                >
+    
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="contractList" type="Contract[]" />
+    <aura:attribute name="checkedContractList" type="Contract[]" />
+    <aura:attribute name="contractsSelected" type="Contract[]" />
+    <aura:attribute name="columns" type="List" />
+    <aura:attribute name="sortedBy" type="String" default="ContractNumber"/>
+    <aura:attribute name="sortedDirection" type="String" default="asc"/>
+    <aura:attribute name="hideCheckboxColumn" type="Boolean" />
+    <aura:attribute name="disableButton" type="Boolean" />
+    <aura:attribute name="flagAccolli" type="Boolean" default="false" />
+    <aura:attribute name="cardName" type="String" />
+    <aura:attribute name="sectionName" type="String" default="Tabella Pratiche" />
+    <aura:attribute name="note" type="String" />
+    
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    <aura:handler event="c:SFANoteEvent" action="{!c.handleSFANoteEvent}" />
+    
+    <lightning:accordion aura:id="accordion"
+                         activeSectionName="C"
+                         allowMultipleSectionsOpen="true">
+        
+        <lightning:card class="slds-card__body_inner"  title="{!v.cardName}" iconName="standard:contract">
+            
+            <div class = "slds-m-bottom--small" >
+                <!-- IPORTANTE: -->
+                <!-- Il metodo 'upStatus' lanciato dall'evento 'onclick' prende come riferimento l'ID del button per impostare lo stato -->
+                <lightning:button aura:id="Trovato" label="Trovato" variant="destructive" title="DOCUMENTO RITROVATO" onclick="{!c.upStatus}" disabled="{!v.disableButton}" />
+                <lightning:button aura:id="Smarrito" label="Smarrito" variant="destructive" title="DOCUMENTO SMARRITO" onclick="{!c.upStatus}" disabled="{!v.disableButton}" />
+            </div>
+            
+            <lightning:datatable aura:id = "contractTable"
+                                 resizeColumnDisabled = "true"
+                                 isLoading = "false"
+                                 keyField="id"
+                                 data="{! v.contractList }"
+                                 columns="{! v.columns }"
+                                 hideCheckboxColumn="{!v.hideCheckboxColumn}"
+                                 sortedBy="{!v.sortedBy}"
+                                 sortedDirection="{!v.sortedDirection}"
+                                 onsort="{!c.updateColumnSorting}"
+                                 />
+        </lightning:card>
+        
+        <aura:if isTrue="{! v.checkedContractList.length > 0 }">
+            <lightning:card class="slds-card__body_inner"  title="Pratiche Processate" iconName="standard:contract">
+                <lightning:datatable aura:id = "processati"
+                                     resizeColumnDisabled = "true"
+                                     isLoading = "false"
+                                     keyField="id"
+                                     data="{! v.checkedContractList }"
+                                     columns="{! v.columns }"
+                                     hideCheckboxColumn="true"
+                                     sortedBy="{!v.sortedBy}"
+                                     sortedDirection="{!v.sortedDirection}"
+                                     onsort="{!c.updateColumnSorting}"
+                                     />
+            </lightning:card>
+        </aura:if>
+    </lightning:accordion>
+</aura:component>

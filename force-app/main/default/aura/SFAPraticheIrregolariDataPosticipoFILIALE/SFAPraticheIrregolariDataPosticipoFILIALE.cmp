@@ -1,0 +1,18 @@
+<aura:component controller= "SFAPraticheIrregDataPostFILIALECntroller" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes" access="global">
+    <aura:attribute name="recordId" type="String"/>
+    
+    <aura:attribute name="myText" type="String" default=""/>
+    <aura:attribute name="dataPosticipo" type="Date" />
+    <aura:attribute name="disableButton" type="Boolean" default="true"/>
+   
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    
+        <div class="slds-size_2-of-12 slds-m-top_medium">
+            <ui:inputDate aura:id="dataPosticipoId" value="{!v.dataPosticipo}" disabled="{!v.disableButton}" displayDatePicker="true" format="dd/MM/yyyy" label="data richiesta:" required="false"/>
+        </div>      
+        <div class="slds-m-top_medium">
+            <lightning:button aura:id="inviaDataPosticipoaGDV" label="Richiedi Posticipo" disabled="{!v.disableButton}" variant="destructive" onclick="{!c.inviaDataPosticipo}"/>   
+        </div>
+        <ui:outputText value="{!v.myText}"/>        
+	
+</aura:component>

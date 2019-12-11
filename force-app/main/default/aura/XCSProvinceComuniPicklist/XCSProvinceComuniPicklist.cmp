@@ -1,0 +1,96 @@
+<aura:component controller="XCSProvinceComuniPicklistController" 
+                implements="lightning:availableForFlowScreens,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId"
+                access="global" 
+                >
+    
+    <!--INPUT ATTRIBUTES-->
+    <!--Boris-->
+    <!--Gestione Dimensione Form -->
+    <aura:attribute name="colonnaProvincia" type="Integer" default="6"/>
+    <aura:attribute name="colonnaCitta" type="Integer" default="6" />
+    <aura:attribute name="colonnaIndirizzo" type="Integer" default="6"/>
+    <aura:attribute name="colonnaCap" type="Integer" default="6" />
+
+      <!--Gestione Provincia-Citta -->
+    <aura:attribute name="enabledProvincia" type="Boolean" access="global" default="false"/>
+    <aura:attribute name="labelProvincia" type="String" access="global" description="Riferimento all'etichetta della picklist Master"/>
+    <aura:attribute name="labelCitta" type="String" access="global" description="Riferimento all'etichetta della picklist dipendente"/>
+    <aura:attribute name="provinciaCitta" type="Object" access="private" description="Proxy: tiene lo storico delle chiamate"/>
+    <aura:attribute name="listaCitta" type="Object" access="private" description="Setta la lista delle citta a partire dalla provincia"/>
+    <aura:attribute name="cittaSelezionata" type="String" access="global"/>
+    <aura:attribute name="provinciaSelezionata" type="String" access="global" description="Se si vuole popolare dal parent, è necessario passare la provincia in 2 lettere - esempio RM"/>
+    <aura:attribute name="provincia" type="String" access="global" description="Proxy: tiene lo storico delle chiamate"/>
+	
+    <!--Gestione Indirizzo -->
+    <aura:attribute name="enabledIndirizzo" type="Boolean" access="global" default="false"/>
+    <aura:attribute name="indirizzo" type="String" access="global" default=""/>
+    <aura:attribute name="labelIndirizzo" type="String" access="global" default=""/>
+    <aura:attribute name="labelCap" type="String" access="global" default=""/>
+    <aura:attribute name="cap" type="String" access="global" default=""/>
+    
+    <aura:handler name="init"  value="{!this}" action="{!c.init}"/>
+    <aura:method name="inizializza" action="{!c.init}"/>
+    
+    <aura:attribute name="spinnerCounter" type="Integer" default="0"/>
+    <c:SpinnerComponent aura:id="spinnerComponent" spinnerCounter="{!v.spinnerCounter}"/>
+    
+    
+    <!-- Gestione con Account  o Contact NON IMPLENTATA
+		E' POSSIBILE ESTENDERE IL COMPONENT IN MODO TALE CHE I DATI DALLE PROVINCIE POSSONO ESSERE
+		VALORIZZATI A PARTIRE DA UN ACCOUNT O DA UN CONTACT
+
+    
+     <aura:attribute name="accountId" type="String" access="global" description="Id riferimento dell'Account" default=""/>
+    <aura:attribute name="contactId" type="String" access="global" description="Id riferimento del Contact" default=""/>
+    <aura:attribute name="account" type="Object" access="private"/>
+	<aura:attribute name="contact" type="Object" access="private"/>
+    
+    <aura:method name="inizializzaAccount" action="{!c.}" description="inizializza i campi di questo component a partire dal Account" access="public"/>
+    <aura:method name="inizializzaContact" action="{!c.}" description="inizializza i campi del contact a partire dal Contact" access="public"/>
+-->
+    <!--Boris-->
+    
+     
+    <!--Boris Inizio-->
+    <aura:if isTrue="{!v.enabledProvincia}">   
+        <div class="slds-grid slds-gutters">
+            <div class="{!'slds-col slds-size_'+v.colonnaProvincia+'-of-12'}">
+                    <lightning:select aura:id="provincia" onchange="{!c.getCitta}"  label="{!v.labelProvincia}" value="{!v.provinciaSelezionata}">
+                        <option value="">-Seleziona un Valore-</option>
+                        <aura:iteration items="{!v.provinciaCitta}" var="provincia">
+                            <option value="{!provincia.identificativo}" selected="{!v.provinciaSelezionata==provincia.identificativo}">{!provincia.provincia}</option>
+                        </aura:iteration>
+                    </lightning:select>
+
+                
+            </div>
+            <div class="{!'slds-col slds-size_'+v.colonnaCitta+'-of-12'}">
+                <lightning:select label="{!v.labelCitta}" value="{!v.cittaSelezionata}" disabled="{!v.provinciaSelezionata == ''}" >
+                    <option value="">-Seleziona un Valore-</option>
+                    <aura:iteration items="{!v.listaCitta}" var="citta">
+                        <option value="{!citta.Comune__c}" selected="{!v.cittaSelezionata==citta.Comune__c}">{!citta.Comune__c}</option>
+                    </aura:iteration>
+                </lightning:select>
+                
+            </div>
+        </div>
+    </aura:if>
+    
+    <aura:if isTrue="{!v.enabledIndirizzo}">
+        <div class="slds-grid slds-gutters">
+            <div class="{!'slds-col slds-size_'+v.colonnaIndirizzo+'-of-12'}">
+                <lightning:input name="address" label="{!v.labelIndirizzo}" value="{!v.indirizzo}" />
+            </div>
+            <div class="{!'slds-col slds-size_'+v.colonnaCap+'-of-12'}">
+                <lightning:input name="postalCode" label="{!v.labelCap}" value="{!v.cap}"/>
+            </div>
+        </div>
+
+    </aura:if>
+    
+    <!--Boris Fine-->
+    
+
+    
+        
+</aura:component>

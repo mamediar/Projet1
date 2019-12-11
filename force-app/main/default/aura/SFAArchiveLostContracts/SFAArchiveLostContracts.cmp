@@ -1,0 +1,60 @@
+<aura:component controller="SFAArchiveLostContractsController" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes">
+
+  <aura:attribute name="columns" type="List"
+      default='[{"label": "Data", "fieldName": "CreatedDate", "type": "date", typeAttributes:{day:"numeric",month:"numeric",year:"numeric"}},
+              {"label": "Lotto", "fieldName": "OCSLottoId__c", "type": "text"},
+              {"label": "Contratto", "fieldName": "ContractNumber__c", "type": "text"},
+              {"label": "Accollo", "fieldName": "FlagAccollo__c", "type": "number"},
+  			      {"label": "Cliente", "fieldName": "AccountName__c", "type": "text"},
+              {"label": "Codice Fiscale", "fieldName": "AccountFiscalCode__c", "type": "text"},
+              {"label": "Data Nascita", "fieldName": "AccountBirthdate__c", "type": "date", typeAttributes:{day:"numeric",month:"numeric",year:"numeric"}},
+  			      {"label": "Città di nascita", "fieldName": "AccountBirthcity__c", "type": "text"},
+              {"label": "Prov. di nascita", "fieldName": "AccountBirthprovince__c", "type": "text"},
+              {"label": "Città", "fieldName": "AccountCity__c", "type": "text"},
+              {"label": "Prov.", "fieldName": "AccountProvince__c", "type": "text"},
+              {"label": "Tipo Prodotto", "fieldName": "ProductType__c", "type": "text"}]'
+
+  />
+  <aura:attribute name="colonne" type="String"
+      default="CreatedDate,OCSLottoId__c,ContractNumber__c,FlagAccollo__c,AccountName__c,AccountFiscalCode__c,AccountBirthdate__c,AccountBirthcity__c,AccountBirthprovince__c,AccountCity__c,AccountProvince__c,ProductType__c"
+  /> 
+  <aura:attribute name="stato" type="String" default="4"/>
+
+  <aura:attribute name="title" type="String" default="Archiviazione Pratiche Smarrite"/>
+
+  <aura:attribute name="selectedRows" type="List"/>
+  <aura:attribute name="contractTableFlag" type="Boolean" />
+  <aura:attribute name="recordId" type="String" />
+
+  <!--<lightning:card class="container slds-p-around_small">
+
+    <div style="font-weight:bold;font-size:.875rem">Archiviazione Pratiche Smarrite</div>-->
+
+    <lightning:card class="container slds-p-around_small">
+
+      <aura:set attribute="title">
+        	<lightning:icon iconName="standard:case" size="small"/>
+            <b style="margin-left:10px;">{! v.title }</b>
+        </aura:set>
+
+    <div class="slds-m-top_small slds-m-bottom_small">
+      Scaricare il 'Modulo Autodenuncia' e stampare 1 copia per ogni contratto. Di seguito viene visualizzata la lista dei contratti smarriti.
+      Una copia dell'autodenuncia deve essere archiviata per ogni contratto smarrito.
+    </div>
+
+    <c:SFAContractList
+      selectedRows="{!v.selectedRows}"
+      contractTableFlag="{!v.contractTableFlag}"
+      colonne="{!v.colonne}"
+      stato="{!v.stato}"
+      recordId="{!v.recordId}"
+      columns="{!v.columns}"
+    />
+
+    <aura:if isTrue="{!v.contractTableFlag}">
+      <lightning:button class="slds-m-top_medium" variant="brand" label="Autodenuncia archiviata" onclick="{! c.handleArchiviaButton }" />
+    </aura:if>
+
+  </lightning:card>
+
+</aura:component>

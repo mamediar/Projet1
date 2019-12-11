@@ -1,0 +1,42 @@
+<aura:component controller="CRMRetentionClienteFissaApptCntrll" implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId">
+	
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="obiezioneSelected" type="String" default="default"/>
+    <aura:attribute name="tassoSelected" type="String" default="default"/>
+    <aura:attribute name="idCliente" type="String" />
+    <aura:attribute name="caseRecord" type="Case"/>
+    <aura:attribute name="isVisibleAppoitmentComponent" type="Boolean" default="false"/>
+    <aura:attribute
+                    type="Event"
+                    name="newEvent"
+                    default="{ 'sobjectType' : 'Event',
+                             'Telefono_Cellulare__c':'',
+                             'DurationInMinutes':0,
+                             'ActivityDateTime':'',
+                             'Tipo_Occupazione__c':'',
+                             'Product__c':'',
+                             'Comune__c':'',
+                             'Provincia__c':'',
+                             'Prodotto__c':'Retention',
+                             'Note__c':''}"
+                    />
+                            
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    <aura:handler name="change" value="{!v.caseRecord}" action="{!c.setVisible}"/>
+    <aura:handler event="c:EventToCreaAppuntamento" action="{!c.handleComponentEvent}"/>
+    
+    <force:recordData aura:id="recordLoader"
+    recordId="{!v.recordId}"
+    fields="AccountId"
+    targetFields="{!v.caseRecord}"/>
+
+    <aura:if isTrue="{!v.isVisibleAppoitmentComponent}">
+    	<c:creaAppuntamento idCliente="{!v.caseRecord.AccountId}" newEvent="{!v.newEvent}" valuePlaceHolder ="{! v.addComponentToFissaAppuntamento}">
+            <aura:set attribute="valuePlaceHolder">
+    			<c:CRMRetentionClienteFissaApptObbTass tassoSelected='{!v.tassoSelected}' obiezioneSelected='{!v.obiezioneSelected}'/>
+            </aura:set>
+            <!-- <c:CRMRetentionClienteFissaApptObbTass tassoSelected='{!v.tassoSelected}' obiezioneSelected='{!v.obiezioneSelected}'/> -->
+        </c:creaAppuntamento>
+    </aura:if>
+   
+</aura:component>

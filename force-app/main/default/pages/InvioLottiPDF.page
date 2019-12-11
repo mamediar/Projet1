@@ -1,0 +1,142 @@
+<apex:page renderAs="PDF"
+    standardController="Case"
+    extensions="InvioLottiPDFController"
+    action="{!init}"
+    applyBodyTag="false"
+>
+    <head>
+        <style>
+            body { font-family: 'Arial Unicode MS'; }
+            .underlined{
+            	color: james-brown;
+            	border-bottom:0.5px solid black;
+            }
+            .toContainer {
+            padding-top:120px;
+            }
+            .copyCounterContainer{
+            padding-left:45%;
+            padding-top:80px;
+            }
+            .idsTable{
+            width:100%;
+            }
+            .idsTable>tr{
+            width:100%;
+            }
+            .fromContainer{
+            position:absolute;
+            padding-left:52%;
+            margin-top:-550px;
+            }
+            .longUnderlined{
+            color: white;
+            border-bottom:0.5px solid black;
+            width:100px;
+            }
+        </style>
+    </head>
+    <body>
+        
+        <apex:repeat value="{!copyCounter}" var="i">
+            <apex:image value="{!$Resource.CompassLogo}" width="350" height="200" />
+            <div class="infoLotContainer">
+                ID Lotti:<apex:repeat value="{!idsOCSLotti}" var="id">
+                			<apex:outputText styleClass="underlined" value="{!id}">&nbsp;&nbsp;</apex:outputText>
+               			</apex:repeat><br/>
+                Numero Scatole:&nbsp;<apex:outputText styleClass="underlined" value="{!nOfBoxes}"/><br/>
+                Data Invio:&nbsp;<apex:outputText styleClass="underlined" value="{!shipDate}"/><br/>
+            </div><br/>
+            <div class="fromNameContainer">
+                DA:<br/>
+                <apex:outputText value="{!Case.Branch__r.Name}"/>
+            </div>
+            <div class="fromInfoContainer">
+                ID Filiale:&nbsp;<apex:outputText styleClass="underlined" value="{!Case.Branch__r.ShippingCity}"/><br/>
+                Indirizzo:&nbsp;<apex:outputText styleClass="underlined" value="{!Case.Branch__r.ShippingStreet}"/><br/>
+                Città:&nbsp;<apex:outputText styleClass="underlined" value="{!Case.Branch__r.ShippingCity}"/><br/>
+                Provincia:&nbsp;<apex:outputText styleClass="underlined" value="{!Case.Branch__r.ShippingState}"/><br/>
+                CAP:&nbsp;<apex:outputText styleClass="underlined" value="{!Case.Branch__r.ShippingPostalCode}"/>            
+            </div>
+            <br/><br/><br/><br/><br/><br/><br/>
+            <div class="toContainer">
+                A:<br/>
+                <apex:outputText value="{!idm.name}"/><br/>
+                <apex:outputText value="{!idm.shippingstreet}"/>&nbsp;<apex:outputText value="{!idm.shippingpostalcode}"/><br/>
+                <apex:outputText value="{!idm.shippingcity}"/>&nbsp;(<apex:outputText value="{!idm.shippingstate}"/>)<br/>
+                <apex:outputText value="{!idm.description}"/>
+            </div>
+            <div class="fromContainer">
+              	DA:<br/>
+                <apex:outputText value="{!Case.Branch__r.Name}"/><br/>
+                Nome Mittente:<apex:outputText value="____________________" styleClass="longUnderlined"/><br/>
+                Firma Mittente:<apex:outputText value="____________________" styleClass="longUnderlined"/><br/>
+                Data:<apex:outputText value="____________________" styleClass="longUnderlined"/><br/>
+                <br/><br/><br/>
+                Corriere<br/>
+                Nome Corriere:<apex:outputText value="____________________" styleClass="longUnderlined"/><br/>
+                Firma Corriere:<apex:outputText value="____________________" StyleClass="longUnderlined"/><br/>
+                Data:<apex:outputText value="____________________" styleClass="longUnderlined"/><br/>
+                <br/><br/><br/>
+                IDM<br/>
+                Nome Destinatario:<apex:outputText value="____________________" styleClass="longUnderlined"/><br/>
+                Firma Destinatario:<apex:outputText value="____________________" styleClass="longUnderlined"/><br/>
+                Data:<apex:outputText value="____________________" styleClass="longUnderlined"/><br/>
+            </div>
+            
+            <div class="copyCounterContainer" style="page-break-after:always">
+                Copia {!i} di 3
+            </div>
+        </apex:repeat>
+        <apex:image value="{!$Resource.CompassLogo}" width="350" height="200" />
+            <div class="infoLotContainer">
+                ID Lotti:<apex:repeat value="{!idsOCSLotti}" var="id">
+                			<apex:outputText styleClass="underlined" value="{!id}">&nbsp;&nbsp;</apex:outputText>
+               			</apex:repeat><br/>
+                Numero Scatole:&nbsp;<apex:outputText styleClass="underlined" value="{!nOfBoxes}"/><br/>
+                Data Invio:&nbsp;<apex:outputText styleClass="underlined" value="{!shipDate}"/><br/>
+            </div><br/>
+        <div class="fromNameContainer">
+               DA:<br/>
+               <apex:outputText value="{!Case.Branch__r.Name}"/>
+         </div>
+            <div class="fromInfoContainer">
+                ID Filiale:&nbsp;<apex:outputText styleClass="underlined" value="{!Case.Branch__r.ShippingCity}"/><br/>
+                Indirizzo:&nbsp;<apex:outputText styleClass="underlined" value="{!Case.Branch__r.ShippingStreet}"/><br/>
+                Città:&nbsp;<apex:outputText styleClass="underlined" value="{!Case.Branch__r.ShippingCity}"/><br/>
+                Provincia:&nbsp;<apex:outputText styleClass="underlined" value="{!Case.Branch__r.ShippingState}"/><br/>
+                CAP:&nbsp;<apex:outputText styleClass="underlined" value="{!Case.Branch__r.ShippingPostalCode}"/>            
+            </div>
+            <br/><br/><br/><br/><br/><br/><br/>
+            <div class="toContainer">
+                A:<br/>
+                <apex:outputText value="{!idm.name}"/><br/>
+                <apex:outputText value="{!idm.shippingstreet}"/>&nbsp;<apex:outputText value="{!idm.shippingpostalcode}"/><br/>
+                <apex:outputText value="{!idm.shippingcity}"/>&nbsp;(<apex:outputText value="{!idm.shippingstate}"/>)<br/>
+                <apex:outputText value="{!idm.description}"/>
+            </div>
+            
+            <div class="fromContainer">
+              	DA:<br/>
+                <apex:outputText value="{!Case.Branch__r.Name}"/><br/>
+                Nome Mittente:<apex:outputText value="____________________" styleClass="longUnderlined"/><br/>
+                Firma Mittente:<apex:outputText value="____________________" styleClass="longUnderlined"/><br/>
+                Data:<apex:outputText value="____________________" styleClass="longUnderlined"/><br/>
+                <br/><br/><br/>
+                Corriere<br/>
+                Nome Corriere:<apex:outputText value="____________________" styleClass="longUnderlined"/><br/>
+                Firma Corriere:<apex:outputText value="____________________" StyleClass="longUnderlined"/><br/>
+                Data:<apex:outputText value="____________________" styleClass="longUnderlined"/><br/>
+                <br/><br/><br/>
+                IDM<br/>
+                Nome Destinatario:<apex:outputText value="____________________" styleClass="longUnderlined"/><br/>
+                Firma Destinatario:<apex:outputText value="____________________" styleClass="longUnderlined"/><br/>
+                Data:<apex:outputText value="____________________" styleClass="longUnderlined"/><br/>
+            </div>
+            
+            <div class="copyCounterContainer">
+                Copia 3 di 3
+            </div>
+    </body>
+    
+</apex:page>

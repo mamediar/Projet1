@@ -1,0 +1,4 @@
+<aura:event type="APPLICATION" description="booj">
+
+<aura:attribute name="boolTab" type="Boolean"/>
+</aura:event>

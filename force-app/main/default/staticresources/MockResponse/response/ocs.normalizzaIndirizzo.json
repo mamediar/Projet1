@@ -1,0 +1,41 @@
+{
+    "resultCode": 0,
+    "resultMessage": "Ok",
+    "normalizzaIndirizzoResponse": {
+        "esito": "1",
+        "codErrore": "0000",
+        "desErrore": "",
+        "elencoIndirizzi": [
+            {
+                "tipoIndirizzo": "VIALE",
+                "indirizzo": "CERTOSA",
+                "civico": "14",
+                "cap": "20100",
+                "localita": "MILANO",
+                "provincia": "MI",
+                "nazione": "ITALIA",
+                "capRischio": null
+            },
+            {
+                "tipoIndirizzo": "VIA",
+                "indirizzo": "MANFREDI",
+                "civico": "15",
+                "cap": "21049",
+                "localita": "TRADATE",
+                "provincia": "VA",
+                "nazione": "ITALIA",
+                "capRischio": null
+            },
+            {
+                "tipoIndirizzo": "PIAZZA",
+                "indirizzo": "SAN ROCCO",
+                "civico": "16",
+                "cap": "10100",
+                "localita": "TORINO",
+                "provincia": "TO",
+                "nazione": "ITALIA",
+                "capRischio": null
+            }
+        ]
+    }
+}

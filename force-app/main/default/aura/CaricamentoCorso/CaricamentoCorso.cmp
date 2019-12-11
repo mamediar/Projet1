@@ -1,0 +1,71 @@
+<!--  @component : CaricamentoCorso
+       @description: 
+       @author: Mady COLY
+       @dateCreated: 30/07/2019
+       @authorLastModified: Mady COLY
+       @dateLastModified: 30/07/2019 -->
+
+<aura:component controller="CaricamentoCorsoController" implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+                access="global">
+    <aura:handler name="init" value="this" action="{!c.doInit}" />
+    <article class="slds-card">   
+        <div class="slds-card__header">
+            <div class="row">
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col">
+                        <lightning:input name="Corso" label="Corso : " placeholder="Corso"/>
+                    </div>
+                    <div class="slds-col">
+                        <lightning:select name="agguingiCorso" label="Agguingi al corso" required="true">
+                            <option value="">Nuovo corso</option>
+                            <option value="1">one</option>
+                            <option value="2">two</option>
+                            <option value="3">three</option>
+                        </lightning:select>
+                    </div>
+                    <div class="slds-col">
+                        <lightning:input type="date" name="dateScadenza" label="Data di scadenza" placeholder="Data di scadenza"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="slds-col">
+                    <lightning:input name="CodAssofin" label="Cod Assofin: " placeholder="Cod Assofin"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="slds-col">
+                    <lightning:textarea name="descCorso" label="Descr. corso" placeholder="Descrizione de corso"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="slds-col">
+                    <lightning:select name="tipoligiaCorso" label="Tipologia corso :" required="true">
+                        <option value="">Nuovo corso</option>
+                        <option value="1">one</option>
+                        <option value="2">two</option>
+                        <option value="3">three</option>
+                    </lightning:select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="slds-col">
+                    <lightning:select name="annoRiferimento" label="Anno di Riferimento :" required="true">
+                        <option 		value="">2019</option>
+                        <option value="1">2018</option>
+                        <option value="2">2017</option>
+                        <option value="3">2016</option>
+                    </lightning:select>
+                </div>
+            </div>
+            <div class="row">
+                <lightning:input aura:id="fileId" onchange="{!c.handleUploadFinished}" type="file" name="file" label="Upload Attachment" multiple="true"/>
+            </div>
+        </div>
+        <footer class="slds-card__footer">
+            <div class="row slds-align_absolute-center">
+                <lightning:button variant="destructive" label="Avvia Caricamento" onclick="{! c.handleClick }"/>
+            </div>
+        </footer>
+    </article>
+</aura:component>

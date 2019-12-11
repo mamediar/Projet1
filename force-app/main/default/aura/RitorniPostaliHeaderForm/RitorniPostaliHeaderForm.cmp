@@ -1,0 +1,44 @@
+<aura:component>
+        <aura:attribute name="ritornoPostaleId" type="Id" />
+        <aura:if isTrue="{! not( empty(v.ritornoPostaleId))}" >                
+                <lightning:recordViewForm recordId="{!v.ritornoPostaleId}" objectApiName="RitorniPostali__c" > 
+                    <div class="slds-grid">                            
+                        <div class="slds-col slds-size_1-of-2">
+                                <lightning:outputField fieldName="OCSAnag__c" />
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                                 <!-- creare campo formula-->
+                            	<lightning:outputField fieldName="TipoPagamento__c" />
+                        </div>
+                    </div>
+                    <div class="slds-grid">
+                            <div class="slds-col slds-size_1-of-2">
+                                <lightning:outputField fieldName="LoanType__c" />
+                            </div>
+                            <div class="slds-col slds-size_1-of-2">                               
+                                <lightning:outputField fieldName="LoanNumber__c" />
+                            </div>
+                    </div>
+                    <div class="slds-grid">
+                            <div class="slds-col slds-size_1-of-2">                               
+                                <lightning:outputField fieldName="LetterId__c" />
+                            </div>
+                            <div class="slds-col slds-size_1-of-2">                               
+                                <lightning:outputField fieldName="ReturnedReason__c" />
+                            </div>
+                    </div>
+                    <div class="slds-grid">
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning:outputField fieldName="LetterTypeId__c" />
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            &nbsp;
+                        </div>
+                    </div>
+                    
+                        <lightning:outputField fieldName="Original_Address__c" />
+                         <lightning:outputField fieldName="Sent_Address__c" /> <!-- creare formula-->                                                                                          
+                </lightning:recordViewForm>
+            <!--></div>-->
+            </aura:if>            
+</aura:component>

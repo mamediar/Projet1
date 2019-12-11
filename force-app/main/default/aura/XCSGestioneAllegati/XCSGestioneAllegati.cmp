@@ -1,0 +1,78 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" 
+                access="global" controller="CRMReclamiGestioneContainerController"
+                >
+	<aura:attribute name="showList" type="Boolean" default="true"/>
+    <aura:attribute name="isNotSelectable" type="Boolean" default="true"/>
+    <aura:attribute name="canDelete" type="Boolean" default="true"/>
+    <aura:attribute name="canUpload" type="Boolean" default="true"/>
+    <aura:attribute name="fileList" type="Attachment[]" default="[]"/>
+    <aura:attribute name="numberAttach" type="Integer"/>
+    <aura:attribute name="allegatiSelezionati" type="Attachment[]"/>
+    <!--<aura:attribute name="allegatiSelezionati" type="ContentVersion[]"/>-->
+    <aura:attribute name="isCloned" type="Boolean" default="false"/>
+    <aura:attribute name="isGestito" type="Boolean" default="false"/>
+
+    <aura:attribute name="fileName" type="String"/>
+    <aura:attribute name="idParent" type="String"/>
+
+    <aura:attribute name="columns" type="List" />
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="showSpinner" type="Integer" default="0"/>
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+   
+    <!--STAMPA IDM -->
+    <aura:if isTrue="{!v.isCloned}">
+        <aura:if isTrue="{!v.fileList.length>0}">
+            <lightning:datatable aura:id="attachmentTable"
+                                    keyField="id"
+                                    data="{!v.fileList}"
+                                    columns="{!v.columns}"
+                                    hideCheckboxColumn="{!v.isNotSelectable}"
+                                    showRowNumberColumn="true"
+                                    />
+            <br/>
+            <aura:if isTrue="{!not(v.isGestito)}">
+                <lightning:button variant="brand" label="Salva come gestita" title="Salva come gestita" onclick="{!c.salvaComeGestita}"/>
+                <aura:set attribute="else">
+                    Reclamo salvato come gestito.
+                </aura:set>
+            </aura:if>
+
+        </aura:if>
+    <aura:set attribute="else"> 
+
+    <!--FINE STAMPA IDM -->   
+    
+    <aura:if isTrue="{!not(v.showSpinner==0)}">
+        <div class="spinner">
+            <lightning:spinner alternativeText="Loading" size="large" />
+        </div>
+    </aura:if>
+
+    <aura:if isTrue="{!v.canUpload}">
+        <lightning:input type="file"
+                         label=""
+                         onchange="{!c.addFile}"
+                         />
+    </aura:if>
+    <br/>
+
+    
+    
+        <aura:if isTrue="{!v.fileList.length>0}">
+            <lightning:datatable aura:id="attachmentTable"
+                                 keyField="id"
+                                 data="{!v.fileList}"
+                                 columns="{!v.columns}"
+                                 onrowaction="{!c.deleteFile}"
+                                 hideCheckboxColumn="{!v.isNotSelectable}"
+                                 onrowselection="{!c.selectAllegati}"
+                                 showRowNumberColumn="true"
+                                 />
+     
+            
+            
+        </aura:if>
+    </aura:set>
+    </aura:if>
+</aura:component>

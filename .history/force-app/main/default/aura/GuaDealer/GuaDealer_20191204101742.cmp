@@ -1,0 +1,12 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId" controller="GUA_DettaglioDealerCnt" access="global">
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="caseDealer" type="Case" default="{'sobjectType' : 'Case' }"/>
+    <aura:attribute name="datiAggiuntivi" type="Object" />
+    <aura:attribute type="Account" name="filialeCase" default="" />
+    <aura:attribute type="Boolean" name="isDealer" default="false" />
+    <aura:handler name="init" value="{!this}" action="{!c.handleManageContact}"/>
+    
+    <div class="slds-text-body_regular">Contact Inbound</div>
+    <c:GUA_DetailDealerHandlerCmp caseDealer="{!v.caseDealer}" isNotInbound='false' datiAggiuntivi="{!v.datiAggiuntivi}" isDealer="{!v.isDealer}" filialeCase="{!v.filialeCase}"/>
+    <c:GUA_Dettaglio2Contact isNotDealerInbound = "false" contactDetails="{!v.caseDealer}" />
+</aura:component>

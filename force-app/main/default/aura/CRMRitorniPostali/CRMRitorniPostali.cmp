@@ -1,0 +1,245 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId" controller="CRMRitorniPostali">
+    <aura:attribute name="isFiliale" type="Boolean" default="false"/>
+    <aura:attribute name="caseRecord" type="Object"/>
+    <aura:attribute name="record" type="Object"/>
+    
+    <aura:attribute name="recordLoadError" type="String"/>
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="ritornoPostaleId" type="Id" />
+    <aura:attribute name="ritorniPostaliRecord" type="Object"/>
+    
+    <aura:attribute name="esiti" type="List" default="[{'label':'Cliente passato a RID', 'value':'RID'},
+                                        {'label' : 'BP già rispediti e ricevuti', 'value':'AlreadyDone'},
+                                        {'label': 'Pratica estinta', 'value':'Estinta'}, 
+                                        {'label' : 'Cliente rifiuta carta' , 'value':'RifiutaCarta'} , 
+                                        {'label': 'Carta già rispedita e ricevuta' , 'value': 'SentReceivedCarta'},
+                                        {'label':'Altro', 'value':'Other'}]" /> 
+
+    <aura:attribute name="userDateTime" type="String" default=""/>
+    
+    <force:recordData aura:id="recordLoaderCase"
+        recordId="{!v.recordId}"
+        fields="Subject,RecordTypeId,RecordType.Name,Categoria_Riferimento__r.External_Id__c"
+        targetFields="{!v.caseRecord}"
+        targetRecord="{!v.record}" 
+        targetError="{!v.recordLoadError}"
+        mode="VIEW"
+        layoutType="FULL"
+    />
+
+    <!--
+    ERRORE CARICAMENTO {! v.recordLoadError}
+	CASE DATA {!v.caseRecord.Subject } {!v.caseRecord.RecordTypeId} {!v.caseRecord.RecordType.Name} {!v.Categoria_Riferimento__r.External_Id__c}
+    -->
+    <aura:attribute name="radioGroupCallTypeOption" type="List" default="[  {'label': 'Inbound' , 'value' : 'Inbound'},
+                                                                            {'label': 'Outbound', 'value': 'Outbound'}
+                                                                        ]"/>
+    <aura:attribute name="radioGroupCallPersonOption" type="List" default="[  {'label': 'Cliente - Coobbligato' , 'value' : 'Cliente - Coobbligato'},
+                                                                            {'label': 'Banca', 'value': 'Banca'},
+                                                                            {'label': 'Altro', 'value': 'Altro'},
+                                                                        ]"/>        
+    <aura:attribute name="radioGroupCallPersonValue" type="String" default=""/>    
+    <aura:attribute name="radioGroupCallTypeValue" type="String" default=""/>    
+    <aura:attribute name="radioGroupResultValue" type="String" default=""/> 
+    <aura:attribute name="radioGroupResultValue1" type="String" default=""/> 
+    <aura:attribute name="radioGroupDocCopyValue" type="String" default=""/> 
+    <aura:attribute name="note" type="String" default=""/> 
+    <aura:attribute name="interlocutoreAltro" type="String" />
+
+    <aura:attribute name="radioGroupOKContactOption" type="List" default="[
+                                                    {'label': 'Indirizzo confermato - già aggiornato' , 'value' : 'OK1'}, 
+                                                    {'label': 'Indirizzo variato', 'value': 'Modifica'},                                                       
+                                                    {'label': 'Cliente non collabora, non richiamare', 'value': 'KONotRecall'},
+                                                    {'label': 'Dichiarato decesso', 'value': 'Decesso'},
+                                                ]"/>  
+    <aura:attribute name="radioGroupPhoneResultOption" type="List" default="[
+                                                {'label': 'OK contatto avvenuto' , 'value' : 'OK'},                                                    
+                                                {'label': 'KO non trovato', 'value': 'KO'},
+                                                {'label': 'Chiede di essere richiamato', 'value': 'Appointment'},
+                                            ]"/>     
+     <aura:attribute name="radioGroupKOContactOption" type="List" default="[
+                                            {'label': 'Nessun recapito' , 'value' : 'NoPhone'},    
+                                            {'label': 'Numero errato', 'value': 'WrongPhone'},
+                                            {'label': 'Non risponde al telefono', 'value': 'Missing'},
+                                            {'label': 'Irraggiungibile', 'value': 'NoReach'},
+                                        ]"/>                                              
+                                                
+  <aura:attribute name="radioGroupDocCopyOption" type="List" default="[  
+                {'label': 'SI' , 'value' : 'SI'},
+                {'label': 'NO', 'value': 'NO'}
+                ]"/>   
+    
+    <aura:attribute name="reasonValue" type="String" default="RID" />
+    <aura:attribute name="eventManagerResult" type="Integer" default="0" />
+    <aura:attribute name="finalResultMessage" type="String" default="" />
+    <aura:attribute name ="inviaDoc2System"  type="Boolean" default="false" />
+    <aura:handler name="init" value="this" action="{!c.doInit}" />
+
+    <aura:if isTrue="{! v.finalResultMessage==''}" >    
+
+    <!-- SHOW DETAIL RITORNI POSTALI-->
+    <!--<lightning:recordViewForm recordId="001XXXXXXXXXXXXXXX" objectApiName="RitorniPostali__c">-->
+    <div class="slds-var-p-around_x-small">
+        <!-- CASE -->
+        <div class="slds-box slds-box_small">  
+            <lightning:recordViewForm recordId="{!v.recordId}" objectApiName="Case" > 
+                	<lightning:outputField fieldName="Branch__c" />
+                   <!-- <lightning:outputField fieldName="CaseNumber" />-->
+                   <!-- <lightning:outputField fieldName="Categoria_Riferimento__c" />-->
+            </lightning:recordViewForm>
+            <!-- RITORNI POSTALI -->
+           
+             <c:RitorniPostaliHeaderForm ritornoPostaleId="{!v.ritornoPostaleId}" />
+        
+        </div>
+    <div class="slds-var-p-vertical_x-small" >
+        <div class="slds-form   slds-box slds-box_small">
+            <aura:if isTrue="{! !v.inviaDoc2System}">
+        <!-- RADIO GROUP 1 Tipo Chiamata-->
+        <div class="slds-form-element slds-form-element_stacked">
+            <lightning:radioGroup label="Tipo chiamata"
+                aura:id="radioGroupRequired"
+                name="radioGroupCallType"                 
+                options="{! v.radioGroupCallTypeOption}"     
+                required="true" 
+                value="{! v.radioGroupCallTypeValue}"
+                disabled="{!v.isFiliale}"
+                type="radio" 
+               />
+        </div>
+            <aura:if isTrue="{! v.radioGroupCallTypeValue!=''}">
+                <!-- RADIO GROUP 2 Interlocutore-->
+                <div class="slds-form-element slds-form-element_stacked">
+                <lightning:radioGroup label="Interlocutore"
+                    aura:id="radioGroupRequired"
+                    name="radioGroupCallPerson" 
+                    default="false" 
+                    options="{! v.radioGroupCallPersonOption}"     
+                    required="true" 
+                    value="{! v.radioGroupCallPersonValue}"
+                    type="radio"
+                    
+                     />
+                    </div>
+                <aura:if isTrue="{! v.radioGroupCallPersonValue == 'Altro'}" >
+                    <div class="slds-form-element slds-form-element_stacked"  >
+                    <lightning:input  aura:id="radioGroupRequired" type="text" value="{!v.interlocutoreAltro}" required="true"/>
+                    </div>
+                </aura:if>
+            <!-- RADIO GROUP 3 VALORI DIPENDENTI DA GROUP 1-->      
+            <div class="slds-form-element slds-form-element_stacked"  >
+                <lightning:radioGroup label="{! (v.radioGroupCallTypeValue=='Inbound') ? 'OK contatto avvenuto' : 'Esito telefonata'}"
+                    name="radioGroupResult" 
+                    aura:id="radioGroupRequired"
+                    default="false" 
+                    options="{! (v.radioGroupCallTypeValue=='Inbound')?  v.radioGroupOKContactOption : v.radioGroupPhoneResultOption }"     
+                    required="true" 
+                    value="{! v.radioGroupResultValue}"
+                    type="radio" 
+                    />
+            </div>
+                <!--GESTIONE ESITI INBOUND
+                    - Indirizzo Confermato -> No Action mostrare selezione per categoria 2272 - seleziona NO mostra un'altra selezione
+                    - Indirizzo Variato -> Form di variazione e selezione per categoria 2272 - seleziona NO mostra un'altra selezione
+
+                -->
+                
+                <!--GESTIONE ESITI OUTBOUND
+                    - OK Contatto avvenuto -> Lavorazione identica a Inbound NB-05
+                    - KO non trovato -> Selezione relative azioni NB-09
+                    - Chiede di essere richiamato -> Calendario selezione appuntamento
+
+                -->
+                <!-- CHIEDE DI ESSERE RICHIAMATO -->
+                <aura:if isTrue="{! v.radioGroupCallTypeValue=='Outbound' &amp;&amp; v.radioGroupResultValue=='Appointment' }" >
+                   <!-- <fieldset class="slds-box slds-theme__default slds-container__medium">       
+                            <div class="container">
+                                <div class="content">                                    
+                                    <div class=" slds-form-element__control slds-grid"> -->
+                                        <!--<label>Date Time</label>-->
+                                        <lightning:input label ="Selezionare data e ora" aura:id="radioGroupRequired"  class="date-time" type="datetime-local" name="date"
+                                                            value="{!v.userDateTime}" onchange="{!c.checkDate}" required="true" />
+                                  <!--  </div>
+                                </div>
+                            </div>
+                    </fieldset>-->
+                </aura:if>
+            <!-- RADIO GROUP 4 APPARE SOLO SE 1 - OUTBOUND e 3 - OK-->        
+                <aura:if isTrue="{! v.radioGroupCallTypeValue=='Outbound' &amp;&amp; (v.radioGroupResultValue=='OK' || v.radioGroupResultValue=='KO') }" >
+                <div class="slds-form-element slds-form-element_stacked">
+                    <lightning:radioGroup label="{! (v.radioGroupResultValue=='OK' ) ? 'OK contatto avvenuto' :'KO non trovato' }"
+                    name="radioGroupResult1" 
+                    aura:id="radioGroupRequired"
+                    default="false" 
+                    options="{! (v.radioGroupResultValue=='OK' ) ? v.radioGroupOKContactOption : v.radioGroupKOContactOption }"     
+                    required="true" 
+                    value="{! v.radioGroupResultValue1}"
+                    type="radio" />                    
+                </div>
+                </aura:if> <!-- ok contatto avvenuto-->
+                <!--FORM DI VARIAZIONE-->
+                <aura:if isTrue="{! v.radioGroupResultValue=='Modifica' || v.radioGroupResultValue1=='Modifica' }" >
+                    <!-- ritorno postale ID a1Q0Q0000007nq8UAA-->
+                    <lightning:recordViewForm class="slds-var-p-vertical_x-small" recordId="{!v.ritornoPostaleId}" objectApiName="RitorniPostali__c">
+                           <div class="slds-box slds-box_small slds-var-p-around_x-small"> 
+                                <lightning:outputField fieldName="OriginalAddress__c" />
+                                <lightning:outputField fieldName="OriginalCap__c" />
+                                <lightning:outputField fieldName="OriginalProv__c" />
+                                <lightning:outputField fieldName="OriginalCity__c" />                            
+                           </div>
+                    </lightning:recordViewForm>
+                    <lightning:recordEditForm recordId="{!v.ritornoPostaleId}"  
+                            onsubmit="{!c.handleAddressSubmit}" objectApiName="RitorniPostali__c" aura:id="addressForm" >
+                            <div class="slds-box slds-box_small slds-var-p-around_x-small"> 
+                                <lightning:inputField fieldName="NewAddress__c" aura:id="NewAddress__c"/>
+                                <lightning:inputField fieldName="NewCap__c" aura:id="NewCap__c" />
+                                <lightning:inputField fieldName="NewProv__c" aura:id="NewProv__c" />
+                                <lightning:inputField fieldName="NewCity__c"  aura:id="NewCity__c" />                            
+                            </div>
+                            <!-->
+                            <div class="slds-m-top_medium">
+                                    <lightning:button disabled="{!v.disabled}" variant="brand" type="submit" name="save" label="Save" />
+                                </div>
+                            -->
+                    </lightning:recordEditForm>
+                </aura:if>       <!-- MODIFICA INDIRIZZO-->         
+                </aura:if> <!-- caLL TYPE-->
+           
+                <!-- Richiesta Copia Documentazione -->
+            </aura:if> 
+                <aura:if isTrue="{! (v.radioGroupResultValue1=='OK1' || v.radioGroupResultValue1=='Modifica' || v.radioGroupResultValue=='OK1' || v.radioGroupResultValue=='Modifica') &amp;&amp; v.caseRecord.Categoria_Riferimento__r.External_Id__c=='2272' }" >
+                    <div class="slds-form-element slds-form-element_stacked">
+                     <lightning:radioGroup label="E'stata richiesta la copia della documentazione a sistema?"
+                        name="radioGroupDocCopyResult" 
+                        aura:id="radioGroupRequired"
+                        default="false" 
+                        options="{! v.radioGroupDocCopyOption }"     
+                        required="true" 
+                        value="{! v.radioGroupDocCopyValue}"
+                        type="radio" />
+                    </div>
+                    <!-- campo picklist che mostra la motivazione -->					
+                    <aura:if isTrue="{!v.radioGroupDocCopyValue=='NO'}" >
+                        <div class="slds-form-element slds-form-element_stacked">
+                        <lightning:select  name="select" label="Seleziona una motivazione" required="true" value="{!v.reasonValue}">
+                            <aura:iteration items="{!v.esiti}" var="esito">
+                                <option text="{!esito.label}" value="{!esito.value}"></option>
+                            </aura:iteration>
+                        </lightning:select>
+                        </div>
+                    </aura:if> <!-- seLEZIONATO no-->
+               </aura:if>
+                <div class="slds-form-element slds-form-element_stacked">              
+                     <lightning:textarea label="Note" name="note" value="{!v.note}" />   
+                </div>
+                <div class="slds-form-element slds-form-element_stacked">   
+                    <lightning:button variant="destructive" name="next" label="Continua" onclick="{!c.doNext}" />
+                </div>           
+        </div>
+    </div>        
+</div>
+</aura:if>
+<aura:if isTrue="{!v.finalResultMessage!=''}">   
+        <h2>{!v.finalResultMessage}</h2>
+</aura:if>
+</aura:component>

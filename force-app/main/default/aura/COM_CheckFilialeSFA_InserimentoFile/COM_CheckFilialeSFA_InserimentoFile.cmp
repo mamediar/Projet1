@@ -1,0 +1,63 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+                access="global">
+    <!-- Attributi -->
+    <aura:attribute name="optionsTipoFile" type="List" default="[
+                                                        {'label': 'Esiti Critici', 'value': 'Esiti Critici'},
+                                                        {'label': 'Esiti Anomali', 'value': 'Esiti Anomali'},
+                                                        {'label': 'VariazionI Anagrafiche', 'value': 'VariazionI Anagrafiche'},
+                                                        ]"/>
+    <aura:attribute name="optionsProdotto" type="List" default="[]"/>
+    <aura:attribute name="headerList" type="List" />
+    <aura:attribute name="showModal" type="Boolean" default="false" />
+    <aura:attribute name="showUploadFile" type="Boolean" default="false" />
+    <aura:attribute name="titleSelect" type="String"/>
+    <aura:attribute name="selectTipoFile" type="String"/>
+    <aura:attribute name="selectProdotto" type="String"/>
+
+    <!-- Events -->
+    <aura:handler action="{!c.closeModal}" event="c:COM_CheckFilialeSFACloseModal_Event"/>
+    <!-- Component -->    
+    <!-- Sezione 1  --> 
+    <div class="slds-grid slds-grid_vertical">
+        <div class="slds-col">
+            <p>Selezione il file con le attività da caricare</p>	
+            <lightning:combobox name="tipoFile"  value="inProgress" placeholder="--" options="{! v.optionsTipoFile }" onchange="{!c.selectedTipoFile}"/>           
+        </div>
+        <div class="slds-col">
+            <lightning:combobox name="tipoFile1"  value="inProgress" placeholder="--" options="{! v.optionsProdotto }" onchange="{!c.selectedProdotto}"/>
+        </div>
+        <aura:if isTrue="{!v.showUploadFile}">
+            <div class="slds-col">
+                <br/>
+                <button class="slds-button slds-button_success" onclick="{!c.displayModal}">Upload File</button>
+            </div>
+            <div class="slds-col">
+                <br/>
+                <article class="slds-card">
+                        <div class="slds-card__body slds-card__body_inner">Commodity Check Esiti {!v.titleSelect}</div>
+                        <footer class="slds-card__footer">
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                        <thead>
+                                            <tr class="slds-line-height_reset">
+                                                <aura:iteration items="{!v.headerList}" var="item">
+                                                    <th class="" scope="col">
+                                                        <div class="slds-truncate" title="Opportunity">{!item}</div>
+                                                    </th>
+                                                </aura:iteration>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                        </footer>
+                </article>
+                
+            </div>
+        </aura:if>
+       
+    </div>
+    
+    <!-- Sezione 2 -->
+    <aura:if isTrue="{!v.showModal}">
+        <c:COM_CheckFilialeSFA_FormInserimentoFile headerList="{!v.headerList}" selectTipoFile="{!v.selectTipoFile}" selectProdotto="{!v.selectProdotto}" />
+    </aura:if>
+    <!-- Sezione 3 -->
+</aura:component>

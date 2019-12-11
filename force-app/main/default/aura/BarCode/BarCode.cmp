@@ -1,0 +1,23 @@
+<aura:component >
+    
+    <aura:attribute name="placeholder" type="String" default="" />
+    <aura:attribute name="label" type="String" default="" />
+    <aura:attribute name="inputIdContract" type="String" />
+    <aura:attribute name="disabled" type="Boolean" default="false" />
+    <aura:attribute name="length" type="Integer" default="28"/>
+    <aura:attribute name="setFocusOnInit" type="Boolean" default="true"/>
+    
+    <aura:registerEvent name="barCodeEvent" type="c:BarCodeReady"/>
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    
+    <span onkeyup="{!c.checkIdLength}">
+        <lightning:input aura:id="barcode"
+                         disabled="{!v.disabled}"
+                         placeholder="{!v.placeholder}"
+                         label="{!v.label}"
+                         name="IdContract"
+                         maxlength="{!v.length}"
+                         value="{!v.inputIdContract}"
+                         />
+    </span>
+</aura:component>

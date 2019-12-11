@@ -1,0 +1,17 @@
+.THIS .message {
+    border-radius		: 3px;
+    -moz-transition		: all .4s ease-in;
+    -o-transition		: all .4s ease-in;
+    -webkit-transition	: all .4s ease-in;
+	transition			: all .4s ease-in;
+
+    border				: 0px solid #c0c0c0; 
+    font-size			: 11pt;
+    color				: #ff0000; 
+    text-align			: left;
+    
+}
+.THIS .title {
+   font-size			: 14pt;
+}
+.THIS .tx-left {text-align: left;}

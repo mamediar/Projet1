@@ -1,0 +1,31 @@
+.THIS {
+    padding-right: 20px;
+  padding-left: 20px;   
+}
+.THIS .align_filter{
+    padding-top: 1.4rem;
+}
+
+.THIS .align_export_xls{
+    margin-left: 45%;
+    color: #000;
+}
+
+.THIS th{
+    font-size:12px;
+    white-space:normal;
+    text-align:center;
+   
+}
+
+.THIS .th .thcompass{
+    
+    color:white;
+    background-color:red;
+}
+
+.THIS td{
+    font-size:12px;
+   
+    text-align:center;
+}

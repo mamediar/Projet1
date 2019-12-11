@@ -1,0 +1,9 @@
+<design:component>
+	<design:attribute name="newStepAvanti" label="New Step Avanti" />
+    <design:attribute name="newStepIndietro" label="New Step Indietro" />
+    <design:attribute name="newActivityTypeAvanti" label="New Activity Type Avanti" />
+    <design:attribute name="newActivityTypeIndietro" label="New Activity Type Indietro" />
+    <design:attribute name="assignCaseInButtonAvanti" label="Assegnare il case in caso di bottone in avanti?"/>
+    <design:attribute name="queueToAssignCase" label="Coda a cui assegnare il case" />
+    <design:attribute name="ifNavigate" label="Naviga alla pagina successiva?" />
+</design:component>

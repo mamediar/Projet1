@@ -1,0 +1,29 @@
+<aura:component implements="force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes">
+
+  <aura:attribute name="title" type="String"/>
+  <aura:attribute name="action" type="Aura.Action"/>
+  <aura:attribute name="component" type="Aura.Component[]"/>
+  <aura:attribute name="variant" type="String" default="error" />
+
+  <aura:handler event="c:OpenModalEvent" action="{!c.handleOpenModalEvent}"/>
+  <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+
+  <div class="wk_static">
+    <section role="alertdialog" tabindex="-1" aura:id="Modalbox" aria-labelledby="header43" class="slds-modal slds-modal_prompt">
+      <div class="slds-modal__container">
+        <header class="{! 'slds-modal__header slds-theme_alert-texture slds-theme_' + v.variant}">
+          <h2 id="header43" class="slds-text-heading--medium">{!v.title}</h2>
+        </header>
+        <div class="slds-modal__content slds-p-around--medium">
+          {!v.component}
+        </div>
+        <div class="slds-modal__footer">
+          <button class="slds-button slds-button--neutral" onclick="{!c.removecss}">Chiudi</button>
+          <button class="slds-button slds-button--neutral slds-button--brand" onclick="{!v.action}">Avanti</button>
+        </div>
+      </div>
+    </section>
+    <div class="slds-backdrop " aura:id="MB-Back"></div>
+  </div>
+
+</aura:component>

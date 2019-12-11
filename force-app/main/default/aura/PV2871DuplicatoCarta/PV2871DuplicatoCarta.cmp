@@ -1,0 +1,130 @@
+<aura:component description="PV2871DuplicatoCarta" extends="c:PVSubComponentBase" access='global' controller="PV2871DuplicatoCarta">
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="showDetails" type="Boolean" default="false"/>
+    <aura:attribute name="indirizzoCliente" type="PV2871DuplicatoCarta.Indirizzo"/>
+    <aura:attribute name="datiDuplicatoCarta" type="PV2871DuplicatoCarta.DatiDuplicatoCarta"/>
+    <aura:attribute name="isValidAddressOptions" type="List" default="[{'label': 'Si', 'value': 'YES'}, {'label': 'No', 'value': 'NO'}]"/>
+
+    <div class="slds">
+
+        <aura:if isTrue="{!v.showDetails}">
+
+            <div class="slds-p-vertical_small">
+
+                <div class="slds-text-heading_small slds-p-vertical_x-small">
+                    {!v.PVForm.sottotipologiaMdt.uniqueId__c} - {!v.PVForm.sottotipologiaMdt.Descrizione__c}
+                </div>
+
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-3 slds-p-vertical_xx-small">
+                        <span class="slds-text-title_bold">Nome:&nbsp;</span>{!v.PVForm.cliente.nome}
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-3 slds-p-vertical_xx-small">
+                        <span class="slds-text-title_bold">Cognome:&nbsp;</span>{!v.PVForm.cliente.cognome}
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-3 slds-p-vertical_xx-small">
+                        <span class="slds-text-title_bold">Codice:&nbsp;</span>{!v.PVForm.cliente.codCliente}
+                    </div>
+                </div>
+
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-3 slds-p-vertical_xx-small">
+                        <span class="slds-text-title_bold">Pratica:&nbsp;</span>{!v.PVForm.pratica.numPratica}
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-3 slds-p-vertical_xx-small">
+                        <span class="slds-text-title_bold">Tipologia:&nbsp;</span>{!v.PVForm.pratica.tipoPratica}
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-3 slds-p-vertical_xx-small">
+                        <span class="slds-text-title_bold">Stato:&nbsp;</span>{!v.PVForm.pratica.statoPratica}
+                    </div>
+                </div>
+
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-3 slds-p-vertical_xx-small">
+                        <span class="slds-text-title_bold">Indirizzo cliente:&nbsp;</span>
+                        {!v.indirizzoCliente.indirizzo +
+                        (empty(v.indirizzoCliente.cap) ? '' :  (' ' + v.indirizzoCliente.cap)) +
+                        (empty(v.indirizzoCliente.localita) ? '' :  (' ' + v.indirizzoCliente.localita)) +
+                        (empty(v.indirizzoCliente.provincia) ? '' :  (' (' + v.indirizzoCliente.provincia + ')'))
+                        }
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-3 slds-p-vertical_xx-small">
+                        <div class="slds-text-title_bold">L'indirizzo è corretto?</div>
+                        <div>
+                            <lightning:radioGroup aura:id="isValidAddress" name="isValidAddress" variant="label-hidden" class="inline-radio" label="L'indirizzo è corretto?" options="{!v.isValidAddressOptions}" onchange="{!c.onChangeIsValidAddress}" required="true"/>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-3 slds-p-vertical_xx-small">
+                        <lightning:button variant="base" label="Modifica indirizzo" iconName="utility:edit" iconPosition="left" onclick="{!c.modificaIndirizzo}"/>
+                    </div>
+                </div>
+
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-p-vertical_xx-small">
+                        <span class="slds-text-title_bold">Importo commissione riproduzione carta:&nbsp;</span>
+                        <lightning:formattedNumber value="{!v.datiDuplicatoCarta.applicaCommissioni ? v.datiDuplicatoCarta.commissioni : 0}" style = "currency" currencyCode="EUR" currencyDisplayAs="symbol"/>
+                    </div>
+                </div>
+
+                <aura:if isTrue="{!v.datiDuplicatoCarta.mostraScript}">
+                    <div class="slds-p-vertical_x-small">
+                        <div class="slds-p-vertical_x-small slds-text-title_bold text-uppercase border-top-gray">Registrazione della chiamata:</div>
+                        <div class="slds-p-vertical_x-small">Per sua maggior tutela registrerò una parte della telefonata dove le <span class="text-red">chiederò i suoi dati personali e i dati relativi alla sua posizione</span>.</div>
+                        <div class="slds-p-vertical_x-small text-uppercase">Ai sensi dell'art. 13 del decreto legislativo 196/2003 "Codice in materia di protezione dei dati personali", Compass SPA, in qualità di titolare del trattamento, la informa che i dati raccolti e registrati nel corso di questa telefonata saranno trattati per effettuare le variazioni da lei richieste.</div>
+                        <div class="slds-p-vertical_x-small text-uppercase"> <span class="text-red"></span></div>
+
+                        <div class="slds-grid slds-wrap border-top-gray border-bottom-gray">
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-2 slds-p-vertical_xx-small text-uppercase text-red">
+                                Preso atto dell'informativa acconsente alla registrazione e ai trattamenti?
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-2 slds-p-vertical_xx-small text-uppercase">
+                                Cliente:&nbsp;Si/No
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-wrap border-bottom-gray">
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-2 slds-p-vertical_xx-small text-uppercase text-red">
+                                Mi può dire il suo nome e cognome?
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-2 slds-p-vertical_xx-small text-uppercase">
+                                Cliente:&nbsp;{!v.PVForm.cliente.nome}&nbsp;{!v.PVForm.cliente.cognome}
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-wrap border-bottom-gray">
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-2 slds-p-vertical_xx-small text-uppercase text-red">
+                                Mi può dire la sua data di nascita?
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-2 slds-p-vertical_xx-small text-uppercase">
+                                Cliente:&nbsp;{!v.PVForm.cliente.dataNascitaItaliana}
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-wrap border-bottom-gray">
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-2 slds-p-vertical_xx-small text-uppercase text-red">
+                                Mi può dire il luogo e la provincia di nascita?
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-2 slds-p-vertical_xx-small text-uppercase">
+                                Cliente:&nbsp;{!v.PVForm.cliente.luogoNascita}
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-wrap border-bottom-gray">
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-2 slds-p-vertical_xx-small text-uppercase text-red">
+                                Mi può dire il suo indirizzo di residenza attuale?
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-2 slds-p-vertical_xx-small text-uppercase">
+                                Cliente:&nbsp;{!v.indirizzoCliente.indirizzo +
+                                (empty(v.indirizzoCliente.cap) ? '' :  (' ' + v.indirizzoCliente.cap)) +
+                                (empty(v.indirizzoCliente.localita) ? '' :  (' ' + v.indirizzoCliente.localita)) +
+                                (empty(v.indirizzoCliente.provincia) ? '' :  (' (' + v.indirizzoCliente.provincia + ')'))
+                                }
+                            </div>
+                        </div>
+                        <div class="slds-p-vertical_x-small">Come da sua richiesta, provvedo al duplicato della sua carta causa mancata ricezione/mancato funzionamento/cattura da bancomat. Prende atto che la carta originaria verrà disattivata e che il rapporto contrattuale continuerà a essere regolato dalle condizioni generali ed economiche già rilasciatemi.</div>
+                        <div class="slds-p-vertical_x-small border-bottom-gray">La ringrazio e le auguro una buona giornata/serata.</div>
+                    </div>
+                </aura:if>
+
+            </div>
+        </aura:if>
+    </div>
+
+</aura:component>

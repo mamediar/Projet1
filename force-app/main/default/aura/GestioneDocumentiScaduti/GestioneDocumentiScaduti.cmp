@@ -1,0 +1,31 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId,lightning:availableForFlowScreens">   
+    <lightning:workspaceAPI aura:id="workspace"/>
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="tipoProcesso" type="String"/>
+    <aura:attribute name="listaEsiti" type="String"/>
+    <aura:attribute name="isFlows" type="Boolean" default="false"/>
+    <aura:attribute name="noteValue" type="String"/>
+    <aura:attribute name="esitoSelezionato" type="String" default=""/>
+    <aura:attribute name="currentCase" type="Case"/>
+    <aura:attribute name="caseActivityType" type="String"/>
+    
+    <aura:handler event="c:XCS_DispositionReady" action="{!c.postSelect}"/>
+    <force:recordData aura:id="recordLoader"
+                      recordId="{!v.recordId}"
+                      fields="CategoriaExternalId__c"
+                      targetFields="{!v.currentCase}"
+                      />
+    
+    {!v.currentCase.Categoria_Riferimento__r.External_id__c}
+    
+    <div class="slds-grid">
+        <lightning:card title="AUI - Recupero Documento Scaduto" class="slds-size_1-of-2">
+           
+            <c:XCS_Disposition disabledInit="true" recordId='{!v.recordId}' parentExternalId='DP5617' saveCase='true'  visibilityOption='{!v.currentCase.CategoriaExternalId__c}'/>
+            
+            
+            
+            
+        </lightning:card>
+    </div>
+</aura:component>

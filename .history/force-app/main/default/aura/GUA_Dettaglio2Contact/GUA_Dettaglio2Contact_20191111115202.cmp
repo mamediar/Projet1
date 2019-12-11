@@ -1,0 +1,82 @@
+<aura:component implements="flexipage:availableForAllPageTypes" controller="GUA_Dettaglio2ContactCnt" access="global">
+    <aura:attribute type="Boolean" name="showDettaglioDealer" default="false" />
+    <aura:attribute type="Boolean" name="showUltimeChiamate" default="false" />
+    <aura:attribute type="Boolean" name="showUtenzaPasscom" default="false" />
+    <aura:attribute type="Boolean" name="showProduzione" default="false" />
+    <aura:attribute type="Boolean" name="showUltimePratiche" default="false" />
+    <aura:attribute type="Boolean" name="showUltimeCarte" default="false" />
+    <aura:attribute type="Boolean" name="showAttivitaDealerSFA" default="false" />
+    <aura:attribute type="Boolean" name="showChiadiEsitaChiamata" default="false" />
+    <aura:attribute type="Boolean" name="showFAQ" default="false" />
+
+    <aura:attribute type="List" name="userDealerList" default="" />
+    <aura:attribute type="List" name="contactHistoryList" default="" />
+    <aura:attribute type="Case" name="contactDetails" default="{}" />
+    <div>
+        <div>
+            <lightning:tabset selectedTabId="one">
+                <lightning:tab label="Dettaglio Dealer" id="one" onactive="{!c.dettaglioDealer}">
+                    <c:GUA_Dettaglio_DealerCmp accId="{!v.contactDetails.AccountId}" />
+                </lightning:tab>
+                <lightning:tab label="Ultime Chiamate" id="two" onactive="{!c.ultimeChiamate}">
+                    <c:GUA_UltimeChiamataCmp accountId="{!v.contactDetails.AccountId}" />
+                </lightning:tab>
+                <lightning:tab label="Utenza Passcom" id="three" onactive="{!c.utenzaPasscom}">
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Num</th>
+                                <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Utenza</th>
+                                <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Disabilitato</th>
+                                <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Canale</th>
+                                <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Reset</th>
+                                <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Cognome</th>
+                                <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Nome</th>
+                                <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Email</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <aura:iteration items="{!v.userDealerList}" var="userDealer">
+                                <tr>
+                                    <td>
+                                    </td>
+                                    <td>{!userDealer.utenza}</td>
+                                    <td>{!userDealer.flagDisabilitato}</td>
+                                    <td>{!userDealer.canale}</td>
+                                    <td>
+                                        <lightning:button value="{!userDealer.utenza}" onclick="{!c.resetPassword}" name="options" tabindex="-1" label="Reset Password" />
+                                    </td>
+                                    <td>{!userDealer.cognome}</td>
+                                    <td>{!userDealer.nome}</td>
+                                    <td>{!userDealer.email}</td>
+                                </tr>
+                            </aura:iteration>
+                        </tbody>
+                    </table>
+                </lightning:tab>
+                <!-- <lightning:tab label="Produzione" id="four" onactive="{!c.produzione}">
+                    <h2 class="title_Box_Detail">Produzione</h2>
+                    <c:GUA_ProduzioneCmp />
+                </lightning:tab> -->
+                <lightning:tab label="Ultime Pratiche" id="five" onactive="{!c.ultimePratiche}">
+                    <c:GUA_recuperaUltimePraticheCmp case="{!v.contactDetails}" />
+                </lightning:tab>
+                <lightning:tab label="Ultime Carte" id="six" onactive="{!c.ultimeCarte}">
+                    <h2 class="title_Box_Detail">Ultime Carte</h2>
+                    <c:GUA_recuperaUltimeCartaCmp case="{!v.contactDetails}" />
+                </lightning:tab>
+                <lightning:tab label="Attivita Dealer SFA" id="seven" onactive="{!c.attivitaDealerSFA}">
+                    <c:Gua_AttivitaDealerSFA/>
+                </lightning:tab>
+                <lightning:tab label="Chiudi e esita chiamata" id="eight" onactive="{!c.chiudiEsitaChiamata}">
+                    <h2 class="title_Box_Detail">Chiudi e esita chiamata</h2>
+                    <c:GUA_chiudichiamataCmp case="{!v.contactDetails}"/>
+                </lightning:tab>
+                <lightning:tab label="FAQ" id="two" onactive="{!c.fAQ}">
+                    <h2 class="title_Box_Detail">FAQ</h2>
+                </lightning:tab>
+
+            </lightning:tabset>
+        </div>
+    </div>
+</aura:component>

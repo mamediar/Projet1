@@ -1,0 +1,65 @@
+<aura:component controller="XCSGestioneInvioSMSController" implements="force:lightningQuickAction,force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId,lightning:availableForFlowScreens">
+    
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="isVisibleAllSMS" type="boolean" default="true"/>
+    <aura:attribute name="SMSTemplateName" type="String" />
+    <aura:attribute name="onlyByName" type="boolean" default="false"/>
+    <aura:attribute name="customerCellulare" type="String"/>
+    <aura:attribute name="account" type="Account" />
+    <aura:attribute name="SMSSelezionato" type="String" />
+    <aura:attribute name="listaTemplate" type="XCS_Template__c[]" />
+    <aura:attribute name="template" type="String" />
+    <aura:attribute name="seeButton" type="boolean" default="true"/>
+    <aura:attribute name="checkModale" type="boolean" default="false"/> 
+    <aura:attribute name="footerButton" type="Object" />
+    <aura:registerEvent name="XCSInvioSMSEvent" type="c:XCSInvioSMSEvent"/>
+    <aura:method name="doSendSMS" action="{!c.sendSMS}"/>
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    
+
+            <div style="width:70%; max-width: 50rem;">
+                <lightning:card title="Invio SMS">
+                <div class="slds-p-around--x-large">
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_2-of-12 tx-right"></div>
+                        <div class="slds-col slds-size_10-of-12 tx-left message">
+                            
+                            Sig. , ci autorizza ad utilizzare il suo numero di cellulare e l' indirizzo e-mail per comunicarLe lo stato di gestione e di evasione della richiesta ?
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_2-of-12 tx-right"></div>
+                        <div class="slds-col slds-size_5-of-12 tx-left">
+                            <lightning:input type="tel" name="cellulare" label="Cellulare" minlength="5" maxlength="14" value="{! v.customerCellulare}" pattern="\d{5,14}"/>
+                        </div>
+                        <div class="slds-col slds-size_5-of-12 tx-right"></div>
+                    </div>
+                    <br/>
+                    
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_2-of-12 tx-right"></div>
+                        <div class="slds-col slds-size_5-of-12">
+                            <lightning:select onchange="{! c.selectSMS}" aura:id ="SMSDaInviare" label="Messaggio Da Inviare" required="true">
+                                <option value="">Seleziona un opzione...</option>
+                                <aura:iteration items="{!v.listaTemplate}" var="testo">
+                                    <option value="{!testo.Body__c}">{!testo.Name}</option>
+                                </aura:iteration>    
+                            </lightning:select>     
+                        </div>
+                        <div class="slds-col slds-size_5-of-12 tx-right"></div>
+                    </div>
+                    <br/>
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_2-of-12 tx-right">Anteprima :</div>
+                        <div class="slds-col slds-size_10-of-12">
+                            <lightning:formattedRichText value="{! v.template }"/>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <aura:set attribute="footer" value = "{!v.footerButton}" />
+              </lightning:card>
+            </div>
+</aura:component>

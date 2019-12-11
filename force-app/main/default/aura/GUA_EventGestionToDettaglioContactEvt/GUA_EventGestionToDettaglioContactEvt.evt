@@ -1,0 +1,3 @@
+<aura:event type="APPLICATION" description="Event template">
+    <aura:attribute type="Case" name="contact" default=""/>
+</aura:event>

@@ -1,0 +1,59 @@
+<aura:component controller="SFAPraticheIrregAllegatiFILIALECntroller" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >  
+   <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>  
+   <aura:attribute name="filesNuovi" type="List"/>
+    <aura:attribute name="filesVecchi" type="List"/>
+   <aura:attribute name="recordId" type="String"/>  
+   <aura:attribute name="accept" type="List" default="['.jpg', '.jpeg','.pdf','.csv','.xlsx','.png','.gif']"/>  
+   <aura:attribute name="multiple" type="Boolean" default="false"/>  
+   <aura:attribute name="disabled" type="Boolean" default="true"/>  
+   <aura:attribute name="disableButtonElimina" type="Boolean" default="true" />  
+   <aura:attribute name="disableButtonCarica" type="Boolean"/>  
+   <div class="slds">  
+     <div style="border-left: 1px solid rgb(221, 219, 218);  
+           border-right: 1px solid rgb(221, 219, 218);  
+           border-bottom: 1px solid rgb(221, 219, 218);  
+           border-top: 1px solid rgb(221, 219, 218);">  
+       <div class="slds-page-header" style="border-radius: 0px; border-right: 0px;border-left: 0px;border-top: 0px;  
+                          box-shadow: 0 0px 0px 0 rgba(0, 0, 0, 0.1);">  
+           
+       </div>  
+       <div class="slds-grid">  
+ 
+         <div class="slds-col slds-size---of-12">  
+           <lightning:fileUpload label="" multiple="{!v.multiple}"   
+                      accept="{!v.accept}" recordId="{!v.recordId}" 
+                      disabled="{!v.disableButtonCarica}"
+                      onuploadfinished="{!c.UploadFinished}" />  
+         </div>  
+       </div><br/>  
+       <table class="slds-table slds-table--bordered">  
+         <thead>  
+           <tr>  
+             <th>File</th>  
+             <th>Data</th>  
+             <th>Chi</th>  
+             <th></th>  
+           </tr>  
+         </thead>  
+         <tbody>  
+           <aura:iteration items="{!v.filesVecchi}" var="f">  
+             <tr>  
+               <td> <a href="" id="{!f.Id}" onclick="{!c.OpenFile}">{!f.Title}</a></td>  
+               <td><lightning:formattedDateTime value="{!f.CreatedDate}"  year="2-digit" month="2-digit" day="2-digit" hour="2-digit" minute="2-digit" second="2-digit"/></td>
+               <td>{!f.Description}</td>  
+               <lightning:button aura:id="eliminaFileId" label="Elimina file" value="{!f.Id}" disabled="true" variant="destructive" onclick="{!c.eliminaFile}" />
+             </tr>  
+           </aura:iteration>
+           <aura:iteration items="{!v.filesNuovi}" var="f">  
+             <tr>  
+               <td> <a href="" id="{!f.Id}" onclick="{!c.OpenFile}">{!f.Title}</a></td>  
+               <td><lightning:formattedDateTime value="{!f.CreatedDate}"  year="2-digit" month="2-digit" day="2-digit" hour="2-digit" minute="2-digit" second="2-digit"/></td>
+               <td>{!f.Description}</td>  
+               <lightning:button aura:id="eliminaFileId" label="Elimina file" value="{!f.Id}" disabled="{!v.disableButtonElimina}" variant="destructive" onclick="{!c.eliminaFile}" />
+             </tr>  
+           </aura:iteration>             
+         </tbody>  
+       </table>  
+     </div>  
+   </div>  
+ </aura:component>

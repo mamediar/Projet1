@@ -1,0 +1,180 @@
+<aura:component controller="TaskGestioneFaxController" implements="flexipage:availableForAllPageTypes,force:hasRecordId">
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="statoAzione" type="String" />
+    <aura:attribute name="esitoOptions" type="List" />
+    <aura:attribute name="esitoValue" type="String"/>
+    <aura:attribute name="contattoClienteValue" type="Boolean" />
+    <aura:attribute name="note" type="String" />
+    
+    <aura:attribute name="isInviata" type="Boolean" default="false"/>
+    <aura:attribute name="isComunicazioniPresenti" type="Boolean"/>
+    <aura:attribute name="caseId" type="String" />
+    <aura:attribute name="PassVar" type="Object[]" />
+    <aura:attribute name="flowName" type="String" />
+    <aura:attribute name="recallCount" type="Double"/>
+    <aura:attribute name="recallMax" type="Double"/>
+    <aura:attribute name="CodCliente" type="String" />
+    <aura:attribute name="CodPratica" type="String"/>
+    <aura:attribute name="idProd" type="Double"/>
+    <aura:attribute name="idCat" type="Double"/>
+    <aura:attribute name="CodProdotto" type="String"/>    
+    <aura:attribute name="TipoProdotto" type="String"/>
+    <aura:attribute name="codComunicazione" type="String" default="x"/>
+    
+    <aura:attribute name="configMetadataColumns" type="List"/>
+    <aura:attribute name="configMetadataData" type="Object"/>
+    <aura:attribute name="concatForEvo" type="String"/>
+    <aura:attribute name="isVisibleForComunicazione" type="Boolean" default='false'/>
+    
+    <aura:attribute name="isAnnullato" type="Boolean" default='true'/>
+    <aura:attribute name="recallDate" type="DateTime"/> 
+    <aura:attribute name="statoAzioneFinale" type="String"/>
+    <aura:attribute name="statoComunicazioneFinale" type="String"/>
+    <aura:attribute name="isRadioButtonSi" type="String"/>
+    <aura:attribute name="selectedRows" type="List"/>
+    
+    <aura:handler name="init" value="{! this }" action="{!c.init}"/>
+    <aura:handler name="change" value="{!v.isComunicazioniPresenti }" action="{!c.init}"/>
+    <lightning:navigation aura:id="navigation"/>
+    <lightning:workspaceAPI aura:id="workspace"/>
+
+    <aura:if isTrue="{!v.isAnnullato}">
+        
+        <lightning:card variant="Narrow" title="Gestione" iconName="standard:poll">
+            <div class="slds-card__body_inner"> 
+                <div class="slds-flexSolid">
+                    <lightning:button type='button'
+                                      class="slds-m-right_small"
+                                      label='Esegui Azione'
+                                      variant='destructive'
+                                      onclick="{!c.launchPostVendita}"
+                                      disabled="false"/>
+                    
+                    <aura:if isTrue="{! !equals(v.statoAzione, 'Azione Forzata')}">
+                        <div aura:id="forceActionContainer" class="side-content slds-m-right_small">
+                            <lightning:button type='button'   
+                                              class="slds-nowrap"
+                                              label='Forza Azione Fuori CRM'
+                                              variant='destructive'
+                                              onclick="{!c.forceAction}"/>
+                        </div>
+                    </aura:if>
+                    <lightning:button type='button'
+                                      label='Nuovo PV Extra Fax'
+                                      variant='destructive'
+                                      disabled="false"
+                                      onclick="{!c.navigateToNewTab}"/>
+                    
+                    <div class="slds-m-left_medium">
+                        <lightning:button type='button'
+                                          label='Annulla Task'
+                                          variant='destructive'
+                                          onclick="{!c.annullaTask}"/>                        
+                    </div>                    
+                </div>
+                <div class="slds-m-top_small slds-flexSolid">
+                    <lightning:combobox aura:id="esito"
+                                        class="slds-m-right_medium"
+                                        variant="label-hidden"
+                                        placeholder="Seleziona un esito .."
+                                        options="{!v.esitoOptions}"
+                                        value="{!v.esitoValue}"
+                                        onchange="{!c.getTable}"
+                                        label="Esito" /> 
+                    
+                    <ui:inputCheckbox aura:id="contattoCliente" class="slds-m-right_x-small" value="{!v.contattoClienteValue}" click="{!c.updateFlagContattoCliente}"/>
+                    <span class="slds-text-color_weak slds-text-heading_medium">È stato necessario contattare il cliente</span>
+                    
+                </div>
+            </div>
+        </lightning:card>
+        
+        <aura:if isTrue="{!v.isVisibleForComunicazione}">
+            
+            <lightning:card variant="Narrow" title="Comunicazioni" iconName="standard:poll">
+                
+                <lightning:layout>
+                    <aura:if isTrue="{! empty(v.configMetadataData)}">
+                        <lightning:layoutItem size="4" class="slds-m-right_small">
+                            <ui:message title=" " severity="warning" closable="false">
+                                Nessuna comunicazione da visualizzare.
+                            </ui:message>  
+                        </lightning:layoutItem>
+                        <aura:set attribute="else">
+                            <lightning:layoutItem size="6" class="slds-m-right_small">
+                                <lightning:datatable keyField="Id"
+                                                     resizeColumnDisabled="true"
+                                                     hideCheckboxColumn="false" 
+                                                     columns="{! v.configMetadataColumns }" 
+                                                     data="{! v.configMetadataData }"
+                                                     maxRowSelection="1"
+                                                     selectedRows="{!v.selectedRows}"
+                                                     onrowselection="{! c.setValueForEvo }"
+                                                     showRowNumberColumn="true"
+                                                     /> 
+                            </lightning:layoutItem>
+                            
+                        </aura:set>
+                    </aura:if>
+                    <lightning:layoutItem class="slds-m-left_medium">
+                        <div>
+                            <lightning:button type='button'   
+                                              class="slds-nowrap"
+                                              label='Forza Nessuna Lettera'
+                                              variant='destructive'
+                                              onclick="{!c.updateComunicazione}"/>
+                        </div>
+                        <div class="slds-m-top_large">
+                            <div onclick="{!c.updateComunicazioneEvo}">
+                               
+                                <c:LinkEvo task="TK00000375" codiceCliente="{!v.CodCliente}" infoPost="  000000C              S     "                     		
+                                           numeroPratica="{!v.CodPratica}" linkage="{!v.TipoProdotto}" infoPre="{!v.concatForEvo}"/>
+                            </div>
+                        </div>
+                    </lightning:layoutItem>
+                    
+                </lightning:layout>
+            </lightning:card>       
+        </aura:if> 
+        
+        <aura:if isTrue="{!v.isInviata}">
+            <c:GestioneFaxLettereInviate numeroPratica="{!v.CodPratica}" 
+                                         codiceCliente="{!v.CodCliente}" 
+                                         tipoPratica="{!v.CodProdotto}" 
+                                         comunicazioniPresenti="{!v.isComunicazioniPresenti}" 
+                                         />
+        </aura:if>
+        
+        <c:GestioneFaxRecall dataRecall="{!v.recallDate}" 
+                                 sceltaEsito="{!v.esitoValue}" 
+                                 contatoreRecall="{!v.recallCount}" 
+                                 configRecall="{!v.recallMax}" 
+                                 sceltaRadioButton="{!v.isRadioButtonSi}"
+                                 recordIdToChild='{!v.recordId}'
+                                 />      
+        
+        <lightning:card variant="Narrow" title="Note" iconName="standard:poll">
+            <div class="slds-card__body_inner">               
+                <div class="slds-size_1-of-2">
+                    <lightning:textarea aura:id="noteVendita" 
+                                        label=" " 
+                                        placeholder="Note (opzionale)"
+                                        class="slds-m-top_small"
+                                        value="{!v.note}"/> 
+                </div>
+                <div class="slds-clearfix">
+                    
+                    <lightning:button aura:id="next"
+                                      type="button"                      
+                                      class="slds-m-top_small"
+                                      label="Conferma"
+                                      variant="destructive" 
+                                      iconName="utility:chevronright" 
+                                      iconPosition="right"
+                                      onclick="{!c.finalConfirm}"/>                   
+                    
+                </div>
+            </div>
+        </lightning:card>
+    </aura:if>
+</aura:component>

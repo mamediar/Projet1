@@ -1,0 +1,100 @@
+<aura:component controller="CRMReclamiInsRiepPraticaCompMBCCtrl"
+                implements="force:appHostable,flexipage:availableForAllPageTypes" 
+                access="global" 
+                >
+    
+    <aura:attribute name="praticaSelezionata" type="Object"/>
+    <aura:attribute name="clienteSelezionato" type="OCSCliente"/>
+    <aura:attribute name="aziendaSelezionata" type="String"/>
+    <aura:attribute name="pan" type="String"/>
+    <aura:attribute name="modPagamento" type="String"/>
+    <aura:attribute name="filiale" type="String"/>
+    <aura:attribute name ="NomeFiliale" type = "String"/> 
+    
+    <aura:attribute name="codOCSConvenzionato" type="String"/>
+    <aura:attribute name="ragSocialeConvenzionato" type="String"/>
+    <aura:attribute name="indirizzoConvenzionato" type="String"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    <div style="margin-left:15px;margin-right:15px">
+    <div class="slds-grid slds-gutters">
+            <div class="slds-col">
+                <lightning:input label="PAN:" value="{!v.pan}" readonly="true"/>
+            </div>
+
+            <aura:if isTrue="{!v.aziendaSelezionata=='Compass'}">
+                <div class="slds-col">
+                    <lightning:input label="Mod. Pagamento:" value="{!v.modPagamento}" readonly="true"/>
+                </div>
+                <div class="slds-col">
+                    <lightning:input label="Filiale:" value="{!v.filiale +' '+ v.NomeFiliale}" readonly="true"/>
+                </div>
+            </aura:if>
+        </div>
+
+        <hr style="margin:0%"></hr>
+        <br/>
+
+        <aura:if isTrue="{!v.aziendaSelezionata=='Compass'}">
+
+                <div class="slds-section slds-is-open">
+                <h3 class="slds-section__title slds-theme_shade">
+                    <span class="slds-truncate slds-p-horizontal_small" title="Section Title">Convenzionato</span>
+                </h3>
+                <div aria-hidden="false" class="slds-section__content" style="margin-left:15px;margin-right:15px;">
+                        
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col">
+                            <lightning:input label="Codice OCS:" value="{!v.codOCSConvenzionato}" readonly="true"/>   
+                        </div>
+                        
+                        <div class="slds-col">
+                            <lightning:input label="Rag. Sociale:" value="{!v.ragSocialeConvenzionato}" readonly="true"/>
+                        </div>
+                        <div class="slds-col">
+                                <lightning:input label="Indirizzo:" value="{!v.indirizzoConvenzionato}" readonly="true"/>
+                        </div>
+                            
+                    </div>
+
+                </div>
+            </div>
+            <hr style="margin:0%"></hr>
+        </aura:if>
+    </div>
+    <!--
+    <lightning:input label="PAN:"
+                     value="{!v.pan}"
+                     readonly="true"
+                     />
+    <aura:if isTrue="{!v.aziendaSelezionata=='Compass'}">
+        <lightning:input label="Mod. Pagamento:"
+                         value="{!v.modPagamento}"
+                         readonly="true"
+                         />
+        <lightning:input label="Filiale:"
+                         value="{!v.filiale}"
+                         readonly="true"
+                         />
+        <lightning:layout>
+            <lightning:layoutItem size="4">
+                Convenzionato:
+            </lightning:layoutItem>
+            <lightning:layoutItem size="8" flexibility="grow">
+                <lightning:input label="Codice OCS:"
+                                 value="{!v.codOCSConvenzionato}"
+                                 readonly="true"
+                                 />
+                <lightning:input label="Rag. Sociale:"
+                                 value="{!v.ragSocialeConvenzionato}"
+                                 readonly="true"
+                                 />
+                <lightning:input label="Indirizzo:"
+                                 value="{!v.indirizzoConvenzionato}"
+                                 readonly="true"
+                                 />
+            </lightning:layoutItem>
+        </lightning:layout>
+    </aura:if>
+    -->
+</aura:component>

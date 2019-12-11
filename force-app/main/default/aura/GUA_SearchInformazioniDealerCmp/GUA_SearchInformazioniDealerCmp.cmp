@@ -1,0 +1,214 @@
+<aura:component implements="flexipage:availableForAllPageTypes" controller="GUA_GestioneContactCnt" access="global">
+    <aura:attribute name="nomeDealer" type="String" default="" />
+    <aura:attribute name="codiceOcsDealer" type="String" default="" />
+    <aura:attribute name="utenzaOrCFDealer" type="String" default="" />
+    <aura:attribute name="isOpenedModal" type="Boolean" default="false" />
+    <aura:attribute name="isFounded" type="Boolean" default="false" />
+
+    <aura:attribute name="pageNumber" type="Integer" default="1" />
+    <aura:attribute name="pageSize" type="Integer" default="5" />
+    <aura:attribute name="isLastPage" type="Boolean" default="false" />
+    <aura:attribute name="dataSize" type="Integer" default="0" />
+    <aura:attribute name="dealer" type="Case" />
+    <aura:attribute name="caseDealer" type="Case" />
+
+
+    <!--  <aura:handler name="Gua_SearchDealerEvt" event="c:Gua_SearchDealerEvt" action="{!c.doInit}" /> -->
+
+    <!--  <aura:registerEvent name="GUA_caseDealerEvt" type="c:GUA_SearchByCodiceDealerEvt" />  -->
+
+
+
+    <!-- attributes -->
+    <aura:attribute name="data" type="Object" />
+    <aura:attribute name="columns" type="List" />
+    <aura:attribute name="rowSelected" type="Case" />
+
+    <!-- handlers
+        <aura:handler name="init" value="{! this }" action="{! c.init }"/>     -->
+
+    <aura:if isTrue="{!v.isOpenedModal}">
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_small" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
+
+                                      <span class="slds-assistive-text">Close</span>
+                                                                </button>
+                    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Ricerca Dealer</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <div class="slds-form">
+                        <lightning:input type="text" label="Nome" value="{!v.nomeDealer}" />
+                        <lightning:input label="Codice OCS" value="{!v.codiceOcsDealer}" />
+                        <lightning:input label="Utenza o CF" value="{!v.utenzaOrCFDealer}" />
+                        <div class="slds-p-top_small">
+                            <lightning:button label="Ricerca" variant="brand" onclick="{!c.recerceDealer}" />
+                        </div>
+
+                    </div>
+                    <aura:if isTrue="{!v.isFounded}">
+
+                        <div>
+                            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                                <thead>
+                                    <tr class="slds-line-height_reset">
+                                        <th style="text-align:center;background-color:#0c0c0c;color:#fff;">SELEZIONA </th>
+                                        <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Ragione Sociale</th>
+                                        <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Cod. OCS</th>
+                                        <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Tipo </th>
+                                        <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Stato</th>
+                                        <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Comune</th>
+                                        <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Prov</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <aura:iteration items="{!v.data}" var="caseDealer">
+                                        <tr>
+                                            <td>
+                                                <span class="slds-radio">
+                                                                    <lightning:input type="radio" id="filialeSelect" value="{!caseDealer}" name="options" tabindex="-1"
+                                                                        onchange="{!c.dealerSelected}" aria-labelledby="radio-button-label-01 column-group-header" />
+                                                                </span>
+                                            </td>
+                                            <td>{!caseDealer.Region_Name__c} </td>
+                                            <td>{!caseDealer.OCS_External_Id__c}</td>
+                                            <td>{!caseDealer.Tipo_Intermediario__c}</td>
+                                            <td>{!caseDealer.Status__c}</td>
+                                            <td>{!caseDealer.Tipo_Intermediario__c}</td>
+                                            <td>{!caseDealer.Provincia_Nascita__pc}</td>
+                                        </tr>
+                                    </aura:iteration>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="slds-p-top_x-large">
+                            <!-- <lightning:datatable columns="{! v.columns }" data="{! v.data }" keyField="id" onrowaction="{! c.handleRowAction }" /> -->
+                        </div>
+                        <div class="slds-clearfix">
+                            <div class="slds-page-header" role="banner">
+                                <div class="slds-float_right">
+                                    <lightning:button label="Prev" iconName="utility:chevronleft" iconPosition="left" onclick="{!c.handlePrev}" disabled="{! v.pageNumber == 1}" />
+                                    <lightning:button label="Next" iconName="utility:chevronright" iconPosition="right" disabled="{! v.isLastPage}" onclick="{!c.handleNext}" />
+                                </div>
+                                <p class="slds-page-header__title">Page {!v.pageNumber} | Showing records from {! ((v.pageNumber-1)*v.pageSize)+' to '+((v.pageNumber-1)*v.pageSize+v.dataSize)}</p>
+                            </div>
+                        </div>
+                    </aura:if>
+                </div>
+
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick="{!c.closeModalSearDealer}">Chiudi</button>
+
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+
+    </aura:if>
+
+    <aura:if isTrue="{!v.dealer.Id !=null}">
+        <div class="slds-p-top_x-small">
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-3">
+                    <h1 style="font-size: 30px;">Scheda Dealer </h1>
+                </div>
+                <div class="slds-col slds-size_2-of-3">
+                    <lightning:layout horizontalAlign="end">
+                        <lightning:layoutItem>
+                            <div class="button-command slds-p-bottom_x-small">
+
+                                <!--  <lightning:button variant="variant" label="Crea Ticket Altri Uffici" onclick="{!c.creaTicketAltriUffici}" class="slds-button slds-button_text-destructive" />
+                                <lightning:button variant="variant" label="Crea Ticket Filiale" onclick="{!c.creaTicketFiliale}" class="slds-button slds-button_text-destructive" />
+                               <lightning:button class="" variant="neutral" onclick="{!c.showModal}">
+                                    <span>
+                                                                                    <lightning:icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default"               
+                                                                                    iconName="utility:search" size="x-small" alternativeText="icon" />
+                                                               </span> Informazioni Dealer
+                                </lightning:button>   -->
+
+
+
+
+
+                            </div>
+                        </lightning:layoutItem>
+
+                    </lightning:layout>
+                </div>
+            </div>
+
+            <div class="slds-section slds-is-open  ">
+                <c:GUA_DetailDealerOutBoundCmp datiAggiuntivi="{!v.datiAggiuntivi}" isDealer="false" caseDealer="{!v.caseDealer}" />
+
+            </div>
+
+            <div>
+                <div>
+                    <lightning:tabset selectedTabId="one">
+                        <lightning:tab label="Dettaglio Dealer" id="one" onactive="{!c.dettaglioDealer}">
+                            <c:GUA_Dettaglio_DealerCmp accId="{!v.contactDetails.AccountId}" />
+                        </lightning:tab>
+                        <lightning:tab label="Ultime Chiamate" id="two" onactive="{!c.ultimeChiamate}">
+                            <c:GUA_UltimeChiamataCmp accountId="{!v.contactDetails.AccountId}" />
+                        </lightning:tab>
+                        <lightning:tab label="Utenza Passcom" id="three" onactive="{!c.utenzaPasscom}">
+                            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                                <thead>
+                                    <tr class="slds-line-height_reset">
+                                        <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Num</th>
+                                        <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Utenza</th>
+                                        <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Disabilitato</th>
+                                        <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Canale</th>
+                                        <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Reset</th>
+                                        <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Cognome</th>
+                                        <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Nome</th>
+                                        <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Email</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <aura:iteration items="{!v.userDealerList}" var="userDealer">
+                                        <tr>
+                                            <td>
+                                            </td>
+                                            <td>{!userDealer.utenza}</td>
+                                            <td>{!userDealer.flagDisabilitato}</td>
+                                            <td>{!userDealer.canale}</td>
+                                            <td>
+                                                <lightning:button value="{!userDealer.utenza}" onclick="{!c.resetPassword}" name="options" tabindex="-1" label="Reset Password" />
+                                            </td>
+                                            <td>{!userDealer.cognome}</td>
+                                            <td>{!userDealer.nome}</td>
+                                            <td>{!userDealer.email}</td>
+                                        </tr>
+                                    </aura:iteration>
+                                </tbody>
+                            </table>
+                        </lightning:tab>
+                        <!-- <lightning:tab label="Produzione" id="four" onactive="{!c.produzione}">
+                            <h2 class="title_Box_Detail">Produzione</h2>
+                            <c:GUA_ProduzioneCmp />
+                        </lightning:tab> -->
+                        <lightning:tab label="Ultime Pratiche" id="five" onactive="{!c.ultimePratiche}">
+                            <c:GUA_recuperaUltimePraticheCmp case="{!v.contactDetails}" />
+                        </lightning:tab>
+                        <lightning:tab label="Ultime Carte" id="six" onactive="{!c.ultimeCarte}">
+                            <h2 class="title_Box_Detail">Ultime Carte</h2>
+                            <c:GUA_recuperaUltimeCartaCmp case="{!v.contactDetails}" />
+                        </lightning:tab>
+                        <lightning:tab label="Attivita Dealer SFA" id="seven" onactive="{!c.attivitaDealerSFA}">
+                            <c:Gua_AttivitaDealerSFA/>
+                        </lightning:tab>
+                        <lightning:tab label="FAQ" id="two" onactive="{!c.fAQ}">
+                            <h2 class="title_Box_Detail">FAQ</h2>
+                        </lightning:tab>
+
+                    </lightning:tabset>
+                </div>
+            </div>
+
+
+        </div>
+    </aura:if>
+</aura:component>

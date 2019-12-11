@@ -1,0 +1,168 @@
+<aura:component controller="CRMReclamiGestioneDettagliContainerCtrl"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" 
+                access="global" 
+                >
+    
+    <aura:attribute name="tabDettagli" type="Boolean"/>
+    <aura:attribute name="isScadenzaChangeable" type="Boolean"/>
+    <aura:attribute name="campiCase" type="Object"/>
+    <aura:attribute name="dataComunicazione" type="String"/>
+    <aura:attribute name="dataRicezione" type="String"/>
+    <aura:attribute name="dataRicezioneIDM" type="String"/>
+    <aura:attribute name="showDecisione" type="Boolean"/>
+    <aura:attribute name="dataDecisione" type="String"/>
+    <aura:attribute name="dataCaricamento" type="String"/>
+    <aura:attribute name="scadenzaReclamo" type="String"/>
+    <aura:attribute name="attribuzioneReclamo" type="List"/>
+    
+    <aura:attribute name="risarcimentoSelection" type="String"/>
+    <aura:attribute name="abbuonoSelection" type="String"/>
+    <aura:attribute name="standAloneSelection" type="String"/>
+    <aura:attribute name="rimborsoSelection" type="String"/>
+    <aura:attribute name="risarcimentoValue" type="Double" default=""/>
+    <aura:attribute name="abbuonoValue" type="Double"/>
+    <aura:attribute name="rimborsoValue" type = "Double"/>
+    <aura:attribute name="modalitaList" type="List"/>
+    <aura:attribute name="modalitaInvioDettagli" type="String"/>
+    <aura:attribute name="renderModInvIfEmpty" type = "Boolean" default = "true"/>   
+    
+    <aura:attribute name="risarcimentoOutput" type="Object"/>
+    <aura:attribute name="isRisarcimentoOk" type="Boolean"/>
+    <aura:attribute name="abbuonoOutput" type="Object"/>
+    <aura:attribute name="isAbbuonoOk" type="Boolean"/>
+    <aura:attribute name="standaloneOutput" type="Object"/>
+    <aura:attribute name="isStandaloneOk" type="Boolean"/>
+    <aura:attribute name="rimborsoOutput" type="Object"/>
+    <aura:attribute name="isRimborsoOk" type="Boolean"/>
+    <aura:attribute name="futuroOutput" type="Object"/>
+    
+    <aura:attribute name="modalitaInvioDettagliForInit" type="String"/>
+    <aura:attribute name="tipoName" type="String"/>
+    <aura:attribute name="isReadOnly" type="Boolean"/>
+    
+    <!--Output-->
+    <aura:attribute name="isOk" type="Boolean"/>
+    <aura:attribute name="errorMessage" type="String"/>
+    <aura:attribute name="outputObj" type="Object"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    
+    <aura:handler name="change" value="{!v.risarcimentoOutput}" action="{!c.handleChange}"/>
+    <aura:handler name="change" value="{!v.abbuonoOutput}" action="{!c.handleChange}"/>
+    <aura:handler name="change" value="{!v.rimborsoOutput}" action="{!c.handleChange}"/>
+    <aura:handler name="change" value="{!v.standaloneOutput}" action="{!c.handleChange}"/>
+    <aura:handler name="change" value="{!v.futuroOutput}" action="{!c.handleChange}"/>
+
+    <aura:method name="getDecisione" action="{!c.getValueDecisione}" access="PUBLIC"/>
+    <aura:method name="reload" action="{!c.init}" access="PUBLIC"/>
+    
+    <lightning:layout>
+        <lightning:layoutItem size="6">
+            <div class="slds-p-left_x-small slds-p-right_x-small">
+                <lightning:input label="Data comunicazione:"
+                                 type="date"
+                                 value="{!v.dataComunicazione}"
+                                 onchange="{!c.handleChange}"
+                                 
+                                 />
+                <lightning:input label="Data ricezione:"
+                                 type="date"
+                                 value="{!v.dataRicezione}"
+                                 onchange="{!c.handleChange}"
+                                 />
+                <lightning:input label="Data ricezione IDM:"
+                                 type="date"
+                                 value="{!v.dataRicezioneIDM}"
+                                 onchange="{!c.handleChange}"
+                                 />
+                <aura:if isTrue="{!v.showDecisione}">  
+                    <lightning:input label="Data Decisione:"
+                                     type="date"
+                                     readonly="true"
+                                     value="{!v.dataDecisione}"
+                                     onchange="{!c.handleChange}"
+                                     />
+                </aura:if>
+                
+                <lightning:input label="Data caricamento:"
+                                 type="date"
+                                 readonly="true"
+                                 value="{!v.dataCaricamento}"
+                                 onchange="{!c.handleChange}"
+                                 />
+                <!--<lightning:input label="Scadenza reclamo:"
+                                 type="date"
+                                 readonly="{!v.isScadenzaChangeable}"
+                                 value="{!v.scadenzaReclamo}"
+                                 onchange="{!c.handleChange}"
+                                 />-->
+
+                <lightning:input label="Scadenza reclamo:"
+                                 type="date"
+                                 readonly="{!v.isReadOnly}"
+                                 value="{!v.scadenzaReclamo}"
+                                 onchange="{!c.handleChange}"
+                                 />
+                <c:CRMReclamiInserimentoDettagliAttribuzioneReclamo attribuzioneReclamo="{!v.attribuzioneReclamo}"
+                                                                    isDisabled="true"
+                                                                    />
+            </div>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="6">
+            <c:XCSRadioGroupGenericReclami label="Risarcimento"
+                                           showValue="{!v.risarcimentoSelection}"
+                                           value="{!v.risarcimentoValue}"
+                                           output="{!v.risarcimentoOutput}"
+                                           isOk="{!v.isRisarcimentoOk}"
+                                           />
+            <c:XCSRadioGroupGenericReclami label="Abbuono"
+                                           showValue="{!v.abbuonoSelection}"
+                                           value="{!v.abbuonoValue}"
+                                           output="{!v.abbuonoOutput}"
+                                           isOk="{!v.isAbbuonoOk}"
+                                           />
+            
+            <aura:if isTrue="{!v.campiCase.Referenced_Company__c=='Futuro'}">
+                <c:CRMReclamiInserimentoDettagliRadioButtonsFuturo campiCase="{!v.campiCase}"
+                                                                   isOK="{!v.isFuturoOk}"
+                                                                   errorMessage="{!v.futuroMessage}"
+                                                                   output="{!v.futuroOutput}"
+                                                                   
+                                                                   />
+                
+                <aura:set attribute="else">
+                    <c:XCSRadioGroupGenericReclami label="Rimborso:"
+                                                   showValue="{!v.rimborsoSelection}"
+                                                   value="{!v.rimborsoValue}"
+                                                   output="{!v.rimborsoOutput}"
+                                                   isOk="{!v.isRimborsoOk}"
+                                                   />
+                    
+                    <aura:if isTrue="{!v.campiCase.Referenced_Company__c=='Compass'}">
+                        <c:XCSRadioGroupGenericReclami label="Stand Alone"
+                                                       showValue="{!v.standAloneSelection}"
+                                                       showInput="false"
+                                                       output="{!v.standaloneOutput}"
+                                                       isOk="{!v.isStandaloneOk}"
+                                                       />
+                    </aura:if>
+                </aura:set>
+            </aura:if>
+            
+            <!--Picklist Mod invio-->
+            <aura:if isTrue ="{!or(v.renderModInvIfEmpty, and (!v.renderModInvIfEmpty, v.modalitaInvioDettagli))}"> 
+                <lightning:select label="Modalità Invio:"
+                                  value="{!v.modalitaInvioDettagli}"
+                                  onchange="{!c.handleChange}"
+                                  >
+
+                    <aura:iteration items="{!v.modalitaList}" var="mod"> 
+                        <option style="{!mod == v.modalitaInvioDettagli ? 'display:none' : 'display:block'}" value="{!mod}">{!mod}</option>
+                    </aura:iteration>
+                                        <option style="" value="{!v.modalitaInvioDettagli}">{!v.modalitaInvioDettagli}</option>
+
+                </lightning:select>  
+           </aura:if> 
+        </lightning:layoutItem> 
+    </lightning:layout>
+</aura:component>

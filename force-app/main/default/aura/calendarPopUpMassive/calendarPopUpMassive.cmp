@@ -1,0 +1,106 @@
+<aura:component implements="flexipage:availableForAllPageTypes">
+
+    <aura:method name="openPopUp" action="{!c.openPopUp}" description="apertura del popup"/> 
+    
+    <!--own attributes of component-->
+
+    <aura:attribute name="activityType" type="String" />
+    <aura:attribute name="zoneList" type="List"/>
+    
+    <!--attributes from external component-->
+    <aura:attribute name="slot" type="Object"/>
+    <aura:attribute name="slotList" type="Object[]"/>
+    <aura:attribute name="branches" type="Account[]"/>
+    <aura:attribute name="zonePerFiliale" type="Map"/>
+    <aura:attribute name="branch" type="Account"/>
+    <aura:attribute name="TypeSelectOptions" type="Map"/>
+    <aura:attribute name="isFilialista" type="boolean" default="false"/>
+    <aura:attribute name="unsavedAdd" type="Integer" default="false"/>
+    <aura:attribute name="moment" type="String" default=""/> 
+    <aura:attribute name="weekDays" type="Object[]"/>
+    <aura:attribute name="slotListsAM" type="Object[]"/>
+    <aura:attribute name="slotListsPM" type="Object[]"/>
+    <aura:attribute name="slotListAMForAllUsers" type="Object[]"/>
+    <aura:attribute name="slotListPMForAllUsers" type="Object[]"/>
+    <aura:attribute name="draftSlotList" type="SFA_Slot__c[]"/>
+    <aura:attribute name="today" type="Date"/>
+    
+    <aura:attribute name="value" type="String"/>
+    <aura:attribute name="checkop" type="List" default="[
+    {'label': 'Filiale', 'value': 'Filiale'},
+    {'label': 'Zona', 'value': 'Zona'} 
+    ]"/>
+
+   
+    <aura:attribute name="value2" type="List" default="option1"/>
+    
+    <c:GenericPopUp class="smallPopUp" aura:id="theStaticModal" title="Pianifica Attivita" isDirectional="true" isLarge="false" hasCloseIcon="true">
+    <aura:set attribute="tagline">
+    <aura:if isTrue="{!v.moment != 'AMPM'}">
+        <p>{!v.moment}</p>
+    </aura:if>
+    </aura:set>
+    <lightning:layout verticalAlign="center" multipleRows="true">
+    <!-- riga 1 -->
+        
+        <aura:iteration items="{!v.weekDays}" var="day">
+            <aura:if isTrue="{!v.moment == 'AMPM' || v.moment == 'AM'}">    
+                <lightning:input aura:id="dayCheckBoxAM" type="checkbox" label="{!day.theDate + ' AM'}" class="{!day.theDate}" name="input1"/>
+            </aura:if>
+            <aura:if isTrue="{!v.moment == 'AMPM' || v.moment == 'PM'}">    
+                <lightning:input aura:id="dayCheckBoxPM" type="checkbox" label="{!day.theDate + ' PM'}" class="{!day.theDate}" name="input1"/>
+            </aura:if>
+        </aura:iteration>
+        
+
+        <lightning:layoutItem size="12">
+            <lightning:layout horizontalAlign="center">    
+                <lightning:select name="utr" aura:id="utrId" value="{!v.slot.Branch__c}"  label="Filiale" onchange="{!c.onChangeBranchSelect}" disabled="{!v.isFilialista}">
+                    <option text="" value="" />
+                    <aura:iteration items="{!v.branches}" var="branch">
+                        <option text="{!branch.Name}" value="{!branch.Id}"  selected="{!branch.Id==v.slot.Branch__c}"/>
+                    </aura:iteration>  
+                </lightning:select>
+            </lightning:layout>
+        </lightning:layoutItem>
+    <!-- riga 2 -->
+        <lightning:layoutItem size="12">
+            <lightning:layout horizontalAlign="center"> 
+                <lightning:radioGroup name="radioGroup"
+                                    options="{! v.checkop }"
+                                    value="{! v.activityType }"
+                                    type="radio"
+                                    disabled="{!v.slot.Branch__c ==''}"
+                                    onchange="{!c.onChangeBranchSelect}"
+                                    />
+            </lightning:layout>
+        </lightning:layoutItem>
+    <!-- riga 3 -->
+        <lightning:layoutItem size="12">
+
+            <lightning:layout horizontalAlign="center">    
+                    <aura:if isTrue="{!v.activityType == 'Filiale'}">
+                            <lightning:select name="activity"  value="{!v.slot.Type__c}"  label="Filiale">
+                            <aura:iteration items="{!v.TypeSelectOptions}" var="option">
+                                <option text="{!option.label}" value="{!option.value}" selected="{!option.value == v.slot.Type__c}"/>
+                            </aura:iteration>  
+                            </lightning:select> 
+                    </aura:if>
+                    <aura:if isTrue="{!v.activityType == 'Zona'}">
+                            <lightning:select name="zone" value="{!v.slot.XCS_Zone__c}"  label="Zona">
+                            <aura:iteration items="{!v.zoneList}" var="zone">
+                                <option text="{!zone.Name}" value="{!zone.Id}" selected="{!zone.Id == v.slot.XCS_Zone__c}"/>
+                            </aura:iteration>  
+                            </lightning:select> 
+                    </aura:if>
+                </lightning:layout>
+            </lightning:layoutItem>
+        </lightning:layout>
+    <!-- Modal footer -->
+    <aura:set attribute="footer">
+        <lightning:button label="Annulla" onclick="{!c.closePopUp}"/>
+        <lightning:button variant="brand" label="Modifica e Salva" onclick="{!c.saveSlot}" disabled="{! !v.activityType}"/>
+    </aura:set>
+    </c:GenericPopUp>
+
+</aura:component>

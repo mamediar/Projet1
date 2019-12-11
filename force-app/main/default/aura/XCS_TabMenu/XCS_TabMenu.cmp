@@ -1,0 +1,23 @@
+<aura:component controller="XCS_TabMenuController" implements="force:appHostable,flexipage:availableForAllPageTypes">
+    <aura:attribute name="configurationName" type="String"/>
+    <aura:attribute name="moveOnTop" type="Boolean" default="true"/>
+    <aura:attribute name="loadingCounter" type="Integer" default="0"/>
+    <aura:attribute name="moretabs" type="Aura.Component[]"/>
+    <!--aura:attribute name="branchSel" type="String" default="Ciao Branch"/-->
+    <aura:attribute name="branchSel" type="String" />
+    
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <lightning:card class="{!if(v.moveOnTop,'noStandardHeaderCustomTab noHeader','noHeader')}" title="">
+        <aura:if isTrue="{!v.loadingCounter > 0}">
+            <lightning:spinner alternativeText="Loading"/>
+        </aura:if>
+        <lightning:tabset aura:id="theTabSetId">
+                <!-- {!v.branchSel} -->
+            <aura:iteration items="{!v.moretabs}" var="tab">
+                
+                {!tab}
+            </aura:iteration>
+        </lightning:tabset>
+    </lightning:card>
+</aura:component>

@@ -1,0 +1,14 @@
+.THIS .maxHeight{
+    height:100%;
+}
+
+.THIS.slds-card__body{
+    margin: .25rem;
+}
+
+.THIS .headerCard > div.slds-card__body{
+    padding-bottom:0px;
+    margin-bottom: 0px;
+    text-align: center;
+    align-self: center;
+}

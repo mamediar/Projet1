@@ -1,0 +1,19 @@
+<aura:component  controller="JobGestioneEmailFaxController" implements="force:appHostable,flexipage:availableForAllPageTypes,force:lightningQuickActionWithoutHeader"
+                access="global">
+    
+    <lightning:layout horizontalAlign="spread" multipleRows="true" verticalAlign="center">    	            
+        <lightning:layoutItem size="8" >             
+        </lightning:layoutItem>        
+        <lightning:layoutItem>             
+            <lightning:button label="Avvia Schedulazioni"
+                              variant="brand"
+                              onclick="{!c.lanciaJobs}"
+                              /> 
+            
+            <lightning:button label="Smista Immediatamente"
+                              variant="brand"
+                              onclick="{!c.lanciaAlgoritmo}"
+                              />                           
+        </lightning:layoutItem>
+    </lightning:layout>
+</aura:component>

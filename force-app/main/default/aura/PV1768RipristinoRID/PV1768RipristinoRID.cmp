@@ -1,0 +1,55 @@
+<!--
+  @Component Name     : PV1768RipristinoRID.cmp
+  @Description        : 
+  @Author             : sabrina vitali
+  @Group              : 
+  @Last Modified By   : sabrina vitali
+  @Last Modified On   : 17/10/2019, 14:47:34
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    29/7/2019, 14:24:53   sabrina vitali     Initial Version
+-->
+<aura:component extends="c:PVSubComponentBase" controller="PV1768RipristinoRIDInserimento">
+    <aura:handler name='init' value='{!this}' action='{!c.init}' />
+    <!-- Attributi del PV -->
+    <aura:attribute name="msgDataRipristino" type="String"/>
+    <aura:attribute name="msgIban" type="String"/>
+    <aura:attribute name="today" type="Date" />
+    
+    <!--<aura:attribute name="options" type="List" default="[
+                                        {'label': 'SI', 'value': 'SI'},
+                                        {'label': 'NO', 'value': 'NO'}
+                                                        ]"/>-->
+
+    <!-- main -->
+    <lightning:card class='slds-form_stacked'>
+        <div class="slds-grid slds-container_medium slds-align_absolute-center slds-wrap">
+            <!--<div class="slds-size_12-of-12">
+                    <lightning:radioGroup name="regolareOk"
+                    aura:id="regolareOk"
+                    label="Pratica regolare in E/C"
+                    options="{! v.options}"
+                    type="radio"
+                    required="true"/>   
+            </div>-->
+            <aura:if isTrue="{!v.msgDataRipristino != ''}">
+                <div class="slds-size_2-of-12">
+                    <span><lightning:input type="Date" aura:id="dataRipristino" name="dataRipristino" label="Data ripristino" min="{!v.today}"/></span>
+                </div>
+                <div class="slds-size_10-of-12">
+                    <span><aura:unescapedHtml value="{!v.msgDataRipristino}" /></span>
+                </div>
+            </aura:if>
+            <aura:if isTrue="{!v.msgIban != ''}">
+                <div class="slds-size_12-of-12">
+                    <span><aura:unescapedHtml value="{!v.msgIban}" /></span>
+                    <span>
+                        <lightning:input type="checkbox" aura:id='checkbox' label='Spuntare per presa visione' name='checkbox' required='true' onchange="{!c.verifyCheckPresaVisione}" />
+                    </span>
+                </div>
+            </aura:if>
+        </div>
+    </lightning:card> <!-- /main -->
+</aura:component>

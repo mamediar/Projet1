@@ -1,0 +1,67 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId" controller="GUA_DettaglioContactCnt" access="global">
+    <aura:handler name="init" value="{!this}" action="{!c.handleManageContact}" />
+    <aura:attribute type="Case" name="contactDetail" default="{}" />
+    <aura:attribute type="Group" name="queueContact" default="" />
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute type="Object" name="uafDatiAggiuntiviFile" default="" />
+    <aura:attribute name="isModalOpen" type="boolean" default="false" />
+    <aura:attribute name="isChiama" type="boolean" default="false" />
+    <aura:attribute type="Account" name="filialeCase" default="" />
+    <aura:attribute name="datiAggiuntivi" type="Object" />
+
+    <div>
+
+        <aura:if isTrue="{!v.contactDetail.Id!=null}">
+            <article class="slds-card">
+                <div class="slds-card__header slds-grid">
+
+                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                        <div class="slds-media__figure">
+                            <span class="slds-icon_container slds-icon-standard-account" title="account">
+                                <span class="slds-assistive-text"></span>
+                            </span>
+                        </div>
+                        <div class="slds-media__body">
+                            <h2 class="slds-card__header-title">
+                                <div class="slds-grid slds-gutters">
+                                    <div class="slds-col">
+                                        <div class="slds-grid slds-gutters">
+                                            <span><lightning:icon iconName="standard:event" alternativeText="Event" /></span> &nbsp;&nbsp;
+                                            <span class="slds-text-heading_medium">Scheda Dealer</span>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col">
+                                        <div class="button-command slds-p-bottom_x-small slds-float_right">
+                                            <aura:if isTrue="{!v.isChiama}">
+                                                
+                                                <lightning:button variant="brand" label="Chiudi chiamata" onclick="{!c.chiudichiamata}" class="" />
+                                                <aura:set attribute="else">
+                                                    <lightning:button variant="variant" label="Ricerca Dealer" onclick="{!c.cercaDealer}" class="slds-button slds-button_text-destructive" />
+                                                </aura:set>
+                                            </aura:if>
+                                            <lightning:button variant="variant" label="Crea Ticket Altri Uffici" onclick="{!c.creaTicketAltriUffici}" class="slds-button slds-button_text-destructive" />
+                                            <lightning:button variant="variant" label="Crea Ticket Filiale" onclick="{!c.creaTicketFiliale}" class="slds-button slds-button_text-destructive" />
+                                            <lightning:button variant="variant" label="Crea Ticket Compass Affari" onclick="{!c.creaTicketCompassAffari}" class="slds-button slds-button_text-destructive" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </h2>
+                        </div>
+                    </header>
+                </div>
+            </article>
+            <div class="slds-m-around_medium">
+                <aura:if isTrue="{!v.isModalOpen}">
+                    <c:GUA_chiudichiamataCmp/>
+                </aura:if>
+            </div>
+            <c:GUA_DetailDealerHandlerCmp filialeCase="{!v.filialeCase}" caseDealer="{!v.contactDetail}" datiAggiuntivi="{!v.datiAggiuntivi}" queueContact="{!v.queueContact}" isDealer="true" />
+        </aura:if>
+
+        <div class="slds-card slds-p-top_large">
+            <c:GUA_Dettaglio2Contact contactDetails="{!v.contactDetail}" />
+        </div>
+    </div>
+
+
+</aura:component>

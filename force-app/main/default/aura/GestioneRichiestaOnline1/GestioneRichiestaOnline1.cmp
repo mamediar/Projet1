@@ -1,0 +1,438 @@
+<aura:component controller="GestioneRichiestaOnline1Cnt" implements="flexipage:availableForAllPageTypes,force:appHostable,force:lightningQuickAction,force:hasRecordId">
+    <!-- attributes of the component -->
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="case" type="Case" default="{ 'sobjectType' : 'Case' }" />
+    <!-- aura:attribute name="questionManagement" type="Object" default="" / -->
+    <aura:attribute name="questionManagement" type="Object" default="" />
+    <aura:attribute name="anomalies" type="Anomalie_Doc__c[]" default="[]" />
+    <aura:attribute name="queues1" type="String[]" default="['Q525']" />
+    <aura:attribute name="queues2" type="String[]" default="['Q330','Q331','Q332','Q333','Q336','Q375','Q337','Q376','Q338','Q339','Q340','Q341','Q377']" />
+    <aura:attribute name="queues3" type="String[]" default="['Q330', 'Q331', 'Q332']" />
+    <aura:attribute name="statiOcsList1" type="String[]" default="['','05BT','10']" />
+    <aura:attribute name="statiOcsList2" type="String[]" default="['','05BT','10','20','20SD','30','30CF']" />
+    <aura:attribute name="families1" type="String[]" default="['PP_ONLINE_COMPASS_DS', 'PF_ECOMMERCE_STANDARD', 'PP_ONLINE_PARTNER_DS']" />
+    <aura:attribute name="questions" type="List" />
+    <aura:attribute name="prodotti" type="List" />
+    <aura:attribute name="tipoPratica" type="String" />
+    <aura:attribute name="importo" type="String" />
+    <aura:attribute name="valueConfermaRisposta" type="String" />
+    <aura:attribute name="checkedConfermaRisposta" type="boolean" />
+    <aura:attribute name="importoCliente" type="String" />
+    <aura:attribute name="modalitaRimborso" type="String" />
+    <aura:attribute name="recallDate" type="DateTime" />
+    <aura:attribute name="dateValidationError" type="boolean" />
+    <aura:attribute name="dateValidationErrorMessage" type="String" />
+    <aura:attribute name="richiamiTempLimit" type="integer" />
+    <aura:attribute name="listViews" type="List" />
+
+    <!-- pagination -->
+    <aura:attribute name="paginationList" type="Anomalie_Doc__c[]" />
+    <aura:attribute name="pageSize" type="Integer" default="5" />
+    <aura:attribute name="totalSize" type="Integer" />
+    <aura:attribute name="start" type="Integer" />
+    <aura:attribute name="end" type="Integer" />
+
+    <!-- choice list -->
+    <aura:attribute name="listValues" type="List" />
+    <aura:attribute name="listValues2" type="List" />
+    <aura:attribute name="listValues3" type="List" />
+    <aura:attribute name="showListValues1" type="boolean" default="false" />
+    <aura:attribute name="showListValues2" type="boolean" default="false" />
+    <aura:attribute name="showListValues3" type="boolean" default="false" />
+    <aura:attribute name="showLinkBozza" type="boolean" default="false" />
+
+    <aura:attribute name="dispositionName" type="String" default="" />
+
+    <!-- initial List -->
+    <aura:attribute name="discordanzaCellulareEseguitaList" type="List" />
+    <aura:attribute name="initialInBoundList" type="List" />
+    <aura:attribute name="initialNonEseguitoList" type="List" />
+    <aura:attribute name="initialEseguitoList" type="List" />
+    <aura:attribute name="caricheraLaDocumentazione" type="List" />
+    <aura:attribute name="confermaVecchioRecapito" type="List" />
+    <aura:attribute name="confermaNuovoRecapito" type="List" />
+    <aura:attribute name="FirmeraIlContratto" type="List" />
+
+    <!-- select level -->
+    <aura:attribute name="firstLevel" type="String" default="" />
+    <aura:attribute name="secondLevel" type="String" default="" />
+    <aura:attribute name="thirdLevel" type="String" default="" />
+
+    <aura:attribute name="isOpenAppuntamento" type="boolean" default="false" />
+    <aura:attribute name="isOpenDomanda" type="boolean" default="false" />
+    <aura:attribute name="isOpen" type="boolean" default="false" />
+    <aura:attribute name="showLinkEvo" type="boolean" default="false" />
+    <aura:attribute name="showLink" type="boolean" default="false" />
+    <aura:attribute name="codeQueue" type="String" default="" />
+    <aura:attribute name="sowResponse" type="boolean" default="false" />
+    <aura:attribute name="openConfermaRisposta" type="boolean" default="false" />
+    <aura:attribute name="openRichiami" type="boolean" default="false" />
+    <!-- handler -->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <div class="container">
+        <div class="content">
+            <div class="slds-text-title_caps slds-m-bottom_large slds-m-top_large slds-text-heading_large color-text">Selezionare l'esito della chiamata</div>
+            <aura:if isTrue="{! not(empty(v.anomalies)) }">
+                <p class="slds-text-heading_medium slds-text-align_left slds-m-bottom_large">Anomalie documentali</p>
+                <div class="slds-grid">
+                    <table class="first-table">
+                        <tr>
+                            <div class="slds-m-bottom_small">
+                                <td class="show">Show</td>
+                                <td class="input-select">
+                                    <ui:inputSelect aura:id="records" change="{!c.onSelectChange}">
+                                        <ui:inputSelectOption text="5" value="5" />
+                                        <ui:inputSelectOption text="10" value="10" />
+                                        <ui:inputSelectOption text="20" value="20" />
+                                        <ui:inputSelectOption text="30" value="30" />
+                                    </ui:inputSelect>
+                                </td>
+                                <td><span class="slds-m-left_small">Entries</span></td>
+                            </div>
+                        </tr>
+                    </table>
+                </div>
+                <div class="slds-grid">
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                        <thead scope="col">
+                            <tr class="slds-line-height_reset">
+                                <th class="table-head" scope="col">Cod. Anomalia</th>
+                                <th class="table-head" scope="col">Descrizione Anomalia</th>
+                                <th class="table-head" scope="col">Cod. Doc.</th>
+                                <th class="table-head" scope="col">Documento</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <aura:iteration items="{!v.paginationList}" var="item">
+                                <aura:if isTrue="{! not(item == null)}">
+                                    <tr class="slds-hint-parent">
+                                        <td>
+                                            <div class="slds-p-around_small">{!item.codice_Anomalia__c}</div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-p-around_small">
+                                                <textarea id="textarea-id-01" disabled="true" class="slds-textarea" placeholder="{!item.Descrizione_Anomalia_Op__c}"></textarea>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-p-around_small">{!item.Codice_Documento__c}</div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-p-around_small">{!item.descrizione_Documento__c}</div>
+                                        </td>
+                                    </tr>
+                                </aura:if>
+                            </aura:iteration>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="slds-grid">
+                    <div class="button-command">
+                        <lightning:button variant="brand" label="First" disabled="{!v.start == 0}" onclick="{!c.first}" />
+                        <lightning:button variant="brand" label="Previous" disabled="{!v.start == 0}" onclick="{!c.previous}" />
+                        <lightning:button variant="brand" label="Next" disabled="{!v.end >= v.totalSize}" onclick="{!c.next}" />
+                        <lightning:button variant="brand" label="Last" disabled="{!v.end >= v.totalSize}" onclick="{!c.last}" />
+                    </div>
+                </div>
+            </aura:if>
+
+            <div class="esiti">
+                <div class="slds-grid slds-m-top_xx-large slds-m-bottom_large text-border-top">
+                    <div class="slds-col">
+                        <p class="slds-p-around_small"><b>Stato Ocs: </b> {!v.case.stato_ocs__c}</p>
+                    </div>
+                    <!--
+                    <div class="slds-col">
+                        <p class="slds-p-around_small"><b>Codice Pratica: </b> {!v.case.Stato_Pratica__c}</p>
+                    </div>
+                    -->
+                    <div class="slds-col">
+                        <p class="slds-p-around_small"><b>Numero Pratica Ocs: </b> {!v.case.NumeroPratica__c}</p>
+                    </div>
+                    <!--
+                    <div class="slds-col">
+                        <p class="slds-p-around_small"><b>FEA: </b> {!v.case.RO_fea__c}</p>
+                    </div>
+                    -->
+                    <aura:if isTrue="{! and(v.showLinkBozza, not(empty(v.case.RO_Link_Bozza__c)))}">
+                        <div class="slds-col">
+                            <p class="slds-p-around_small"><a href="{!v.case.RO_Link_Bozza__c}" target="_bl">Link Bozza</a></p>
+                        </div>
+                    </aura:if>
+                </div>
+
+                <aura:if isTrue="{!v.case.Tentativo__c>0}">
+                    <div class="slds-m-top_large slds-m-bottom_large texte-tentativo">
+                        <p class="slds-p-around_small"><b>Tentativo: </b> {!v.case.Tentativo__c + 1}</p>
+                    </div>
+                </aura:if>
+                <aura:if isTrue="{!v.case.RO_Nuovo_Cellulare__c != null}">
+                    <div class="slds-m-top_large slds-m-bottom_large texte-tentativo">
+                        <p class="slds-p-around_small"><b>Nuovo Cellulare: </b> {!v.case.RO_Nuovo_Cellulare__c}</p>
+                    </div>
+                </aura:if>
+                <aura:if isTrue="{!v.case.RO_Vecchio_Cellulare__c != null}">
+                    <div class="slds-m-top_large slds-m-bottom_large texte-tentativo">
+                        <p class="slds-p-around_small"><b>Vecchio Cellulare: </b> {!v.case.RO_Vecchio_Cellulare__c}</p>
+                    </div>
+                </aura:if>
+
+                <aura:if isTrue="{! and(v.isOpenDomanda, v.questions.length > 0)}">
+                    <table class="slds-table">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="slds-p-around_small"><b>Tipo Pratica: </b>{!v.tipoPratica}</div>
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="slds-p-around_small"><b>Domanda per confermata identita cliente</b></div>
+                                </td>
+                                <td></td>
+                            </tr>
+
+                            <aura:iteration items="{!v.questions}" var="item" indexVar="i">
+                                <tr>
+                                    <td>
+                                        <div class="slds-p-around_small">
+                                            <b>Domanda {!i*1+1} : </b>{!item.question}?
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="slds-form-element">
+                                            <aura:if isTrue="{! item.num == 3}">
+                                                <lightning:select name="" label="" aura:id="colorId" value="{!v.modalitaRimborso}">
+                                                    <option text="RID" value="RID" selected="RID" />
+                                                    <option text="IBAN" value="IBAN" />
+                                                </lightning:select>
+                                                <aura:set attribute="else">
+                                                    <!--label class="slds-form-element__label" for="form-element-01">{!item.question}</label -->
+                                                    <div class="slds-form-element__control">
+                                                        <lightning:input value="{!v.importoCliente}" type="number" placeholder="Inserire 0 se nessuna rata" />
+                                                    </div>
+                                                </aura:set>
+                                            </aura:if>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <aura:if isTrue="{! item.num != 3}">
+                                    <aura:if isTrue="{!v.importo != null}">
+                                        <tr>
+                                            <td>
+                                                <div class="slds-p-around_small"><b>Risposta Coretta: {!v.importo}</b></div>
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="">
+                                                    <div class="slds-p-around_small">
+                                                        <b>Domanda {!i*1+1} - (Risposta) </b>
+                                                        <lightning:input class="risp-coretta" type="checkbox" aura:id="mygroupRisposta" value="OK" label="OK" onchange="{!c.handleChange}" />
+                                                        <lightning:input class="risp-coretta" type="checkbox" aura:id="mygroupRisposta" value="KO" label="KO" onchange="{!c.handleChange}" />
+                                                        <lightning:input class="risp-coretta" type="checkbox" aura:id="mygroupRisposta" value="NON RICORDA" label="NON RICORDA" onchange="{!c.handleChange}" />
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                    </aura:if>
+
+                                </aura:if>
+                            </aura:iteration>
+                        </tbody>
+                    </table>
+
+                    <div class="slds-grid">
+                        <aura:if isTrue="{! and( v.modalitaRimborso != null , v.importoCliente != null)}">
+                            <button onclick="{!c.saveDomanda}" class="slds-button slds-button--brand btn-conf-rispota" type="button" id="">Conferma Risposta</button>
+                        </aura:if>
+                    </div>
+                </aura:if>
+
+                <div class="slds-grid">
+                    <div class="slds-form--horizontal form-note">
+                        <!--
+                        <div class="slds-form-element">
+                            <div class="slds-form-element__control">
+                                <lightning:textarea aura:id="note" value="{!v.case.Note__c}" name="note" label="Note:" />
+                            </div>
+                        </div> 
+                        -->
+                        <aura:if isTrue="{!not(v.codeQueue == 'Q524')}">
+                            <div class="slds-m-top_large slds-m-bottom_large">
+                                <div class="slds-grid slds-gutters">
+                                    <aura:if isTrue="{!v.showListValues1}">
+                                        <div class="slds-col">
+                                            <div class="slds-select_container">
+                                                <select id="categoryPicklist" class="slds-select" onchange="{!c.searchGetValues2}">
+                                                    <aura:iteration items="{!v.listValues}" var="item">
+                                                        <option value="{!item}">{!item}</option>
+                                                    </aura:iteration>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </aura:if>
+
+                                    <aura:if isTrue="{!v.showListValues2}">
+                                        <div class="slds-col">
+                                            <div class="slds-select_container">
+                                                <select id="categoryPicklist2" class="slds-select" onchange="{!c.searchGetValues3}">
+                                                    <aura:iteration items="{!v.listValues2}" var="item">
+                                                        <option value="{!item.value + '-' + item.label }">{!item.label}</option>
+                                                    </aura:iteration>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </aura:if>
+
+                                    <div class="slds-col">
+                                        <aura:if isTrue="{!v.showListValues3}">
+                                            <div class="slds-select_container">
+                                                <select id="categoryPicklist3" class="slds-select" onchange="{!c.searchGetValues4}">
+                                                    <aura:iteration items="{!v.listValues3}" var="item">
+                                                        <option value="{!item.value  + '-' + item.label }">{!item.label}</option>
+                                                    </aura:iteration>
+                                                </select>
+                                            </div>
+                                        </aura:if>
+                                    </div>
+                                </div>
+                            </div>
+                        </aura:if>
+
+                        <div class="slds-grid">
+                            <div class="slds-form-element div-conf">
+                                <!--disabled="disabled"-->
+                                <!--
+                                    <aura:if isTrue="{! and(and(not(v.codeQueue == 'Q524'),  (v.firstLevel != '')), (v.case.Status != 'Closed') ) }">
+                                    <button onclick="{!c.update}" class="slds-button slds-buttonbrand btn-update" type="button" id="conferma">Conferma</button>
+                                    </aura:if>
+                                
+                                <button disabled="{! empty(v.firstLevel) }" onclick="{!c.update}" class="slds-button slds-buttonbrand btn-update" type="button" id="conferma">Conferma</button>
+                                -->
+                                <lightning:button variant="brand" disabled="{! or(or((v.case.Status == 'Closed'),(v.codeQueue == 'Q524')), (v.firstLevel == '')) }" onclick="{!c.update}" class="slds-button btn-update" label="Conferma"></lightning:button>
+                            </div>
+                            <div class="slds-col showLinkEvo">
+                                <aura:if isTrue="{!v.showLinkEvo}">
+                                    <!--<p><a onclick="{!c.navigateToLinkEvo }">Vai al link evo</a></p> -->
+                                    <c:LinkEvo task='TK000004B9' infoPre='WFL' infoPost='CO_DIS_CEL' numeroPratica='CO' />
+                                </aura:if>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <aura:if isTrue="{!v.isOpen}">
+                <div style="height:640px">
+                    <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+                        <div class="slds-modal__container modal-conf">
+                            <header class="slds-modal__header">
+                                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="{! c.rejectSecondNumero }">
+                                    <span class="slds-assistive-text">Close</span>
+                                </button>
+                                <aura:if isTrue="{!v.codeQueue == 'Q338'}">
+                                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Contattare il nuovo numero</h2>
+                                    <aura:set attribute="else">
+                                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Conferma il secondo numero</h2>
+                                    </aura:set>
+                                </aura:if>
+
+                            </header>
+                            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                                <p>il nuovo numero è: {! v.case.RO_Nuovo_Cellulare__c }</p>
+                            </div>
+                            <footer class="slds-modal__footer">
+                                <button class="slds-button slds-button_neutral" onclick="{! c.rejectSecondNumero }">Cancel</button>
+                                <button class="slds-button slds-button_brand" onclick="{! c.confirmSecondNumero }">Conferma</button>
+                            </footer>
+                        </div>
+                    </section>
+                    <div class="slds-backdrop slds-backdrop_open"></div>
+                </div>
+            </aura:if>
+
+            <aura:if isTrue="{!v.isOpenAppuntamento }">
+                <div class="popup-appuntamento">
+                    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                        <div class="slds-modal__container">
+                            <header class="slds-modal__header">
+                                <button onclick="{!c.closeAppuntamento}" class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
+                                    <lightning:icon iconName="action:close" size="xx-small" />
+                                    <span class="slds-assistive-text">Close</span>
+                                </button>
+                                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Appuntamento</h2>
+                            </header>
+                            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                                <c:creaAppuntamento idCliente="{!v.case.AccountId}" />
+                            </div>
+                        </div>
+                    </section>
+                    <div class="slds-backdrop slds-backdrop_open"></div>
+                </div>
+            </aura:if>
+
+            <aura:if isTrue="{!v.openConfermaRisposta}">
+                <div style="height:350px">
+                    <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+                        <div class="slds-modal__container modal-conf">
+                            <header class="slds-modal__header">
+                                <button onclick="{!c.cancelConfermaRisposta}" class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
+                                    <lightning:icon iconName="action:close" size="xx-small" />
+                                    <span class="slds-assistive-text">Close</span>
+                                </button>
+                                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Conferma Risposta</h2>
+                            </header>
+                            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                                <p>Conferma la Risposta Cliente</p>
+                            </div>
+                            <footer class="slds-modal__footer">
+                                <button onclick="{!c.cancelConfermaRisposta}" class="slds-button slds-button_neutral">Cancel</button>
+                                <button onclick="{!c.saveConfermaRisposta}" class="slds-button slds-button_brand">Conferma</button>
+                            </footer>
+                        </div>
+                    </section>
+                    <div class="slds-backdrop slds-backdrop_open"></div>
+                </div>
+            </aura:if>
+
+            <aura:if isTrue="{!v.openRichiami}">
+                <div style="height:450px">
+                    <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+                        <div class="slds-modal__container modal-conf">
+                            <header class="slds-modal__header">
+                                <button onclick="{!c.cancelRichiami}" class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
+                                    <lightning:icon iconName="action:close" size="xx-small" />
+                                    <span class="slds-assistive-text">Close</span>
+                                </button>
+                                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Scegli la data di Recall</h2>
+                            </header>
+                            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                                <lightning:input class="{!v.dateValidationError  ? 'slds-has-error' : ''}" type="datetime" name="date" id="date-recall" label="Choose datetime" value="{!v.recallDate}" onchange="{!c.dateUpdate}" />
+                                <aura:if isTrue="{!v.dateValidationError}">
+                                    <div class="slds-text-color_error slds-p-left_x-small">
+                                        {!v.dateValidationErrorMessage}
+                                    </div>
+                                </aura:if>
+                                <br/>
+                            </div>
+                            <footer class="slds-modal__footer">
+                                <button onclick="{!c.cancelRichiami}" class="slds-button slds-button_neutral">Cancel</button>
+                                <aura:if isTrue="{!v.recallDate != null}">
+                                    <button disabled="{!v.dateValidationError}" onclick="{!c.cancelRichiami}" class="slds-button slds-button_brand">Conferma</button>
+                                    <!-- saveRichiami -->
+                                </aura:if>
+
+                            </footer>
+                        </div>
+                    </section>
+                    <div class="slds-backdrop slds-backdrop_open"></div>
+                </div>
+            </aura:if>
+        </div>
+    </div>
+</aura:component>

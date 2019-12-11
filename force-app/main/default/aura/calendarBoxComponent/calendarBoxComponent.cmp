@@ -1,0 +1,83 @@
+<aura:component implements="flexipage:availableForAllPageTypes">
+    <!--attributes from external component-->
+    <aura:attribute name="slotList" type="Object[]"/>
+    <aura:attribute name="slotListForAllUsers" type="Object[]"/>
+    <aura:attribute name="slotListIndex" type="Integer"/>
+    <aura:attribute name="draftSlotList" type="SFA_Slot__c[]"/>
+    <aura:attribute name="assenzeProlungateUserList" type="SFA_Assenza_Prolungata__c[]"/>
+    <aura:attribute name="dayOfThisSlot" type="Date"/>
+    <aura:attribute name="moment" type="String"/>
+    <aura:attribute name="user" type="User"/>
+    <aura:attribute name="branches" type="Account[]"/>
+    <aura:attribute name="zonePerFiliale" type="Map"/>
+    <aura:attribute name="branch" type="Account"/>
+    <aura:attribute name="TypeSelectOptions" type="Map"/>
+    <aura:attribute name="isFilialista" type="boolean" default="false"/>
+    <aura:attribute name="trashSlotList" type="SFA_Slot__c[]"/>
+    <aura:attribute name="unsavedAdd" type="Integer" default="0"/>
+    <aura:attribute name="today" type="Date"/>
+    <aura:attribute name="filialeTab" type="boolean"/>
+    <aura:attribute name="belongToCurrentMonth" type="boolean"/>
+    <aura:attribute name="notElapsed" type="boolean"/>
+    
+ 
+    <!--attributes for popup-->
+    <aura:attribute name="newSlotForPopUp" type="Object"/>
+    <aura:attribute name="isNew" type="boolean" default="true"/>
+
+    <!--lightning:card class="slds-card_boundary noHeader noIntBottomPadding">
+        <div align="center">
+            <lightning:formattedRichText value="{!v.taskList.day}"></lightning:formattedRichText>
+            <br/>
+            <lightning:formattedRichText value="{!v.taskList.date}"></lightning:formattedRichText>
+        </div>
+    </lightning:card-->
+    <c:calendarPopUp aura:id="popUpComponent"
+                     dayOfThisSlot="{!v.dayOfThisSlot}"
+                     moment="{!v.moment}"
+                     slotList="{!v.slotList}"
+                     slotListForAllUsers="{!v.slotListForAllUsers}"
+                     slotListIndex="{!v.slotListIndex}"
+                     draftSlotList="{!v.draftSlotList}"
+                     slot="{!v.newSlotForPopUp}"
+                     zonePerFiliale="{!v.zonePerFiliale}"
+                     branches="{!v.branches}"
+                     branch="{!v.branch}"
+                     TypeSelectOptions="{!v.TypeSelectOptions}"
+                     isFilialista="{!v.isFilialista}"
+                     isNew="{!v.isNew}"
+                     unsavedAdd="{!v.unsavedAdd}"
+                     />
+    <lightning:card class="{! v.belongToCurrentMonth ? 'slds-card_boundary noExtTopPadding noIntBottomPadding ' : 'greyDayColorizer slds-card_boundary noExtTopPadding noIntBottomPadding '}">
+        <aura:set attribute="title">
+            <aura:if isTrue="{!v.filialeTab}">
+                <lightning:buttonIcon iconName="utility:delete" variant="bare" onclick="{!c.removeAllAction }" alternativeText="Clear" disabled="{! v.assenzeProlungateUserList.length || !v.notElapsed}" />
+            </aura:if>
+            
+            <aura:if isTrue="{! !v.filialeTab}">
+                <p class="dateTextSize">{!v.dayOfThisSlot.dateNumber + ' ' + v.moment }</p>
+            </aura:if>
+        </aura:set>
+        <aura:set attribute="actions">
+            <aura:if isTrue="{!v.filialeTab}">
+                <lightning:buttonIcon iconName="utility:add" variant="bare" onclick="{!c.addElement}" alternativeText="New" disabled="{! v.assenzeProlungateUserList.length || !v.notElapsed}" />
+            </aura:if>
+        </aura:set>
+        <lightning:layout multipleRows="true" class = "{! v.notElapsed ? '' : 'hideCancelButton'}">
+            <aura:iteration items="{!v.slotList}" var="slot" indexVar="index">
+                <lightning:layoutItem size="12" class="{! slot.Status__c == 'Draft' ? 'draftPillClass' : ' ' }">
+                    <lightning:pill title="{!slot.typeLabel}" label="{! !slot.typeLabel  ? slot.XCS_Zone__r.Name : slot.typeLabel}" 
+                                    class="{!( empty(v.assenzeProlungateUserList) &amp;&amp; v.filialeTab ? '' : ' hideCancelButton ')}" 
+                                    name="{!index}" onremove="{!c.removeItemAction}" onclick="{! v.filialeTab ? c.modifyElement : ''}"/>
+                </lightning:layoutItem>
+            </aura:iteration>
+            <aura:if isTrue="{! v.assenzeProlungateUserList.length}">
+                <aura:iteration items="{!v.assenzeProlungateUserList}" var="assenza" indexVar="index">
+                    <lightning:layoutItem size="12">
+                        <lightning:pill class="hideCancelButton greyPillColorizer" title="{!assenza.MotivazioneAssenza}" label="{!assenza.MotivazioneAssenza}" name="{!index}"/>
+                    </lightning:layoutItem>
+                </aura:iteration>
+            </aura:if>
+        </lightning:layout>
+    </lightning:card>
+</aura:component>

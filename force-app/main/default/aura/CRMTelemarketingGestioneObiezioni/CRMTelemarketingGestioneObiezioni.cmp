@@ -1,0 +1,9 @@
+<aura:component controller="CRMTMKGestioneObiezioniController" implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId" access="global" >
+<force:recordData aura:id="case" recordUpdated="{!c.init}" recordId="{!v.recordId}" fields="CampaignId__r.RecordType.Name, CampaignId__r.ActionCode__c" targetFields="{!v.CaseRecord}" targetError="{!v.recordLoadError}"/>
+<aura:attribute name="recordId" type="String"/>
+<aura:attribute name="CaseRecord" type="object"/>
+<aura:attribute name="script" type="String"/>
+<p><b>Script per la gestione delle obiezioni</b></p><br/>
+    <lightning:formattedRichText value="{!v.script}"></lightning:formattedRichText>
+
+</aura:component>

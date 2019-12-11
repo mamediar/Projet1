@@ -1,0 +1,30 @@
+<aura:component controller="SFACambioAutoCreaCaseController" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes,force:lightningQuickActionWithoutHeader">
+    
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="listaAzioniFilialeSuDealer" type="Object[]" />
+    <aura:attribute name="azioneSelezionata" type="String" />
+    <!--<aura:attribute name="dealerIdSelezionato" type="String" />-->
+    <aura:attribute name="caseCreatoId" type="String"/>
+
+    <aura:attribute name="url" type="String"/>
+    <aura:attribute name="pageReference" type="Object"/>
+    <lightning:navigation aura:id="navService"/>
+
+    <aura:handler name="init" value="{! this }" action="{! c.doInit }"/>
+    
+    <!--
+    <ui:inputSelect aura:id="listaDealerId" label='Apri un nuovo case "Richiesta Cambio Auto"' change="{!c.handleSelezionaDealer}">
+        <aura:iteration items="{!v.listaDealer}" var="ld">
+            <ui:inputSelectOption text="{!ld.text}" label="{!ld.label}" value="{!ld.value}"/>
+        </aura:iteration>
+    </ui:inputSelect>
+    -->
+    
+    <ui:inputSelect aura:id="listaAzioniFilialeSuDealerId" label='Aggiungi attività' change="{!c.handleSelezionaAzione}">
+        <aura:iteration items="{!v.listaAzioniFilialeSuDealer}" var="lafsd">
+            <ui:inputSelectOption text="{!lafsd.text}" label="{!lafsd.label}" value="{!lafsd.value}"/>
+        </aura:iteration>
+    </ui:inputSelect>
+
+    <lightning:button class="slds-m-top_medium" variant="brand" label="Conferma" onclick="{! c.handleConfermaButton }" />
+</aura:component>

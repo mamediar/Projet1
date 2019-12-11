@@ -1,0 +1,113 @@
+<apex:page controller="EventRepport" renderAs="pdf" applyBodyTag="false" readOnly="true" showHeader="false" sidebar="false">
+    <h1>{!Title}</h1>
+    {!PDFData}
+    <p>{!message}</p>
+    <apex:dataTable value="{!aPageOfQuotes}" var="c" id="theTable" headerClass="tablehead" rowClasses="odd,even" style="font-size: 50%; " columnsWidth="50px, 100px, 150px, 100px, 100px, 50px, 100px, 100px, 100px, 100px">
+              <apex:column style="border: 1px"> 
+                  <apex:facet name="header">>Data/Ora :</apex:facet>
+                  <apex:outputText value="{!data['ActivityDateTime']}"/>
+              </apex:column>
+              <apex:column >
+                  <apex:facet name="header" >Tipologia :</apex:facet>
+                  <apex:outputText value="{!data.Tipo_Occupazione__c}"/>
+              </apex:column>
+              <apex:column >
+                  <apex:facet name="header">Prodotto :</apex:facet>
+                  <apex:outputText value="{!data.Product__r.Name}"/>
+              </apex:column>   
+              <apex:column >
+                  <apex:facet name="header">Dettaglio Prodotto :</apex:facet>
+                  <apex:outputField value="{!DataglioProductValues.Name}"/>
+              </apex:column>
+       		<apex:column > 
+                  <apex:facet name="header">Note :</apex:facet>
+                  <apex:outputField value="{!data.Note__c}"/>
+              </apex:column>
+               <apex:column styleClass="highlightcol">
+                  <apex:facet name="header" >Filiale :</apex:facet>
+                  <apex:outputField value="{!c.Sales_Discount__c}"/>
+              </apex:column>
+              <apex:column style="text-align:center;">
+                  <apex:facet name="header" >Unit Net</apex:facet>
+                  <apex:outputField value="{!c.Ext_Net_Price__c}"/>
+              </apex:column>
+              <apex:column style="text-align:center;">
+                  <apex:facet name="header" >Ext Net</apex:facet>
+                  <apex:outputField value="{!c.Ext_Price__c}"/>
+              </apex:column>
+  </apex:dataTable>
+    	<table>
+                  
+                  <tbody>
+                    <tr>      
+                      <td>
+                        <div><b>Data/Ora:</b> </div>
+                      </td>
+                      <td>
+                        <div>{!data['ActivityDateTime']}</div>
+                      </td>
+                    </tr>
+                    <tr>      
+                      <td>
+                        <div><b>Tipologia:</b> </div>
+                      </td>
+                      <td>
+                        <div>{!data.Tipo_Occupazione__c}</div>
+                      </td>
+                    </tr>
+                    <tr>      
+                      <td>
+                        <div><b>Prodotto:</b> </div>
+                      </td>
+                      <td>
+                        <div
+                          >{!data.Product__r.Name}</div>
+                      </td>
+                    </tr>
+                    <tr>      
+                      <td>
+                        <div><b>Dettaglio Prodotto:</b> </div>
+                      </td>
+                      <td>
+                        <div
+                          >{!DataglioProductValues.Name}</div>
+                      </td>
+                    </tr>
+                    <tr>      
+                      <td>
+                        <div><b>Note:</b> </div>
+                      </td>
+                      <td>
+                        <div >{!data.Note__c}</div>
+                      </td>
+                    </tr>
+                    <tr>      
+                      <td>
+                        <div><b>Filiale:</b> </div>
+                      </td>
+                      <td>
+                        <div
+                          >{!filialeEvent.Name}</div>
+                      </td>
+                    </tr>
+                    <tr>      
+                      <td>
+                        <div><b>telefono:</b> </div>
+                      </td>
+                      <td>
+                      	<div >{!data.Customer__r.PersonMobilePhone}
+                          <br/>{!data.Customer__r.Phone}
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>      
+                      <td>
+                        <div><b>fotocopie de allegare:</b> </div>
+                      </td>
+                      <td>
+                      	<div >{!fotocopieAllegare}</div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+</apex:page>

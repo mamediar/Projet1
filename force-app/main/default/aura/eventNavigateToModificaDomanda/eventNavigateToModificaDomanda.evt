@@ -1,0 +1,7 @@
+<!--
+ - Created by Salimata on 18/03/2019.
+ -->
+
+<aura:event type="APPLICATION" description="eventNavigateToModificaDomanda">
+<aura:attribute type="Risposte__c" name="rispostaObject"/>
+</aura:event>

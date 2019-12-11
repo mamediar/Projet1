@@ -1,0 +1,32 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId" access="global" >
+    <aura:handler event="c:eventTelemarketing" action="{!c.hideButton}"/>
+    <aura:registerEvent name="appEvent" type="c:eventTelemarketingForPV"/>
+    <aura:attribute name="parametriEsterni" type="PVInserimentoController.PVInserimentoParamEsterni" />
+    <lightning:workspaceAPI aura:id="workspace"/>
+    <aura:attribute name="CaseRecord" type="Object" />
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="activiti" type="boolean"/>
+    <aura:attribute name ="visibleEDI" type="boolean"/>
+    <aura:attribute name ="attCarta" type="boolean" default="false"/>
+    <aura:attribute name="pageReference" type="Object"/>
+    <lightning:navigation aura:id="navService"/>
+    <force:recordData aura:id="case" recordUpdated="{!c.init}"
+                      recordId="{!v.recordId}" 
+                      fields="Account.Name,ActivityType__c, NumeroPratica__c,Account.getCodice_Cliente__c, CampaignId__r.CodPromotion__c" 
+                      targetFields="{!v.CaseRecord}" 
+                      targetError="{!v.recordLoadError}"/>
+    <div class="slds-grid slds-gutters slds-p-around_xsmall">
+    <aura:if isTrue="{!v.attCarta}">
+    <lightning:button  label="Attiva Carta" onclick="{!c.AttviazioneCarta}" variant="destructive" />
+    </aura:if>
+    <aura:if isTrue="{!v.activiti}">
+    <lightning:button label="Fissa Appuntamento" onclick="{!c.FissAppuntamento}" variant="destructive" />
+	</aura:if>
+    <aura:if isTrue="true">
+    <lightning:button label="Rimozione Privacy" onclick="{!c.RimoPri}" variant="destructive" />
+    </aura:if>
+    <aura:if isTrue="{!v.visibleEDI}">
+    <lightning:button  label="Erogazione Diretta" onclick="{!c.EDI}" variant="destructive" />
+    </aura:if>   
+    </div>
+</aura:component>

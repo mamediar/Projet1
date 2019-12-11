@@ -1,0 +1,60 @@
+{
+    "resultCode": 0,
+    "resultMessage": "Ok",
+    "recuperaUtenzeIntermediarioResponse": {
+        "utenze": [{
+                "codiceIntermediario": "17534745",
+                "ragSocIntermediario": "SOMMA SRL",
+                "utenza": "PROVAWAL  ",
+                "flagDisabilitato": "N",
+                "dataScadenzaAccount": "20190328",
+                "canale": "MAP",
+                "nome": "",
+                "cognome": "",
+                "email": "",
+                "codAnagrafica": "               ",
+                "flagAuth": "NMSNNSSSSSSSSSSSSNN                               ",
+                "dataNascita": null,
+                "localitaNascita": "",
+                "provinciaNascita": "",
+                "codiceFiscale": ""
+            },
+            {
+                "codiceIntermediario": "17512971",
+                "ragSocIntermediario": "SOMMA SRL",
+                "utenza": "1655778200",
+                "flagDisabilitato": "N",
+                "dataScadenzaAccount": "20170223",
+                "canale": "MAP",
+                "nome": "NICOLA",
+                "cognome": "LONGOBARDI",
+                "email": "",
+                "codAnagrafica": "16557782        ",
+                "flagAuth": "NBNNNNNNSSSSSNNNNNN                               ",
+                "dataNascita": "19750619",
+                "localitaNascita": "CASTELLAMMARE DI STABIA",
+                "provinciaNascita": "NA",
+                "codiceFiscale": "LNGNCL75H19C129R"
+            },
+            {
+                "codiceIntermediario": "13468476",
+                "ragSocIntermediario": "SOMMA SRL",
+                "utenza": "VIRGY     ",
+                "flagDisabilitato": "N",
+                "dataScadenzaAccount": "20190623",
+                "canale": "MAP",
+                "nome": "",
+                "cognome": "",
+                "email": "",
+                "codAnagrafica": "               ",
+                "flagAuth": "NBNNNNNNSSSSSNNNNN ",
+                "dataNascita": null,
+                "localitaNascita": "",
+                "provinciaNascita": "",
+                "codiceFiscale": ""
+            }
+        ],
+        "as400Status": null,
+        "as400Errore": null
+    }
+}

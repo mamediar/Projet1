@@ -1,0 +1,149 @@
+<!--
+  @File Name          : PVModalitaRimborso.cmp
+  @Description        : 
+  @Author             : sabrina vitali
+  @Group              : 
+  @Last Modified By   : sabrina vitali
+  @Last Modified On   : 3/10/2019, 10:47:08
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    2/10/2019   sabrina vitali     Initial Version
+-->
+<aura:component controller="XCS_IbanController">
+    <aura:method name="doValidityCheck" action="{!c.doValidityCheck}" />
+
+    <!--da parent -->
+    <aura:attribute name="labelOptions" type="String" default="" />
+    <aura:attribute name="required" type="Boolean" />
+    <aura:attribute name="OCSClienteSelezionato" type="OCSCliente" />
+    <aura:attribute name="praticaSelezionata" type="OCSPratica" />
+    <aura:attribute name="errori" type="String" default="" />
+    <aura:attribute name="note" type="String" default="" />
+    <!--attributi componente-->
+    <aura:attribute name="isIBANvalido" type="Boolean" />
+
+    <aura:attribute name="modalitaPagamentoSelected" type="String" default="" />
+    <aura:attribute name="optionsModalitaPagamento" type="List" default="[
+                                                        {'label': 'Assegno', 'value': 'Assegno'},
+                                                        {'label': 'Bonifico', 'value': 'Bonifico'},
+                                                        ]" />
+
+	
+    <aura:if isTrue="{!and(v.OCSClienteSelezionato != '', v.OCSClienteSelezionato != null)}">
+        <lightning:card iconName="action:new_contact" title="Dati Rimborso Cliente">
+            <lightning:layout horizontalAlign="left">
+                <lightning:layoutItem size="5">
+                    <lightning:select name="modalitaPagamento" label="{! v.labelOptions }" aura:id="modalitaPagamento"
+                        value="{!v.modalitaPagamentoSelected}" required="{!v.required}">
+                        <option text="" value="" />
+                        <aura:iteration items="{!v.optionsModalitaPagamento}" var="modPag">
+                            <option text="{!modPag.label}" value="{!modPag.value}" />
+                        </aura:iteration>
+                    </lightning:select>
+                </lightning:layoutItem>
+            </lightning:layout>
+
+
+            <aura:if isTrue="{!v.modalitaPagamentoSelected == 'Assegno'}">
+                <lightning:layout horizontalAlign="left">
+                    <lightning:layoutItem size="12">
+                        <lightning:input name="cliente" disabled="true"
+                            value="{!v.OCSClienteSelezionato.denominazioneAzienda}" label='Denominazione Azienda' />
+                    </lightning:layoutItem>
+                </lightning:layout>
+                <lightning:layout horizontalAlign="left">
+                    <lightning:layoutItem size="5">
+                        <lightning:input name='address' aura:id='address' label='Indirizzo di spedizione'
+                            value='{!v.OCSClienteSelezionato.indirizzo}' type='String' required="{!v.required}" />
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="3">
+                        <lightning:input name='postalCode' aura:id='cap' label='CAP'
+                            value='{!v.OCSClienteSelezionato.cap}' type='String' minlength="5" maxlength="5"
+                            required="{!v.required}" />
+                    </lightning:layoutItem>
+                </lightning:layout>
+                <lightning:layout horizontalAlign="left">
+                    <lightning:layoutItem size="5">
+                        <c:PVProvinciaCombo provinciaSelection="{!v.OCSClienteSelezionato.provincia}" label="Provincia"
+                            required="{!v.required}" aura:id="provincia">
+                        </c:PVProvinciaCombo>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="6">
+                        <c:PVComuneCombo provinciaSelection="{!v.OCSClienteSelezionato.provincia}"
+                            comuneSelection="{!v.OCSClienteSelezionato.localita}" label="Città" required="{!v.required}"
+                            aura:id="comune">
+                        </c:PVComuneCombo>
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </aura:if>
+            <aura:if isTrue="{!v.modalitaPagamentoSelected == 'Bonifico'}">
+                <lightning:layout horizontalAlign="left">
+                    <lightning:layoutItem size="6">
+                        <lightning:input aura:id="intestatario" name="intestatario"
+                            label="Nome e cognome intestatario del conto" required="{!v.required}" />
+                    </lightning:layoutItem>
+                </lightning:layout>
+                <lightning:layout horizontalAlign="left">
+                    <lightning:layoutItem size="3">
+                        <lightning:input aura:id="ABI__c" name="ABI" label="ABI" value="{!v.praticaSelezionata.abi}"
+                            pattern="^0*[1-9]\d*$" required="{!v.required}" />
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="3">
+                        <lightning:input aura:id="CAB__c" name="CAB" label="CAB" value="{!v.praticaSelezionata.cab}"
+                            pattern="^0*[1-9]\d*$" required="{!v.required}" />
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="3">
+                        <lightning:input aura:id="ContoCorrente__c" name="CC" label="CC"
+                            value="{!v.praticaSelezionata.numConto}" required="{!v.required}" />
+                    </lightning:layoutItem>
+                </lightning:layout>
+                <lightning:layout horizontalAlign="left">
+                    <lightning:layoutItem size="6">
+                        <lightning:input aura:id="IBAN__c" name="IBAN" label="IBAN" value="{!v.praticaSelezionata.iban}"
+                            required="{!v.required}" />
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="4">
+                        <lightning:input aura:id="messaggioIban" name="messaggioIban" readonly="true" />
+                    </lightning:layoutItem>
+                </lightning:layout>
+                
+<!--                <lightning:layout horizontalAlign="left">
+                    <lightning:layoutItem size="3">
+                        <lightning:input aura:id="ABI__c" name="ABI" label="ABI" value=""
+                            pattern="^0*[1-9]\d*$" required="{!v.required}" />
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="3">
+                        <lightning:input aura:id="CAB__c" name="CAB" label="CAB" value=""
+                            pattern="^0*[1-9]\d*$" required="{!v.required}" />
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="3">
+                        <lightning:input aura:id="ContoCorrente__c" name="CC" label="CC"
+                            value="" pattern="^0*[1-9]\d*$" required="{!v.required}" />
+                    </lightning:layoutItem>
+                </lightning:layout>
+                <lightning:layout horizontalAlign="left">
+                    <lightning:layoutItem size="6">
+                        <lightning:input aura:id="IBAN__c" name="IBAN" label="IBAN" value=""
+                            required="{!v.required}" />
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="4">
+                        <lightning:input aura:id="messaggioIban" name="messaggioIban" readonly="true" />
+                    </lightning:layoutItem>
+                </lightning:layout>-->
+
+                <lightning:layout horizontalAlign="left">
+                    <lightning:layoutItem size="2">
+                        <lightning:button variant="destructive" label="Calcola IBAN"
+                            onclick="{!c.actionButtonCalcolaIBAN}" />
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="2">
+                        <lightning:button variant="destructive" label="Verifica IBAN"
+                            onclick="{!c.actionButtonVerificaIBAN}" />
+                    </lightning:layoutItem>
+                </lightning:layout>
+
+
+            </aura:if>
+        </lightning:card>
+    </aura:if>
+</aura:component>

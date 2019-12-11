@@ -1,0 +1,34 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction">
+     <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    <aura:attribute name="favoriteColors" type="String[]" default="" />
+
+    
+    <!--lightning:clickToDialService is for internal use only.
+        Use Open CTI in your org instead. For more information, see the Open CTI Dev Guide.
+        https://developer.salesforce.com/docs/atlas.en-us.api_cti.meta/api_cti/sforce_api_cti_intro.htm -->
+
+
+        <p><lightning:clickToDial value="+393404969464" /></p>
+    
+    <p><lightning:clickToDial value="+393404969464" recordId="0010Q000009tZyBQAU" params="{
+   autoPlace: true,
+   callerId: '+393404969464',
+   callerIdName: 'Some Name Here',
+   interactionAttributes: {
+       CustomAttribute: 'Data here'                                                                                        
+   },
+                                                                                          
+   interactionType: 'call',
+   associations: [
+       {
+           Id: '0010Q000009tZyBQAU',
+           Name: 'AccountName',
+           attributes: {
+               type: 'Account'
+           }
+       }
+   ]
+}"/></p>
+	
+
+</aura:component>

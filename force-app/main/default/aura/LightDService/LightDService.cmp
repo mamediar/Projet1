@@ -1,0 +1,11 @@
+<aura:component implements="force:appHostable,flexipage:availableForRecordHome,force:hasRecordId">
+    
+    <aura:attribute name="recordId"  type="String"/>	
+    <lightning:card title="Create ANd Edit Account">	
+        <lightning:recordForm objectApiName="Account"
+                               recordId="{!v.recordId}"
+                               fields="Name"/>	
+                                  
+
+</lightning:card>	
+</aura:component>

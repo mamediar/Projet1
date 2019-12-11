@@ -1,0 +1,14 @@
+<aura:component controller="ovverideEventNewController" implements="force:appHostable,lightning:actionOverride,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global" >
+	
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+    <aura:attribute name="IdFiliale" type="String"/>
+    <aura:attribute name="filialeExist" type="boolean" default="false"/>
+        
+    
+    <aura:if isTrue="{!v.filialeExist}">
+        	<c:creaAppuntamento showListFiliale="false" filialeId="{!v.IdFiliale}"/>
+        <aura:set attribute="else">
+        	<c:creaAppuntamento/>
+        </aura:set>
+    </aura:if>
+</aura:component>

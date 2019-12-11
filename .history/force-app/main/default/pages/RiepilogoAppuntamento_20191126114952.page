@@ -1,0 +1,80 @@
+<apex:page controller="EventRepport" renderAs="pdf" applyBodyTag="false" readOnly="true" showHeader="false" sidebar="false">
+    <h1>{!Title}</h1>
+    {!PDFData}
+    <p>{!message}</p>
+   
+    	<table>
+                  
+                  <tbody>
+                    <tr>      
+                      <td>
+                        <div><b>Data/Ora:</b> </div>
+                      </td>
+                      <td>
+                        <div>{!data['ActivityDateTime']}</div>
+                      </td>
+                    </tr>
+                    <tr>      
+                      <td>
+                        <div><b>Tipologia:</b> </div>
+                      </td>
+                      <td>
+                        <div>{!data.Tipo_Occupazione__c}</div>
+                      </td>
+                    </tr>
+                    <tr>      
+                      <td>
+                        <div><b>Prodotto:</b> </div>
+                      </td>
+                      <td>
+                        <div
+                          >{!data.Product__r.Name}</div>
+                      </td>
+                    </tr>
+                    <tr>      
+                      <td>
+                        <div><b>Dettaglio Prodotto:</b> </div>
+                      </td>
+                      <td>
+                        <div
+                          >{!DataglioProductValues.Name}</div>
+                      </td>
+                    </tr>
+                    <tr>      
+                      <td>
+                        <div><b>Note:</b> </div>
+                      </td>
+                      <td>
+                        <div >{!data.Note__c}</div>
+                      </td>
+                    </tr>
+                    <tr>      
+                      <td>
+                        <div><b>Filiale:</b> </div>
+                      </td>
+                      <td>
+                        <div
+                          >{!filialeEvent.Name}</div>
+                      </td>
+                    </tr>
+                    <tr>      
+                      <td>
+                        <div><b>telefono:</b> </div>
+                      </td>
+                      <td>
+                      	<div >{!data.Customer__r.PersonMobilePhone}
+                          <br/>{!data.Customer__r.Phone}
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>      
+                      <td>
+                        <div><b>fotocopie de allegare:</b> </div>
+                      </td>
+                      <td>
+                      	<div >{!fotocopieAllegare}</div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+</apex:page>

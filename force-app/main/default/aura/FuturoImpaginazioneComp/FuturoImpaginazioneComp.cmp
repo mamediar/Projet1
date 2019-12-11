@@ -1,0 +1,329 @@
+<aura:component
+  controller="CommodityFuturoCnt"
+  implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+  access="global"
+>
+  <!--AURA ATTRIBUTI-->
+  <aura:attribute name="totale" type="COM_Agente__c[]" default="[]" />
+  <aura:attribute name="agenteList" type="COM_Agente__c[]" />
+  <aura:attribute name="paginationList" type="sObject[]" default="[]" />
+  <aura:attribute name="objectList" type="sObject[]" default="[]" />
+  <aura:attribute name="isFiltered" type="boolean" default="false" />
+  <aura:attribute name="dataName" type="String" default="" />
+  <aura:attribute name="codiceAgente" type="String" default="" />
+  <aura:attribute name="target" type="String" default="" />
+  <aura:attribute name="numeroPratiche" type="String" default="" />
+  <aura:attribute name="chiusoConforme" type="String" default="" />
+  <aura:attribute name="chiusoNonConforme" type="String" default="" />
+  <aura:attribute name="pageReference" type="Object" />
+  <!-- ATTRIBUTI RELATIVI ALLA PAGINAZIONE -->
+  <aura:attribute name="totalPage" type="Integer" default="1" />
+  <aura:attribute name="currentPage" type="Integer" default="1" />
+  <aura:attribute name="totalRecord" type="integer" default="0" />
+  <aura:attribute name="pages" type="integer[]" />
+  <aura:attribute name="pageSize" type="Integer" default="10" />
+  <aura:attribute name="start" type="Integer" default="0" />
+  <aura:attribute name="end" type="Integer" default="0" />
+  <!-- ATTRIBUTI FOR SORT TABLE -->
+  <aura:attribute
+    name="isAsc"
+    type="boolean"
+    default="true"
+    description="boolean flag for pass sorting condition to apex class"
+  />
+  <aura:attribute
+    name="arrowDirection"
+    type="string"
+    default="arrowup"
+    description="Use for change arrow sign direction on header based on click"
+  />
+  <aura:attribute
+    name="selectedTabsoft"
+    type="string"
+    default="numeroPratiche"
+    description="Use for show/hide arraow sign on header based on conditions"
+  />
+  <!-- Handler Init -->
+  <aura:handler name="init" value="{!this}" action="{!c.init}" />
+  <aura:handler event="c:eventAdminAgente" action="{!c.adminAgente}" />
+  <!-- register Event -->
+  <aura:registerEvent name="eventGetIntervista" type="c:eventGetIntervista" />
+  <aura:registerEvent name="praticheCliente" type="c:eventGetPraticheCliente" />
+  <aura:registerEvent
+    name="eventGetPraticheFuturo"
+    type="c:eventGetPraticheFuturo"
+  />
+  <aura:registerEvent
+    name="eventNavigateToPraticheFiliali"
+    type="c:eventNavigateToPraticheFiliali"
+  />
+
+
+  
+        <!--START HEADER-->
+
+        <!--END CARD HEADER-->
+        <!--END CARD HEADER-->
+        
+      
+        <div class="slds-grid slds-m-around_large slds-float_left">
+                <div class="slds-col slds-p-around_small slds-text-heading_medium">Visualizza per</div>
+                <div class="slds-col slds-p-around_small"><select
+                    class="slds-select slds-p-right_xx-large slds-p-left_medium"
+                    id="status"
+                    name="province"
+                    onchange="{!c.filterAgente}">
+                    <option value="Agente">Agente</option>
+                    <option value="Totale">Totale</option>
+                  </select></div>
+              </div>
+         
+        <!--END HEADER-->
+        <div>
+                <div class="slds-col slds-size_12-of-12 ">
+
+    
+        <!-- <div style="margin-left: 20px;margin-right: 20px;overflow-x: scroll;">-->
+        <div class="slds-container slds-p-left_large slds-p-right_large">
+          <table
+            class="slds-table slds-table--bordered slds-table--cell-buffer slds-max-medium-table--stacked-horizontal"
+          >
+            <!-- <table class="slds-table slds-table_cell-buffer slds-table_bordered">-->
+            <thead>
+              <tr class="slds-text-heading--label">
+                <th
+                  class="slds-is-sortable slds-text-title--caps nobordertop"
+                  scope="col"
+                  onclick="{!c.sortCodiceAgente}"
+                >
+                  <a
+                    href="javascript:void(0);"
+                    class="slds-th__action slds-text-link--reset"
+                  >
+                    <span class="slds-assistive-text">Sort</span>
+                    <span class="slds-truncate" title=""
+                      >CODICE AGENTE</span
+                    >
+                    <aura:if
+                      isTrue="{! and(v.arrowDirection == 'arrowdown', v.selectedTabsoft == 'CodiceAgente') }"
+                      >&nbsp; &#9660;
+                    </aura:if>
+                    <aura:if
+                      isTrue="{! and(v.arrowDirection != 'arrowdown', v.selectedTabsoft == 'CodiceAgente') }"
+                    >
+                      &nbsp; &#9650;
+                    </aura:if>
+                  </a>
+                </th>
+                <th
+                  class="slds-is-sortable slds-text-title--caps nobordertop"
+                  scope="col"
+                  onclick="{!c.sortAgente}"
+                >
+                  <a
+                    href="javascript:void(0);"
+                    class="slds-th__action slds-text-link--reset"
+                  >
+                    <span class="slds-assistive-text">Sort</span>
+                    <span class="slds-truncate" title="">AGENTE</span>
+                    <aura:if
+                      isTrue="{! and(v.arrowDirection == 'arrowdown', v.selectedTabsoft == 'Agente') }"
+                      >&nbsp; &#9660;
+                    </aura:if>
+                    <aura:if
+                      isTrue="{! and(v.arrowDirection != 'arrowdown', v.selectedTabsoft == 'Agente') }"
+                    >
+                      &nbsp; &#9650;
+                    </aura:if>
+                  </a>
+                </th>
+                <!--
+                        <th  class="nobordertop" scope="col">
+                            <span class="slds-truncate" title="CODICE AGENTE">CODICE <br/> AGENTE</span>
+                        </th>
+                        <th scope="col" class="nobordertop">
+                            <span class="slds-truncate" title="AGENTE"> AGENTE</span>
+                        </th> -->
+                <th
+                  class="slds-is-sortable slds-text-title--caps nobordertop"
+                  scope="col"
+                  onclick="{!c.sortTarget}"
+                >
+                  <a
+                    href="javascript:void(0);"
+                    class="slds-th__action slds-text-link--reset"
+                  >
+                    <span class="slds-assistive-text">Sort</span>
+                    <span class="slds-truncate" title=""> TARGET</span>
+                    <aura:if
+                      isTrue="{! and(v.arrowDirection == 'arrowdown', v.selectedTabsoft == 'target') }"
+                      >&nbsp; &#9660;
+                    </aura:if>
+                    <aura:if
+                      isTrue="{! and(v.arrowDirection != 'arrowdown', v.selectedTabsoft == 'target') }"
+                    >
+                      &nbsp; &#9650;
+                    </aura:if>
+                  </a>
+                </th>
+                <th
+                  class="slds-is-sortable slds-text-title--caps nobordertop"
+                  scope="col"
+                  onclick="{!c.sortNumeroPratiche}"
+                >
+                  <a
+                    href="javascript:void(0);"
+                    class="slds-th__action slds-text-link--reset"
+                  >
+                    <span class="slds-assistive-text">Sort</span>
+                    <span class="slds-truncate" title=""
+                      >NUMERO <br />PRATICHE</span
+                    >
+                    <aura:if
+                      isTrue="{! and(v.arrowDirection == 'arrowdown', v.selectedTabsoft == 'numeroPratiche') }"
+                      >&nbsp; &#9660;
+                    </aura:if>
+                    <aura:if
+                      isTrue="{! and(v.arrowDirection != 'arrowdown', v.selectedTabsoft == 'numeroPratiche') }"
+                    >
+                      &nbsp; &#9650;
+                    </aura:if>
+                  </a>
+                </th>
+                <th
+                  class="slds-is-sortable slds-text-title--caps nobordertop"
+                  scope="col"
+                  onclick="{!c.sortChiusoConforme}"
+                >
+                  <a
+                    href="javascript:void(0);"
+                    class="slds-th__action slds-text-link--reset"
+                  >
+                    <span class="slds-assistive-text">Sort</span>
+                    <span class="slds-truncate" title=""
+                      >CHIUSO<br /> CONFORME
+                    </span>
+                    <aura:if
+                      isTrue="{! and(v.arrowDirection == 'arrowdown', v.selectedTabsoft == 'chiusoconforme') }"
+                      >&nbsp; &#9660;
+                    </aura:if>
+                    <aura:if
+                      isTrue="{! and(v.arrowDirection != 'arrowdown', v.selectedTabsoft == 'chiusoconforme') }"
+                    >
+                      &nbsp; &#9650;
+                    </aura:if>
+                  </a>
+                </th>
+                <th
+                  class="slds-is-sortable slds-text-title--caps nobordertop"
+                  scope="col"
+                  onclick="{!c.sortChiusoNonConforme}"
+                >
+                  <a
+                    href="javascript:void(0);"
+                    class="slds-th__action slds-text-link--reset"
+                  >
+                    <span class="slds-assistive-text">Sort</span>
+                    <span class="slds-truncate" title=""
+                      >CHIUSO <br />NON CONFORME</span
+                    >
+                    <aura:if
+                      isTrue="{! and(v.arrowDirection == 'arrowdown', v.selectedTabsoft == 'chiusononconforme') }"
+                      >&nbsp; &#9660;
+                    </aura:if>
+                    <aura:if
+                      isTrue="{! and(v.arrowDirection != 'arrowdown', v.selectedTabsoft == 'chiusononconforme') }"
+                    >
+                      &nbsp; &#9650;
+                    </aura:if>
+                  </a>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <aura:iteration items="{!v.paginationList}"  var="agente"  indexVar="i">
+                <!--SS_Pagination-->
+                <tr class="slds-hint-parent">
+                  <th scope="row">
+                    <div class="slds-truncate" title="">
+                    {!agente.Com_Codice__c}
+                    </div>
+                  </th>
+                  <th scope="row">
+                    <div class="slds-truncate" title="">
+                     {!agente.Name}
+                     </div>
+                  </th>
+                  <th scope="row">
+                    <div class="slds-truncate" title=""
+                      >{!agente.Com_Numero_Contatti__c}</div
+                    >
+                  </th>
+                  <th scope="row">
+                    <div class="slds-truncate" title="">
+                      {!agente.Commodity_Survey__r ? agente.Commodity_Survey__r.length : 0}</div
+                    >
+                  </th>
+                  <th scope="row">
+                    <div class="slds-truncate" title="">
+                      {!agente.COM_PraticheChiuse_Conforme__c}
+                    </div>
+                  </th>
+                  <th scope="row">
+                    <div class="slds-truncate" title=""
+                      >{!agente.COM_ChiusoNon_Conforme__c}</div
+                    >
+                  </th>
+                </tr>
+              </aura:iteration>
+            </tbody>
+          </table>
+        </div>
+        <br />
+        <!--SS_Pagination-->
+        <div class="slds-grid slds-wrap" style="margin-top: 2">
+          <div class="slds-size_1-of-2">
+            <div class=" slds-text-align_center slds-m-around_x-small">
+              <c:FilialiPagination
+                objectList="{!v.objectList}"
+                paginationList="{!v.paginationList}"
+                pageSize="{!v.pageSize}"
+                start="{!v.start}"
+                end="{!v.end}"
+                totalPage="{!v.totalPage}"
+                currentPage="{!v.currentPage}"
+                totalRecord="{!v.totalRecord}"
+                pages="{!v.pages}"
+              />
+            </div>
+          </div>
+          <div class="slds-size_1-of-2">
+            <div
+              class=" slds-text-align_right slds-m-around_x-small"
+              style="margin-top: 16"
+            >
+              <div class="slds-grid slds-wrap">
+                <div
+                  class="slds-col slds-size_1-of-1 slds-large-size_3-of-3 "
+                  style="text-align:right;font-size:14px"
+                >
+                  <p class="slds-truncate">&nbsp;&nbsp;</p>
+                </div>
+                <div
+                  style="width:100%!Important"
+                  class="slds-col slds-size_1-of-1 slds-large-size_3-of-3 stylePag"
+                >
+                  <lightning:button name="pratiche"
+                    class="slds-button slds-button_brand"
+                    onclick="{!c.getPratiche}"
+                    label="Vai ai Pratiche >>>"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</aura:component>

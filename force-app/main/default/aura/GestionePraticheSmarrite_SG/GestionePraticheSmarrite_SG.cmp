@@ -1,0 +1,51 @@
+<aura:component controller="GestionePraticheSmarriteSGController" implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId" >
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="contractList" type="Object" />
+    <aura:attribute name="columns" type="List" />
+    <aura:attribute name="complaintDisabled" type="Boolean" default="true"/>
+    <aura:attribute name="selectedContracts" type="List" />
+    <aura:attribute name="url" type="URL" />
+    <aura:attribute name="accept" type="List" default="['.jpg', '.jpeg','.pdf']"/>
+    <aura:attribute name="contractsKO" type="SObject[]" />
+    
+
+    <aura:attribute name="cmp" type="Aura.Component" >
+        <h4>Hai selezionato i seguenti contratti: </h4> <br/>
+        <aura:iteration items="{!v.selectedContracts}" var="con" >
+          - {!con.ContractNumber__c}, Lotto: {!con.OCSLottoId__c}, Cliente: {!con.AccountName__c},{!con.AccountCity__c} <br/>
+        </aura:iteration><br/>
+        <b>Le pratiche verranno segnalate come denunciate.<br/>
+          Procedere con la creazione della denuncia?</b>
+     </aura:attribute>
+
+    <ltng:require styles="{!$Resource.UtilCSS}" />
+
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+
+    <div class="slds-box">
+        <div class = "slds-m-bottom--small" >
+            <!-- <c:Filter recordId="{!v.recordId}" /> -->
+            <a href="{! v.url}" target="_blank" class="slds-m-right_xx-small">
+                <lightning:button aura:id="AnteprimaPDF" label="Anteprima Report" variant="destructive" title="Mostra l'anteprima della denuncia generata"  disabled="{!v.complaintDisabled}"/>
+            </a>
+            <!-- <lightning:button aura:id="GeneraPDF" label="Genera Report" variant="destructive" title="Genera il report per le pratiche selezionate" onclick="{!c.generateReport}"/> -->
+            
+            	<lightning:button aura:id="Denuncia" label="Denuncia e Allega" variant="destructive" title="Denuncia lo smarrimento delle pratiche selezionate" onclick="{!c.openModal}" />
+       	 	
+        </div>
+
+        <lightning:datatable aura:id = "contractTable"
+                             resizeColumnDisabled = "false"
+                             isLoading = "false"
+                             keyField="id"
+                             data="{! v.contractList }"
+                             columns="{! v.columns }"
+                             hideCheckboxColumn="false"
+                             onrowselection="{!c.generateReport}"
+                             />
+        <!-- <lightning:fileCard fileId="00P0Q000000KmP6UAK" description="Sample Description"/> -->
+        <c:Modal aura:id="modal" component="{!v.cmp}" action="{!c.doDenounce}" variant="warning" />
+    </div>
+</aura:component>

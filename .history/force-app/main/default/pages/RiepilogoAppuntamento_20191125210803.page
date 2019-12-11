@@ -1,0 +1,5 @@
+<apex:page controller="EventRepport" renderAs="pdf" applyBodyTag="false" readOnly="true" showHeader="false" sidebar="false">
+    <h1>{!Title}</h1>
+    {!PDFData}
+    {!mes}
+</apex:page>

@@ -1,0 +1,54 @@
+<aura:component controller="CRMReclamiInserimentoMittentiFilUffCtrl"
+                implements="force:appHostable,flexipage:availableForAllPageTypes" 
+                access="global" 
+                >
+    
+    <!--Oggetti mittente, proprietà: da,nomeCognomeMittente,indirizzoMittente,
+ cittaMittente,provinciaMittente,capMittente-->
+    <aura:attribute name="aziendaSelezionata" type="String"/>
+    <aura:attribute name="mittentiList" type="XCS_Mittente__c[]"/>
+    <aura:attribute name="filUffList" type="List"/>
+    <aura:attribute name="filUffSelezionato" type="String"/>
+    <aura:attribute name="carica" type="Boolean" default="false"/>
+
+    <aura:attribute name="toastMsg" type="String"/>
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    
+    <div style="display: flex;">
+
+    <lightning:layout>
+        
+        <!--Picklist Filiali/Uffici-->
+        
+        <lightning:layoutItem>
+            <aura:if isTrue="{!v.carica}">
+                <lightning:select variant="label-hidden"
+                                  value="{!v.filUffSelezionato}"
+                                  >
+                    <option value="">Seleziona</option>
+                    <aura:iteration items="{!v.filUffList}" var="fU">
+                        <option value="{!fU.DeveloperName}">{!fU.First_Name__c+' '+fU.Last_Name__c}</option>
+                    </aura:iteration>
+                </lightning:select>
+                <aura:set attribute="else" >
+                    <lightning:spinner alternativeText="Loading" size="large" />
+                </aura:set>
+            </aura:if>
+        </lightning:layoutItem>
+        
+        
+        <!--Bottone-->
+        <lightning:layoutItem>
+            <div class="slds-p-left_x-small  slds-p-top_medium" style="margin-top: 3px;">
+                <lightning:button label="Aggiungi Filiale/Ufficio"
+                                  variant="brand"
+                                  onclick="{!c.aggiungiFilUff}"
+                                  />
+            </div>
+        </lightning:layoutItem>
+
+    </lightning:layout>
+</div>
+</aura:component>

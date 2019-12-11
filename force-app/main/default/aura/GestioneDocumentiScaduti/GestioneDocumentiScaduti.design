@@ -1,0 +1,5 @@
+<design:component>
+	<design:attribute name="recordId" label="recordId"/>
+    <design:attribute name="isFlows" label="isFlows"/>
+    <design:attribute name="esitoSelezionato" label="esitoSelezionato" />
+</design:component>

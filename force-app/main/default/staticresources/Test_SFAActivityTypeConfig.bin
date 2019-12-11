@@ -1,0 +1,6 @@
+SFAActivitySource__c,SFAActivityDest__c,OutComeSource__c,SFAMoveCompleteItem__c,SFAMoveIncompleteItem__c
+Archiviazione Lotti,Conferma Ricezione Contratto,Completato,False,False
+Conferma Ricezione Contratto,Consegna Materiale,Completato,True,False
+Consegna Materiale,Invio Lotti,Completato,False,True
+Invio Lotti,Archiviazione Lotti,Completato,True,True
+Archiviazione Lotti,,Rinviato,False,False

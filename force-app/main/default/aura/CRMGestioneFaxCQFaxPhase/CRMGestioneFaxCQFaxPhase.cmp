@@ -1,0 +1,164 @@
+<aura:component controller='CRMGestioneFaxCQFaxPhaseController' implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId,lightning:availableForFlowScreens">
+	<aura:attribute name="CQPhaseTableColumns" type="List" />
+    <aura:attribute name="CQExcelTableColumns" type="List" />
+    
+    <aura:attribute name="CQPhaseInviabiliMaxRowSelection" type="Integer" default="1"/>
+    <aura:attribute name="CQGeneraExcelMaxRowSelection" type="Integer" default="1"/>
+    <aura:attribute name="selectedOutsourceSent" type="string"/>
+    <aura:attribute name="selectedOutsource" type="List"/>
+  	<aura:attribute name="objectList" type="Object[]" />
+    <aura:attribute name="objectListWR" type="Object[]" />
+    
+  	<aura:attribute name="checkCQfax" type="boolean" default='true'/>
+    <aura:attribute name="checkCQfaxExcel" type="boolean" default='true'/>
+    <aura:attribute name="checkCQfaxButton" type="boolean" default='true'/>
+   	<aura:attribute name="MeseOption" type="List"/>
+  	
+  	<aura:attribute name="DefMese" type="Integer"/>
+  	<aura:attribute name="DefAnno" type="Integer"/>
+    <aura:attribute name="AnnoOption" type="List"/>      
+    <aura:attribute name="selectedAnno" type="object"/>
+    <aura:attribute name="selectedMese" type="object"/>
+    <aura:attribute name="selectedRows" type="List"/>
+    <aura:attribute name="selectedRows2" type="List"/>
+    <aura:attribute name="outSurc" type="List"/>
+    <aura:attribute name="selectedOS" type="String"/>
+    <aura:attribute name="selectedOS2" type="String"/>
+    
+    <aura:attribute name="objectListDaControllare" type="Object[]" />
+    <aura:attribute name="objectListInviabile" type="Object[]" />
+    <aura:attribute name="objectListInviato" type="Object[]" />
+    <aura:attribute name="objectListContestato" type="Object[]" />
+    <aura:attribute name="objectListGestito" type="Object[]" />
+    
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>	  
+	
+        
+	<div class="slds-grid slds-gutters">
+    <div class="slds-col slds-size_1-of-12 tx-left"><span class="value title"></span>
+         <lightning:select onchange="{!c.handleChange}" aura:id ="AnnoSelezione" label="Anno" required="true">
+              <aura:iteration items="{!v.AnnoOption}" var="anno">
+                  <option  value="{!anno.value}">{!anno.label}</option>
+              </aura:iteration>    
+         </lightning:select>  
+     </div>   
+        
+     <div class="slds-col slds-size_1-of-12 tx-left"><span class="value title"></span>    
+        <lightning:select onchange="{!c.handleChange}" aura:id ="MeseSelezione" label="Mese" required="true">
+              <aura:iteration items="{!v.MeseOption}" var="mese">
+                   <option value="{!mese.value}">{!mese.label}</option>
+              </aura:iteration>    
+        </lightning:select>           
+   
+  	</div>
+        <lightning:button  variant="destructive" label="aggiorna" title="aggiorna" onclick="{! c.handleClick }" />
+        </div>
+  	<br/><br/>
+ 
+    
+  <aura:if isTrue="{!v.checkCQfax}">    
+  	<div class="slds-grid slds-gutters">
+     	<div class="slds-col slds-size_5-of-12 tx-left"><span class="value title">Da Controllare: </span>
+        	<lightning:datatable
+                   class= "slds-cell-wrap"
+                   id="DatatableId"
+                   columns="{! v.CQPhaseTableColumns }"
+                   data="{! v.objectListDaControllare }"
+                   keyField="id"
+                   hideCheckboxColumn = "true"/>       
+     	</div>
+   	</div>
+  <br/><br/>
+    
+   <div class="slds-grid slds-gutters">
+		<div class="slds-col slds-size_5-of-12 tx-left"><span class="value title">Inviabili all'outsurcer: </span>
+      		<lightning:datatable
+                   class= "slds-cell-wrap"
+                   id="DatatableId"
+                   columns="{! v.CQPhaseTableColumns }"
+                   data="{! v.objectListInviabile }"
+                   keyField="id"
+                   selectedRows="{! v.selectedOutsourceSent }"
+                   onrowselection="{! c.OutsourcerToSent }"
+                   maxRowSelection="{! v.CQPhaseInviabiliMaxRowSelection }"/>       
+    	</div>
+   	</div>
+  	<br/>
+   
+    <div class="slds-grid slds-gutters">
+        <div class="slds-col slds-size_2-of-12 tx-left">
+            <lightning:button variant="destructive" label="Invia all'outsurcer" title="Invia" onclick="{! c.sendToOutsourcer }"/>
+        </div>     
+    </div>  
+      
+    <br/><br/>
+   <div class="slds-grid slds-gutters">  
+   		<div class="slds-col slds-size_5-of-12 tx-left"><span class="value title">Inviati all'outsurcer: </span>
+      		<lightning:datatable
+                   class= "slds-cell-wrap"
+                   id="DatatableId"
+                   columns="{! v.CQPhaseTableColumns }"
+                   data="{! v.objectListInviato }"
+                   keyField="id"
+                   hideCheckboxColumn = "true"/>       
+    	</div>
+   </div>
+   <br/><br/>
+    
+   <div class="slds-grid slds-gutters">  
+   		<div class="slds-col slds-size_5-of-12 tx-left"><span class="value title">Contestazione outsurcer da visionare: </span>
+      		<lightning:datatable
+                   class= "slds-cell-wrap"
+                   id="DatatableId"
+                   columns="{! v.CQPhaseTableColumns }"
+                   data="{! v.objectListContestato }"
+                   keyField="id"
+                   hideCheckboxColumn = 'true'/>       
+    	</div>
+   </div>
+   <br/><br/>
+    
+	<div class="slds-grid slds-gutters">  
+   		<div class="slds-col slds-size_5-of-12 tx-left"><span class="value title">Ricontrollati: </span>
+     		<lightning:datatable
+                   class= "slds-cell-wrap"
+                   id="DatatableId"
+                   columns="{! v.CQPhaseTableColumns }"
+                   data="{! v.objectListGestito }"
+                   keyField="id"
+                   hideCheckboxColumn = "true"/>       
+    	</div>
+  	</div>
+      </aura:if>
+   	<br/><br/>
+    <aura:if isTrue="{!v.checkCQfaxExcel}">   
+    <div class="slds-grid slds-gutters">  
+   		<div class="slds-col slds-size_10-of-12 tx-left"><span class="value title">Lista Excel: </span>
+     	
+            <lightning:datatable
+                   class= "slds-cell-wrap"
+                   id="DatatableId"
+                   columns="{! v.CQExcelTableColumns }"
+                   data="{! v.objectListWR }"
+                   keyField="id"
+                   selectedRows="{! v.selectedOutsource }"
+                   onrowselection="{! c.SelectedOutSourcer }"
+                   onrowaction="{! c.redirectToDownload}"
+                   maxRowSelection="{! v.CQGeneraExcelMaxRowSelection }"              
+                   />        
+    	</div>
+  	</div>
+    </aura:if>
+    <br/><br/>
+      
+    <div class="slds-grid slds-gutters">
+        <div class="slds-col slds-size_2-of-12 tx-center">
+            <lightning:button variant="destructive" label="Rigenera Excel" title="Rigenera" onclick="{! c.generaExcel}"/>
+        </div>   
+        <div class="slds-col slds-size_2-of-12 tx-left">
+            <lightning:button  variant="destructive" label="Approva Penali Excel" title="Approva" onclick="{! c.approvaPenali }" />
+        </div>
+    </div> 
+      
+    <br/><br/>
+</aura:component>

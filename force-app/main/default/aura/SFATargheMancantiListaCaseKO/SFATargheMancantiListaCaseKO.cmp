@@ -1,0 +1,40 @@
+<aura:component implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes">
+
+  <aura:attribute name="columns" type="List"
+    default='[{label: "Caso", fieldName: "ShowCase__c", type: "url",sortable: true,typeAttributes: {label:{ fieldName: "CaseNumber"}}},
+              {"label": "Oggetto", "fieldName": "Subject", "type": "text"},
+              {"label": "Stato", "fieldName": "Status", "type": "text"}]'
+
+  />
+    <aura:attribute name="colonne" type="String"
+        default="CaseNumber,Subject,toLabel(Status)"
+    />
+  <aura:attribute name="stato" type="String" default="ProdottoKO,DealerIDNotFound"/>
+
+  <aura:attribute name="selectedRows" type="List"/>
+  <aura:attribute name="caseTableFlag" type="Boolean" />
+  <aura:attribute name="recordId" type="String" />
+    
+  <aura:attribute name="caseListSize" type="Integer" />
+
+  <!--<lightning:card class="container slds-p-around_small">
+
+    <div style="font-weight:bold;font-size:.875rem">Archiviazione Smarrite</div>-->
+    
+    <div class="slds-m-bottom_medium">Casi KO: {!v.caseListSize}</div>
+
+    <lightning:card class="container slds-p-around_small">
+
+    <c:SFACaseList
+      selectedRows="{!v.selectedRows}"
+      caseTableFlag="{!v.caseTableFlag}"
+      colonne="{!v.colonne}"
+      stato="{!v.stato}"
+      recordId="{!v.recordId}"
+      columns="{!v.columns}"
+	  caseListSize="{!v.caseListSize}"
+    />
+
+  </lightning:card>
+
+</aura:component>

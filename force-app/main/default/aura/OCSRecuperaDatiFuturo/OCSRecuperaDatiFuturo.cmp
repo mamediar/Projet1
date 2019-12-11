@@ -1,0 +1,155 @@
+<aura:component controller="OCSRecuperaDatiFuturoController"
+                implements="force:appHostable,flexipage:availableForAllPageTypes" 
+                access="global" 
+                >
+    <!--
+  Per implementare logiche sulla selezione di account o pratica:
+   aggiungere nel container <aura:handler name="change" value="{!v.nomeAttributo}" action="{!c.attrChange}"/>
+   dove name è obbligatoriamente settato a "change";
+
+  Per mostrare o nascondere le pratiche del cliente selezionato:
+  settare l'attributo "showPratiche" dal container
+
+  Per applicare un filtro alla lista delle pratiche:
+  creare una classe APEx che implementa "OCSRecuperaDatiPVFiltroPraticheInterface",
+  implementare a piacimento il metodo filtraPratiche,
+  settare l'attributo "filtroPratiche" con il nome della suddetta classe
+ -->
+    <aura:attribute name="ragioneSociale" type="string" />
+    <aura:attribute name="email" type="string" />
+    <aura:attribute name="telefonoCliente" type="string" />
+    <aura:attribute name="faxCliente" type="string" />
+
+    <aura:attribute name="cognomeCliente" type="string" />
+    <aura:attribute name="nomeCliente" type="string" />
+    <aura:attribute name="dataNascitaCliente" type="string" />
+    <aura:attribute name="codFiscaleCliente" type="string" />
+    <aura:attribute name="numPratica" type="string" />
+    <aura:attribute name="codCliente" type="String" />
+    <aura:attribute name="provincia" type="string" />
+    <aura:attribute name="filtroPratiche" type="string" default=""/>
+    <aura:attribute name="showPratiche" type="Boolean"/>
+    <aura:attribute name="showClienti" type="Boolean" default="true"/>
+    <aura:attribute name="OCSClienti" type="OCSCliente[]" />
+    <aura:attribute name="inputAccountId" type="string" />
+    <aura:attribute name="nameProcess" type="string" />
+      <aura:attribute name="spinner" type="Integer" default="0"/>
+
+    
+    <aura:attribute name="accountList" type="Account_Futuro_MBCS__c[]"/>
+    <aura:attribute name="accountSelezionato" type="Account_Futuro_MBCS__c"/>
+    <aura:attribute name="idAccSelezionato" type="List"/>
+    <aura:attribute name="accountTableColunms" 
+                    type="List" 
+                    default="[{label: 'Cognome', fieldName: 'LastName__c', type: 'text'},
+                             {label: 'Nome', fieldName: 'FirstName__c', type: 'text'},
+                             {label: 'Nominativo Azienda', fieldName: 'FirstName__c', type: 'text'},
+                             {label: 'Data di nascita', fieldName: 'Birthdate__c', type: 'date' },
+                             {label: 'Luogo di Nascita', fieldName: 'Birthcity__c', type: 'text'},
+                             {label: 'Codice Fiscale', fieldName: 'Codice_Fiscale__c', type: 'text'},
+                             {label: 'Codice Cliente', fieldName: 'External_Id__c', type: 'text'}]"
+                    />
+    <aura:attribute name="praticheList" type="OCSPraticaFuturo[]"/>
+    <!-- PRATICHE WIP!!! -->
+    <aura:attribute name="praticaSelezionata" type="OCSPraticaFuturo"/>
+    <aura:attribute name="praticheTableColumns" 
+                    type="List" 
+                    default="[{label: 'Numero Pratica', fieldName: 'numPratica', type: 'text'},
+                             {label: 'Tipologia2', fieldName: 'tipoPratica', type: 'text' },
+                             {label: 'Stato', fieldName: 'statoPratica', type: 'text'},
+                             {label: 'ATC', fieldName: 'prodotto', type: 'text'},
+                             {label: 'Mod.Pag', fieldName: 'tipoPagamento', type: 'text'},
+                             {label: 'Dealer', fieldName: 'venditore', type: 'text'},
+                             {label: 'Canale', fieldName: 'canale', type: 'text'}]"
+                    />
+    
+    <aura:attribute name="toastMsg" type="String"/>
+    <lightning:notificationsLibrary aura:id="notifLib"/> 
+
+
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    
+    <aura:if isTrue="{!not(v.spinner == 0)}">
+        <lightning:spinner alternativeText="Loading" size="large" />
+    </aura:if>
+    <!--
+    <lightning:card>
+        <aura:set attribute="title">
+            <lightning:icon iconName="standard:case" size="small"/>
+            <b style="margin-left:10px;">{! v.title }</b>
+        </aura:set>
+    -->
+        <aura:if isTrue="{!v.inputAccountId}">
+            <!--INIZIO TABELLA DI RICERCA-->
+            <aura:set attribute="else">
+                <div class="slds-grid slds-gutters slds-m-bottom--medium">
+
+                    <div class="slds-p-horizontal_small slds-size_2-of-4 slds-medium-size_2-of-4 slds-large-size_2-of-4 border-right2 height160">
+            
+                        <div class="slds-col">
+                            <lightning:input type="string" label="Ragione Sociale" name="ragioneSociale" value="{!v.ragioneSociale}"/>
+                            <lightning:input type="string" label="Nome" name="nomeCliente" value="{!v.nomeCliente}"/>
+                            <lightning:input type="string" label="Cognome" name="cognomeCliente" value="{!v.cognomeCliente}"/>
+                            <lightning:input aura:id="fieldToCheck" type="Date" label="Data di nascita" name="dataNascitaCliente" value="{!v.dataNascitaCliente}" messageWhenBadInput="Il campo deve avere un formato di qesto tipo dd-MM-yyyy"/>
+                            <lightning:input aura:id="fieldToCheck" type="string" label="Provincia" name="provincia" value="{!v.provincia}" pattern="^[a-zA-Z\s]*$" messageWhenPatternMismatch="Il campo deve essere testuale"/>
+                            <lightning:input aura:id="fieldToCheck" type="string" label="Codice Fiscale" name="codFiscaleCliente" value="{!v.codFiscaleCliente}" maxlength="16"/>
+                            <lightning:button label="Cerca" class="slds-m-top--medium" variant="brand" onclick="{!c.doRicerca}"/>
+                        </div>
+
+                    </div>
+
+                    <div class="slds-p-horizontal_small slds-size_2-of-4 slds-medium-size_2-of-4 slds-large-size_2-of-4 border-right2 height160">
+             
+                        <div class="slds-col">
+                            <lightning:input type="String" label="Codice Cliente" name="codCliente" value="{!v.codCliente}"/>
+                            <lightning:input type="string" label="Numero Pratica" name="numPratica" value="{!v.numPratica}"/>
+                            <lightning:input aura:id="fieldToCheck" type="email" label="Email" name="email" value="{!v.email}" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$" messageWhenPatternMismatch="Il campo deve avere un formato di questo tipo 'email@example.com' o 'email@example.it'"/> 
+                            <lightning:input aura:id="fieldToCheck" type="string" label="Telefono" name="telefonoCliente" value="{!v.telefonoCliente}" pattern="^[0-9]*$" onchange="{!c.checkLength}" messageWhenPatternMismatch="Il campo deve essere numerico"/>
+                            <lightning:input aura:id="fieldToCheck" type="String" label="FAX" name="faxCliente" value="{!v.faxCliente}" pattern="^[0-9]*$" onchange="{!c.checkLength}" messageWhenPatternMismatch="Il campo deve essere numerico"/>  
+                        </div>
+                        
+                    </div>
+                    <!--
+                    <div class="slds-col">
+                        <lightning:input type="String" label="FAX" name="faxCliente" value="{!v.faxCliente}"/>
+                        <lightning:input type="Date" label="Data di nascita" name="dataNascitaCliente" value="{!v.dataNascitaCliente}"/>
+                        <lightning:input type="string" label="Numero Pratica" name="numPratica" value="{!v.numPratica}"/>
+                        
+                        <lightning:button label="Cerca" 
+                                          class="slds-m-top@@medium" 
+                                          variant="brand" 
+                                          onclick="{!c.doRicerca}"/>
+                    </div>
+                    -->
+                    
+                </div> 
+            </aura:set>
+            <!--FINE TABELLA DI RICERCA-->
+        </aura:if>
+        
+        <aura:if isTrue="{!v.showClienti}">
+            <aura:if isTrue="{!v.accountList.length>0}">
+                <div>Clienti</div>
+                <lightning:datatable data="{!v.accountList }"
+                                     columns="{!v.accountTableColunms}"
+                                     keyField="Id"
+                                     maxRowSelection="1"
+                                     selectedRows="{!v.idAccSelezionato}"
+                                     onrowselection="{!c.selectCliente}"
+                                     showRowNumberColumn="true"/>  
+            </aura:if>
+        </aura:if>
+        
+        <aura:if isTrue="{!v.showPratiche}">
+            <aura:if isTrue="{!v.praticheList.length>0}">
+                <div>Pratiche</div>
+                <lightning:datatable data="{!v.praticheList}"
+                                     columns="{!v.praticheTableColumns}"
+                                     keyField="numPratica"
+                                     maxRowSelection="1"
+                                     onrowselection="{!c.selectPratica}"/>
+            </aura:if>
+            
+        </aura:if>
+    <!--/lightning:card>-->
+</aura:component>

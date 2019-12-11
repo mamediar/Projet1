@@ -1,0 +1,10 @@
+<aura:component implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes" access="global">
+
+<aura:attribute name="url" type="String"/>
+
+<aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+    
+<div class="slds-m-top_large"><span><b><a href="{!v.url}">Scarica Excel Codici Esito AGITA</a></b></span></div>            
+
+	
+</aura:component>

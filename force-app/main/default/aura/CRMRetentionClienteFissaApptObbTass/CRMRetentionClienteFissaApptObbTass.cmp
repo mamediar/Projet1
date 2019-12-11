@@ -1,0 +1,22 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId">
+	<aura:attribute name="obiezioneOption" type="List" />
+    <aura:attribute name="tassoOption" type="List"/>
+    <aura:attribute name="tassoSelected" type="String"/>
+    <aura:attribute name="obiezioneSelected" type="String"/>
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+        <div class="slds-grid">
+                    <lightning:select aura:id ="Tasso" onchange="{!c.handleChange}" label="Comunicato tasso al cliente con Maggiorazione del" required="true">
+                          <aura:iteration items="{!v.tassoOption}" var="tasso">
+                              <option  value="{!tasso.value}">{!tasso.label}</option>
+                          </aura:iteration>    
+                     </lightning:select>
+        </div>
+        <div class="slds-grid">
+                     <lightning:select aura:id ="Obiezione" onchange="{!c.handleChange}" label="Obiezione del cliente" required="true">
+                          <aura:iteration items="{!v.obiezioneOption}" var="obiezione">
+                              <option  value="{!obiezione.value}">{!obiezione.label}</option>
+                          </aura:iteration>    
+                     </lightning:select>
+        </div>
+   
+</aura:component>

@@ -1,0 +1,11 @@
+<aura:component controller="SFAConvenzVisualizReportCervedCntroller" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >  
+   
+   <aura:attribute name="fileURL" type="String"/>  
+   <aura:attribute name="recordId" type="String"/>
+   <aura:attribute name="reportOpened" type="Boolean" default="false"/>  
+
+   <aura:handler name="init" value="{!this}" action="{!c.doInit}"/> 
+    
+   <lightning:button class="slds-m-top_medium" variant="destructive" label="Visualizza Report Cerved" onclick="{!c.OpenFile}" disabled="false"  />
+ 
+</aura:component>

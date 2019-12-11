@@ -1,0 +1,113 @@
+({
+    cercaDealer: function(component, event, helper) {
+        var contactDetail= component.get('v.contactDetail');
+        var eventContact = $A.get("e.force:navigateToComponent");
+                eventContact.setParams({
+        			componentDef : "c:GUA_SearchInformazioniDealerCmp",
+        			componentAttributes: {
+            		caseDealer : contactDetail,
+                    isOpenedModal : true
+        			}
+    		});
+            eventContact.fire();
+    },
+    chiudichiamata: function(component, event, helper) {
+        component.set("v.isModalOpen", true);
+
+    },
+
+    creaTicketAltriUffici: function(component, event, helper) {},
+    creaTicketFiliale: function(component, event) {},
+    creaTicketCompassAffari: function(component, event, helper) {
+
+    },
+    getCaseByRecord : function(component){
+        var resultat;
+        var recordId= component.get('v.recordId');
+        console.log('caseDealer', JSON.stringify(recordId));
+        var action = component.get('c.getCase');
+        action.setParams({"idCase":recordId}); 
+        action.setCallback(this, function (response) {
+            if (response.getState() === "SUCCESS") {
+                resultat = response.getReturnValue();
+                if (!resultat.erreur) {
+                    component.set('v.contactDetail',resultat.resultat);
+                    var caseDetail = resultat.resultat;
+                    console.log('#l caseDetail', JSON.stringify(caseDetail));
+
+                    var obj = caseDetail.UAF_DatiAggiuntiviFile__c;
+                    if(obj!=null){
+                        var regex = /&quot;/gi;
+                        obj = obj.replace(regex, '"');
+                        obj = obj.replace(/""""/gi,'""');
+                        component.set('v.datiAggiuntivi', JSON.parse(obj));
+                    }
+                    this.getFilialeCase(component);
+                    
+                } else {
+                    console.log('message Error');
+                }
+            }
+        });
+        $A.enqueueAction(action); 
+    } ,
+    getFilialeCase : function (component,event,helper){
+        //getFilialeById(String idAccount)
+        var resultat;
+        var caseDealer= component.get('v.contactDetail');
+        if(caseDealer.hasOwnProperty('Account')) {
+            var account = caseDealer.Account;
+            if (account.hasOwnProperty('Branch__c')) {
+                var filialeId = account.Branch__c;
+                console.log('caseDealer', JSON.stringify(filialeId));
+                var action = component.get('c.getFilialeById');
+                action.setParams({"idAccount":filialeId}); 
+                action.setCallback(this, function (response) {
+                    if (response.getState() === "SUCCESS") {
+                        resultat = response.getReturnValue();
+                        console.log('filiale '+JSON.stringify(resultat));
+                        if (!resultat.erreur) {
+                                component.set('v.filialeCase',resultat.filiale);
+                        } else {
+                            console.log('message', "Error");
+                        }
+                    }
+                });
+                $A.enqueueAction(action); 
+                this.searchCapoFiliale(component);
+        }
+        }
+    },
+    searchCapoFiliale : function(component){
+        //getCapoFiliale(String idFiliale)
+        var resultat;
+        var caseDealer= component.get('v.contactDetail');
+        if(caseDealer.hasOwnProperty('Account')) {
+            var account = caseDealer.Account;
+            if (account.hasOwnProperty('Branch__c')) {
+                var filialeId = account.Branch__c;
+                console.log('caseDealer', JSON.stringify(filialeId));
+                var action = component.get('c.getCapoFiliale');
+                action.setParams({"idFiliale":filialeId}); 
+                action.setCallback(this, function (response) {
+                    if (response.getState() === "SUCCESS") {
+                        resultat = response.getReturnValue();
+                        console.log('capo DettaglioContact '+JSON.stringify(resultat));
+                        if (!resultat.erreur) {
+                            var data= resultat.resultat;
+                            if(data!=null){
+                                component.set('v.capoFiliale',resultat.resultat);
+                            }else{
+                                console.log('non capo')
+                            }
+                                
+                        } else {
+                            console.log('message', "Error");
+                        }
+                    }
+                });
+                $A.enqueueAction(action); 
+                }
+        }
+    }
+})

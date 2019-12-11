@@ -1,0 +1,34 @@
+<aura:component implements="force:lightningQuickAction,force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId,lightning:availableForFlowScreens">
+    
+    <aura:attribute name="isVisibleAllSMS" type="boolean" default="true"/>
+    <aura:attribute name="SMSTemplateName" type="String" />
+    <aura:attribute name="onlyByName" type="boolean" default="false"/>
+    <aura:attribute name="seeButton" type="boolean" default="true"/>
+    <aura:attribute name="checkModale" type="boolean" default="false"/>
+    <aura:attribute name="recordId" type="String" />
+    
+    <aura:if isTrue="{! v.seeButton }" >
+        <lightning:button variant="destructive" label="Gestione Invia SMS" title="avanti" onclick="{! c.modaleSMS }"/>
+    </aura:if>
+    <aura:if isTrue="{! v.checkModale}">
+        	<div class="slds-modal slds-fade-in-open">
+                <div style="width:70%; max-width: 50rem" class="slds-modal__container">
+          			<div class="slds-modal__content slds-p-around--x-large">
+                    	<c:XCSGestioneInvioSMS aura:id="MainInvioSMS" recordId="{!v.recordId}" isVisibleAllSMS="{!v.isVisibleAllSMS}" SMSTemplateName="{!v.SMSTemplateName}" onlyByName="{!v.onlyByName}"
+                                           />
+                    </div>
+                <div class="slds-modal__footer">
+                     <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_2-of-12 tx-left"></div>
+                        <div class="slds-col slds-size_6-of-12">
+                            <lightning:button variant="destructive" label="Chiudi" title="avanti" onclick="{! c.chiudiModale }"/>
+                            <lightning:button variant="destructive" label="Conferma" title="avanti" onclick="{! c.sendSMSwithChildComponent }"/>
+                        </div>
+                        <div class="slds-col slds-size_4-of-12 tx-left"></div>
+                    </div>
+               	</div>
+                </div>
+			</div>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+</aura:component>

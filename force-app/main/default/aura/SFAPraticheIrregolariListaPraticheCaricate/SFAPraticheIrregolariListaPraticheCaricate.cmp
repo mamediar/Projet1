@@ -1,0 +1,44 @@
+<aura:component controller= "SFAPraticheIrregListPraCaricCntroller" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes">
+    <aura:attribute name="recordId" type="String"/>
+ 	<aura:attribute name="pratiche" type="SFA_PraticaIrregolare__c[]"/>
+    <aura:attribute name="columns" type="String" />
+    <aura:attribute name="listaPraticheSize" type="Integer" />
+
+
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/> 
+  
+    
+    <div class="slds-m-bottom_medium">Pratiche caricate: {!v.listaPraticheSize}</div>
+    
+    
+    <div class="slds">  
+            <div style="border-left: 1px solid rgb(221, 219, 218);  
+                        border-right: 1px solid rgb(221, 219, 218);  
+                        border-bottom: 1px solid rgb(221, 219, 218);  
+                    	border-top: 1px solid rgb(221, 219, 218);">  
+           
+            <table class="slds-table slds-table--bordered">  
+                <thead>  
+                    <tr>                          
+                        <th>Codice Pratica</th>  
+                        <th>Esito Caricamento</th> 
+                    </tr>                      
+                                        
+                </thead>  
+                <tbody> 
+                    <aura:iteration items="{!v.pratiche}" var="p">
+                        <tr>                             
+                            <td><a href="{!'/lightning/r/SFA_PraticaIrregolare__c/'+p.Id+'/view'}">{!p.Name}</a></td>
+                            <td>{!p.EsitoCaricamento__c}</td>
+                        </tr>  
+                    </aura:iteration>
+             
+                </tbody>  
+            </table>  <br/><br/>  
+                
+        	</div>  
+    </div>     
+    
+           
+</aura:component>

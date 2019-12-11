@@ -1,0 +1,86 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId" controller="GUA_Dettaglio_DealerCnt" access="global">
+    <!--handler -->
+    <aura:handler name="init" value="this" action="{!c.init}" />
+    <!--handler End-->
+    <aura:attribute name="isFoundDealer" type="Boolean" default="false" />
+    <aura:attribute type="String" name="accId" default="" />
+    <aura:attribute name="caseDealer" type="Case" />
+    <aura:attribute type="Account" name="filialeCase" default="" />
+    <aura:attribute name="recordId" type="String" default=""/>
+
+
+
+    <lightning:card variant="base" class="slds-m-top_small slds-m-bottom_small">
+        <div class="slds-card__body_inner">
+            <lightning:layout class="slds-border_bottom">
+                <lightning:layoutItem size="2">
+                    <div class="slds-form-element slds-m-around_xx-small">
+                        <div class="slds-form-element__control"><span class="slds-form-element__static">Ragione Sociale : &nbsp;{!v.caseDealer.Account.Region_Name__c}</span></div>
+                    </div>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="2">
+                    <div class="slds-form-element slds-m-around_xx-small">
+                        <div class="slds-form-element__control"><span class="slds-form-element__static">Cod OCS: &nbsp;{!v.caseDealer.Account.OCS_External_Id__c}</span></div>
+                    </div>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="2">
+                    <div class="slds-form-element slds-m-around_xx-small">
+                        <div class="slds-form-element__control"><span class="slds-form-element__static">Macroarea : &nbsp;{!v.caseDealer.Account.Macroarea__c}</span></div>
+                    </div>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="2">
+                    <div class="slds-form-element slds-m-around_xx-small">
+                        <div class="slds-form-element__control"><span class="slds-form-element__static">Prodotto dominante : &nbsp;{!v.caseDealer.Account.ProdottoDominanteMacroarea__c}</span></div>
+                    </div>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="2">
+                    <div class="slds-form-element slds-m-around_xx-small">
+                        <div class="slds-form-element__control"><span class="slds-form-element__static">Data Creazione : &nbsp;{!v.caseDealer.Data_Creazione_Pratica__c}</span></div>
+                    </div>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="2">
+                    <div class="slds-form-element slds-m-around_xx-small">
+                        <div class="slds-form-element__control"><span class="slds-form-element__static"></span></div>
+                    </div>
+                </lightning:layoutItem>
+            </lightning:layout>
+            <lightning:layout>
+                <lightning:layoutItem size="2">
+                    <div class="slds-form-element slds-m-around_xx-small">
+                        <div class="slds-form-element__control"><span class="slds-form-element__static">Tipo Conv : &nbsp;{!v.caseDealer.TipoChiamata__c}</span></div>
+                    </div>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="2">
+                    <div class="slds-form-element slds-m-around_xx-small">
+                        <div class="slds-form-element__control"><span class="slds-form-element__static">Partita IVA : &nbsp;{!v.caseDealer.Partita_Iva__c}</span></div>
+                    </div>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="2">
+                    <div class="slds-form-element slds-m-around_xx-small">
+                        <div class="slds-form-element__control"><span class="slds-form-element__static">Stato :  &nbsp;{!v.caseDealer.Status}</span></div>
+                    </div>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="2">
+                    <div class="slds-form-element slds-m-around_xx-small">
+                        <div class="slds-form-element__control"><span class="slds-form-element__static">Ultima Visita : {!v.caseDealer.Account.LastViewedDate}</span></div>
+                    </div>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="2">
+                    <div class="slds-form-element slds-m-around_xx-small">
+                        <div class="slds-form-element__control"><span class="slds-form-element__static">Ritiro contratti presso Dealer</span></div>
+                    </div>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="2">
+                    <div class="slds-form-element slds-m-around_xx-small">
+                        <div class="slds-form-element__control"><span class="slds-form-element__static"></span></div>
+                    </div>
+                </lightning:layoutItem>
+            </lightning:layout>
+        </div>
+    </lightning:card>
+
+    <div style="float: right;">
+        <a href="https://compassiap-col.int.compassonline.it/biap/GrantedAccessController?appName=SCHDL" target="_blank">Scheda Dealer</a>
+    </div>
+
+</aura:component>

@@ -1,0 +1,19 @@
+<aura:component controller="CRMReclamiInsDettagliAttribReclCtrl"
+                implements="force:appHostable,flexipage:availableForAllPageTypes" 
+                access="global" 
+                >
+    
+    <aura:attribute name="attribuzioneReclamo" type="String[]" default="[]"/>
+    <aura:attribute name="options" type="List"/>
+    <aura:attribute name="isDisabled" type="Boolean" default="false"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    
+    <lightning:checkboxGroup name="Checkbox Group"
+                             label="Attribuzione Reclamo:"
+                             options="{!v.options}"
+                             value="{!v.attribuzioneReclamo}"
+                             onchange="{!c.onChange}"
+                             disabled="{!v.isDisabled}"
+                             />
+</aura:component>

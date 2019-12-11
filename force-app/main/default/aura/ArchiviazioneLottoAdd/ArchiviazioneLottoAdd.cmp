@@ -1,0 +1,66 @@
+<aura:component controller="ArchiviazioneLottoController" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens"> <!-- ,flexipage:availableForAllPageTypes -->
+    <aura:attribute name="recordId" type="String"/>
+    <!-- <aura:attribute name="IdLotto" type="String" /> -->
+    <aura:attribute name="report" type="String" />
+    <aura:attribute name="placeholder" type="String" default="Selezionare tipo documento ..." />
+    <!-- <aura:attribute name="inputIdContract" type="String" /> -->
+    <aura:attribute name="errorTableFlag" type="Boolean" default="false" />
+    <aura:attribute name="severity" type="String" default="error" />
+    <aura:attribute name="contractTableFlag" type="Boolean" default="false" />
+    <aura:attribute name="contractList" type="Contract[]" default="[]" />
+    <aura:attribute name="emptyList" type="Contract[]" default="[]"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="options" type="List" default="[
+                                                        {'label': 'Contratto', 'value': 'Contratto'},
+                                                        {'label': 'Accollo', 'value': 'Accollo'}
+                                                        ]"/>
+    <aura:attribute name="valAllegato" type="String" default=""/>
+    
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    <aura:handler name="barCodeEvent" event="c:BarCodeReady" action="{!c.checkIdLength}"/>
+    
+    <aura:if isTrue="{!empty(v.contractList)}">
+        <ui:message title="" severity="warning" closable="false">
+            Se si procede senza avere associato nessun Contratto/Accollo, il Caso verrà chiuso.                                             
+        </ui:message>
+    </aura:if>
+    <lightning:recordViewForm recordId="{#v.recordId}" objectApiName="Case">
+        <lightning:outputField fieldName="OCSLottoId__c" />
+    </lightning:recordViewForm>
+    
+    <c:BarCode disabled="{!v.valAllegato == ''}"
+               placeholder="{!v.placeholder}"
+               label="Scannerizza i contratti che vuoi includere nel lotto e che facevano inizialmente parte di un altro lotto:"
+               setFocusOnInit="false"
+               />
+    
+    <lightning:radioGroup name="tipoAllegato"
+                          options="{! v.options }"
+                          value="{! v.valAllegato }"
+                          variant="label-hidden"
+                          onchange="{!c.handleChange}"
+                          type="button"/>
+    <br/>
+    
+    <aura:if isTrue="{!v.errorTableFlag}">
+        <ui:message title="Attenzione" severity="{!v.severity}" closable="false">
+            {!v.report}
+        </ui:message>
+    </aura:if>
+    <aura:if isTrue="{!v.contractTableFlag}">
+        <lightning:datatable resizeColumnDisabled = "true"
+                             isLoading = "false"
+                             keyField="id"
+                             data="{! v.contractList }"
+                             columns="{! v.columns }"
+                             onrowaction="{! c.handleRowAction }"
+                             hideCheckboxColumn="true"/>
+    </aura:if>
+    
+    <div style="text-align: right" >         
+        <lightning:button variant="destructive"
+                          label="Conferma" 
+                          onclick="{! c.ClickNext }"  />     
+    </div>
+    
+</aura:component>

@@ -1,0 +1,7 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes"
+                access="global"> 
+    
+    <c:XCS_UtenteConvenzionatoSearchForm/>
+    <c:XCS_UtenteConvenzionatoTable/>
+    
+</aura:component>

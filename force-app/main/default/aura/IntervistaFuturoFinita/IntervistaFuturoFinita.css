@@ -1,0 +1,26 @@
+.THIS input[type=checkbox], .THIS input[type=radio] {
+    box-sizing: border-box;
+    padding: 0;
+    margin-right: 10px !important;
+    vertical-align: middle;
+}
+.THIS .slds-table .slds-radio [type=radio]+.slds-radio__label .slds-radio_faux {
+    margin-right: 10px !important;
+}
+.THIS .slds-table_cell-buffer tr td {
+    padding: 10px !important;
+}
+.THIS .slds-box-btn {
+    padding: 1rem;
+}
+
+.THIS .slds-table tbody div tr {
+    width: 100% !important;
+    display: inline-table !important;
+}
+.THIS .motivazione .slds-form-element{
+    padding-left: 20px !important;
+}
+.THIS textarea{
+    height: 140px;
+}

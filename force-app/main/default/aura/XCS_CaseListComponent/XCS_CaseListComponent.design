@@ -1,0 +1,5 @@
+<design:component>
+	<design:attribute name="StatusDesired" label="Status choosen to be viewed" description="Inserire qui lo status che si desidera far utilizzare come filtro al componente" required="true"/>
+	<design:attribute name="Filter" label="Filtro Ricerca" description="Inserire se si vuole la presenza un filtro di ricerca" required="true"/>
+
+</design:component>

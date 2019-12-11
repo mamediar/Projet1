@@ -1,0 +1,142 @@
+<aura:component  controller="SFAComunicazioneUtenzeController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global">
+
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="utenzeNominaliList" type="List"/>
+    <aura:attribute name="comunicazioneSelected" type="Object"/>
+    <aura:attribute name="msg" type="String" />
+    <aura:attribute name="errormsg" type="String" />
+    <aura:attribute name="base64url" type="String" default="data:application/octet-stream;base64," /> 
+    <aura:attribute name="bodybase" type="String"/>
+    <aura:attribute name="showSpinner" type="Boolean" default="false"/>
+    <aura:attribute name="showSuccessInsert" type="Boolean" default="false"/>
+    <aura:attribute name="disableCompleta" type="Boolean" default="false"/>
+
+    <lightning:notificationsLibrary aura:id="notifLib"/> 
+
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+
+    <div class="slds-box slds-theme_default slds-m-bottom_small">
+ 
+        <div style="max-height: fit-content;">
+            <div class="slds-is-relative">
+           
+                <aura:if isTrue="{!v.showSpinner}">
+                        <lightning:spinner alternativeText="Loading" size="large"/>
+                </aura:if>        
+            </div>
+        </div>          
+   
+
+        <lightning:card  title="Comunicazione Utenze" footer=""> 
+
+                    <!--HEADER TITLE -->
+                    <aura:set attribute="title">                           
+                    <center><h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Comunicazione Utenze</h2></center>
+                    </aura:set>
+                    <!--END HEADER TITLE-->
+
+                        <!--BODY MODAL-->
+
+                        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                            <!-- Gestione Attività -->
+                            <aura:if isTrue="{!not(v.showSuccessInsert)}">
+                                <center><b>Lista Utenze Nominative</b></center>
+                                <br/>
+                                <aura:if isTrue="{!v.utenzeNominaliList!=null}">   
+                                    <aura:if isTrue="{!v.utenzeNominaliList.length > 0}">   
+
+                                        <div class="slds-grid slds-wrap"> 
+                                            
+                                            <div class="slds-col slds-size_1-of-8 slds-border_bottom">
+                                                <b>Cognome</b>
+                                            </div>
+                                            <div class="slds-col slds-size_1-of-8 slds-border_bottom">
+                                                <b>Nome</b>
+                                            </div>
+                                            <div class="slds-col slds-size_1-of-8 slds-border_bottom">
+                                                <b>Utenza</b>
+                                            </div>
+                                            <div class="slds-col slds-size_1-of-8 slds-border_bottom">
+                                                <b>Profilo</b>
+                                            </div>
+                                            <div class="slds-col slds-size_1-of-8 slds-border_bottom">
+                                                <b>Data Creazione</b>
+                                            </div>
+                                            <div class="slds-col slds-size_1-of-8 slds-border_bottom">
+                                                <b>Canale</b>
+                                            </div>
+                                            <div class="slds-col slds-size_1-of-8 slds-border_bottom">
+                                                <b>Tipo</b>
+                                            </div>
+                                            <div class="slds-col slds-size_1-of-8 slds-border_bottom">
+                                                <b>Esito</b>
+                                            </div> 
+                                         
+                                          
+                                            <aura:iteration items="{!v.utenzeNominaliList}" var="ute" indexVar="index">
+                                                              
+                                                <div class="slds-col slds-size_1-of-8">
+                                                    {!ute.Last_Name__c}
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-8">
+                                                    {!ute.First_Name__c} 
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-8">
+                                                    {!ute.Utenza__c}
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-8">
+                                                    {!ute.Tipo_Utenza__c} 
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-8">
+                                                    {!ute.Data_Creazione__c}
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-8">
+                                                     {!ute.Canale__c}
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-8">
+                                                     <aura:if isTrue="{!or(ute.OCS_Code_Delegato__c==null,ute.OCS_Code_Delegato__c=='')}">  
+                                                        Generica 
+                                                    </aura:if> 
+                                                    <aura:if isTrue="{!and(ute.OCS_Code_Delegato__c!=null,ute.OCS_Code_Delegato__c!='')}">  
+                                                        Nominale 
+                                                     </aura:if> 
+                                                 </div>
+                                                <div class="slds-col slds-size_1-of-8">
+                                                     {!ute.Note__c}
+                                                </div>      
+                                             </aura:iteration>
+                                            
+                                        </div>        
+                                    </aura:if>    
+                                </aura:if>   
+                            </aura:if> 
+                            <!-- Message Inserimento avvenuto con successo-->
+                            <aura:if isTrue="{!v.showSuccessInsert}">
+                                    <div class="slds-grid slds-wrap">                                              
+                                            <div class="slds-col slds-size_1-of-2">
+                                                    Esito dematerializzazione: 
+                                            </div>
+                                            <div class="slds-col slds-size_1-of-2">
+                                                    Attendere domani mattina per esito dematerializzazione
+                                            </div>
+                                        </div>
+                            </aura:if>        
+                        </div>
+                        <!--END BODY MODAL-->
+                        
+                    <aura:set attribute="footer">
+                        <a id="utenzNomPDF" href="{!v.base64url +v.bodybase}" download="DownloadPDFUtenze.pdf">                          
+                                <button class="slds-button slds-button_brand" >StampaPDF</button>
+                        </a>
+                        &nbsp;&nbsp;<button class="slds-button slds-button_brand" disabled="{!v.disableCompleta}" onclick="{!c.processActivity}">Completa Attivita'</button>
+                    </aura:set>
+                        
+                        
+        </lightning:card>        
+
+        <!-- END CARD -->
+    
+   
+    </div>
+
+</aura:component>

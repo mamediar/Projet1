@@ -1,0 +1,21 @@
+{  
+   "resultCode":0,
+   "resultMessage":"Ok",
+   "ebavaradpv1Response":{  
+      "msfres_STATUS":"OK",
+      "msfologon_STATUS":"",
+      "msfologon_ERRORE":"",
+      "mfterr_OMSFERR_OCCURS":[  
+         {  
+            "msferr_CODICE":"0",
+            "msferr_N_RECORD":1,
+            "msferr_TIPO":"E",
+            "msferr_DESCRIZIONE":"OK",
+            "msferr_N_CAMPO":2,
+            "msferr_COD_MSG":"&ADPV"
+         }
+      ],
+      "msfologon_ERRORE_DES":"",
+      "msfologon_SESSION_ID":"788ec2e42093697fc3bcfaf45050f174"
+   }
+}

@@ -1,0 +1,7 @@
+<design:component>
+
+	<design:attribute name="colonne" label="Colonne" />
+  <design:attribute name="stato" label="Stato"/>
+	<design:attribute name="recordId" label="Case Id"/>
+
+</design:component>

@@ -1,0 +1,40 @@
+<!--
+  @Component Name     : PV3481AttivazioneCarta.cmp
+  @Description        : 
+  @Author             : Andrea Vanelli
+  @Group              : 
+  @Last Modified By   : Lorenzo Marzocchi
+  @Last Modified On   : 2019-10-3 12:24:28
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    2019-6-19 14:24:44   Andrea Vanelli     Initial Version
+-->
+<aura:component extends="c:PVSubComponentBase" access='global' controller='PV3481AttivazioneCartaInserimento'>
+
+  <!-- Attributi del PV-->
+  <aura:attribute name='isPraticaAttivabile' type='Boolean' />
+  
+  <aura:if isTrue="{!v.isPraticaAttivabile}">
+    <lightning:card class='slds-form_stacked'>
+      <lightning:layoutItem size="12">
+        <div class="slds-text-color_success slds-text-title_bold">
+          <table class="slds-table slds-table_bordered slds-table_col-bordered">
+            <tbody>
+              <tr class="slds-hint-parent">
+                <td colspan="3" class="slds-cell-buffer_left">
+                  <p class="slds-p-horizontal_small slds-text-color_success slds-text-title_bold">
+                    Per confermare la richiesta di Attivazione Carta premere Inserisci.
+                  </p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </lightning:layoutItem>
+
+    </lightning:card>
+  </aura:if>
+
+</aura:component>

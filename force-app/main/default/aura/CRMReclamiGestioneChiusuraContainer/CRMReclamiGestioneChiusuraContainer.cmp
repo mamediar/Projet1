@@ -1,0 +1,340 @@
+<aura:component controller="CRMReclamiGestioneChiusuraController"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" access="global" >
+    
+   
+    <aura:attribute name = "campiCase" type = "Object"/>
+    <aura:attribute name = "codaSelezionata" type="CodaXSocieta__mdt"/>
+    <aura:attribute name = "isTableLoading" type="Boolean" default="true"/>
+    <aura:attribute name = "isInterventoAutorita" type="Boolean" default="false"/>
+    <aura:attribute name = "abbuonoOutput" type = "Object"/>
+    <aura:attribute name = "RimborsoOutput" type = "Object"/>
+    <aura:attribute name = "RimborsoCommOutput" type = "Object"/>
+    <aura:attribute name = "RimborsoProAccOutput" type = "Object"/>
+    <aura:attribute name = "RimborsoPreAssOutput" type = "Object"/>
+    <aura:attribute name = "RimborsoVarOutput" type = "Object"/>
+    <aura:attribute name = "RimborsoSpeLegOutput" type = "Object"/>
+    <aura:attribute name = "RisarcimentoOutput" type = "Object"/>   
+    <aura:attribute name = "FondatoOutput" type = "Object"/>
+    <aura:attribute name = "ResponsabilitaOutput" type = "Object"/>
+    <aura:attribute name = "AllegatiCompletiOutput" type = "Object"/>
+    <aura:attribute name = "SocietaAssOutput" type = "Object"/>
+    <aura:attribute name = "SocietaRecOutput" type = "Object"/>
+    <aura:attribute name = "InvioRisIDMOutput" type = "Object"/>
+    <aura:attribute name = "DecisioneOutput" type = "Object"/>
+    <aura:attribute name = "attesaOutput" type = "Object"/>
+    <aura:attribute name = "AssegnoOutput" type = "Object"/>
+    
+    <aura:attribute name = "abbuonoSelection" type = "String"/>
+    <aura:attribute name = "RimborsoSelection" type = "String"/>
+    <aura:attribute name = "RimborsoCommSelection" type = "String"/>
+    <aura:attribute name = "RimborsoProAccSelection" type = "String"/>
+    <aura:attribute name = "RimborsoPreAssSelection" type = "String"/>
+    <aura:attribute name = "RimborsoVarSelection" type = "String"/>
+    <aura:attribute name = "RimborsoSpeLegSelection" type = "String"/>
+    <aura:attribute name = "RisarcimentoSelection" type = "String"/>   
+    <aura:attribute name = "FondatoSelection" type = "String"/>
+    <aura:attribute name = "ResponsabilitaSelection" type = "String"/>
+    <aura:attribute name = "AllegatiCompletiSelection" type = "String"/>
+    <aura:attribute name = "SocietaAssSelection" type = "String"/>
+    <aura:attribute name = "SocietaRecSelection" type = "String"/>
+    <aura:attribute name = "InvioRisIDMSelection" type = "String"/>
+    <aura:attribute name = "SicSelection" type = "String"/>
+    <aura:attribute name = "DecisioneSelection" type = "String"/>
+    <aura:attribute name = "attesaSelection" type = "String"/>
+    <aura:attribute name = "AssegnoSelection" type = "String"/>
+    
+    <aura:attribute name = "abbuonoValue" type = "Double"/>
+    <aura:attribute name = "RimborsoValue" type = "Double"/>
+    <aura:attribute name = "RimborsoCommValue" type = "Double"/>
+    <aura:attribute name = "RimborsoProAccValue" type = "Double"/>
+    <aura:attribute name = "RimborsoPreAssValue" type = "Double"/>
+    <aura:attribute name = "RimborsoVarValue" type = "Double"/>
+    <aura:attribute name = "RimborsoSpeLegValue" type = "Double"/>
+    <aura:attribute name = "RisarcimentoValue" type = "Double"/>
+    
+    <!--Attributi per le piklist-->
+    <aura:attribute name = "AccoltoDettagli" type = "Object"/>
+    <aura:attribute name = "AccoltoList" type = "List"/>
+    <aura:attribute name = "DecisioneDettagli" type = "Object"/>
+    <aura:attribute name = "DecisioneList" type = "List"/>
+    <aura:attribute name = "InterventoAutDettagli" type = "Object"/>
+    <aura:attribute name = "InterventoAutList" type = "List"/>
+    <aura:attribute name = "SicDettagli" type = "Object"/>
+    <aura:attribute name = "SicList" type = "List"/>
+    <aura:attribute name = "ResponsabilitaList" type = "List"/>
+    <aura:attribute name = "ResponsabilitaObject" type = "Object"/>
+    <aura:attribute name = "ResponsabilitaColumns" type = "List"/>
+    <aura:attribute name = "ResponsabilitaSelectedData" type = "List"/>
+    <aura:attribute name = "Siccolumns" type="List"/>
+    <aura:attribute name = "sicSelectedData" type = "List"/>
+    <aura:attribute name = "sicObject" type = "Object"/>
+    <aura:attribute name = "assObject" type = "Object"/>
+    <aura:attribute name = "assColumns" type = "List"/>
+    <aura:attribute name = "assSelectedData" type = "List"/>
+    <aura:attribute name = "socObject" type = "Object"/>
+    <aura:attribute name = "socColumns" type = "List"/>
+    <aura:attribute name = "getSelectedSoc" type = "List"/>
+    
+    <aura:attribute name = "SicselectedRows" type="List" />
+    <aura:attribute name = "SocietaAssDettagli" type = "Object"/>
+    <aura:attribute name = "SocietaAssList" type = "List"/>
+    <aura:attribute name = "SocietaRecDettagli" type = "Object"/>
+    <aura:attribute name = "SocietaRecList" type = "List"/>
+    
+    <aura:attribute name="fileList" type="Attachment[]" />
+    <aura:attribute name="allegatiSelezionati" type="Attachment[]" />
+    
+    <aura:attribute name = "isOk" type = "Boolean"/>
+    <aura:attribute name = "isChiusuraOk" type = "Boolean"/>
+    <aura:attribute name = "isAbbuonoOk" type = "Boolean"/>
+    <aura:attribute name = "isRimborsoOk" type = "Boolean"/>
+    <aura:attribute name = "isRimborsoCommOk" type = "Boolean"/>
+    <aura:attribute name = "isRimborsoProAccOk" type = "Boolean"/>
+    <aura:attribute name = "isRimborsoPreAssOk" type = "Boolean"/>
+    <aura:attribute name = "isRimborsoVarOk" type = "Boolean"/>
+    <aura:attribute name = "isRimborsoSpeLegOk" type = "Boolean"/>
+    <aura:attribute name = "isRisarcimentoOk" type = "Boolean"/>
+    <aura:attribute name = "isResponsabilitaOk" type = "Boolean"/>
+    <aura:attribute name = "isSicOk" type = "Boolean"/>
+    <aura:attribute name = "isSocietaAssOk" type = "Boolean"/>
+    <aura:attribute name = "isSocietaRecOk" type = "Boolean"/>
+    <aura:attribute name = "isInvioRisIDMOk" type = "Boolean"/>
+    <aura:attribute name = "attesaOutputOk" type = "Boolean"/>
+    
+    
+    <aura:attribute name = "errorMessage" type = "String"/>
+    <aura:attribute name = "outputObj" type = "Object"/>
+    
+    <aura:handler name = "init" value = "{!this}" action = "{!c.init}"/>
+    <aura:handler name ="change" value = "{!v.abbuonoOutput}" action = "{!c.handleChange}"/>
+    <aura:handler name ="change" value = "{!v.RimborsoOutput}" action = "{!c.handleChange}"/>
+    <aura:handler name ="change" value = "{!v.RimborsoCommOutput}" action = "{!c.handleChange}"/>
+    <aura:handler name ="change" value = "{!v.RimborsoProAccOutput}" action = "{!c.handleChange}"/>
+    <aura:handler name ="change" value = "{!v.RimborsoPreAssOutput}" action = "{!c.handleChange}"/>
+    <aura:handler name ="change" value = "{!v.RimborsoVarOutput}" action = "{!c.handleChange}"/>
+    <aura:handler name ="change" value = "{!v.RimborsoSpeLegOutput}" action = "{!c.handleChange}"/>
+    <aura:handler name ="change" value = "{!v.RisarcimentoOutput}" action = "{!c.handleChange}"/>
+    <aura:handler name ="change" value = "{!v.FondatoOutput}" action = "{!c.handleChange}"/>
+    <aura:handler name ="change" value = "{!v.ResponsabilitaOutput}" action = "{!c.handleChange}"/>
+    <aura:handler name ="change" value = "{!v.AllegatiCompletiOutput}" action = "{!c.handleChange}"/>
+    <aura:handler name ="change" value = "{!v.SocietaAssOutput}" action = "{!c.handleChange}"/>
+    <aura:handler name ="change" value = "{!v.SocietaRecOutput}" action = "{!c.handleChange}"/>
+    <aura:handler name ="change" value = "{!v.InvioRisIDMOutput}" action = "{!c.handleChange}"/>
+    
+    
+    CHIUSURA
+    <aura:if isTrue="{!v.campiCase.Referenced_Company__c=='Compass' || !v.campiCase.Referenced_Company__c=='Creditech' }">
+        <c:XCSRadioGroupGenericReclami label="Abbuono"
+                                       output="{!v.abbuonoOutput}"
+                                       isOk="{!v.isAbbuonoOk}"
+                                       showValue="{!v.abbuonoSelection}"
+                                       value="{!v.abbuonoValue}"
+                                       />
+        <c:XCSRadioGroupGenericReclami label="Rimborso"
+                                       output="{!v.RimborsoOutput}"
+                                       isOk="{!v.isRimborsoOk}"
+                                       showValue="{!v.RimborsoSelection}"
+                                       value="{!v.RimborsoValue}"
+                                       />
+    </aura:if>
+    <aura:if isTrue="{!v.campiCase.Referenced_Company__c=='Futuro'}">
+        <c:XCSRadioGroupGenericReclami label="Rimborso commissioni"
+                                       output="{!v.RimborsoCommOutput}"
+                                       isOk="{!v.isRimborsoCommOk}"
+                                       showValue="{!v.RimborsoCommSelection}"
+                                       value="{!v.RimborsoCommValue}"
+                                       />
+        <c:XCSRadioGroupGenericReclami label="Rimborso provvigioni/accessorie"
+                                       output="{!v.RimborsoProAccOutput}"
+                                       isOk="{!v.isRimborsoProAccOk}"
+                                       showValue="{!v.RimborsoProAccSelection}"
+                                       value="{!v.RimborsoProAccValue}"
+                                       />    
+        <c:XCSRadioGroupGenericReclami label="Rimborso premio asscurativo"
+                                       output="{!v.RimborsoPreAssOutput}"
+                                       isOk="{!v.isRimborsoPreAssOk}"
+                                       showValue="{!v.RimborsoPreAssSelection}"
+                                       value="{!v.RimborsoPreAssValue}"
+                                       />
+        <c:XCSRadioGroupGenericReclami label="Rimborso varie"
+                                       output="{!v.RimborsoVarOutput}"
+                                       isOk="{!v.isRimborsoVarOk}"
+                                       showValue="{!v.RimborsoVarSelection}"
+                                       value="{!v.RimborsoVarValue}"
+                                       />
+        <c:XCSRadioGroupGenericReclami label="Rimborso spese legali"
+                                       output="{!v.RimborsoSpeLegOutput}"
+                                       isOk="{!v.isRimborsoSpeLegOk}"
+                                       showValue="{!v.RimborsoSpeLegSelection}"
+                                       value="{!v.RimborsoSpeLegValue}"
+                                       />
+    </aura:if>
+    <c:XCSRadioGroupGenericReclami label = "Risarcimento"
+                                   output = "{!v.RisarcimentoOutput}"
+                                   isOk = "{!v.isRisarcimentoOk}"
+                                   showValue = "{!v.RisarcimentoSelection}"
+                                   value = "{!v.RisarcimentoValue}"
+                                   />
+    <c:XCSRadioGroupGenericReclami label = "Fondato"
+                                   showInput = "false"
+                                   output = "{!v.FondatoOutput}"
+                                   showValue = "{!v.FondatoSelection}"
+                                   />
+    
+    <lightning:select label = "Accolto:"
+                      value = "{!v.AccoltoDettagli}"
+                      onchange = "{!c.handleChange}"
+                      >
+        <option value = "">Seleziona</option>
+        <aura:iteration items = "{!v.AccoltoList}" var="mod">
+            <option value = "{!mod}">{!mod}</option>
+        </aura:iteration>
+    </lightning:select>
+    <c:XCSRadioGroupGenericReclami label="Responsabilità"
+                                   showInput="false"
+                                   output="{!v.ResponsabilitaOutput}"
+                                   isOk="{!v.isResponsabilitaOk}"
+                                   showValue="{!v.ResponsabilitaSelection}"
+                                   />
+    <aura:if isTrue="{!v.ResponsabilitaSelection=='Si'}">
+        <aura:if isTrue="{!v.isTableLoading}">
+            <lightning:spinner />
+            <aura:set attribute="else">
+                <div class="tableContainer">
+                    <lightning:datatable keyField="Id"
+                                         data="{!v.ResponsabilitaObject}"
+                                         columns="{!v.Responsabilitacolumns}"
+                                         onrowselection="{!c.getSelectedResponsabilita}"
+                                         />
+                </div>
+            </aura:set>
+        </aura:if>
+    </aura:if>
+    <c:XCSRadioGroupGenericReclami label="Allegati completi"
+                                   showInput="false"
+                                   output="{!v.AllegatiCompletiOutput}"
+                                   showValue="{!v.AllegatiCompletiSelection}"
+                                   />
+    <c:XCSRadioGroupGenericReclami label="Sic"
+                                   showInput="false"
+                                   output="{!v.SicOutput}"
+                                   isOk="{!v.isSicOk}"
+                                   showValue="{!v.SicSelection}"
+                                   />
+    <aura:if isTrue="{!v.SicSelection=='Si'}">
+        <aura:if isTrue="{!v.isTableLoading}">
+            <lightning:spinner />
+            <aura:set attribute="else">
+                <div class="tableContainer">
+                    <lightning:datatable aura:id="Sictable"
+                                         keyField="Id"
+                                         data="{!v.sicObject}"
+                                         columns="{!v.Siccolumns}"
+                                         onrowselection="{!c.getSelectedSic}"
+                                         />
+                </div>
+            </aura:set>
+        </aura:if>
+    </aura:if>
+    <c:XCSRadioGroupGenericReclami label="Società assicurative"
+                                   showInput="false"
+                                   output="{!v.SocietaAssOutput}"
+                                   isOk="{!v.isSocietaAssOk}"
+                                   showValue="{!v.SocietaAssSelection}"
+                                   />
+    <aura:if isTrue="{!v.SocietaAssSelection=='Si'}">
+        <aura:if isTrue="{!v.isTableLoading}">
+            <lightning:spinner />
+            <aura:set attribute="else">
+                <div class="tableContainer" style="height: 300px">
+                    <lightning:datatable keyField="Id"
+                                         data="{!v.assObject}"
+                                         columns="{!v.assColumns}"
+                                         onrowselection="{!v.getSelectedAss}"
+                                         />
+                </div>
+            </aura:set>
+        </aura:if> 
+    </aura:if>
+    <c:XCSRadioGroupGenericReclami label="Società di recupero"
+                                   showInput="false"
+                                   output="{!v.SocietaRecOutput}"
+                                   isOk="{!v.isSocietaRecOk}"
+                                   showValue="{!v.SocietaRecSelection}"
+                                   />
+    <aura:if isTrue="{!v.SocietaRecSelection=='Si'}">
+        <aura:if isTrue="{!v.isTableLoading}">
+            <lightning:spinner />
+            <aura:set attribute="else">
+                <div class="tableContainer" style="height: 300px">
+                    <lightning:datatable keyField="Id"
+                                         data="{!v.socObject}"
+                                         columns="{!v.socColumns}"
+                                         onrowselection="{!v.getSelectedSoc}"
+                                         />
+                </div>
+            </aura:set>
+        </aura:if>
+    </aura:if>
+    <c:XCSRadioGroupGenericReclami label="Invio risposta da IDM"
+                                   showInput="false"
+                                   output="{!v.InvioRisIDMOutput}"
+                                   isOk="{!v.isInvioRisIDMOk}"
+                                   showValue="{!v.InvioRisIDMSelection}"
+                                   />
+    <aura:if isTrue="{!v.InvioRisIDMSelection=='Si'}">
+        File da stampare:
+        <div>
+                <c:CRMReclamiInserimentoAllegatiContainer fileList="{!v.fileList}"
+                                                          isNotSelectable="False"
+                                                          canDelete="{False}"
+                                                          canUpload="{False}"
+                                                          allegatiSelezionati="{!v.allegatiSelezionati}"
+                                                          />
+            </div>
+    </aura:if>
+    
+  <aura:if isTrue="{!v.campiCase.Tipo_Reclamo__c=='5412'}">
+        <lightning:select label="Decisione:"
+                          value="{!v.DecisioneDettagli}"
+                          onchange="{!c.handleChange}"
+                          >
+            <option value="">Seleziona</option>
+            <aura:iteration items="{!v.DecisioneList}" var="mod">
+                <option value="{!mod}">{!mod}</option>
+            </aura:iteration>
+        </lightning:select>
+        <aura:set attribute ="else">
+            <c:XCSRadioGroupGenericReclami label="Decisione"
+                                           showInput="false"
+                                           output="{!v.DecisioneOutput}"
+                                           showValue="{!v.DecisioneSelection}"
+                                           />
+        </aura:set>
+   </aura:if> 
+    <aura:if isTrue="{!v.codaSelezionata.DeveloperName == 'DN_57'}">
+        <c:XCSRadioGroupGenericReclami label="In attesa di riscontro del cliente:"
+                                       showInput="false"
+                                       output="{!v.attesaOutput}"
+                                       isok="attesaOutputOk"
+                                       showValue="{!v.attesaSelection}"
+                                       />
+    </aura:if>
+    <c:XCSRadioGroupGenericReclami label="Attesa Assegno"
+                                   showInput="false"
+                                   output="{!v.AssegnoOutput}"
+                                   showValue="{!v.AssegnoSelection}"
+                                   />
+    
+    <aura:if isTrue="{!v.isInterventoAutorita}">
+        <lightning:select label="Intervento Autorità:"
+                          value="{!v.InterventoAutDettagli}"
+                          onchange="{!c.handleChange}"
+                          >
+            <option value="">Seleziona</option>
+            <aura:iteration items="{!v.InterventoAutList}" var="mod">
+                <option value="{!mod}">{!mod}</option>
+            </aura:iteration>
+        </lightning:select>
+    </aura:if>
+</aura:component>

@@ -1,0 +1,47 @@
+<aura:component controller="GestioneEmailController" implements="force:hasRecordId,force:appHostable,flexipage:availableForAllPageTypes">   
+    <aura:attribute name="configEmailFaxColumns" type="List"/>
+    <aura:attribute name="configEmailFaxData" type="Object"/>
+    <aura:attribute name="configEmailFaxDataStatic" type="Object" />
+    <aura:attribute name="typeOptions" type="List"/>
+    <aura:attribute name="suppressBottomBar" type="Boolean"/>
+    <aura:attribute name="typeValue" type="String" default="Email"/>
+    
+    <ltng:require styles="{!$Resource.UtilCSS}" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />            
+    
+    <div class="slds-box slds-theme_shade">
+        <lightning:layout horizontalAlign="spread" multipleRows="true" verticalAlign="center">    	            
+            <lightning:layoutItem size="4" > 
+                <lightning:layout verticalAlign="center" >
+                    <lightning:layoutItem class="slds-m-right_small">
+                        <div aura:id="refreshButtonContainer" class="onClickRotation" >
+                            <!-- <lightning:icon iconName="utility:refresh" alternativeText="Aggiorna Tabella" size="x-small" onclick="{!c.refreshTableView}" /> -->
+                            <lightning:buttonIcon iconName="utility:refresh" alternativeText="Aggiorna Tabella" onclick="{!c.refreshTableView}" /> 
+                        </div>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem>
+                        <lightning:radioGroup aura:id="type" variant="label-hidden" options="{! v.typeOptions }" value="{!v.typeValue}" type="button" onchange="{!c.changeType}" style="padding-bottom: 5px;"/>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem class="slds-m-left_small">
+                        <lightning:input aura:id="searchInput" type="search" variant="label-hidden" onchange="{!c.searchValues}" placeholder="Cerca casella email .."/>
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="4" class="slds-align_absolute-center">                                
+                <div class="slds-text-color_error slds-text-heading_large">TABELLA CODE EMAIL E FAX</div>                                        
+            </lightning:layoutItem>
+            <lightning:layoutItem size="4" class="slds-text-align_right">
+            </lightning:layoutItem>
+        </lightning:layout>
+    </div>
+    <lightning:datatable keyField="Id"
+                         resizeColumnDisabled="true"
+                         hideCheckboxColumn="true" 
+                         columns="{! v.configEmailFaxColumns }" 
+                         data="{! v.configEmailFaxData }"
+                         oncellchange="{!c.isChanged}"
+                         onsave="{!c.checkBalance}"
+                         suppressBottomBar="{!v.suppressBottomBar}"/> 
+    
+</aura:component>

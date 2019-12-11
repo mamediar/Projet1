@@ -1,0 +1,9 @@
+<aura:documentation>
+    <aura:description>Esempio di Doucmentazione</aura:description>
+    <aura:example name="prova" ref="c:XCS_NormalizzaIndirizzo" label="Label">
+        Esempio di documentazione.
+        Per visualizzare la descrizione degli attributi visualizzare il seguente link:
+        https://compass--dev.lightning.force.com/auradocs/reference.app
+	</aura:example>
+    
+</aura:documentation>

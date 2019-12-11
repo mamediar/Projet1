@@ -1,0 +1,29 @@
+<aura:component implements="force:appHostable,lightning:availableForFlowScreens,force:hasRecordId" 
+                access="global" >
+    
+    <!--<aura:handler event="c:EsitoReady" action="{!c.doNext}" />   -->
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="saveCase" type="boolean"/>
+    <aura:attribute name="isClosed" type="boolean"/>
+    <aura:attribute name="noteValue" type="String"/>
+    <aura:attribute name="notaDaPassare" type="String"/>
+    <aura:attribute name="attrProva" type="String"/>
+    <aura:attribute name="esito" type="String" default=""/>
+    <aura:attribute name="disposition" type="XCS_Disposition__c"/>
+    <aura:attribute name="currentCase" type="Case"/>
+    <aura:attribute name="disp" type="XCS_Disposition__C"/>
+    <aura:handler event="c:XCS_DispositionReady" action="{!c.doNext}"/> 
+    
+    <force:recordData aura:id="recordLoader"
+                      recordId="{!v.recordId}"
+                      fields="CategoriaExternalId__c"
+                      targetFields="{!v.currentCase}"
+                      />
+    
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+   AUI - Recupero Documento Scaduto
+        
+    <c:XCS_Disposition disabledInit="true" recordId='{!v.recordId}' parentExternalId='DP5617' saveCase='false'  visibilityOption='{!v.currentCase.CategoriaExternalId__c}'/>
+            
+
+</aura:component>

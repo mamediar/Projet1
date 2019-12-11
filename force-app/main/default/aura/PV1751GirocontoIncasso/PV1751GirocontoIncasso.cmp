@@ -1,0 +1,153 @@
+<!--
+  @Component Name     : PV1751GirocontoIncasso.cmp
+  @Description        : 
+  @Author             : sabrina vitali
+  @Group              : 
+  @Last Modified By   : Lorenzo Marzocchi
+  @Last Modified On   : 2019-10-2 16:51:30
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    1/8/2019, 10:15:33   sabrina vitali     Initial Version
+-->
+<aura:component extends="c:PVSubComponentBase" controller="PV1751GirocontoIncassoInserimento" access='global'>
+    <aura:handler name='init' value='{!this}' action='{!c.init}' />
+    
+    <!-- Attributi del PV specifico -->
+    <aura:attribute name="today" type="Date" />
+    <aura:attribute name="rimborso" type="Boolean"/>
+    <aura:attribute name="erroriModRimborso" type="String"/> 
+    <aura:attribute name="notaModalitaRimborso" type="String"/> 
+    <aura:attribute name="modalitaRimborso" type="String"/>
+
+    <!-- gestione delle pratiche origine/destinazione -->
+    <aura:attribute name="praticaOrigine" type="OCSPratica[]"/>
+    <aura:attribute name="praticheDestinazione" type="PV1751GirocontoIncassoInserimento.PraticaDestinazione[]"/>
+    <aura:attribute name="OCSClienteOrigine" type="OCSCliente" />
+    <aura:attribute name="draftValues" type="Object" default="[]"/>
+    <aura:attribute name="errors" type="Object" default="[]"/>
+
+    <aura:attribute name="praticheOrigTableColumns" 
+                    type="List" 
+                    default="[{label: 'Pratica', fieldName: 'numPratica', type: 'text'},
+                             {label: 'Tipologia', fieldName: 'tipoPratica', type: 'text' },
+                             {label: 'Stato', fieldName: 'statoPratica', type: 'text'},
+                             {label: 'Prod.', fieldName: 'prodotto', type: 'text'},
+                             {label: 'Mod.Pag.', fieldName: 'tipoPagamento', type: 'text'},
+                             {label: 'Cliente', fieldName: 'codCliente', type: 'text'},
+                             {label: 'Dealer', fieldName: 'dealerCode', type: 'text'},
+                             {type: 'button', typeAttributes: {  iconName: 'utility:delete',
+                                                            label: '',                      
+                                                            name: 'deleteRecord',
+                                                            title: 'rimuovi',
+                                                            disabled: false,
+                            }}]"
+                    />
+    <aura:attribute name="praticheDestTableColumns" 
+                    type="List" 
+                    default="[{label: 'Pratica', fieldName: 'numPratica', type: 'text'},
+                             {label: 'Tipologia', fieldName: 'tipoPratica', type: 'text' },
+                             {label: 'Stato', fieldName: 'statoPratica', type: 'text'},
+                             {label: 'Prod.', fieldName: 'prodotto', type: 'text'},
+                             {label: 'Mod.Pag.', fieldName: 'tipoPagamento', type: 'text'},
+                             {label: 'Cliente', fieldName: 'codCliente', type: 'text'},
+                             {label: 'Dealer', fieldName: 'dealerCode', type: 'text'},
+                             {label: 'Importo', fieldName: 'importo', type: 'currency', typeAttributes: { currencyCode: 'EUR'}, editable: true, typeAttributes: { required: true }},
+                             {type: 'button', typeAttributes: {  iconName: 'utility:delete',
+                                                            label: '',                      
+                                                            name: 'deleteRecord',
+                                                            title: 'rimuovi',
+                                                            disabled: false,
+                            }}]"
+                    />
+
+    <!-- popolamento combo -->
+    <aura:attribute name="optionsRimborso" type="List" default="[                                                                                                                      
+                                                               {'label': 'Si', 'value': 'true'},                                                                                  
+                                                               {'label': 'No', 'value': 'false'},                                                                                  
+                                                             ]"/>                                                                                                           
+
+    <!--Main-->     
+    <table class="slds-table slds-table_bordered slds-table_col-bordered">
+        <tbody>
+            <tr class="slds-hint-parent">
+                <td colspan="3" class="slds-cell-buffer_left">
+                    <p class="slds-p-horizontal_small slds-text-color_error slds-text-title_bold">
+                        Selezionare prima la pratica di origine del giroconto 
+                    </p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+                                                    
+    <lightning:card class='slds-form_stacked'>          
+            <div class="slds-box slds-box_xx-small slds-text-align_center  slds-theme_info slds-text-heading_small">
+                    Pratica di origine</div>
+            <div class="slds-size_12-of-12">        
+                <lightning:datatable    class="table-pv table-pv-75" 
+                                        data="{!v.praticaOrigine}"
+                                        columns="{!v.praticheOrigTableColumns}"
+                                        keyField="numPratica"
+                                        hideCheckboxColumn="true"
+                                        showRowNumberColumn="false"
+                                        onrowaction="{! c.handleRowActionOrig }"
+                                        />
+            </div>   
+            <div class="slds-box slds-box_xx-small slds-text-align_center  slds-theme_info slds-text-heading_small">
+                Pratiche di destinazione del giroconto</div>
+            <div class="slds-size_12-of-12">        
+                <lightning:datatable    class="table-pv table-pv-75" 
+                                        data="{!v.praticheDestinazione}"
+                                        columns="{!v.praticheDestTableColumns}"
+                                        keyField="numPratica"
+                                        hideCheckboxColumn="true"
+                                        showRowNumberColumn="false"
+                                        onrowaction="{! c.handleRowAction }"
+                                        errors="{! v.errors }"
+                                        draftValues="{! v.draftValues }"
+                                        onsave="{! c.handleSave }"
+                                        oncancel="{! c.handleCancel }"
+                                        />
+            </div>   
+
+            <div class="slds-grid slds-container_medium slds-align_absolute-center slds-wrap">
+                <div class="slds-size_4-of-12">
+                    <lightning:input aura:id="importoTot" name="importoTot" type="number" formatter="currency" step="0.01"
+                        label="Importo totale" required="true" />
+                </div>
+                <div class="slds-size_4-of-12">
+                    <lightning:input aura:id="importoTotGiroconto" name="importoTotGiroconto" type="number"
+                        formatter="currency" step="0.01" label="Di cui da girocontare" disabled="true" />
+                </div>
+                <div class="slds-size_4-of-12">
+                    <aura:if isTrue="{!v.rimborso}">
+                        <lightning:input aura:id="importoTotRimborso" name="importoTotRimborso" type="number"
+                            formatter="currency" step="0.01" label="Di cui da rimborsare a cliente" required="true" />
+                    </aura:if>
+                </div>
+                <div class="slds-size_12-of-12">
+                    <div class="slds-size_4-of-12">
+                        <lightning:input aura:id="dataIncasso" name="dataIncasso" type="Date" max="{!v.today}"
+                            dateStyle="short" label="Data Incasso" required="true" />
+                    </div>
+                    <div class="slds-size_4-of-12">
+                        <lightning:combobox aura:id="rimborso" name="rimborso" label="Con rimborso" placeholder="Seleziona"
+                            value="{!v.rimborso}" variant="standard" dropdownAlignment="Left" options="{!v.optionsRimborso}"
+                            required="true" />
+                    </div>
+                </div>
+                <div class="slds-size_12-of-12">
+                    <aura:if isTrue="{!v.rimborso}">
+                        <c:PVModalitaRimborso labelOptions="Modalità rimborso"
+                            OCSClienteSelezionato="{!v.OCSClienteOrigine}" praticaSelezionata="{!v.praticaOrigine}"
+                            aura:id="modRimborso" errori="{!v.erroriModRimborso}"
+                            modalitaPagamentoSelected="{!v.modalitaRimborso}" note="{!v.notaModalitaRimborso}"
+                            required="true">
+                        </c:PVModalitaRimborso>
+                    </aura:if>
+                </div>
+            </div>
+        </lightning:card>
+        <!-- /main -->
+    </aura:component>

@@ -1,0 +1,489 @@
+<aura:component controller="CRMReclamiGestioneContainerController"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" 
+                access="global" 
+                >      
+    <aura:attribute name="listaAss" type="List"/> 
+    <aura:attribute name="initAggiuntivi" type="Boolean"/>
+    <aura:attribute name="initAss" type="Boolean"/>
+    <aura:attribute name="tipoDettagliContainerTipo" type="String"/>
+    <aura:attribute name="tabDettagli" type="Boolean"/>
+    <aura:attribute name="risarcimentoSelection" type="String"/>
+    <aura:attribute name="risarcimentoValue" type="Double"/>
+    <aura:attribute name="abbuonoSelection" type="String"/>
+    <aura:attribute name="abbuonoValue" type="Double"/>
+    <aura:attribute name="rimborsoSelection" type="String"/>
+    <aura:attribute name="rimborsoValue" type="Double"/>
+    <aura:attribute name="standAloneSelection" type="String"/>
+    
+    <aura:attribute name="tabInadempimento" type="Boolean" default="false"/>
+    <aura:attribute name="tabChiusura" type="Boolean"/>
+    <aura:attribute name="utenteGruppoAssegnato" type="Boolean"/>
+    
+    <!--Attributi per force:recordData-->
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="currentCase" type="Object"/>
+    <aura:attribute name="campiCase" type="Object"/>
+    <aura:attribute name="currentCaseError" type="String"/>
+    <aura:attribute name="accountClienteId" type="String"/>
+    <aura:attribute name="campiAccountCliente" type="Object"/>
+    <aura:attribute name="accountCliente" type="Object"/>
+    <aura:attribute name="accountClienteError" type="String"/>
+    
+    <!--Attributi utility-->
+    <aura:attribute name="isCaseLoaded" type="Boolean" default="false"/>
+    <aura:attribute name="isAccountClienteLoaded" type="Boolean" default="false"/>
+    <aura:attribute name="serviceError" type="Boolean" default="false"/>
+    <aura:attribute name="isInadempimento" type="Boolean" default="false"/>
+    <aura:attribute name="isAssicurazione" type="Boolean"/>
+    <aura:attribute name="isSconosciuto" type="Boolean"/>
+    
+    <!--Controlli e output-->
+    <aura:attribute name="isAutorizzazioneOk" type="Boolean"/>
+    <aura:attribute name="isHeaderOk" type="Boolean"/>
+    <aura:attribute name="headerMessage" type="String"/>
+    <aura:attribute name="headerOutput" type="Object"/>
+    <aura:attribute name="isDettagliOk" type="Boolean"/>
+    <aura:attribute name="dettagliMessage" type="String"/>
+    <aura:attribute name="dettagliOutput" type="Object"/>
+    <aura:attribute name="dettagliOutputObj" type="Object"/><!--usato per allineare il passaggio dati all'apex-->
+    <aura:attribute name="isInadempimentoOk" type="Boolean"/>
+    <aura:attribute name="inadempimentoGravita" type="String"/>
+    <aura:attribute name="inadempimentoStage" type="String"/>
+    <aura:attribute name="inadempimentoStageOld" type="String"/>
+    <aura:attribute name="isAggiuntiviOk" type="Boolean" default="true"/>
+    <aura:attribute name="aggiuntiviMessage" type="String"/>
+    <aura:attribute name="aggiuntiviOutput" type="Object"/>
+    <aura:attribute name="inadempimentoMessage" type="String"/>
+    <aura:attribute name="inadempimentoOutput" type="Object"/>
+    <aura:attribute name="FTSent" type = "String"/>
+    <aura:attribute name="FTReceived" type = "String"/>
+    <aura:attribute name="filiale" type = "String"/>
+    <aura:attribute name="chiusuraOutput" type="Object"/>
+    <aura:attribute name="outputObjGestione" type="Object"/> <!-- aggiunto questo attributo per il BINDING con Inserimento Container  -->
+    <aura:attribute name="allegatiSelezionati" type="Attachment[]" />
+    <!--<aura:attribute name="allegatiSelezionati" type="ContentVersion[]" />-->
+    
+    <aura:attribute name="isOk" type="Boolean"/>
+    <aura:attribute name="errorMessage" type="String"/>
+    <aura:attribute name="outputObjTOCHANGE" type="Object"/>
+    
+    <!--Attributi input componenti figli-->
+    <aura:attribute name="stepInserimentoCliente" type="Integer" default="4"/>
+    
+    <!--Attributi per CRMReclamiGestioneHeaderContainer-->
+    <aura:attribute name="status" type="String"/>
+    <aura:attribute name="areaDettagli" type="String"/>
+    <aura:attribute name="categoriaDettagli" type="XCS_Categoria__c"/>
+    <aura:attribute name="codaSelezionata" type="CodaXSocieta__mdt" default=''/>
+    <aura:attribute name="oldQueue" type="CodaXSocieta__mdt"/>
+    <aura:attribute name="tipoDettagli" type="String"/>
+    <aura:attribute name="descrizioneTipo" type="String"/>
+    <aura:attribute name="delegaPresente" type="Boolean"/>
+    <aura:attribute name="reclamoCompleto" type="Boolean"/>
+    <aura:attribute name="accessoDati" type="Boolean"/>
+    <aura:attribute name="isScadenzaChangeable" type="Boolean"/>
+    
+    <!--Attributi per CRMReclamiInserimentoClienteContainer-->
+    <aura:attribute name="clienteSelezionatoContainer" type="OCSCliente" default="null"/>
+    <aura:attribute name="praticaSelezionataContainer" type="Object"/>
+    <aura:attribute name="reclamoSelezionato" type="Case"/>
+    <aura:attribute name="contattoPrecedente" type="String"/> <!--Aggiunto questo campo per costruire l'oggetto di OUTPUT, XCSReclamiInput-->
+    
+    <!--Attributi per CRMReclamiGestioneDettagliContainer-->
+    <aura:attribute name="dataComunicazione" type="String"/>
+    <aura:attribute name="dataRicezione" type="String"/>
+    <aura:attribute name="dataRicezioneIDM" type="String"/>
+    <aura:attribute name="dataDecisione" type="String"/>
+    <aura:attribute name="showDecisione" type="Boolean"/>
+    <aura:attribute name="dataCaricamento" type="String"/>
+    <aura:attribute name="scadenzaReclamo" type="String"/>
+    <aura:attribute name="attribuzioneReclamo" type="List"/>
+    <aura:attribute name="modalitaInvioDettagli" type="String"/>
+    
+    <!--Attributi per CRMReclamiInserimentoMittentiContainer-->
+    <aura:attribute name="mittentiList" type="XCS_Mittente__c[]"/>
+    
+    <!--Attributi per CRMReclamiInserimentoAllegatiContainer-->
+    <aura:attribute name="fileList" type="Attachment[]"/>
+    <aura:attribute name="refreshAllegati" type="Boolean" default="true"/>
+    
+    <!--Attributi per CRMReclamiGestioneChiusuraContainer-->
+    <aura:attribute name="isCiusuraOk" type="Boolean"/>
+    <aura:attribute name="chiusuraErrorMsg" type="String"/>
+    <aura:attribute name="idmValueChiusura" type="Boolean"/>
+    <aura:attribute name="allegatiIDMChiusura" type="Attachment[]"/>
+    <aura:attribute name="spinner" type="Integer" default="0"/>
+    <aura:attribute name="isGrave" type="Boolean" default="false"/>
+    <aura:attribute name="isCloned" type="Boolean" default="false"/>
+    <aura:attribute name="allegatiIDM" type="Attachment[]"/>
+    <aura:attribute name="allegatiIDMClone" type="Attachment[]"/>
+    <aura:attribute name="tipoName" type="String"/>
+    
+    <aura:attribute name="hasEditAccess" type="Boolean" default="true"/>
+    <aura:attribute name="isFrode" type="Boolean" default="false"/>
+    <aura:attribute name="reclamoReadOnly" type="Boolean" default="false"/>
+    
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    <aura:handler name="change" value="{!v.dettagliOutput}" action="{!c.rebuildDettagliOutputObj}"/>
+    <aura:handler name="change" value="{!v.headerOutput}" action="{!c.rebuildDettagliOutputObj}"/>
+    <aura:handler name="change" value="{!v.inadempimentoOutput}" action="{!c.rebuildDettagliOutputObj}"/>
+    <aura:handler name="change" value="{!v.isGrave}" action="{!c.isInadempimento}"/>
+    <aura:handler name="change" value="{!v.codaSelezionata}" action="{!c.isInadempimento}"/>
+    <aura:handler name="change" value="{!v.delegaPresente}" action="{!c.isInadempimento}"/>
+    
+    <aura:handler name="change" value="{!v.tipoDettagliContainerTipo}" action="{!c.prova}"/>
+    <aura:handler name="change" value="{!v.dataDecisione}" action="{!c.prova}"/>
+    <aura:handler name="change" value="{!v.accessoDati}" action="{!c.prova}"/>
+    <aura:handler name="change" value="{!v.categoriaDettagli}" action="{!c.refreshRisposta}"/>
+    
+    <aura:attribute name="toastMsg" type="String"/>
+    
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    <!--Boris: Refresh Tutti i tab 
+Il tipo dell'evento è forviante. E' stato utilizzato questo tipo per evitare di creare un altro evento.
+-->
+    <aura:handler name="aggiorna" event="c:CRMReclamiGestioneApprovazioneEvent" action="{!c.refresh}" description="Aggiorna puntualmente dei dettagli dei sottocomponent"/>
+    <aura:handler name="aggiornaPadre" event="c:CRMReclamiGestioneApprovazioneEvent" action="{!c.refreshDaServer}" description="Aggiorna puntualmente dei dettagli del component padre a partire dal server"/>
+    
+    <!--Boris: Fine Refresh Tutti i tab -->
+    
+    <aura:if isTrue="{!not(v.spinner==0)}">
+        <lightning:spinner alternativeText="Loading" size="large" />
+    </aura:if>
+    
+    <force:recordData aura:id="currentCaseLoader"
+                      recordId="{!v.recordId}"
+                      targetFields="{!v.campiCase}"
+                      fields="Account_Futuro_MBCS__c,Account_Futuro_MBCS__r.FirstName__c,Account_Futuro_MBCS__r.LastName__c, Branch__r.Name, Inadempimento_Grave__c, Delega_Presente__c, Tipo_Reclamo__c, ParentId,OwnerId,Data_Decisione__c,F_T_Sent_Count__c, F_T_Received_Count__c, Stage_Inadempimento__c, Disposition__r.External_Id__c,Owner_User__c,Is_Frode__c,
+                              Livello_Autorizzazione__c, Autorizzazione_Livello_1__c,Autorizzazione_Livello_2__c, Tipo_Autorizzazione__c, Attribuzione__c, Data_Decisione__c, Scadenza_Reclamo__c, Data_Ricezione_IDM__c,Owner.Name,Categoria_Riferimento__r.Name,
+                              Data_Ricezione__c, Compensazione__c, Numero_Reclamo__c, Abbuono_Richiesta__c, Stand_Alone__c, Has_Rimborso__c, Importo_Compensazione__c,Importo_Abbuono_Richiesta__c,Importo_Rimborso__c, Modalita_Invio__c, F_Has_Rimborso_Assicurativo_In__c, F_Has_Rimborso_Assicurativo_Out__c, F_Has_Rimborso_Commissioni_In__c, F_Has_Rimborso_Commissioni_Out__c, F_Has_Rimborso_Provvigioni_In__c, F_Has_Rimborso_Provvigioni_Out__c, F_Has_Rimborso_Spese_Legali_In__c, F_Has_Rimborso_Spese_Legali_Out__c, F_Has_Rimborso_Varie_In__c, F_Has_Rimborso_Varie_Out__c, Has_Acceso_Dati__c, F_Rimborso_Commissioni_Importo_In__c, F_Rimborso_Commissioni_Importo_Out__c, F_Rimborso_Provvigioni_Importo_In__c, F_Rimborso_Provvigioni_Importo_Out__c, F_Rimborso_Spese_Legali_Importo_In__c, F_Rimborso_Spese_Legali_Importo_Out__c, F_Rimborso_Varie_Importo_In__c, F_Rimborso_Varie_Importo_Out__c, F_Rimborso_Assicurativo_Importo_In__c "
+                      targetError="{!v.currentCaseError}"
+                      targetRecord="{!v.currentCase}"
+                      layoutType="FULL"
+                      recordUpdated="{!c.handleCaseUpdated}"
+                      />
+    
+    <aura:if isTrue="{!v.isCaseLoaded}">
+        <force:recordData aura:id="clienteLoader"
+                          recordId="{!v.accountClienteId}"
+                          targetFields="{!v.campiAccountCliente}"
+                          targetError="{!v.accountClienteError}"
+                          targetRecord="{!v.accountCliente}"
+                          layoutType="FULL"
+                          recordUpdated="{!c.handleAccountUpdated}"
+                          />
+    </aura:if>
+    <aura:if isTrue="{!not(v.hasEditAccess)}">
+        <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_info" role="alert">Non puoi modificare il reclamo</div>
+    </aura:if>
+    
+    
+    <aura:if isTrue="{!v.isAccountClienteLoaded}">
+        <lightning:card class="slds-clearfix slds-p-bottom_x-small"> 
+            <c:CRMReclamiGestioneHeaderContainer aura:id="gestioneHeader"
+                                                 aziendaSelezionata="{!v.campiCase.Referenced_Company__c}"
+                                                 recordId="{!v.recordId}"
+                                                 recordTypeId="{!v.campiCase.RecordTypeId}"
+                                                 areaDettagli="{!v.areaDettagli}"
+                                                 categoriaDettagli="{!v.categoriaDettagli}"
+                                                 codaSelezionata="{!v.codaSelezionata}"
+                                                 tipoDettagli="{!v.tipoDettagli}"
+                                                 descrizioneTipo="{!v.descrizioneTipo}"
+                                                 status="{!v.status}"
+                                                 delegaPresente="{!v.delegaPresente}"
+                                                 reclamoCompleto="{!v.reclamoCompleto}"
+                                                 accessoDati="{!v.accessoDati}"
+                                                 isScadenzaChangeable="{!v.isScadenzaChangeable}"
+                                                 isAssicurazione="{!v.isAssicurazione}"
+                                                 campiCase="{!v.campiCase}"
+                                                 errorMessage="{!v.headerMessage}"
+                                                 isOk="{!v.isHeaderOk}"
+                                                 outputObj="{!v.headerOutput}"
+                                                 utenteGruppoAssegnato="{!v.utenteGruppoAssegnato}"
+                                                 tipoDettagliContainerTipo="{!v.tipoDettagliContainerTipo}"
+                                                 initAss="{!v.initAss}"
+                                                 listaAss="{!v.listaAss}"
+                                                 isGrave = "{!v.isGrave}"
+                                                 isCloned = "{!v.isCloned}"
+                                                 tipoName="{!v.tipoName}"
+                                                 showDecisione = "{!v.showDecisione}"
+                                                 dataDecisione = "{!v.dataDecisione}"
+                                                 scadenzaReclamo="{!v.scadenzaReclamo}"
+                                                 />
+            <aura:set attribute="footer">
+                
+                <aura:if isTrue="{!not(v.isCloned)}">
+                    <aura:if isTrue="{!not(v.reclamoReadOnly)}">
+                        <lightning:button class="slds-float_right"
+                                          label="Salva Reclamo"
+                                          variant="brand"
+                                          disabled="{!not(v.hasEditAccess)}"
+                                          onclick="{!c.salvaReclamoAuraMethod}"
+                                          />
+                    </aura:if>
+                    
+                </aura:if>
+                
+            </aura:set>
+        </lightning:card>
+        
+        
+  
+        <!--STAMPA IDM-->
+        <aura:if isTrue="{!v.isCloned}">
+            <lightning:card>
+                <lightning:tabset selectedTabId="1">
+                    <lightning:tab label="Gestione" id="1">
+                        <div class="slds-p-left_x-small slds-p-right_x-small">
+                            <c:CRMReclamiInserimentoAllegatiContainer
+                                                                      aura:id="Allegati"
+                                                                      fileList="{!v.allegatiIDM}"
+                                                                      recordId="{!v.recordId}"
+                                                                      isCloned="{!v.isCloned}"
+                                                                      isGestito = "{!v.status == 'Gestito'}"
+                                                                      />   
+                        </div>
+                    </lightning:tab>
+                    
+                    <lightning:tab label="Allegati" id="2">
+                        <div class="slds-p-left_x-small slds-p-right_x-small">
+                            <c:CRMReclamiInserimentoAllegatiContainer
+                                                                      aura:id="Allegati_Clone"
+                                                                      fileList="{!v.allegatiIDMClone}"
+                                                                      recordId="{!v.recordId}"
+                                                                      />
+                        </div>
+                    </lightning:tab>
+                    
+                    <lightning:tab label="Messaggi" id="3">
+                        <div class="slds-p-left_x-small slds-p-right_x-small">
+                            NUOVO MESSAGGIO
+                        </div>
+                    </lightning:tab>
+                    
+                    <lightning:tab label="Registro di Controllo" id="4">
+                        <div class="slds-p-left_x-small slds-p-right_x-small">
+                            REGISTRO DI CONTROLLO
+                        </div>
+                    </lightning:tab>
+                    
+                    
+                </lightning:tabset>
+            </lightning:card>
+            
+            <!--END STAMPA IDM-->
+            <aura:set attribute="else">
+                
+                
+                <lightning:card>
+                    <lightning:tabset selectedTabId="1">
+                        <lightning:tab label="Ricerca Richiesta" id="1">
+                            <div class="slds-p-left_x-small slds-p-right_x-small">
+                                <c:CRMReclamiInserimentoClienteContainer stepInserimentoCliente="{!v.stepInserimentoCliente}"
+                                                                         aziendaSelezionata="{!v.campiCase.Referenced_Company__c}"
+                                                                         reclamoSelezionato="{!v.reclamoSelezionato}"
+                                                                         clienteSelezionato="{!v.clienteSelezionatoContainer}"
+                                                                         praticaSelezionata="{!v.praticaSelezionataContainer}"
+                                                                         numeroReclamo="{!v.campiCase.Numero_Reclamo__c}"
+                                                                         showCambiaProdotto="false"
+                                                                         isSconosciuto="{!v.isSconosciuto}"
+                                                                         contattoPrecedente='{!v.contattoPrecedente}'
+                                                                         />
+                            </div>
+                        </lightning:tab>
+                        
+                        <lightning:tab label="Dettagli" id="2">
+                            <div class="slds-p-left_x-small slds-p-right_x-small">
+                                <c:CRMReclamiGestioneDettagliContainer aura:id="ReclamiDettagli"
+                                                                       campiCase="{!v.campiCase}"
+                                                                       dataComunicazione="{!v.dataComunicazione}"
+                                                                       dataRicezione="{!v.dataRicezione}"
+                                                                       dataRicezioneIDM="{!v.dataRicezioneIDM}"
+                                                                       dataDecisione="{!v.dataDecisione}"
+                                                                       dataCaricamento="{!v.dataCaricamento}"
+                                                                       scadenzaReclamo="{!v.scadenzaReclamo}"
+                                                                       attribuzioneReclamo="{!v.attribuzioneReclamo}"
+                                                                       isOk="{!v.isDettagliOk}"
+                                                                       errorMessage="{!v.dettagliMessage}"
+                                                                       outputObj="{!v.dettagliOutput}"
+                                                                       modalitaInvioDettagli="{!v.modalitaInvioDettagli}"
+                                                                       renderModInvIfEmpty="false"
+                                                                       isScadenzaChangeable="{!v.isScadenzaChangeable}"
+                                                                       risarcimentoSelection="{!v.risarcimentoSelection}"
+                                                                       risarcimentoValue="{!v.risarcimentoValue}"
+                                                                       abbuonoSelection="{!v.abbuonoSelection}"
+                                                                       abbuonoValue="{!v.abbuonoValue}"
+                                                                       rimborsoSelection="{!v.rimborsoSelection}"
+                                                                       rimborsoValue="{!v.rimborsoValue}"
+                                                                       standAloneSelection="{!v.standAloneSelection}"
+                                                                       tabDettagli="{!v.tabDettagli}"
+                                                                       tipoName="{!v.tipoName}"
+                                                                       showDecisione="{!v.showDecisione}"
+                                                                       
+                                                                       />
+                                
+                                
+                                <!--
+                        <aura:if isTrue="{!v.isAssicurazione || !v.campiCase.Tipo_Reclamo__c == '5410' || !v.tipoDettagliContainerTipo=='5410'}"> 
+                        -->
+                                <!-- <aura:if isTrue="{!or(v.isAssicurazione=='true',v.tipoDettagliContainerTipo=='5410',v.campiCase.Tipo_Reclamo__c == '5410')}"> -->
+                                
+                                
+                                <aura:if isTrue="{!v.initAss}">
+                                    <div class="slds-p-top_x-small ">
+                                        <c:CRMReclamiGestioneDettagliCampiAggiuntivi aura:id="salvaReclamoCampiAggiuntivi"
+                                                                                     campiCase="{!v.campiCase}"
+                                                                                     isOk="{!v.isAggiuntiviOk}"
+                                                                                     errorMessage="{!v.aggiuntiviMessage}"
+                                                                                     output="{!v.aggiuntiviOutput}"
+                                                                                     initAggiuntivi="{!v.initAggiuntivi}"
+                                                                                     /> 
+                                        
+                                    </div>
+                                </aura:if> 
+                                
+                                
+                                
+                                <div class="slds-p-top_x-small ">
+                                    <c:CRMReclamiInserimentoMittentiContainer aziendaSelezionata="{!v.campiCase.Referenced_Company__c}"
+                                                                              clienteSelezionato="{!v.clienteSelezionatoContainer}"
+                                                                              praticaSelezionata="{!v.praticaSelezionataContainer}"
+                                                                              mittentiList="{!v.mittentiList}"
+                                                                              case="{!v.campiCase}"
+                                                                              />
+                                </div>
+                            </div>
+                        </lightning:tab>
+                        
+                        <lightning:tab label="Risposta" id="3">
+                            <div class="slds-p-left_x-small slds-p-right_x-small">
+                                <c:CRMReclamiGestioneRispostaContainer
+                                                                       aura:id="CRMReclamiGestioneRispostaContainerComponent"
+                                                                       fileList="{!v.fileList}"
+                                                                       campiCase="{!v.campiCase}"
+                                                                       isAutorizzazioneOk="{!v.isAutorizzazioneOk}"
+                                                                       categoriaDettagli="{!v.categoriaDettagli}"
+                                                                       clienteSelezionato="{!v.clienteSelezionatoContainer}"
+                                                                       praticaSelezionata="{!v.praticaSelezionataContainer}"
+                                                                       />
+                            </div>
+                        </lightning:tab>
+                        
+                        
+                        <lightning:tab label="Allegati" id="4">
+                            <div class="slds-p-left_x-small slds-p-right_x-small">
+                                <c:CRMReclamiInserimentoAllegatiContainer
+                                                                          aura:id="Allegati"
+                                                                          fileList="{!v.fileList}"
+                                                                          recordId="{!v.recordId}"
+                                                                          />
+                            </div>
+                        </lightning:tab>
+                        
+                        
+                        
+                        <lightning:tab label="Reclami Associati" id="10">
+                            <div class="slds-p-left_x-small slds-p-right_x-small">
+                                <c:CRMReclamiTabReclamiAssociati
+                                                                 aura:id="ReclamiAssociati"
+                                                                 recordId="{!v.recordId}"/>
+                            </div>
+                        </lightning:tab>
+                        
+                        <lightning:tab label="Cronologia Eventi" id="12">
+                            <div class="slds-p-left_x-small slds-p-right_x-small">
+                                <c:CRMReclamiGestioneFeedItem aura:id="CronologiaEventi"
+                                                              ident= "{!v.recordId}"/>
+                            </div>
+                        </lightning:tab>
+                        
+                        
+                        
+                        <aura:if isTrue="{!v.isInadempimento}"> 
+                            <!--     <aura:if isTrue="true"> -->
+                            <lightning:tab label="Inadempimento" id="7">
+                                <div class="slds-p-left_x-small slds-p-right_x-small">
+                                    
+                                    
+                                    <c:CRMReclamiGestioneInadempimentoContainer aura:id="Inadempimento"
+                                                                                campiCase="{!v.campiCase}"
+                                                                                isOk="{!v.isInadempimentoOk}"
+                                                                                output="{!v.inadempimentoOutput}"
+                                                                                errorMessage="{!v.inadempimentoMessage}"
+                                                                                reclamoCompletoRadioGroup="{!v.reclamoCompleto}"
+                                                                                gravitaDettagli="{!v.inadempimentoGravita}"
+                                                                                stageInadempimento="{!v.inadempimentoStage}"
+                                                                                stageInadempimentoOld="{!v.inadempimentoStageOld}"
+                                                                                FTSent="{!v.FTSent}"
+                                                                                FTReceived="{!v.FTReceived}"
+                                                                                filiale="{!v.filiale}"
+                                                                                recordId="{!v.recordId}"
+                                                                                tabInadempimento="{!v.tabInadempimento}"
+                                                                                />
+                                </div>
+                            </lightning:tab>
+                        </aura:if>
+                        
+                        <lightning:tab label="Corrispondenza" id="11" onactive="{!c.refreshCorrispondenza}">
+                            <div class="slds-p-left_x-small slds-p-right_x-small">
+                                <!--<forceChatter:feed	
+                                               aura:id="Corrispondenza"
+                                               type="Record" subjectId="{!v.recordId}"/>-->
+                                <c:CRMReclamiGestioneCorrispondenza aura:id="reclamiCorrispondenza" recordId="{!v.recordId}"/>
+                            </div>
+                        </lightning:tab>
+                        
+                        
+                        <lightning:tab label="Invio Richieste" id="5"> 
+                            <div class="slds-p-left_x-small slds-p-right_x-small">
+                                <c:CRMReclamiGestioneRispostaLetteraMail aura:id="ReclamiGestioneRispostaLetteraMail"
+                                                                         aziendaSelezionata="{!v.campiCase.Referenced_Company__c}"
+                                                                         fileList="{!v.fileList}"
+                                                                         buttonLabel="Invia Richiesta"
+                                                                         isNotSelectableAttach="false"
+                                                                         canDeleteAttach="true"
+                                                                         canUploadAttach="true"
+                                                                         campiCase="{!v.campiCase}"
+                                                                         />
+                            </div>
+                        </lightning:tab>
+                        
+                        
+                        
+                        <aura:if isTrue="{!v.status=='Gestito'}">
+                            <lightning:tab label="Chiusura" id="6">
+                                <div class="slds-p-left_x-small slds-p-right_x-small">
+                                    
+                                    <c:CRMReclamiGestioneChiusuraTotale aura:id="Chiusura"
+                                                                        recordId = "{!v.campiCase.Id}"
+                                                                        campiCase="{!v.campiCase}"
+                                                                        fileList="{!v.fileList}"
+                                                                        tabChiusura="{!v.tabChiusura}"
+                                                                        idmValue="{!v.idmValueChiusura}"
+                                                                        allegatiSelezionati="{!v.allegatiIDMChiusura}"
+                                                                        codaSelezionata="{!v.codaSelezionata}"
+                                                                        />
+                                </div>
+                            </lightning:tab>
+                            
+                        </aura:if>
+                        
+                    </lightning:tabset>
+                </lightning:card>
+                
+            </aura:set>
+        </aura:if>
+        
+        <aura:set attribute="else">
+            <aura:if isTrue="{!v.serviceError}">
+                <ui:message title="Attenzione" severity="error" closable="false">
+                    E' stato riscontrato un errore nel caricamento dei dati.
+                    Potrebbe essere sufficiente ricaricare la pagina.
+                    Nel caso il problema persista, contattare un amministratore.
+                </ui:message>
+                
+            </aura:if>
+        </aura:set>
+    </aura:if>
+</aura:component>

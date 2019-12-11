@@ -1,0 +1,49 @@
+<aura:component controller="ComodityApexClass"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+                access="global">
+    <!--AURA ATTRIBUTI-->
+    <aura:attribute name="nuovaIntervista" type="COM_Intervista__c"/>
+    <aura:attribute name="ParentAttributeOfChild" type="String"/>
+    <aura:attribute name="ParentAttributeOfChild1" type="String"/>
+    <aura:attribute name="ParentAttributeOfChild2" type="String"/>
+    <aura:attribute name="ParentAttributeOfChild3" type="boolean"/>
+    <aura:attribute name="userDateTime" type="Datetime"/>  
+    <aura:attribute name="showSave" type="boolean" default="true"/>
+    <fieldset class="slds-box slds-theme--default slds-container--medium">
+                      
+    <div class="container">
+        <div class="content">
+            <div class="apputamento_quezione">Quando possiamo risentirci(fissare un appuntamento) ?</div>
+            <div class=" slds-form-element__control slds-grid">
+                <label>Date Time</label>
+                <lightning:input aura:id="idDate" variant="label-hidden" class="date-time" type="datetime-local" name="date"
+                                 value="{!v.userDateTime}" onchange="{!c.checkDate}" />
+            </div>
+            <div class="slds-form-element__control slds-grid textarea">
+                <div class="slds-form-element slds-form-element_horizontal textarea-content slds-is-editing slds-grid">
+                    <!--
+                    <label class="slds-col slds-size_1-of-12" aura:id="telephonicoform"
+                           for="textarea-id-01">Note: </label> -->
+                            <lightning:textarea name="input1" label="Note" aura:id="idtelephonicoNote" value=""/>
+                    <!--
+                    <textarea class="slds-textarea slds-col slds-size_11-of-12" aura:id="idtelephonicoNote"
+                              id="textarea-id-01"></textarea> -->
+                </div>
+            </div>
+            <div style="width:100%!Important" class="slds-col slds-size_1-of-1 slds-large-size_3-of-3 stylePag">
+                
+                <lightning:button class="slds-button slds-button_brand buttonPage" 
+                                  onclick="{!c.Cancella}"
+                                  label="Cancella"/>
+                <lightning:button class="slds-button slds-button_brand buttonPage" 
+                                  onclick="{!c.salvareAppuntamento}"
+                                  label="Salva Appuntamento" disabled="{!v.showSave}"/>
+                <lightning:button class="slds-button slds-button_brand buttonPage" 
+                                  onclick="{!c.NonInteressato}" 
+                                  label="Non Interessato"/>
+            </div>
+        </div>
+    </div>
+
+    </fieldset>    
+</aura:component>

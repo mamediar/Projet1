@@ -1,0 +1,109 @@
+<aura:component controller="SFAConvenzionamentoGestSegnDealerCtrller"
+   implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes">
+   <aura:attribute name="recordId" type="String" />
+   <aura:attribute name="dealerId" type="String" />
+   <aura:attribute name="dealerRecordTypeId" type="String" />
+   <aura:attribute name="ragioneSociale" type="String" />
+   <aura:attribute name="indirizzo" type="String" />
+   <aura:attribute name="partitaIVA" type="String" />
+   <aura:attribute name="codiceFiscale" type="String" />
+   <aura:attribute name="codiceAccordo" type="String" />
+   <aura:attribute name="email" type="String" />
+   <aura:attribute name="bancaSegnalatrice" type="String" />
+   <aura:attribute name="macroarea" type="String" />
+   <aura:attribute name="prodottoDominante" type="String" />
+   <aura:attribute name="prodottoDominanteBackup" type="String" />
+   <aura:attribute name="telefonoFisso" type="String" />
+   <aura:attribute name="telefonoCellulare" type="String" />
+   <aura:attribute name="esito" type="String" />
+   <aura:attribute name="nota" type="String" />
+   <aura:handler event="c:XCS_DispositionReady" action="{!c.handleDispositionReadyEvent}" />
+   <aura:attribute name="disposition" type="XCS_Disposition__c" />
+   <aura:attribute name="url" type="String" />
+   <aura:attribute name="pageReference" type="Object" />
+   <aura:attribute name="spinnerCounter" type="Integer" default="0"/>
+   <lightning:navigation aura:id="navService" />
+   <aura:handler name="init" value="{! this }" action="{! c.doInit }" />
+
+   <c:SpinnerComponent aura:id="spinnerComponent" spinnerCounter="{!v.spinnerCounter}"/>
+
+   <table class="slds-size_12-of-12 slds-m-top--medium">
+      <tr>
+         <td class="slds-size_12-of-12">
+            <lightning:input type="text" value="{!v.ragioneSociale}" label="Ragione Sociale" disabled="true" />
+         </td>
+      </tr>
+      <tr>
+         <td class="slds-size_12-of-12">
+            <lightning:input type="text" value="{!v.indirizzo}" label="Indirizzo" disabled="true" />
+         </td>
+      </tr>
+   </table>
+   <table class="slds-size_12-of-12">
+      <tr>
+         <td class="slds-size_6-of-12 slds-p-right_small">
+            <lightning:input type="text" value="{!v.codiceFiscale}" label="Codice Fiscale" disabled="true" />
+         </td>
+         <td class="slds-size_6-of-12">
+            <lightning:input type="text" value="{!v.partitaIVA}" label="Partita IVA" disabled="true" />
+         </td>
+      </tr>
+      <tr>
+         <td class="slds-size_6-of-12 slds-p-right_small">
+            <lightning:input type="text" value="{!v.codiceAccordo}" label="Codice Accordo" disabled="true" />
+         </td>
+         <td class="slds-size_6-of-12">
+            <lightning:input type="text" value="{!v.email}" label="Email" disabled="true" />
+         </td>
+      </tr>
+   </table>
+   <table class="slds-size_12-of-12">
+      <tr>
+         <td class="slds-size_12-of-12">
+            <lightning:input type="text" value="{!v.bancaSegnalatrice}" label="Banca segnalatrice"
+               disabled="true" />
+         </td>
+      </tr>
+   </table>
+   <lightning:recordEditForm recordId="{!v.dealerId}" recordTypeId="{!v.dealerRecordTypeId}" objectApiName="Account">
+      <table class="slds-size_12-of-12">
+         <tr>
+            <td class="slds-size_6-of-12 slds-p-right_small">
+               <label for="macroAreaId" class="slds-form-element__label slds-no-flex">Macroarea</label>
+               <lightning:inputField aura:id="macroAreaId" fieldName="Macroarea__c" value="{!v.macroarea}" class="label-hidden"
+                  variant="label-hidden" onchange="{!c.handleMacroarea}"/>
+            </td>
+            <td class="slds-size_6-of-12">
+               <label for="macroAreaProdottoDominanteId" class="slds-form-element__label slds-no-flex">Prodotto
+               dominante</label>
+               <lightning:inputField aura:id="macroAreaProdottoDominanteId"
+                  fieldName="ProdottoDominanteMacroarea__c" value="{!v.prodottoDominante}" class="label-hidden" variant="label-hidden" onchange="{!c.handleProdottoDominante}"/>
+            </td>
+         </tr>
+         <tr>
+            <td class="slds-size_6-of-12 slds-p-right_small">
+               <lightning:input type="text" value="{!v.telefonoFisso}" label="Telefono" disabled="true" />
+            </td>
+            <td class="slds-size_6-of-12">
+               <lightning:input type="text" value="{!v.telefonoCellulare}" label="Cellulare" disabled="true" />
+            </td>
+         </tr>
+      </table>
+   </lightning:recordEditForm>
+   <!--<table class="slds-size_12-of-12 slds-m-top_medium">
+      <tr>
+          <td class="slds-size_12-of-12">
+              <lightning:textarea aura:id="notaId" label="Note" value="{!v.nota}" maxlength="1000" />
+          </td>
+      </tr>
+      </table>
+      
+      <div class="slds-size_1-of-3 slds-m-top_medium">
+      <ui:inputSelect aura:id="listaEsitiId" change="{!c.handleSelezionaEsito}">
+          <aura:iteration items="{!v.listaEsiti}" var="l">
+              <ui:inputSelectOption text="{!l.text}" label="{!l.label}" value="{!l.value}"/>
+          </aura:iteration>
+      </ui:inputSelect>
+      </div>-->
+   <c:XCS_Disposition parentExternalId="AT0111" saveCase="false" recordId="{!v.recordId}" usesCategory="true" />
+</aura:component>

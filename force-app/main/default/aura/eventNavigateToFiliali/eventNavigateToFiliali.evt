@@ -1,0 +1,8 @@
+<!--
+ - Created by Salimata NGOM on 11/03/2019.
+ -->
+
+<aura:event type="APPLICATION" description="eventNavigateToFiliali">
+    <!--
+     <aura:attribute type="String" name="FilialiPage" description="PaginaFiliali"/>-->
+</aura:event>

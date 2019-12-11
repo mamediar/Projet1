@@ -1,0 +1,913 @@
+<aura:component
+                implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:lightningQuickAction,force:hasRecordId"
+                controller="CreaAppuntamentoController"
+                access="global"
+                >
+    <aura:registerEvent name="EventDetail" type="c:EventToDetail"/>
+    <aura:attribute
+                    type="Event"
+                    name="newEvent"
+                    default="{ 'sobjectType' : 'Event',
+                             'Telefono_Cellulare__c':'',
+                             'DurationInMinutes':0,
+                             'ActivityDateTime':'',
+                             'Tipo_Occupazione__c':'',
+                             'Product__c':'',
+                             'Comune__c':'',
+                             'Provincia__c':'',
+                             'Note__c':''}"
+                    />
+    
+    <aura:attribute
+                    type="Account"
+                    name="cliente"
+                    default="{ 'sobjectType' : 'Account',
+                             'Phone':'',
+                             'Data_Nascita__c':''}"
+                    />
+    <aura:attribute type="String" name="filialeId" default=""/>
+    <aura:attribute type="String" name="idCliente" default=""/>
+    <aura:attribute type="String" name="timeEvent" default="" />
+    <aura:attribute type="String" name="nameProdotto" default="" />
+    <aura:attribute type="String" name="nameDetaglioProdotto" default="" /> 
+    <aura:attribute type="String" name="recordtypename" default="Appuntamento" /> 
+    <aura:attribute type="Product2[]" name="listProducts" default="" />
+    <aura:attribute type="Product2[]" name="listProductsDettaglio" default="" />
+    <aura:attribute type="XCS_Town__c[]" name="listProvince" default="" />
+    <aura:attribute type="XCS_Town__c[]" name="listComune" default="" />
+    <aura:attribute type="Boolean" name="customerExist" default="false" />
+    <aura:attribute type="Aura.Component[]" name="valuePlaceHolder"/>
+    <aura:attribute
+                    type="Boolean"
+                    name="showErrorMessageCellulare"
+                    default="false"
+                    />
+    <aura:attribute type="Boolean" name="showErrorMessagePhone" default="false" />
+    <aura:attribute type="Boolean" name="showStep1" default="true" />
+    <aura:attribute type="Boolean" name="inValidDateNascita" default="false" />
+    <aura:attribute type="Boolean" name="showStep2" default="false" />
+    <aura:attribute type="Boolean" name="showStep3" default="false" />
+    <aura:attribute type="Boolean" name="recapitulate" default="false" />
+    <aura:attribute type="Boolean" name="existClient" default="false" />
+    <aura:attribute type="Boolean" name="calculCodFis" default="false" />
+    <aura:attribute type="String" name="catastale" default="" />
+    <aura:attribute type="String" name="prodotto" default="" />
+    <aura:attribute type="String" name="center" default="MILANO" />
+    <aura:attribute type="date" name="minDataNascita" default="" />
+    <aura:attribute type="date" name="maxDataNascita" default="" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler event="force:refreshView" action="{!c.isRefreshed}" />
+    <aura:attribute
+                    name="sessos"
+                    type="List"
+                    default="[
+                             {'label': 'F', 'value': 'F'},
+                             {'label': 'M', 'value': 'M'}
+                             ]"
+                    />
+    <aura:attribute name="sesso" type="String" default="" />
+    <aura:attribute type="String" name="comune" default="" />
+    <aura:attribute type="String" name="indirizzo" default="" />
+    <aura:attribute type="String" name="provincia" default="" />
+    <aura:attribute name="mapMarkers" type="Object" default="" />
+    <aura:attribute name="mapCenter" type="Object" default="{
+                                                            Location: {
+                                                            Country: 'italy'
+                                                            }
+                                                            }"          />
+    <aura:attribute name="markersTitle" type="Object"/>
+    <aura:attribute name="listFiliale" type="Object" default=""/>
+    <aura:attribute name="filialeEvent" type="Object" default="" />
+    <aura:attribute name="filialeAppunta" type="Account" default="" />
+    <aura:attribute name="listTime" type="Time[]" default="" />
+    <aura:attribute type="Boolean" name="shoxListTime" default="false" />
+    <aura:attribute name="showListFiliale" type="Boolean" default="false"/>    
+    <aura:attribute name="openmodel" type="Boolean" default="false"/>    
+    <aura:attribute type="Boolean" name="testCondition" default="false" />
+    <aura:attribute type="Integer" name="indexProdoto" />
+    <aura:attribute type="Integer" name="indexDettaglio"/>
+    <aura:attribute name="proDett" type="Object" default="" />
+    <aura:attribute name="zoomLevel" type="Integer" default="5" />
+    <aura:registerEvent name="appuntamento" type="c:EventToCreaAppuntamento"/>
+    <aura:attribute name="deskLots" type="Object" default="" />
+    <aura:attribute name="openmodelModifica" type="Boolean" default="false" />
+    <aura:attribute name="eventAModifica" type="Event" default="false" />
+    <aura:attribute name="messageModifica" type="String" default="" />
+    <aura:attribute name="closeButtonRecap" type="Boolean" default="true" />
+    <aura:attribute name="alertMessage" type="Boolean" default="false"/>
+    <aura:attribute name="messageError" type="String" default=""/>
+    <aura:attribute type="String" name="fotocopieAllegare" default="" />
+    <aura:attribute type="String" name="productExternal" default="" />
+    <aura:attribute type="String" name="parentExternal" default="" />
+    <aura:attribute type="Boolean" name="isValueNome" default="true" />
+    <aura:attribute type="Boolean" name="isValueCognome" default="true" />
+    <aura:attribute type="Boolean" name="isValueSesso" default="true" />
+    <aura:attribute type="Boolean" name="isValueProvincia" default="true" />
+    <aura:attribute type="Boolean" name="isValueComune" default="true" />
+    <aura:attribute type="Boolean" name="isValueDateNacita" default="true" />
+    <aura:attribute type="Boolean" name="isValueCF" default="true" />
+
+  
+    <div class="slds-card slds-wrap">
+        <div
+             class="slds-m-bottom_large slds-p-around_medium"
+             style="background-color:rgba(159, 32, 28, 1);color:#fff;height: 70%;"
+             >
+            <p
+               class="slds-text-title_caps slds-text-heading_large"
+               style="color:#fff; text-align:center;"
+               >CREAZIONE APPUNTAMENTO</p
+                >
+        </div>
+        
+        <div>
+            <div class="slds-form slds-card">
+                <table>
+                    <aura:if isTrue="{!v.showStep1==true}">
+                        <tbody>
+                            <div class="slds-grid slds-wrap slds-gutters">
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-form-element slds-m-around_small">
+                                        <label class="slds-form-element__label"
+                                               >Prodotto d'interesse*</label
+                                            >
+                                        <div class="slds-form-element__control slds-m-right_small">
+                                            <div class="slds-select_container">
+                                                <select
+                                                        id="prodottoInteresse"
+                                                        class="slds-select"
+                                                        required="true"
+                                                        value="{!v.newEvent.Product__c}"
+                                                        onchange="{!c.choiceProdottoInteresse}"
+                                                        >
+                                                    <option value="" selected="false">--</option>
+                                                    <aura:iteration
+                                                                    items="{!v.listProducts}"
+                                                                    var="product"
+                                                                    >
+                                                        <option value="{!product.Id + '/'+product.Name+ '/'+product.RSS_External_Id__c}"
+                                                                >{!product.Name}</option
+                                                            >
+                                                    </aura:iteration>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-form-element slds-m-around_small">
+                                        <label class="slds-form-element__label"
+                                               >Dettaglio Prodotto*</label
+                                            >
+                                        <div class="slds-form-element__control slds-m-right_small">
+                                            <div class="slds-select_container">
+                                                <select
+                                                        id="ProductDettaglio"
+                                                        class="slds-select"
+                                                        required="true"
+                                                        value="{!v.newEvent.Prodotto__c}"
+                                                        onchange="{!c.choiceProdottoDettaglio}"
+                                                        >
+                                                    <option value="" selected="false">--</option>
+                                                    <aura:iteration
+                                                                    items="{!v.listProductsDettaglio}"
+                                                                    var="product"
+                                                                    >
+                                                        <option value="{!product.Id + '/'+product.Name+ '/'+product.RSS_External_Id__c}"
+                                                                >{!product.Name}</option
+                                                            >
+                                                    </aura:iteration>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-form-element slds-m-around_small">
+                                        <aura:if isTrue="{!and(v.existClient, v.isValueNome)}">
+                                            <div class="slds-form-element__control slds-grid slds-gutters cliente-background slds-p-around_xx-small slds-m-right_small" style="padding-left:0.5%;">
+                                                <div class="slds-col">
+                                                    <span>Nome:</span>
+                                                </div>
+                                                <div class="slds-col slds-float_left">
+                                                    <span>{!v.cliente.FirstName }</span>
+                                                </div>
+                                            </div>
+                                            <aura:set attribute="else">
+                                                <div class="slds-form-element__control slds-m-right_small">
+                                                    <lightning:input
+                                                                     label="Nome"
+                                                                     type="text"
+                                                                     value="{!v.cliente.FirstName }"
+                                                                     required="true"
+                                                                     onchange="{!c.changeCF}"
+                                                                     messageWhenValueMissing="Compila il campo"
+                                                                     />
+                                                </div>
+                                            </aura:set>
+                                        </aura:if>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-form-element slds-m-around_small">
+                                        <aura:if isTrue="{!and(v.existClient, v.isValueCognome)}">
+                                            <div class="slds-form-element__control slds-grid slds-gutters cliente-background slds-p-around_xx-small slds-m-right_small slds-m-left_xx-small" style="padding-left:0.5%;">
+                                                <div class="slds-col">
+                                                    <span>Cognome:</span>
+                                                </div>
+                                                <div class="slds-col slds-float_left">
+                                                    <span>{!v.cliente.LastName }</span>
+                                                </div>
+                                            </div>
+                                            <aura:set attribute="else">
+                                                <div class="slds-form-element__control slds-m-right_small">
+                                                    <lightning:input
+                                                                     type="text"
+                                                                     label="Cognome"
+                                                                     value="{!v.cliente.LastName }"
+                                                                     required="true"
+                                                                     onchange="{!c.changeCF}"
+                                                                     messageWhenValueMissing="Compila il campo"
+                                                                     />
+                                                </div>
+                                            </aura:set>
+                                        </aura:if>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-m-around_small">
+                                        <div class="slds-m-right_small">
+                                            <lightning:input
+                                                             type="Email"
+                                                             label="Email"
+                                                             value="{!v.cliente.PersonEmail}"
+                                                             messageWhenTypeMismatch="Formato non corretto"
+                                                             />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-m-around_small">
+                                        <div class="slds-m-right_small">
+                                            <lightning:input
+                                                             minlength="5"
+                                                             type="tel"
+                                                             label="Telefono abitazione"
+                                                             value="{!v.cliente.Phone}"
+                                                             messageWhenTooShort="Il numero di telefono deve contenere più di 5 cifre"
+                                                             required="true"
+                                                             messageWhenValueMissing="Compila il campo"
+                                                             />
+                                            <aura:if isTrue="{!v.showErrorMessagePhone==true}">
+                                                <label style="color: red">numero di telefono non valido</label>
+                                            </aura:if>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-m-around_small">
+                                        <div class="slds-m-right_small">
+                                            <lightning:input
+                                                             minlength="5"
+                                                             type="tel"
+                                                             label="Telefono cellulare"
+                                                             value="{!v.cliente.PersonMobilePhone}"
+                                                             required="true"
+                                                             messageWhenValueMissing="Compila il campo"
+                                                             messageWhenTooShort="Il numero di telefono deve contenere più di 5 cifre"
+                                                             />
+                                            <aura:if isTrue="{!v.showErrorMessageCellulare==true}">
+                                                <label style="color: red">numero di telefono non valido</label>
+                                            </aura:if>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-form-element slds-m-around_small slds-col">
+                                        <aura:if isTrue="{!v.existClient==false}">
+                                            <label class="slds-form-element__label">
+                                                Provincia di nascita*</label>
+                                        </aura:if>
+                                        <div class="slds-form-element__control cliente-background slds-m-right_small" style="padding-left:0.5%;">
+                                            <aura:if isTrue="{!and(v.existClient, v.isValueProvincia)}">
+                                                <div class="slds-form-element__control slds-grid slds-gutters cliente-background slds-p-around_xx-small slds-m-right_small slds-m-left_xx-small" style="padding-left:0.5%;">
+                                                    <div class="slds-col">
+                                                        <span>Provincia di nascita*:</span>
+                                                    </div>
+                                                    <div class="slds-col slds-float_left">
+                                                        <span>{!v.cliente.Provincia_Nascita__pc}</span>
+                                                    </div>
+                                                </div>
+                                                <aura:set attribute="else">
+                                                    <div class="slds-form-element_control slds-select_container">
+                                                        <select
+                                                                id="privinceNascita"
+                                                                class="slds-select"
+                                                                required="true"
+                                                                onchange="{!c.choiceComune}">
+                                                            <option value="" selected="false">--province--</option>
+                                                            <aura:iteration
+                                                                            items="{!v.listProvince}"
+                                                                            var="province"
+                                                                            >
+                                                                <option value="{!province.Provincia_Desc__c}"
+                                                                        >{!province.Provincia_Desc__c}</option
+                                                                    >
+                                                            </aura:iteration>
+                                                        </select>
+                                                    </div>
+                                                </aura:set>
+                                            </aura:if>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-form-element slds-m-around_small">
+                                        <aura:if isTrue="{!v.existClient==false}">
+                                            <label class="slds-form-element__label">
+                                                Comune di nascita*</label>
+                                        </aura:if>
+                                        <div class="slds-form-element__control cliente-background slds-m-right_small" style="padding-left:0.5%;">
+                                            <aura:if isTrue="{!and(v.existClient, v.isValueComune)}">
+                                                <div class="slds-form-element__control cliente-background slds-grid slds-gutters slds-p-around_xx-small slds-m-right_small">
+                                                    <div class="slds-col">
+                                                        <span>Comune di nascita*:</span>
+                                                    </div>
+                                                    <div class="slds-col slds-float_left">
+                                                        <span>{!v.cliente.Luogo_Nascita__pc}</span>
+                                                    </div>
+                                                </div>
+                                                <aura:set attribute="else">
+                                                    <div class="slds-select_container">
+                                                        <select
+                                                                id="comuneNascita"
+                                                                class="slds-select"
+                                                                required="true"
+                                                                onchange="{!c.changeCF}"
+                                                                >
+                                                            <option value="" selected="false">--comune--</option>
+                                                            <aura:iteration
+                                                                            items="{!v.listComune}"
+                                                                            var="comune"
+                                                                            >
+                                                                <option value="{!comune.Catastale__c + '/'+ comune.Comune__c}"
+                                                                        >{!comune.Comune__c}</option
+                                                                    >
+                                                            </aura:iteration>
+                                                        </select>
+                                                    </div>
+                                                </aura:set>
+                                            </aura:if>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-form-element slds-m-around_small">
+                                        <div class="">
+                                            <aura:if isTrue="{!and(v.existClient, v.isValueDateNacita)}">
+                                                <div class="slds-form-element__control slds-grid slds-gutters cliente-background slds-p-around_xx-small slds-m-right_small slds-m-left_xx-small" style="padding-left:0.5%;">
+                                                    <div class="slds-col">
+                                                        <span>Data Nascita:</span>
+                                                    </div>
+                                                    <div class="slds-col slds-float_left">
+                                                        <span>{!v.cliente.Data_Nascita__c }</span>
+                                                    </div>
+                                                </div>
+                                                <aura:set attribute="else">
+                                                    <lightning:input
+                                                                     onchange="{!c.controlDateNascita}"
+                                                                     type="date"
+                                                                     label="Data di nascita"
+                                                                     value="{!v.cliente.Data_Nascita__c}"
+                                                                     required="true"
+                                                                     />
+                                                    <aura:if isTrue="{!v.inValidDateNascita}">
+                                                        <label style="color:red">data di nascita non valida</label>
+                                                    </aura:if>
+                                                </aura:set>
+                                            </aura:if>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-form-element slds-m-around_small">
+                                        <aura:if isTrue="{!v.existClient==false}">
+                                            <label class="slds-form-element__label">Sesso</label>
+                                        </aura:if>
+                                        
+                                        <div>
+                                            <aura:if isTrue="{!and(v.existClient, v.isValueSesso)}">
+                                                <div class="slds-grid slds-gutters cliente-background slds-p-around_xx-small slds-m-right_small">
+                                                    <div class="slds-col">
+                                                        <span>Sesso:</span>
+                                                    </div>
+                                                    <div class="slds-col slds-float_left">
+                                                        <span>{!v.cliente.Sesso__pc}</span>
+                                                    </div>
+                                                </div>
+                                                <aura:set attribute="else">
+                                                    <lightning:radioGroup
+                                                                          name="radioGroup"
+                                                                          options="{!v.sessos}"
+                                                                          value="{!v.sesso}"
+                                                                          type="radio"
+                                                                          onchange="{!c.changeCF}"
+                                                                          class="slds-list_horizontal"
+                                                                          />
+                                                </aura:set>
+                                            </aura:if>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-form-element slds-m-around_small">
+                                        <label class="slds-form-element__label"
+                                               >Tipo occupazione</label
+                                            >
+                                        <div class="slds-form-element__control slds-m-right_small">
+                                            <div class="slds-select_container">
+                                                <select id="tipoOccupazione" class="slds-select">
+                                                    <option value="Autonomo">Autonomo</option>
+                                                    <option value="Pensionato">Pensionato</option>
+                                                    <option value="Altro">Altro</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-size_6-of-12">
+                                    <div class="slds-form-element slds-m-around_small">
+                                        <div class="slds-m-right_small">
+                                            <aura:if isTrue="{!and(v.existClient, v.isValueCF)}">
+                                                <div class="slds-form-element__control slds-grid cliente-background slds-gutters slds-p-around_xx-small slds-m-right_xxx-small" style="padding-left:0.5%;">
+                                                    <div class="slds-col">
+                                                        <span>Codice Fiscale:</span>
+                                                    </div>
+                                                    <div class="slds-col slds-float_left">
+                                                        <span>{!v.cliente.Codice_Fiscale__pc}</span>
+                                                    </div>
+                                                </div>
+                                                <aura:set attribute="else">
+                                                    <div class="slds-form-element__control slds-m-right_small">
+                                                        <lightning:input
+                                                                         type="text"
+                                                                         label="Codice Fiscale"
+                                                                         value="{!v.cliente.Codice_Fiscale__pc}"
+                                                                         onchange="{!c.checkCF}"
+                                                                         />
+                                                    <div class="slds-float_right slds-m-top_small">
+                                                        <lightning:button disabled="disabled"
+                                                                          variant="neutral"
+                                                                          label="Calcola CF"
+                                                                          onclick="{!c.calculCF }"
+                                                                          />
+                                                        <!--lightning:button disabled="disabled"
+                                                                          variant="neutral"
+                                                                          label="Forza Codice fiscale"
+                                                                          onclick="{!c.forzaCodiceFiscale}"
+
+                                                                          /-->
+                                                                          
+                                                    </div>
+                                                    </div>
+                                                </aura:set>
+                                            </aura:if>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-grid slds-wrap slds-m-around_small slds-box slds-m-right_small slds-p-around_small" style="background-color:#f7f7f7;">
+                               <div class="slds-col slds-size_1-of-1">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-checkbox">
+                                                <input disabled="{!v.cliente.Codice_Fiscale__pc==''}" type="checkbox" name="ProofDisclaimer" id="checkbox-unique-id-71" value="checkbox-unique-id-71" onchange="{!c.checkCondition}" />
+                                                <label class="slds-checkbox__label" for="checkbox-unique-id-71">
+                                                    <span class="slds-checkbox_faux"></span>
+                                                    <span class="slds-form-element__label">La informano che i dati da lei fomiti patranno essere utilizzati, nel rispetto della normativa privacy,
+                                                            da compass o da società incaricate per fornire informazioni sui nostri prodotti L'informativa privacy
+                                                            completa è consultabile sul sito www.compass.it anche con riferimento ai diritti previsti dall'articolo' 7.</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                    <!--lightning:input
+                                                     type="checkbox"
+                                                     name="ProofDisclaimer"
+                                                     checked="{!v.testCondition}"
+                                                     label="La informano che i dati da lei fomiti patranno essere utilizzati, nel rispetto della normativa privacy,
+                                                            da compass o da società incaricate per fornire informazioni sui nostri prodotti L'informativa privacy
+                                                            completa è consultabile sul sito www.compass.it anche con riferimento ai diritti previsti dall'articollo 7."
+                                                     onchange="{!c.checkCondition}" /-->
+                                                     
+                                <!-- </div> -->
+                            </div>
+                                <div class="slds-col slds-size_1-of-2">
+                                    <div class="slds-form-element__control slds-m-right_small">
+                                        {!v.valuePlaceHolder}
+                                    </div>
+                                </div>                            
+                            <div class="slds-form-element slds-m-around_small">
+                                <button
+                                            class="slds-button slds-button_brand"
+                                            id="idConfermaClient"
+                                            disabled="true"
+                                            onclick="{!c.continuCA1}" 
+                                            >Continua</button>
+                                </div>
+                        </tbody>
+                    </aura:if>
+                </table>
+                <aura:if isTrue="{!v.showStep2==true}">
+                    <article class="slds-card">
+                        <div class="slds-card__body slds-card__body_inner">
+                            
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col">
+                                    
+                                    <aura:if isTrue="{!v.showListFiliale==true}">
+                                        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                                            <thead>
+                                                <tr class="slds-line-height_reset">
+                                                    <th></th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <aura:iteration items="{!v.listFiliale}" var="filiale">
+                                                    <tr>
+                                                        <td class="slds-text-align_right" role="gridcell">
+                                                            <span class="slds-radio">
+                                                                <lightning:input
+                                                                                 type="radio"
+                                                                                 id="seledtedEvent"
+                                                                                 value="{!filiale}"
+                                                                                 name="options"
+                                                                                 tabindex="-1"
+                                                                                 onchange="{!c.filialeSelected}"
+                                                                                 aria-labelledby="radio-button-label-01 column-group-header"
+                                                                                 />
+                                                            </span>
+                                                        </td>
+                                                        <td><strong> {!filiale.ele_text} (occupazione {!filiale.occupazione}%) </strong>
+                                                            <br/>{!filiale.indirizzo}
+                                                            <br/>{!filiale.cap}. {!filiale.citta}( {!filiale.provincia})
+                                                        </td>
+                                                    </tr>
+                                                </aura:iteration> 
+                                            </tbody>
+                                        </table>
+                                        <aura:set attribute="else">
+                                            <div class="slds-box">
+                                                <div class="slds-form slds-p-bottom_x-large">
+                                                    <div class="slds-form-element slds-m-bottom_large">
+                                                        <div class="slds-form-element__control">
+                                                            <lightning:input type="text" value="{!v.comune}" label="Comune" />
+                                                        </div> 
+                                                    </div>
+                                                    <div class="slds-form-element slds-m-bottom_large">
+                                                        <div class="slds-form-element__control">
+                                                            <lightning:input
+                                                                             type="text"
+                                                                             value="{!v.indirizzo}"
+                                                                             label="Indirizzo"
+                                                                             />
+                                                        </div>
+                                                    </div>
+                                                    <div class="slds-form-element slds-m-bottom_medium">
+                                                        <div class="slds-form-element__control">
+                                                            <lightning:input
+                                                                             type="text"
+                                                                             value="{!v.provincia}"
+                                                                             label="Provincia"
+                                                                             />
+                                                        </div>
+                                                    </div>
+                                                    <div class="slds-button slds-float_right">
+                                                        <lightning:button
+                                                                          class="slds-float_right"
+                                                                          label="Cerca"
+                                                                          variant="brand"
+                                                                          onclick="{!c.searchFiliale}"
+                                                                          />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </aura:set>
+                                    </aura:if>
+                                </div>
+                                <div class="slds-col">
+                                    <lightning:map mapMarkers="{!v.mapMarkers}" 
+                                                   center="{!v.mapCenter}"
+                                                   zoomLevel="{!v.zoomLevel}"
+                                                   />
+                                </div>
+                            </div>
+                            
+                        </div>
+                        
+                        <footer class="slds-card__footer">
+                            <div>
+                                <lightning:button class="" label="Indietro" onclick="{!c.step1Indietro}" />
+                            </div>
+                        </footer>
+                    </article>
+                </aura:if>
+                <aura:if isTrue="{!v.showStep3==true}">
+                    <fieldset>
+                        <div class="slds-card slds-p-around_small">
+                            <table class="slds-table">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="slds-m-around_small"><b>La filiale scelta é: </b>
+                                                <aura:if isTrue="{!v.filialeId!=''}">
+                                                    {!v.filialeAppunta.Name}
+                                                    <aura:set attribute="else">
+                                                        <span>{!v.filialeEvent.ele_text}, {!v.filialeEvent.cap}</span>
+                                                    </aura:set>
+                                                </aura:if>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="slds-m-around_small">
+                                                <b>Selezionare la data: </b> 
+                                                <lightning:input
+                                                                 onchange="{!c.controlDateEvent}"
+                                                                 type="date"
+                                                                 value="{!v.newEvent.ActivityDate}"/> 
+                                                
+                                            </div>
+                                            <aura:if isTrue="{!v.shoxListTime==true}">
+                                                <div class="slds-form-element slds-m-around_x-small">
+                                                    <label class="slds-form-element__label">Ora</label>
+                                                    <div class="slds-form-element__control">
+                                                        <div class="slds-select_container">
+                                                            <select id="idListTime" class="slds-select" onchange="{!c.choiceHoure}">
+                                                                <option value="">--</option>
+                                                                <aura:iteration items="{!v.listTime}" var="time">
+                                                                    <option value="{!time}">{!time}</option>
+                                                                </aura:iteration>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </aura:if>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="slds-m-around_small">
+                                                <b>Note: (max 4000 caratteri): </b>
+                                                <lightning:textarea value="{!v.newEvent.Note__c}" />
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                            <!--div class="slds-form-element slds-form-element_horizontal">
+                <label class="slds-form-element__label">Duration </label>
+                <div class="slds-form-element__control">
+                  <lightning:input
+                    type="number"
+                    value="{!v.newEvent.DurationInMinutes}"
+                    placeholder="duration in minutes"
+                  />
+                </div>
+              </div-->
+                            <div class="slds-m-top_medium">
+                                <button
+                                        class="slds-button slds-button_destructive"
+                                        onclick="{!c.goContinuCA2}"
+                                        >Indietro</button
+                                    >
+                                <button
+                                        id="continuCA3"
+                                        disabled="true"
+                                        class="slds-button slds-button_success"
+                                        onclick="{!c.continuCA3}"
+                                        >Continua</button
+                                    >
+                            </div>
+                        </div>
+                    </fieldset>
+                </aura:if>
+            </div>
+            <aura:if isTrue="{!v.recapitulate==true}">
+                <div class="slds-card slds-m-vertical_small slds-m-horizontal_xx-small slds-p-bottom_x-large" >
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col">
+                            <fieldset>
+                                <div class="slds-p-around_small slds-text-title_caps slds-text-heading_large" style="background-color:#f7f7f7;text-align:center;">Riepilogo Appuntamento</div>
+                                <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                                    <tbody>
+                                        <tr class="slds-hint-parent">
+                                            <td data-label="Account Name">
+                                                <div class="slds-truncate">Tipologia</div>
+                                            </td>
+                                            <td data-label="Close Date">
+                                                <div class="slds-truncate">{!v.recordtypename}</div>
+                                            </td>
+                                        </tr>
+                                        <tr class="slds-hint-parent">
+                                            <td data-label="Account Name">
+                                                <div class="slds-truncate">Prodotto</div>
+                                            </td>
+                                            <td data-label="Close Date">
+                                                <div class="slds-truncate">{!v.nameProdotto}</div>
+                                            </td>
+                                        </tr>
+                                        <tr class="slds-hint-parent">
+                                            <td data-label="Account Name">
+                                                <div class="slds-truncate">Dettaglio Prodotto</div>
+                                            </td>
+                                            <td data-label="Close Date">
+                                                <div class="slds-truncate">{!v.nameDetaglioProdotto}</div>
+                                            </td>
+                                        </tr>
+                                        <tr class="slds-hint-parent">
+                                            <td data-label="Account Name">
+                                                <div class="slds-truncate">Data Appuntamento</div>
+                                            </td>
+                                            <td data-label="Close Date">
+                                                <div class="slds-truncate">
+                                                    <p>{!v.newEvent.ActivityDate},{!v.timeEvent}</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="slds-hint-parent">
+                                            <td>
+                                                <div class="slds-truncate">Note</div>
+                                            </td>
+                                            <td>
+                                                <div class="slds-truncate">{!v.newEvent.Note__c}</div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </fieldset>
+                        </div>
+                        <div class="slds-col">
+                            <fieldset>
+                                <div class="slds-p-around_small slds-text-title_caps slds-text-heading_large" style="background-color:#f7f7f7;text-align:center;">Indirizzo Filiale</div>
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                    <tbody>
+                                        <tr class="slds-hint-parent">
+                                            <td data-label="Account Name">
+                                                <div class="slds-truncate">VIA</div>
+                                            </td>
+                                            <td>
+                                                <div class="slds-truncate">
+                                                    <aura:if isTrue="{!v.filialeId!=''}">
+                                                                {!v.filialeAppunta.ShippingStreet}
+                                                                <aura:set attribute="else">
+                                                                        <div class="slds-truncate">{!v.filialeEvent.indirizzo}</div>
+                                                                </aura:set>
+                                                        </aura:if>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="slds-hint-parent">
+                                            <td data-label="Account Name">
+                                                <div class="slds-truncate">Città</div>
+                                            </td>
+                                            <td data-label="Close Date">
+                                                <div class="slds-truncate">
+                                                        <aura:if isTrue="{!v.filialeId!=''}">
+                                                                {!v.filialeAppunta.ShippingCity}
+                                                                <aura:set attribute="else">
+                                                                        <div class="slds-truncate">{!v.filialeEvent.ele_text}</div>
+                                                                </aura:set>
+                                                        </aura:if>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="slds-hint-parent">
+                                            <td data-label="Account Name">
+                                                <div class="slds-truncate">Provincia</div>
+                                            </td>
+                                            <td data-label="Close Date">
+                                                <div class="slds-truncate">
+                                                        <aura:if isTrue="{!v.filialeId!=''}">
+                                                                {!v.filialeAppunta.ShippingState }
+                                                                <aura:set attribute="else">
+                                                                        <div class="slds-truncate">{!v.filialeEvent.provincia}</div>
+                                                                </aura:set>
+                                                        </aura:if>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="slds-hint-parent">
+                                            <td data-label="Account Name">
+                                                <div class="slds-truncate">CAP</div>
+                                            </td>
+                                            <td data-label="Close Date">
+                                                    <aura:if isTrue="{!v.filialeId!=''}">
+                                                            {!v.filialeAppunta.ShippingPostalCode }
+                                                            <aura:set attribute="else">
+                                                                    <div class="slds-truncate">{!v.filialeEvent.cap}</div>
+                                                            </aura:set>
+                                                        </aura:if>
+                                                
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </fieldset>
+                        </div>
+                        
+                    </div>
+                    <label>Fotocopie da Allegare:</label>
+                    <div class="slds-text-body--small">
+                        <span>{!v.fotocopieAllegare}</span>
+                    </div>
+                    
+                <aura:if isTrue="{!v.closeButtonRecap==true}">
+                    <div class="slds-card slds-m-vertical_x-large slds-m-horizontal_xx-small">
+                        <lightning:button
+                                          class="slds-float_left"
+                                          label="Indietro"
+                                          variant="brand"
+                                          onclick="{!c.goIndietro3}"
+                                          />
+                        <lightning:button
+                                          class="slds-float_right"
+                                          label="conferma"
+                                          variant="brand"
+                                          onclick="{!c.continuCA4}"
+                                          />
+                    </div>
+                </aura:if>
+                </div>
+            </aura:if>
+        </div>
+    </div>
+    <div>
+        <div class="slds-theme_default">
+            
+            <aura:if isTrue="{!v.openmodel==true}">
+                <div class="demo-only" style="height: 640px;">
+                    <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                        <div class="slds-modal__container">
+                            <header class="slds-modal__header">
+                                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Conferma Appuntamento</h2>
+                            </header>
+                            <div class="slds-modal__content slds-p-around_medium slds-modal_medium" id="modal-content-id-1">
+                                <center><h2><b></b></h2>
+                                </center>
+                            </div>
+                            <footer class="slds-modal__footer">
+                                <lightning:button class="slds-float_left" label="Cancel" variant="neutral" onclick="{!c.closeModal}"></lightning:button>
+                                <lightning:button class="slds-float_right" label="Save" variant="brand" onclick="{!c.validForm}"></lightning:button>
+                            </footer>
+                        </div>
+                    </section>
+                    <div class="slds-backdrop slds-backdrop_open"></div>
+                </div>
+            </aura:if>
+        </div>
+    </div>
+    <aura:if isTrue="{!v.openmodelModifica==true}">
+    <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+        <div class="slds-modal__container">
+            <header class="slds-modal__header">
+                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="{!c.closeModifica}">
+        
+                </button>
+                <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Modifica Appuntamento</h2>
+                <br/>
+                <p>{!v.messageModifica}</p>
+            </header>
+            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                <c:DettaglioAppuntamento/>
+            </div>
+            <footer class="slds-modal__footer">
+                <button class="slds-button slds-button_neutral" onclick="{!c.closeModifica}">Cancel</button>
+            </footer>
+        </div>
+    </section>
+    </aura:if>
+    <aura:if isTrue="{!v.alertMessage==true}">
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_small" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+                    <div class="slds-modal__container">
+                        <header class="slds-modal__header">
+                            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="{!c.closeMessageError}">
+                    
+                            </button>
+                            <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Messaggio di errore</h2>
+                            <br/>
+                        </header>
+                        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                            {!v.messageError}
+                        </div>
+                        <footer class="slds-modal__footer">
+                            <button class="slds-button slds-button_neutral" onclick="{!c.closeMessageError}">Cancel</button>
+                        </footer>
+                    </div>
+                </section>
+    </aura:if>
+</aura:component>

@@ -1,0 +1,73 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" controller="GD_CaricamentoCorsoController">
+    <aura:attribute name="issearching" type="Boolean" default="false" />
+    <aura:attribute name="dealerCoursesAttachList" type="IVASS_Dealer_courses_attachments__c[]" />
+    <aura:attribute name="showResult" type="Boolean" default="true" />
+    <div class="slds-grid slds-grid_vertical">
+        <div class="slds-col">
+            <div onkeyup="{! c.handleKeyUp }">
+                <lightning:input aura:id="enter-search" name="enter-search" label="Inserire il codice Referente per visualizzare tutti gli allegati ad esso reliativi" isLoading="{! v.issearching }" type="search" />
+            </div>
+        </div>
+        <br/>
+        <div class="slds-col">
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="Anno Riferimento">Anno Riferimento</div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="Link documento">Link documento</div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="Note Outsourcer">Note Outsourcer</div>
+                        </th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <aura:if isTrue="{!v.showResult==false}">
+                        <aura:iteration items="{!v.dealerCoursesAttachList}" var="item">
+                            <tr class="slds-hint-parent">
+                                <td>
+                                    <div class="slds-truncate"> {!item.Anno_di_riferimento__c}</div>
+                                </td>
+                                <td>
+                                    <div class="slds-truncate">
+                                        <!-- <a href="{!item.Link_Documento__c}" target="_blank">{!item.Link_Documento__c}</a> -->
+                                        <a href="{!item.Link_Documento__c}" target="_blank" rel="noopener noreferrer">{!item.ContentDocumentLinks[0].ContentDocument.Title}</a>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="slds-truncate">{!item.Note_Outsourcer__c}</div>
+                                </td>
+
+                            </tr>
+                        </aura:iteration>
+                    </aura:if>
+                    <aura:if isTrue="{!v.showResult}">
+                        <tr class="slds-hint-parent">
+                            <td colspan="4">
+                                <aura:if isTrue="{!not(v.issearching)}">
+                                    <div class="slds-truncate slds-align_absolute-center"> Nessun risultato</div>
+                                    <aura:set attribute="else">
+                                        <div class="demo-only" style="height:6rem">
+                                            <div class="slds-spinner_container">
+                                                <div role="status" class="slds-spinner slds-spinner_medium slds-spinner_brand">
+                                                    <span class="slds-assistive-text">Loading</span>
+                                                    <div class="slds-spinner__dot-a"></div>
+                                                    <div class="slds-spinner__dot-b"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </aura:set>
+                                </aura:if>
+
+                            </td>
+                        </tr>
+                    </aura:if>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</aura:component>

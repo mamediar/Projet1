@@ -1,0 +1,46 @@
+<aura:component controller="SFACambioFilialeClass" implements="flexipage:availableForAllPageTypes">
+        
+    <aura:attribute name="branchListPerArea" type="Map"/>
+    <aura:attribute name="manager" type="Object"/>
+    <aura:attribute name="areas" type="List" default="[]"/>
+    <aura:attribute name="SelectedArea" type="String" />
+
+    <aura:attribute name="branches" type="List" default="[]"/>
+    
+    <aura:attribute name="branchOCSExternalId" type="String" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.initBranchList}"/>
+
+    <lightning:card title="Cambio Filiale" iconName="utility:rotate">
+    <c:SpinnerComponent aura:id="spinnerComponent"/>
+        <lightning:layout multipleRows="true">     
+            <aura:if isTrue="{!v.areas.length > 1}">
+                <lightning:layoutItem size="12">
+                    <lightning:layout verticalAlign="center">
+                        <lightning:layoutItem size="9" class="slds-p-around_xx-small"> 
+                            <lightning:select name="areaSelect" value="{!v.SelectedArea}" label="Area" onchange="{!c.onChangeBranchSelect}">
+                                <aura:iteration items="{!v.areas}" var="area">
+                                    <option text="{!area}" value="{!area}" selected="{!v.SelectedArea == area}"/>
+                                </aura:iteration>  
+                            </lightning:select>
+                        </lightning:layoutItem>
+                    </lightning:layout> 
+                </lightning:layoutItem>
+            </aura:if> 
+            <lightning:layoutItem size="12">
+                <lightning:layout horizontalAlign="center" verticalAlign="center">
+                    <lightning:layoutItem size="9" class="slds-p-around_xx-small"> 
+                        <lightning:select name="branchSelect" value="{!v.branchOCSExternalId}" label="Filiale">
+                            <aura:iteration items="{!v.branches}" var="branch">
+                                <option text="{!branch.Name + ' ('+branch.TypeLabel+')'}" value="{!branch.OCS_External_Id__c}" selected="{!v.branchOCSExternalId == branch.OCS_External_Id__c}" />
+                            </aura:iteration>  
+                        </lightning:select>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="3" class="slds-p-around_xx-small"> 
+                        <lightning:button variant="brand" label="Salva" title="salva" class="slds-m-left_x-small slds-m-top_large" onclick="{!c.saveChangeFiliale}"/>
+                    </lightning:layoutItem>
+                </lightning:layout> 
+            </lightning:layoutItem>
+        </lightning:layout>
+    </lightning:card>
+</aura:component>

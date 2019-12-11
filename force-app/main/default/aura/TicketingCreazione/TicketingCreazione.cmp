@@ -1,0 +1,465 @@
+<aura:component controller="TicketingCreazioneController" implements="flexipage:availableForAllPageTypes,force:hasRecordId" access="global">
+    
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+    <aura:attribute name="spinner" type="boolean" default="false"/>
+    
+    <aura:attribute name="OCSClienti" type="OCSCliente[]" />
+    <aura:attribute name="praticheList" type="OCSPratica[]"/>
+    
+    <aura:attribute name="TipoUfficio" type="String"/>
+    <!-- Categorie Disponibili per Ticketing, indicano la tipologia di caso che si vuol creare -->
+    <aura:attribute name="Cat_ATTACH" type="Boolean"/>
+    <aura:attribute name="Cat_ATTACH_INSTRUCTION" type="Boolean"/>
+    <aura:attribute name="Cat_COD_DEALER" type="Boolean"/>
+    <aura:attribute name="Cat_COD_CA" type="Boolean"/>
+    <aura:attribute name="Cat_NUM_PROTC" type="Boolean"/>
+    <aura:attribute name="Cat_CHN_ACQ" type="Boolean"/>
+    <aura:attribute name="Cat_CHN_MAP" type="Boolean"/>
+    <aura:attribute name="Cat_COD_PRT" type="Boolean"/>
+    <aura:attribute name="Cat_COD_PRT_WS" type="Boolean"/>
+    <aura:attribute name="Cat_COD_PRT_DELIB" type="Boolean"/>
+    <aura:attribute name="Cat_P_IVA" type="Boolean"/>
+    <aura:attribute name="Cat_COD_CLIENTE" type="Boolean"/>
+    <aura:attribute name="Cat_COD_FISCALE" type="Boolean"/>
+    <!-- Messaggi errore delle categorie divise per Ticketing -->
+    <aura:attribute name="Err_ATTACH" type="String"/>
+    <aura:attribute name="Err_ATTACH_INSTRUCTION" type="String"/>
+    <aura:attribute name="Err_COD_DEALER" type="String"/>
+    <aura:attribute name="Err_COD_CA" type="String"/>
+    <aura:attribute name="Err_NUM_PROTC" type="String"/>
+    <aura:attribute name="Err_CHN_ACQ" type="String"/>
+    <aura:attribute name="Err_CHN_MAP" type="String"/>
+    <aura:attribute name="Err_COD_PRT" type="String"/>
+    <aura:attribute name="Err_COD_PRT_WS" type="String"/>
+    <aura:attribute name="Err_COD_PRT_DELIB" type="String"/>
+    <aura:attribute name="Err_P_IVA" type="String"/>
+    <aura:attribute name="Err_COD_CLIENTE" type="String"/>
+    <aura:attribute name="Err_COD_FISCALE" type="String"/>
+    <!-- Messaggi Scrypt delle categorie divise per Ticketing -->
+    <aura:attribute name="Scrypt_ATTACH" type="String"/>
+    <aura:attribute name="Scrypt_ATTACH_INSTRUCTION" type="String"/>
+    <aura:attribute name="Scrypt_COD_DEALER" type="String"/>
+    <aura:attribute name="Scrypt_COD_CA" type="String"/>
+    <aura:attribute name="Scrypt_NUM_PROTC" type="String"/>
+    <aura:attribute name="Scrypt_CHN_ACQ" type="String"/>
+    <aura:attribute name="Scrypt_CHN_MAP" type="String"/>
+    <aura:attribute name="Scrypt_COD_PRT" type="String"/>
+    <aura:attribute name="Scrypt_COD_PRT_WS" type="String"/>
+    <aura:attribute name="Scrypt_COD_PRT_DELIB" type="String"/>
+    <aura:attribute name="Scrypt_P_IVA" type="String"/>
+    <aura:attribute name="Scrypt_COD_CLIENTE" type="String"/>
+    <aura:attribute name="Scrypt_COD_FISCALE" type="String"/>
+    <!-- General Attribute -->
+    <aura:attribute name="recordId" type="String"/>   
+    <aura:attribute name="CatId" type="String" default="3315"/> <!-- Importante per i test 3360 3344 3364 3362 3342 3327 3340 3322 3362 5158 3386 3330 3364 3325 3321 5170 5450-->
+    <!--aura:attribute name="CatId" type="String"/-->
+    <aura:attribute name="CC_Checkbox_Value" type="List"/>
+    <aura:attribute name="CodiciFiliale" type="Account"/>
+    <aura:attribute name="CodiceFiscale" type="String"/>
+    <aura:attribute name="PartitaIva" type="String"/> 
+    <aura:attribute name="CodiceCarta" type="String"/> 
+    <aura:attribute name="NumeroProtocollo" type="String"/> 
+    <aura:attribute name="RagioneSociale" type="String"/> 
+    <aura:attribute name="CanaleAcquisizione1" type="String"/> 
+    <aura:attribute name="CanaleAcquisizione2" type="String"/> 
+    <aura:attribute name="CategoriaScelta" type="String"/>
+    <aura:attribute name="SottoCategoriaScelta" type="String"/>
+    <aura:attribute name="IsCodDealer" type="Boolean" default="false"/>
+    <aura:attribute name="CodDealer" type="String"/>
+    <aura:attribute name="CodDealerFromApex" type="String"/>
+    <aura:attribute name="Profilo" type="String"/>
+    <!-- Attributi Cliente -->
+    <aura:attribute name="CodiceCliente" type="String"/>    
+    <aura:attribute name="InfoCliente" type="List"/>
+    <aura:attribute name="ClienteTrovato" type="boolean" default="false"/>
+    <aura:attribute name="Nome" type="String"/>
+    <aura:attribute name="Cognome" type="String"/>
+    <!-- Attributi Pratica -->
+    <aura:attribute name="InfoPratica" type="List"/>
+    <aura:attribute name="TipoDocMT" type="String"/>
+    <aura:attribute name="Prodotto" type="String"/>
+    <aura:attribute name="DataSott" type="Date"/>
+    <aura:attribute name="LivelloFirma" type="String"/>
+    <aura:attribute name="SearchPratica" type="boolean" default="false"/>
+    <aura:attribute name="SearchPraticaWSDEL" type="boolean" default="false"/>
+    <aura:attribute name="SearchDataDel" type="boolean" default="false"/> 
+    <aura:attribute name="DataManuale" type="boolean" default="false"/>
+    <aura:attribute name="DataUltimaDelibera" type="Date" />
+    
+    <aura:attribute name="MapAttach" type="Object"/>
+    <!--aura:attribute name="OCSClienteSelezionato" type="OCSCliente" /-->
+    <aura:attribute name="FileUpload" type="boolean" default="false"/>
+    <aura:attribute name="DealerExistInSF" type="boolean" default="false"/>
+    <aura:attribute name="ShowOCSRecuperaDatiPostVendita" type="boolean" default="false"/>
+    <aura:attribute name="Category" type="String"/>
+    <aura:attribute name="CategoryList" type="List"/>
+    <aura:attribute name="fileName" type="String" default="No File Selected.." />
+    <aura:attribute name="CC_Checkbox" type="List" default="[
+                                                            {'label': 'Trainer', 'value': 'Trainer'},
+                                                            {'label': 'Coordinatori', 'value': 'Coordinatori'},
+                                                            {'label': 'Regional', 'value': 'Regional'},
+                                                            {'label': 'Capo Filiale', 'value': 'Capo Filiale'}
+                                                            ]"/>
+    
+    <aura:attribute name="Ticket" type="Case" default="{'sobjectType': 'Case',
+                                                        'RecordTypeId': '',
+                                                        'Subject': '',
+                                                        'Priority': 'Media',
+                                                        'Description': '',  
+                                                        'Categoria_Riferimento__c': '',
+                                                        'ShareCaseteam__c': '',                                                        
+                                                        'NumeroPratica__c':'',
+                                                        'AccountId':'',
+                                                        
+                                                        'TKTFiliale__c':false
+                                                       }"/>
+    
+    <!-- Fine Attributi -->
+        
+    <!--loading spinner start-->
+    <aura:if isTrue="{!v.spinner}">
+        <div aura:id="spinnerId" class="slds-spinner_container">
+            <div class="slds-spinner slds-spinner_large slds-is-relative" >
+                <span class="slds-assistive-text">Loading...</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </aura:if>
+    <!-- Loading spinner end-->
+    <!-- lightning:card title="Creazione Nuovo Ticket" -->
+    <lightning:card >
+        <p class="slds-p-horizontal_small">
+            Categoria: {! v.CategoriaScelta }
+        </p>
+        <p class="slds-p-horizontal_small">
+            SottoCategoria: {! v.SottoCategoriaScelta }
+        </p>
+    </lightning:card>
+    <lightning:card>        
+        <lightning:layoutItem padding="around-small">
+                <h2 class="header">Condividi con:</h2>             
+                <lightning:checkboxGroup aura:id="CheckboxGroup"
+                                         name="Checkbox Group"
+                                         options="{! v.CC_Checkbox }"
+                                         value="{! v.CC_Checkbox_Value }"                                       
+                                         />           
+        </lightning:layoutItem>
+        <lightning:layoutItem size="4" padding="around-small">
+        	<!-- ui:outputText value="{!v.CodiciFiliale}"/ --> 
+        </lightning:layoutItem>
+        <lightning:layoutItem size="3" padding="around-small" class="divSubject">
+            
+            <label>Subject:</label>&nbsp;<ui:outputText value="{!v.CodiciFiliale}" class="boxCodiciFiliale"/>
+            <ui:inputText value="{!v.Ticket.Subject}" required="true"/>            
+        </lightning:layoutItem>
+        
+        <lightning:layoutItem size="12" padding="around-small" class="DatiAggiuntivi">
+        <!--h2 class="header">Dati aggiuntivi obbligatori</h2 -->
+        <!-- Rendered per Cod Delear -->
+        <aura:renderIf isTrue="{!v.Cat_COD_DEALER}">
+            <lightning:layoutItem size="2" padding="around-small">
+                <label>Codice Dealer:</label>
+                <br/>
+                <ui:inputText value="{!v.CodDealer}" placeholder="Inserisci Codice" class="boxDealer" required="true"/> 
+                <br/>
+                <lightning:button label="Cerca Dealer" onclick="{!c.searchDealer}" class="boxSearchDealer"/>
+            </lightning:layoutItem> 
+            <lightning:layoutItem size="3" padding="around-small">      
+                <aura:renderIf isTrue="{!v.DealerExistInSF}">                    
+                    <table class="slds-table slds-table--bordered slds-table--striped slds-table--cell-buffer slds-table--fixed-layout">
+                        <thead>
+                        <tr class="slds-text-heading--label">
+                          <th scope="col"><div class="slds-truncate" title="CodCliente">Ragione Sociale</div></th>                           
+                        </tr>
+                        </thead>
+                        <tbody>                  
+                        <tr>                          
+                          <td><div class="slds-truncate" title="">{!v.RagioneSociale}</div></td>                        
+                        </tr>                                                   
+                        </tbody>
+                    </table>
+                    
+                </aura:renderIf>
+            </lightning:layoutItem>
+            
+        </aura:renderIf>
+        <!-- Rendered per Codice Cliente -->
+        <aura:renderIf isTrue="{!v.Cat_COD_CLIENTE}">
+            <lightning:layoutItem size="2" padding="around-small">
+                <label>Codice Cliente:</label>
+                <ui:inputText value="{!v.CodiceCliente}" />
+                <br/>
+                <br/>
+                <label>Profilo:</label>
+                <ui:inputText value="{!v.Profilo}" class="boxProfilo"/>
+                <br/>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="10" padding="around-small">
+                <lightning:button label="Cerca Cliente" onclick="{!c.searchCliente}" class="boxSearchDealer"/>               
+                <br/>
+                <aura:renderIf isTrue="{!v.ClienteTrovato}">
+                    <label>Info Cliente:</label>
+                    <br/>
+                    <table class="slds-table slds-table--bordered slds-table--striped slds-table--cell-buffer slds-table--fixed-layout">
+                        <thead>
+                          <tr class="slds-text-heading--label">
+                            <th scope="col"><div class="slds-truncate" title="CodCliente">Cod Cliente</div></th>
+                            <th scope="col"><div class="slds-truncate" title="Nome">Nome</div></th>
+                            <th scope="col"><div class="slds-truncate" title="Cognome">Cognome</div></th>
+                            <th scope="col"><div class="slds-truncate" title="CodFiscale">Cod Fiscale</div></th>
+                            <th scope="col"><div class="slds-truncate" title="Localita">Località</div></th>
+                            <th scope="col"><div class="slds-truncate" title="Indirizzo">Indirizzo</div></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <aura:iteration items="{!v.InfoCliente}" var ="x">
+                        <tr>                          
+                          <td><div class="slds-truncate" title="">{!x.OCS_External_Id__c}</div></td>
+                          <td><div class="slds-truncate" title="">{!x.FirstName}</div></td>
+                          <td><div class="slds-truncate" title="">{!x.LastName}</div></td>
+                          <td><div class="slds-truncate" title="">{!x.Codice_Fiscale__pc}</div></td>
+                          <td><div class="slds-truncate" title="">{!x.Luogo_Nascita__pc}</div></td>
+                          <td><div class="slds-truncate" title="">{!x.PersonMailingStreet}</div></td>
+                        </tr>
+                        </aura:iteration>                            
+                        </tbody>
+                    </table>
+                   <br/>
+                </aura:renderIf>
+            </lightning:layoutItem>
+        </aura:renderIf>
+        <!-- Rendered per Codice Carta -->
+        <aura:renderIf isTrue="{!v.Cat_COD_CA}">
+            <lightning:layoutItem size="3" padding="around-small">
+                <label>Codice Carta:</label>
+                <ui:inputText value="{!v.CodiceCarta}" />
+                <br/>
+            </lightning:layoutItem>
+        </aura:renderIf>
+        <!-- Rendered per ATTACH INSTRUCTION -->    
+        <aura:renderIf isTrue="{!v.Cat_ATTACH_INSTRUCTION}">
+            <lightning:layoutItem size="10" padding="around-small">
+                <label>Istruzione sugli Attachment:</label>
+                <br/>
+                <aura:unescapedHtml value="{!v.Scrypt_ATTACH_INSTRUCTION}">                   
+                </aura:unescapedHtml>
+                <br/>
+            </lightning:layoutItem>
+        </aura:renderIf>
+        <!-- Rendered per Numero Pratica -->
+        <aura:renderIf isTrue="{!v.SearchPratica}"> 
+        <lightning:layoutItem size="2" padding="around-small">
+            <label>Numero Pratica:</label>
+            <ui:inputText value="{!v.Ticket.NumeroPratica__c}" />
+            <br/>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="10" padding="around-small">
+            <lightning:button label="Cerca Pratica" onclick="{!c.searchPratica}" class="boxSearchDealer"/>               
+            <br/>
+            <aura:renderIf isTrue="{!v.ClienteTrovato}">
+                <label>Info Cliente:</label>
+                <br/>
+                <table class="slds-table slds-table--bordered slds-table--striped slds-table--cell-buffer slds-table--fixed-layout">
+                    <thead>
+                      <tr class="slds-text-heading--label">
+                        
+                        <th scope="col"><div class="slds-truncate" title="CodCliente">Cod. Cliente</div></th>
+                        <th scope="col"><div class="slds-truncate" title="Nome">Nome</div></th>
+                        <th scope="col"><div class="slds-truncate" title="Cognome">Cognome</div></th>
+                        <aura:renderIf isTrue="{!v.SearchPraticaWSDEL}">            
+                            <th scope="col"><div class="slds-truncate" title="Ragione Sociale">Rag. Sociale</div></th>
+                            <th scope="col"><div class="slds-truncate" title="CodiceFiscale">Cod. Fiscale</div></th>
+                            <th scope="col"><div class="slds-truncate" title="Localita">Località</div></th>
+                            <th scope="col"><div class="slds-truncate" title="Indirizzo">Indirizzo</div></th>
+                        </aura:renderIf>    
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <aura:iteration items="{!v.InfoCliente}" var ="x">
+                    <tr>			  
+                      
+                      <td><div class="slds-truncate" title="">{!x.codCliente}</div></td>
+                      <td><div class="slds-truncate" title="">{!x.nome}</div></td>
+                      <td><div class="slds-truncate" title="">{!x.cognome}</div></td>
+                      <aura:renderIf isTrue="{!v.SearchPraticaWSDEL}"> 
+                          <td><div class="slds-truncate" title="">{!x.denominazioneAzienda}</div></td>
+                          <td><div class="slds-truncate" title="">{!x.codFiscale}</div></td>
+                          <td><div class="slds-truncate" title="">{!x.localita}</div></td>
+                          <td><div class="slds-truncate" title="">{!x.indirizzo}</div></td>
+                      </aura:renderIf>
+                    </tr>
+                    </aura:iteration>                            
+                    </tbody>
+                </table>
+                <!-- Dati di nascità -->
+                <aura:renderIf isTrue="{!v.SearchPraticaWSDEL}">
+                    <table class="slds-table slds-table--bordered slds-table--striped slds-table--cell-buffer slds-table--fixed-layout">
+                        <thead>
+                          <tr class="slds-text-heading--label">
+                            <th scope="col"><div class="slds-truncate" title="Luogo di Nascita">Paese di Nascità</div></th>
+                            <th scope="col"><div class="slds-truncate" title="Data di Nascita">Data</div></th>                                                    
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <aura:iteration items="{!v.InfoCliente}" var ="x">
+                        <tr>			  
+                          <td><div class="slds-truncate" title="">{!x.luogoNascita}</div></td>
+                          <td><div class="slds-truncate" title="">{!x.dataNascitaItaliana}</div></td>
+                        </tr>
+                        </aura:iteration>                            
+                        </tbody>
+                    </table>
+               
+               		<br/>
+                   <label>Info Pratica:</label>
+                    <br/>
+                    <table class="slds-table slds-table--bordered slds-table--striped slds-table--cell-buffer slds-table--fixed-layout">
+                        <thead>
+                          <tr class="slds-text-heading--label">
+                            <th scope="col"><div class="slds-truncate" title="Numero Pratica">Num Pratica</div></th>
+                            <th scope="col"><div class="slds-truncate" title="Tipo Pratica">Tipo</div></th>
+                            <aura:renderIf isTrue="{!v.Cat_COD_PRT_WS}">
+                               <th scope="col"><div class="slds-truncate" title="Data Sottoscrizione">Data Sottoscr.</div></th>
+                               <th scope="col"><div class="slds-truncate" title="Livello Firma">Liv. Firma</div></th>
+                            </aura:renderIf>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <aura:iteration items="{!v.InfoPratica}" var ="x">
+                        <tr>		
+                          <td><div class="slds-truncate" title="">{!x.numPratica}</div></td>
+                          <td><div class="slds-truncate" title="">{!x.tipoPratica}</div></td>
+                          <aura:renderIf isTrue="{!v.Cat_COD_PRT_WS}">
+                            <td><div class="slds-truncate" title="">{!x.dataCaricamento}</div></td>
+                            <td><div class="slds-truncate" title="">{!v.LivelloFirma}</div></td>  
+                          </aura:renderIf>  
+                        </tr>
+                        </aura:iteration>                            
+                        </tbody>
+                    </table>
+                </aura:renderIf>
+                <br/>
+            </aura:renderIf>
+        </lightning:layoutItem>
+        </aura:renderIf>  
+        <!-- Rendered per Data ultima Delibera -->
+        <aura:renderIf isTrue="{!v.SearchDataDel}"> 
+            <lightning:layoutItem size="2" padding="around-small">
+                <label>Numero Pratica:</label>
+                <ui:inputText value="{!v.Ticket.NumeroPratica__c}" />
+                <br/>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="10" padding="around-small">
+                <lightning:button label="Cerca Data ultima Delibera" onclick="{!c.SearchDataDelHelp}" class="boxSearchDealer"/> <!-- onclick="{!c.SearchDataDel}" -->              
+                <br/>
+                <aura:renderIf isTrue="{!v.DataManuale}">
+                    <ui:message title="Warning" severity="warning" closable="false">
+                            Data ultima delibera non trovata, inserirla manualmente.
+                    </ui:message>
+                    <!-- label>Inserisci la data:</label -->
+                    	<ui:inputDate value="{!v.DataUltimaDelibera}" displayDatePicker="true" class="dataUltDel"/>                    
+                    <br/>    
+                </aura:renderIf>    
+                <aura:renderIf isTrue="{!v.ClienteTrovato}">
+                    <label>Data Approvazione:</label>&nbsp;
+                    <ui:outputDate value="{!v.DataUltimaDelibera}" class="dataUltDel"/>                    
+                    <br/>
+                   
+                </aura:renderIf>
+            </lightning:layoutItem>
+        </aura:renderIf> 
+        <!-- Rendered per Codice Fiscale -->
+        <aura:renderIf isTrue="{!v.Cat_COD_FISCALE}">
+            <lightning:layoutItem size="3" padding="around-small">
+                <label>Codice Fiscale:</label>
+                <ui:inputText value="{!v.CodiceFiscale}" />
+                <br/>
+            </lightning:layoutItem>
+        </aura:renderIf>
+        <!-- Rendered per Numero Protocollo -->
+        <aura:renderIf isTrue="{!v.Cat_NUM_PROTC}">
+            <lightning:layoutItem size="3" padding="around-small">
+                <label>Numero Protocollo:</label>
+                <br/>
+                <ui:inputText value="{!v.NumeroProtocollo}" class="boxNumProtocollo"/>
+            </lightning:layoutItem>
+        </aura:renderIf>
+        <!-- Rendered per Canale Acquisizione -->
+        <aura:renderIf isTrue="{!v.Cat_CHN_ACQ}">
+            <lightning:layoutItem size="3" padding="around-small">
+                <label>Canale Acquisizione:</label>&nbsp;
+                <ui:inputSelect class="CanaleAcq" aura:id="InputCHN_ACQ" value="{!v.CanaleAcquisizione1}">             
+                    <ui:inputSelectOption text=""/>
+                    <ui:inputSelectOption text="AW1"/>
+                    <ui:inputSelectOption text="MAP"/>
+                    <ui:inputSelectOption text="DIP"/>
+                    <ui:inputSelectOption text="SW1"/>
+                    <ui:inputSelectOption text="WH3"/>
+            	</ui:inputSelect>
+            </lightning:layoutItem>
+        </aura:renderIf>
+        <!-- Secondo Rendered per Canale Acquisizione, cambiano i valori selezionabili nel menù a tendina -->
+        <aura:renderIf isTrue="{!v.Cat_CHN_MAP}">
+            <lightning:layoutItem size="3" padding="around-small">
+                <label>Canale Acquisizione:</label>&nbsp;
+                <ui:inputSelect class="CanaleAcq" aura:id="InputCHN_MAP" value="{!v.CanaleAcquisizione2}">   
+                    <ui:inputSelectOption text=""/>
+                    <ui:inputSelectOption text="MAP"/>
+                    <ui:inputSelectOption text="DIP"/>
+            	</ui:inputSelect>
+            </lightning:layoutItem>
+        </aura:renderIf>
+        <!-- Rendered per Partita Iva -->
+        <aura:renderIf isTrue="{!v.Cat_P_IVA}">
+            <lightning:layoutItem size="3" padding="around-small">
+                <label>Partita Iva:</label>
+                <br/>
+                <ui:inputText value="{!v.PartitaIva}" class="boxPartitaIva"/>               
+            </lightning:layoutItem>
+        </aura:renderIf>
+        <!-- Description lo faccio sempre vedere -->
+        <lightning:layoutItem size="6" padding="around-small">
+            <h2 class="header">Descrizione Ticket:</h2>
+            <ui:inputTextArea class="form-control" value="{!v.Ticket.Description}" rows="4"/>
+            
+        </lightning:layoutItem>
+        
+        <!-- Rendered per Allegati Custom -->       
+            
+        </lightning:layoutItem>
+        
+        <!-- Priority la faccio sempre vedere -->
+        <lightning:layoutItem size="1" padding="around-small">            
+            <p class="title">Priority</p>
+            <ui:inputSelect class="single" aura:id="InputSelectSingle" value="{!v.Ticket.Priority}">
+                <ui:inputSelectOption text="Bassa"/>
+                <ui:inputSelectOption text="Media"/>
+                <ui:inputSelectOption text="Alta"/>
+                <ui:inputSelectOption text="Critica"/>
+            </ui:inputSelect>
+            <br/>
+        </lightning:layoutItem>
+        
+        <lightning:layout class="boxAttach">
+                <lightning:layoutItem size="12" padding="horizontal-small" >
+                    <lightning:input aura:id="fuploader" 
+                             onchange="{!c.handleUploadFinished}" 
+                             type="file" 
+                             name="file" 
+                             label="ATTACH FILES" 
+                             multiple="true"/>
+                    
+                </lightning:layoutItem>
+        </lightning:layout>
+                
+        <aura:set attribute="footer">            
+            <div class="col-md-4 text-center">
+                <ui:button class="btn btn-default" press="{!c.backNavigate}">Back</ui:button>
+                <ui:button class="btn btn-success" press="{!c.create}">Create</ui:button>
+            </div>           
+        </aura:set>
+        
+    </lightning:card>
+
+</aura:component>

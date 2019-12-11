@@ -1,0 +1,45 @@
+<!--
+  @Component Name     : PV2564AzzeramentoSpese.cmp
+  @Description        : 
+  @Author             : Andrea Vanelli
+  @Group              : 
+  @Last Modified By   : Andrea Vanelli
+  @Last Modified On   : 16/8/2019, 10:33:24
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    29/7/2019, 17:20:44   Andrea Vanelli     Initial Version
+-->
+<aura:component extends="c:PVSubComponentBase" controller="PV2564AzzeramentoSpeseInserimento" access='global'>
+
+
+    <!-- Attributi del PV specifico -->
+    <aura:attribute name="destinatarioSelezionato" type="String" />
+    <aura:attribute name="mostraSpeseSelezionato" type="String" />
+    <aura:attribute name="speseListSelezionate" type="OCSRecuperaSpeseAzzeraRecInvoker.SpesaRecuperoDTO[]" />
+
+
+     <!-- Markup Body -->
+    <lightning:layout class="slds-wrap" multipleRows="true">
+        <lightning:layoutItem size="6" padding="horizontal-small">
+            <lightning:select name="destinatario" label="Ufficio destinatario:" aura:id="destinatario" required="true"
+                value="{!v.destinatarioSelezionato}">
+                <option text="" value="" />
+                <option text="Phone Collection" value="PHC" />
+                <option text="CDR Post-DT" value="POSTDT" />
+                <option text="Centro di Recupero Home" value="CRH" />
+            </lightning:select>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="6" padding="horizontal-small">
+        </lightning:layoutItem>
+
+    </lightning:layout>
+
+
+    <c:PV2564AzzeramentoSpeseLista praticaSelezionata="{!v.PVForm.pratica}" aura:id="cmpListaSpese" parent="{!this}"
+        speseListSelezionate="{!v.speseListSelezionate}">
+    </c:PV2564AzzeramentoSpeseLista>
+
+
+</aura:component>

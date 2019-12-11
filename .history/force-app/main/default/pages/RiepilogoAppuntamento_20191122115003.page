@@ -1,0 +1,5 @@
+<apex:page controller="EventRepport">
+    <apex:page controller="DataDisplayController" renderAs="pdf">
+        {!data.Name}
+    </apex:page>
+</apex:page>

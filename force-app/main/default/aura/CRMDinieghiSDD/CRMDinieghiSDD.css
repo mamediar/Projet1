@@ -1,0 +1,62 @@
+.THIS th{
+    font-size:12px;
+    white-space:normal;
+    text-align:center;
+}
+
+.THIS td{
+    font-size:12px;
+    text-align:center;
+    padding: 1em;
+}
+
+.THIS .left{
+    float: left;
+}
+
+.THIS .clickable {
+    cursor: pointer;
+}
+
+.THIS .slds-modal__container {
+    width: 80%;
+    max-width: unset;
+}
+
+.THIS .slds-dropdown_left {
+    max-width: unset;
+}
+
+.THIS .odd-row {
+    background-color: #fff;
+}
+
+.THIS .even-row {
+    background-color :rgb(250, 250, 249);
+}
+
+.THIS .bold {
+    font-weight: bold;    
+}
+
+.THIS .download{
+    cursor:pointer;
+}
+
+.THIS .download:hover{
+    background-color :rgb(250, 250, 249);
+}
+
+.THIS .box-grigio{
+    background-color :rgb(230,230,230);
+}
+
+.THIS .box-grigiochiaro{
+    background-color :rgb(245,245,245);
+}
+.THIS.exampleHolder{
+    position: relative;
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+}

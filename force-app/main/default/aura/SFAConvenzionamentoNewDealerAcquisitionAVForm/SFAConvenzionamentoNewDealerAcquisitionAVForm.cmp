@@ -1,0 +1,141 @@
+<aura:component controller="SFAConvenzionamNewDealAcquisitAVCtrller" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes,force:hasSObjectName">
+                                                                   
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="dealerAcquisitionId" type="String" />  
+    <aura:attribute name="OCSExternalFiliale" type="String" />  
+    <aura:attribute name="reportCervedId" type="String" />
+    <aura:attribute name="AssicurazioneDealer" type="String"  />
+    <aura:attribute name="message" type="String" default="" />   
+    <aura:attribute name="erroreSalvataggio" type="Boolean" default="false" />   
+    <aura:attribute name="IsAttivitaInManoAdAV" type="Boolean"/>   
+    <aura:attribute name="listaEsiti" type="Object[]" />
+    <aura:attribute name="visibilityOption" type="String" />
+    <aura:attribute name="statusCase" type="String" />   
+    <aura:handler name="init" value="{! this }" action="{! c.doInit }" />
+    <aura:handler event="c:XCS_DispositionReady" action="{!c.handleDispositionReadyEvent}"/>
+    
+    <aura:attribute name="disposition" type="XCS_Disposition__c" />
+    <aura:attribute name="nota" type="String" />    
+    
+	<aura:attribute name="spinnerCounter" type="Integer" default="0"/>
+    <c:SpinnerComponent aura:id="spinnerComponent" spinnerCounter="{!v.spinnerCounter}"/> 
+    
+    <aura:if isTrue="{!v.IsAttivitaInManoAdAV}">   
+
+            <lightning:card variant="Narrow" title="Dati Convenzionato" iconName="standard:account" footer=" ">
+                <p class="slds-p-horizontal_small">    
+            
+                    <lightning:recordEditForm recordId="{!v.dealerAcquisitionId}" objectApiName="Account" onsuccess="{!c.handleSuccess}" onerror="{!c.handleError}" >
+                
+                        <lightning:layout horizontalAlign="spread" multipleRows="true">
+                
+                            <label for="ragioneSociale" class="slds-form-element__label slds-no-flex">Ragione Sociale</label>
+                            
+                            
+                            <lightning:layoutItem flexibility="grow" size="12">
+                                <lightning:outputField aura:id="ragioneSociale" fieldName="Name" disabled="true" variant="label-hidden"/>
+                            </lightning:layoutItem>
+                
+                
+                            <label for="ShippingAddress" class="slds-form-element__label slds-no-flex">Indirizzo</label>
+                            <lightning:layoutItem flexibility="grow" size="12">
+                                <lightning:outputField aura:id="ShippingAddress" fieldName="ShippingAddress" disabled="true" variant="label-hidden" />
+                            </lightning:layoutItem>     
+                            
+                            <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                                <lightning:outputField fieldName="Codice_Fiscale__c" disabled="true" />
+                            </lightning:layoutItem>            
+                            
+                            <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                                <lightning:outputField fieldName="Partita_IVA__c" disabled="true" />
+                            </lightning:layoutItem>
+                
+                            <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                                <lightning:outputField fieldName="Sae__c" disabled="true" />
+                            </lightning:layoutItem>   
+                            
+                            <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                                <lightning:outputField fieldName="Rae__c" disabled="true" />
+                            </lightning:layoutItem>            
+                            
+                            <lightning:layoutItem flexibility="grow" size="6">
+                                <lightning:outputField fieldName="DataInizioAttivita__c" disabled="true" />
+                            </lightning:layoutItem> 
+                
+                
+                            <lightning:layoutItem flexibility="grow" size="12">
+                                <lightning:outputField fieldName="Desc_Ateco__c" disabled="true" />
+                            </lightning:layoutItem>       
+                    
+                            
+                        </lightning:layout>
+                    </lightning:recordEditForm>    
+            
+                </p>
+            </lightning:card>    
+        
+            <lightning:card variant="Narrow" title="Dati aggiuntivi" iconName="standard:account" footer=" ">
+                <p class="slds-p-horizontal_small">    
+            
+                    <lightning:recordEditForm recordId="{!v.dealerAcquisitionId}" objectApiName="Account" onsuccess="{!c.handleSuccess}" onerror="{!c.handleError}" >
+                
+                        <lightning:layout horizontalAlign="spread" multipleRows="true">
+                
+                                     
+                            
+                            <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                                <lightning:outputField fieldName="Tipo_Intermediario__c" disabled="true" />
+                            </lightning:layoutItem>            
+                            
+                            <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                                <lightning:outputField fieldName="Type_Anag__c" disabled="true" />
+                            </lightning:layoutItem> 
+                            
+                            <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                                <lightning:outputField fieldName="IsConvenzioneAssicurativo__c" disabled="true" />
+                            </lightning:layoutItem>            
+                            
+                            <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                                <lightning:outputField fieldName="IsConvenzioneH3G__c" disabled="true" />
+                            </lightning:layoutItem>   
+
+                            <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                                <lightning:outputField fieldName="ProdottoDominanteMacroarea__c" disabled="true" />
+                            </lightning:layoutItem>   
+                            
+                            <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                                <lightning:outputField fieldName="Macroarea__c" disabled="true" />
+                            </lightning:layoutItem>            
+                            
+                        </lightning:layout>
+                    </lightning:recordEditForm>    
+            
+                </p>
+            </lightning:card>    
+            
+
+            <lightning:card variant="Narrow" title="Esita attività" iconName="standard:account" footer=" ">
+                <p class="slds-p-horizontal_small">	
+                    <aura:if isTrue="{!v.visibilityOption }">
+                        <table class="slds-m-top--medium">
+                                    <c:XCS_Disposition parentExternalId="DP1808"
+                                                       saveCase="true"
+                                                       visibilityOption="{!v.visibilityOption}"   
+                                                       noteRequired="true"
+                                                       recordId="{!v.recordId}"/>    
+                        </table>    
+                    </aura:if>
+                </p>
+            </lightning:card>    
+           
+            <lightning:layoutItem size="4">
+                <c:SFAConvenzionamentoVisualizzaReportCerved recordId="{!v.recordId}"/>
+            </lightning:layoutItem>    
+    
+        <aura:set attribute="else">
+                <ui:outputText value="{!v.message}"/> 
+        </aura:set>
+	</aura:if>    
+    
+        
+</aura:component>

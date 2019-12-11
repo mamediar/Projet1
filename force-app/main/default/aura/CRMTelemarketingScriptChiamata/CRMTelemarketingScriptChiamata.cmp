@@ -1,0 +1,85 @@
+<aura:component controller="CRMTMKScriptChiamataController" implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId" access="global" >
+    <force:recordData aura:id="case" recordUpdated="{!c.init}" recordId="{!v.recordId}" fields="ScriptParameters__c,Account.Name, AccountId, Disposition__r.Name, Disposition__r.External_Id__c, CampaignId__c,CampaignId__r.ProductCode__c, CampaignId__r.ActionCode__c, CampaignId__r.TMKProductCode__c, CampaignId__r.CodPromotion__c, CampaignId__r.RecordType.Name,CampaignId__r.RecordTypeId, CampaignId__r.StartDate, CampaignId__r.EndDate, ActivityType__c,CampaignId__r.TMKTarget__c" targetFields="{!v.CaseRecord}" targetError="{!v.recordLoadError}"/>
+    <aura:attribute name="CaseRecord" type="Object" />
+    <aura:handler event="c:eventTelemarketing" action="{!c.block}"/>
+    <aura:attribute name="AttCarta" type="boolean"/>
+    <aura:attribute name="forblock" type="boolean" default="false"/>
+    <aura:attribute name="uscript" type="boolean" />
+    <aura:attribute name="block" type="boolean" />
+    <aura:attribute name="dispManc" type="boolean" />
+    <aura:attribute name="showtable" type="boolean"/>
+    <aura:attribute name="showPreScript" type="boolean"/>
+    <aura:attribute name='dispScript' type="String"/>
+    <aura:attribute name="dispSAscript" type="String"/>
+    <aura:attribute name="fido" type="String"/>
+    <aura:attribute name="fidoSAscript" type="String"/>
+    <aura:attribute name="fidoPRscript" type="String"/>
+    <aura:attribute name="mesi" type="String"/>
+    <aura:attribute name="stato" type="String"/>
+    <aura:attribute name="Prod" type="String"/>
+    <aura:attribute name="accountName" type="String" />
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="script" type="String"/>
+    <aura:attribute name="preScript" type="String"/>    
+    <aura:attribute name="Nome" type="String"/>
+    <aura:attribute name="Cognome" type="String"/>
+    <aura:attribute name="idTab" type="String"/>
+    <aura:attribute name="data" type="String[]"/>
+    <aura:attribute name="dispTrovata" type="String"/>
+    <aura:attribute name="dispPresel1" type="String"/>
+    <aura:attribute name="dispPresel2" type="String"/>
+    <aura:attribute name="dispPresel3" type="String"/>
+    <aura:attribute name="dispPresel4" type="String"/>
+    <aura:attribute name="checkboxAttribute" type="String"/>
+    <aura:attribute name="rifiutaChiamata" type="boolean" />
+    <aura:attribute name="mapForDisp" type="Map" default="{'DP1999': '6 mesi',
+                                                            'DP2000': '6 mesi',
+                                                            'DP6255': '2 mesi',
+                                                            'DP6256': '3 mesi',
+                                                            'DP6257': '4 mesi',
+                                                            'DP6258': '5 mesi',
+                                                            'DP6259': '6 mesi'}"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="options" type="String[]" default="[
+                                                 {'label': 'Si, Proseguire', 'value': 'option1'},
+                                               	 {'label': 'No, non disponibile/Richiamare', 'value': 'option2'},
+                                                 {'label': 'No, non richiamare', 'value': 'option3'},
+                                                 {'label': 'No, rifiuta la chiamata', 'value': 'option4'}
+                                                            ]"/>
+    <aura:attribute name="value" type="List" default=""/>
+	<p>Buongiono Sono {!v.Nome} del servizio clienti Compass e la chiamo dall'Italia, Parlo con il/la sig./sig.ra {!v.CaseRecord.Account.Name} ?</p>
+    <br/>
+    <lightning:radioGroup aura:id ="check" name="Checkbox Group"
+                             label="Seleziona la Scelta"
+                             options="{! v.options }"
+                             value="{! v.value }"                             
+                             disabled="false"
+                             required="true"
+                             onchange="{!c.handleChange}"
+                          	 type="radio"
+                             />
+    <br/>
+       <aura:if isTrue="{!v.block}">
+        <p><b>Attenzione è stato individuato un blocco sulla carta!!</b></p>
+        <p><b>Stato: {!v.stato}</b></p>
+	</aura:if>
+    <aura:if isTrue="{!v.dispManc}">
+        <p><b>Attenzione la carta potrebbe avere un credito residuo insufficiente per EDI oppure non essere attiva</b></p>
+    </aura:if>
+    
+    <aura:if isTrue="{!v.forblock}">      
+            <p><b>AVVISO RICHIAMO: </b></p><br/>
+            <p>Come da Lei richiesto nella precedente telefonata, La ricontatto a distanza di <b>{!v.dispTrovata}</b> per proporle VEDI OFFERTA</p> 
+    </aura:if>
+    <aura:if isTrue="{!v.AttCarta}">
+    <p><b>ATTENZIONE:</b></p><br/>
+    <p>E' necessario attivare la carta prima di procedere con EDI</p>
+    </aura:if>
+    <aura:if isTrue="{!v.showPreScript}">
+        <lightning:formattedRichText value="{!v.preScript}"></lightning:formattedRichText>
+    </aura:if>
+    <aura:if isTrue="{!v.uscript}">
+        <lightning:formattedRichText value="{!v.script}"></lightning:formattedRichText>
+    </aura:if>
+    
+</aura:component>

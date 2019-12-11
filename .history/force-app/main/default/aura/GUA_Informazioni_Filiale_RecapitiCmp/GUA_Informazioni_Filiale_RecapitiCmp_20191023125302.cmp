@@ -1,0 +1,202 @@
+<aura:component>
+    <aura:attribute type="Account" name="filiale" default=""/>
+    <aura:handler name="init" value="{!this}" action="{!c.handleManageContact}"/>
+
+    <article class="slds-card">
+            <div class="slds-card__header slds-grid">
+              <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__body">
+                  <h2 class="slds-card__header-title">
+                        Riepilogo
+                  </h2>
+                </div>
+              </header>
+            </div>
+            <div class="slds-card__body slds-card__body_inner slds-border_top slds-border_right slds-border_left slds-border_bottom">
+              <div class="slds-grid slds-gutters">
+                  <div class="slds-col slds-size_1-of-3 slds-border_right">
+                    <div>
+                      Dati Chiamata
+                    </div>
+                    <div>
+                    <div>
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped" >
+                  			<thead>
+                    			<tr class="slds-line-height_reset">
+                    			</tr>
+                  			</thead>
+                  			<tbody>
+                    			<tr class="slds-hint-parent">      
+                      				<td>
+                        				<div class="slds-p-around_small"><b>Numero Chiamato:</b> </div>
+                      				</td>
+                      				<td>
+                        				<div class="slds-p-around_small  slds-text-heading_large slds-text-title_caps"> </div>
+                      				</td>
+                    			</tr>
+                          <tr class="slds-hint-parent">      
+                      				<td>
+                        				<div class="slds-p-around_small"><b>Numero Chiamante:</b> </div>
+                      				</td>
+                      				<td>
+                        				<div class="slds-p-around_small  slds-text-heading_large slds-text-title_caps"></div>
+                      				</td>
+                    			</tr>
+                          <tr class="slds-hint-parent">      
+                      				<td>
+                        				<div class="slds-p-around_small"><b>Codice Digitato:</b> </div>
+                      				</td>
+                      				<td>
+                        				<div class="slds-p-around_small  slds-text-heading_large slds-text-title_caps"></div>
+                      				</td>
+                    			</tr>
+                          <tr class="slds-hint-parent">      
+                      				<td>
+                        				<div class="slds-p-around_small"><b>Navigazione IVR:</b> </div>
+                      				</td>
+                      				<td>
+                        				<div class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!v.contactDetail.Priority}</div>
+                      				</td>
+                    			</tr>
+                  			</tbody>
+                		    </table>                        
+                    </div>
+                    </div>
+                  </div>
+                  <div class="slds-col slds-size_1-of-3 slds-border_right">
+                    <div>
+                      Informazioni Filiale
+                    </div>
+                    <div>
+                      <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped" >
+                  			<thead>
+                    			<tr class="slds-line-height_reset">
+                    			</tr>
+                  			</thead>
+                  			<tbody>
+                    			<tr class="slds-hint-parent">      
+                      				<td>
+                        				<div class="slds-p-around_small"><b>Filiale:</b> </div>
+                      				</td>
+                      				<td>
+                        				<div class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!v.filiale.Name}</div>
+                      				</td>
+                    			</tr>
+                          <tr class="slds-hint-parent">      
+                      				<td>
+                        				<div class="slds-p-around_small"><b>Area:</b> </div>
+                      				</td>
+                      				<td>
+                        				<div class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!v.filiale.ShippingStreet}</div>
+                      				</td>
+                    			</tr>
+                          <tr class="slds-hint-parent">      
+                      				<td>
+                        				<div class="slds-p-around_small"><b>Regione:</b> </div>
+                      				</td>
+                      				<td>
+                        				<div class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!v.filiale.ShippingCity}</div>
+                      				</td>
+                    			</tr>
+                          <tr class="slds-hint-parent">      
+                      				<td>
+                        				<div class="slds-p-around_small"><b>Capo Filiale :</b> </div>
+                      				</td>
+                      				<td>
+                        				<div class="slds-p-around_small  slds-text-heading_large slds-text-title_caps"></div>
+                      				</td>
+                          </tr>
+                          <tr class="slds-hint-parent">      
+                            <td>
+                              <div class="slds-p-around_small"><b>Coordinatore :</b> </div>
+                            </td>
+                            <td>
+                              <div class="slds-p-around_small  slds-text-heading_large slds-text-title_caps"></div>
+                            </td>
+                        </tr>
+                  			</tbody>
+                		  </table> 
+                    </div>
+                  </div>
+                  <div class="slds-col slds-size_1-of-3 slds-border_right">
+                    <div>
+                      Recapiti
+                    </div>
+                    <div>
+                      <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped" >
+                  			<thead>
+                    			<tr class="slds-line-height_reset">
+                    			</tr>
+                  			</thead>
+                  			<tbody>
+                    			<tr class="slds-hint-parent">      
+                      				<td>
+                        				<div class="slds-p-around_small"><b>Filiale di Riferimento:</b> </div>
+                      				</td>
+                      				<td>
+                        				<div class="slds-p-around_small  slds-text-heading_large slds-text-title_caps"> </div>
+                      				</td>
+                    			</tr>
+                          <tr class="slds-hint-parent">      
+                      				<td>
+                        				<div class="slds-p-around_small"><b>Indirizzo:</b> </div>
+                      				</td>
+                      				<td>
+                        				<div class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!v.filiale.Address_Abbr_Sms__c}</div>
+                      				</td>
+                    			</tr>
+                          <tr class="slds-hint-parent">      
+                      				<td>
+                        				<div class="slds-p-around_small"><b>Tefeno:</b> </div>
+                      				</td>
+                      				<td>
+                        				<div class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!v.filiale.Phone}</div>
+                      				</td>
+                    			</tr>
+                          <tr class="slds-hint-parent">      
+                      				<td>
+                        				<div class="slds-p-around_small"><b>Fax :</b> </div>
+                      				</td>
+                      				<td>
+                        				<div class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!v.filiale.Fax}</div>
+                      				</td>
+                          </tr>
+                          <tr class="slds-hint-parent">      
+                            <td>
+                              <div class="slds-p-around_small"><b>Email:</b> </div>
+                            </td>
+                            <td>
+                              <div class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!v.filiale.PersonEmail}</div>
+                            </td>
+                        </tr>
+                        <tr class="slds-hint-parent">      
+                          <td>
+                            <div class="slds-p-around_small"><b>Capo Filiale:</b> </div>
+                          </td>
+                          <td>
+                            <div class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!v.filiale}</div>
+                          </td>
+                      </tr>
+                      <tr class="slds-hint-parent">      
+                        <td>
+                          <div class="slds-p-around_small"><b>Unità Affari:</b> </div>
+                        </td>
+                        <td>
+                          <div class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!v.filiale}</div>
+                        </td>
+                    </tr>
+                  			</tbody>
+                		  </table> 
+                    </div>
+                  </div>
+              </div>
+            </div>
+            <footer class="slds-card__footer">
+              <div>
+                <lightning:button variant="variant" label="Ultime Chiamate"   onclick="{!c.actionUltimeChiama}" class="slds-button slds-button_text-destructive slds-float_left"/>
+                <lightning:button variant="variant" label="Componenti" onclick="{!c.actionComponenti}" class="slds-button slds-button_text-destructive slds-float_left"/>
+                <lightning:button variant="variant" label="FAQ" onclick="{!c.actionFaq}" class="slds-button slds-button_text-destructive slds-float_left"/>                                            
+              </div>
+            </footer>
+          </article>
+</aura:component>	

@@ -1,0 +1,147 @@
+.THIS tr.HeaderOnTable th{
+border-radius: 0px;
+border: 1px solid #ccc;
+font-size: 14px;
+padding: 5px;
+font-family: Arial, Helvetica, sans-serif;
+line-height: 20px;
+padding-top: 15px;
+font-size: 14px;
+
+}
+.THIS.hide {
+    display: none;
+}
+
+.THIS.btn {
+    margin-bottom: 10px;
+}
+
+.THIS label.uiLabel {
+    padding-right: 12px;
+}
+
+.THIS .field{
+    padding: 5px;
+    border: 1px solid #dce4ec;
+    border-radius: 2px;
+}
+
+.THIS .heading{
+color: #ffffff;
+background-color: #337ab7;
+border-top-left-radius: 4px;
+border-top-right-radius: 4px;
+height: 36px;
+
+}
+
+
+.THIS tr.valueOnTable td{
+        border-radius: 0px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+        padding: 7px;
+        padding-right: 23px;
+        font-family: Arial, Helvetica, sans-serif;
+        line-height: 20px;
+        margin-left: 10px;
+
+
+                }
+
+
+
+.THIS tr.valueOnTable:nth-child(odd) {
+
+background-color:#fbfbfb
+}
+.THIS .uiR{
+color:#3366BB;
+}
+
+
+.THIS .Cell{
+        border-width: thin;
+        padding-left: 5px;
+        padding-right: 5px;
+        display: table-cell;
+
+
+}
+.THIS .CellDiv{
+    font-size: 14px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+
+
+
+.THIS .date{
+    display: block;
+    width: 84%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+ .THIS p{
+     font-size: 14px;
+ }
+ .THIS .slds-select{
+    display: block;
+    width: 100%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+
+
+
+.THIS .icon svg{
+    fill: white;
+}
+
+.THIS .btnn {
+height: 33px;
+width: 51px;
+margin-top:-8px;
+}
+
+.THIS .statoPicklist{
+    width:23%;
+        margin-top: -23px;
+}
+
+.THIS .slds-spinner_container {
+    z-index: 10000;
+    position: fixed;
+}
+.THIS div.filiali {
+    display: inline-block;
+    width: 40%;
+    margin-left:12%;
+    margin-right:10%;
+}

@@ -1,0 +1,17 @@
+<apex:page controller="EventRepport" renderAs="pdf" applyBodyTag="false" readOnly="true" showHeader="false" sidebar="false">
+    <h1>{!Title}</h1>
+    {!PDFData}
+    
+    <apex:outputText value="{0, date, MMMM d','  yyyy}">
+      <apex:param value="{!contact.Birthdate}" /> 
+    </apex:outputText>
+    <div><b>Data/Ora :</b><br/> {!data['ActivityDateTime']}</div>
+    <div><b>Tipologia :</b><br/> {!data.Tipo_Occupazione__c}</div>
+    <div><b>Prodotto :</b><br/> {!data.Product__r.Name}</div>
+    <div><b>Dettaglio Prodotto :</b><br/> {!DataglioProductValues.Name}</div>
+    <div><b>Note  :</b><br/> {!data.Note__c}</div>
+    <div><b>Filiale  :</b><br/> {!filialeEvent.Name}</div>
+    <div><b>Telefono  :</b><br/> {!data.Customer__r.PersonMobilePhone}  {!data.Customer__r.Phone}</div>
+    <div><b>Fotocopie de allegare  :</b><br/> {!fotocopieAllegare}</div>
+    
+</apex:page>

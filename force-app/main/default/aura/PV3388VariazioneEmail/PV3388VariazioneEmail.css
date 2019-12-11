@@ -1,0 +1,24 @@
+.THIS div {
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+.THIS .red {
+    color: #e83030;
+    font-size: 12px; 
+    FONT-FAMILY: 'Tahoma','sans-serif'; 
+    font-weight: bold;
+    margin-left: .5em;
+}
+
+.THIS .blu {
+    color: #43817B;
+    font-weight: bold;
+}
+.THIS .navy{
+    COLOR: navy; 
+ 	FONT-SIZE: 10pt; 
+    FONT-FAMILY: 'Tahoma','sans-serif'; 
+    font-weight: bold;
+    margin-left: .5em;
+}

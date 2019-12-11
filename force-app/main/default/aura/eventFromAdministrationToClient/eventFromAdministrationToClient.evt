@@ -1,0 +1,5 @@
+<aura:event type="COMPONENT" description="Event template" > 
+<aura:attribute name="month" type="String"/> 
+<aura:attribute name="year" type="String"/> 
+<aura:attribute name="total" type="String"/> 
+</aura:event>

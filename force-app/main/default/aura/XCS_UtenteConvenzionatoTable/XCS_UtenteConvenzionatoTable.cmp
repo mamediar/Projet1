@@ -1,0 +1,67 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes"
+                access="global"> 
+    
+    <aura:attribute name="data" type="Object"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="channel" type="String"/>
+    <aura:attribute name="risultatiTrovati" type="Boolean" default="false"/>
+    <aura:attribute name="titoloDataTable" type="String"/>
+
+    <aura:attribute name="columnsUtenze" type="List" default="[
+                                                              {label: 'Nome', fieldName: 'nome', type: 'Text', initialWidth:150},           
+                                                              {label: 'Codice OCS', fieldName: 'codiceIntermediario', type: 'Text'},
+                                                              {label: 'Provincia', fieldName: 'provinciaNascita', type: 'Text'},          
+                                                              {label: 'Tipo', fieldName: 'tipo', type: 'Text'},
+                                                              {label: 'Stato Dealer', fieldName: 'statoDealer', type: 'Text'},
+                                                              {label: 'P.Iva', fieldName: 'partitaIva', type: 'Text'},
+                                                              {label: 'Filiale', fieldName: 'filiale', type: 'Text'}                                                   
+                                                              ]" />
+    
+    <aura:attribute name="columnsIntermediario" type="List" default="[
+                                                                     {label: 'Codice Intermediario', fieldName: 'codiceIntermediario', type: 'Text', initialWidth:200},           
+                                                                     {label: 'Utenza', fieldName: 'utenza', type: 'Text'},
+                                                                     {label: 'Cognome', fieldName: 'cognome', type: 'Text'},          
+                                                                     {label: 'Nome', fieldName: 'nome', type: 'Text'},
+                                                                     {label: 'Email', fieldName: 'email', type: 'Text',  initialWidth:230},
+                                                                     {label: 'Disabilitato', fieldName: 'flagDisabilitato', type: 'Text'},
+                                                                     {label: 'Scadenza', fieldName: 'dataScadenzaAccount', type: 'Text'},
+                                                                     {label: 'Canale', fieldName: 'canale', type: 'Text'},
+                                                                     {label: 'Profilo Ari', fieldName: 'profiloAri', type: 'Text'}
+                                                                     ]" />
+           
+    <aura:handler event="ltng:sendMessage" action="{!c.handleMessage}"/>
+            
+    <aura:if isTrue="{!v.risultatiTrovati}" >        
+        <aura:if isTrue="{!v.channel == 'utenze'}" >            
+            <lightning:card>
+                <div class="slds-m-left_small">
+                    <lightning:layout>
+                        <lightning:layoutItem>
+                            <lightning:input type="Text" value="{!v.data[0].utenza}" label="Utenza" readonly="true"/>	
+                            <lightning:input type="Text" value="{!v.data[0].profiloAri}" label="Profilo Ari" readonly="true"/>	
+                        </lightning:layoutItem>
+                        <lightning:layoutItem>
+                            <lightning:input type="Text" value="{!v.data[0].nome}" label="Nome" readonly="true"/>	
+                            <lightning:input type="Text" value="{!v.data[0].cognome}" label="Cognome" readonly="true"/>	   
+                        </lightning:layoutItem>
+                        <lightning:input type="Text" value="{!v.data[0].email}" label="email" readonly="true"/>	                        
+                    </lightning:layout>
+                </div>
+            </lightning:card>             
+        </aura:if>
+        
+        <lightning:card>     
+            <div class="slds-m-left_small slds-m-top_small slds-m-bottom_small ">
+                {!v.titoloDataTable}
+            </div>
+            <div class="slds-m-left_small slds-m-right_small">
+            <lightning:datatable keyField="Id"
+                                 resizeColumnDisabled="false"
+                                 hideCheckboxColumn="true" 
+                                 columns="{!v.columns }" 
+                                 data="{!v.data }"                         
+                                 /> 
+            </div>
+        </lightning:card>       
+    </aura:if>    
+</aura:component>

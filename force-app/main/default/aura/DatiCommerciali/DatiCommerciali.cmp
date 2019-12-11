@@ -1,0 +1,14 @@
+<aura:component >
+    <aura:attribute name="datiCommerciali" type="Object"/>
+
+	<lightning:card class="slds-card_boundary" title="Dati Commerciali">
+        <lightning:layout>
+            <lightning:layoutItem size="6" padding="around-small">
+                <lightning:input type="text" name="Retention" label="Retention" value="{!v.datiCommerciali.retention}" readonly="true"/>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="6" padding="around-small">
+                <lightning:input type="text" name="Retention Carte" label="Retention Carte" value="{!v.datiCommerciali.retentionCarte}" readonly="true"/>
+            </lightning:layoutItem>
+    </lightning:layout>
+    </lightning:card>
+</aura:component>

@@ -1,0 +1,89 @@
+{
+   "statusCode":200,
+   "status":"OK",
+   "s2xResponse":{
+      "s2xStatus":{
+         "s2xTime":"2019 03 21 11:05:45",
+         "s2xRetCode":"0",
+         "s2xRequestId":"53110599",
+         "s2xDescription":"OK",
+         "Reload":null
+      },
+      "s2xInfo":{
+         "s2xRequest":{
+            "s2xServiceName":"CARTESIO.EREIMU_1",
+            "s2xReturn":"1",
+            "s2xParams":":DIV=E+TYPE=I+OUTPUT=XML:CFI+03064670791+++++X+",
+            "s2xParamDef":{
+               "Param_7":"X",
+               "Param_2":"03064670791",
+               "Param_1":"CFI"
+            },
+            "s2xOptionDef":{
+               "TYPE":"I",
+               "OUTPUT":"XML",
+               "DIV":"E"
+            }
+         },
+         "s2xAccount":{
+            "s2xUnitsOfMeasurement":"PZ",
+            "s2xSearchResult":"Descrizione del prodotto",
+            "s2xQuantity":"1",
+            "s2xProductCode":"CART1X11PD11",
+            "s2xPrice":"0",
+            "s2xOperationType":"A",
+            "s2xBalanceRemaining":"1000000"
+         }
+      },
+      "s2xData":{
+         "ResultsReport":{
+            "NumberOfRecordsExtractedFromDatabank":"1",
+            "NumberOfElementsFilteredByStatusFilter":"0",
+            "NumberOfElementsFilteredByNameFilter":"0",
+            "NumberOfElementsFilteredByMunicipalityFilter":"0",
+            "NumberOfElementsFilteredByHQFilter":"0"
+         },
+         "GeneralCompanyDetails":[
+            {
+               "VATRegistrationNo":"03064670791",
+               "TransferInformation":null,
+               "SpecialSections":{
+                  "Description":"ORDINARIA",
+                  "Code":"RIO"
+               },
+               "REARegistrationDate":"20091019",
+               "REA":"185479",
+               "PositionOriginCode":"RI",
+               "OtherCompanyInformation":{
+                  "ToponymCode":"VIA",
+                  "StreetNumber":"12",
+                  "Municipality":"SOVERATO",
+                  "MainActivityCodeDescription":"Commercio all'ingrosso e al dettaglio di motocicli e ciclomotori",
+                  "MainActivityCode":"454011",
+                  "FirstTwoCharactersOfBusinessCode":"45",
+                  "DescriptionOfCATECOA":"Commercio all'ingrosso e al dettaglio di motocicli e ciclomotori",
+                  "Address":"MICELI"
+               },
+               "LegalEntityType":"AS",
+               "ISTATCodeMunicipality":"CZ137",
+               "HQProvinceAcronym":"CZ",
+               "HQFullNameOfProvince":"CATANZARO",
+               "FullNameOfProvince":"CATANZARO",
+               "FullNameOfMunicipality":"SOVERATO",
+               "FlagOfPresenceInSpecialSections":"1",
+               "FlagOfInclusionInSpecialFarmersSection":"N",
+               "DescriptionOfLegalEntityType":"SOCIETA' IN ACCOMANDITA SEMPLICE",
+               "DescriptionOfBusinessStatus":"IN LIQUID.",
+               "CompanyTaxCodeNo":"03064670791",
+               "CompanyRegisterNo":"",
+               "CompanyName":"FC MOTO DI CHIEFARI FRANCESCO E C. SAS",
+               "CoCProvinceAcronym":"CZ",
+               "BusinessStatus":"L"
+            }
+         ],
+         "DoubleSearchIndicator":{
+            "Value":"N"
+         }
+      }
+   }
+}

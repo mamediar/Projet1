@@ -1,0 +1,9 @@
+<!--
+ - Created by Salimata NGOM on 11/03/2019.
+ -->
+
+<aura:event type="APPLICATION" description="eventNavigateToIntervistaDettagli">
+    <aura:attribute type="String" name="Id" description="id of record Intervista"/>
+    <aura:attribute type="Boolean" name="loadData" default="true"/>
+    <aura:attribute name="data" type="COM_Intervista__c[]" /> 
+</aura:event>

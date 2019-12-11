@@ -1,0 +1,56 @@
+<!--
+  @Component Name     : PV3388VariazioneEmail.cmp
+  @Description        : 
+  @Author             : sabrina vitali
+  @Group              : 
+  @Last Modified By   : sabrina vitali
+  @Last Modified On   : 19/8/2019, 17:16:48
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    19/8/2019, 14:13:33   sabrina vitali     Initial Version
+-->
+<aura:component extends="c:PVSubComponentBase"  controller='PV3388VariazioneEmailInserimento' access='global'>
+    <!-- main -->
+    <table class="slds-table slds-table_bordered slds-table_col-bordered">
+        <tbody>
+            <tr class="slds-hint-parent">
+                <td colspan="3" class="slds-cell-buffer_left">
+                    <p class="slds-p-horizontal_small slds-text-color_error slds-text-title_bold">
+                        Verificare SEMPRE che la variazione email non sia contestuale alla rigenerazione delle credenzali
+                    </p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <lightning:card class='slds-form_stacked'>
+        <lightning:card title="Leggere Testo Privacy al cliente" iconName="action:script" variant="base">
+            <p>Compass le comunica che i dati personali integrativi, che ci vorrà fornire saranno oggetto di
+                trattamento secondo
+                l'informativa privacy consegnataLe in sede di stipula contrattuale e nei limiti del consenso da Lei
+                prestato.</p><br />
+        </lightning:card>
+
+        <div class="slds-grid slds-container_medium slds-align_left slds-wrap">                                                                
+            <div class="slds-size_12-of-12">        
+                <lightning:input    type="checkbox"     aura:id='checkbox'
+                                    label='confermare di aver comunicato al cliente la PRIVACY' 
+                                    name='checkbox'     required='true' 
+                                    onchange="{!c.verifyCheckPrivacy}" />
+            </div>
+            <div class="slds-size_4-of-12">        
+                <lightning:input    type='email'        aura:id='oldEmail'      id='oldEmail'
+                                    value='{!v.PVForm.cliente.email}'           label='Vecchia Email'   disabled='true' />
+            </div>
+            <div class="slds-size_4-of-12">        
+                <lightning:input    type='email'        aura:id='newEmail'      id='newEmail' 
+                                    value=''            label='Nuova Email'
+                                    pattern='^[a-zA-Z0-9._|\\%#~`=?&amp;\/$^*!}{+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$'
+                                    required='true' />
+            </div>
+        </div>        
+    </lightning:card> <!-- /main -->
+
+</aura:component>

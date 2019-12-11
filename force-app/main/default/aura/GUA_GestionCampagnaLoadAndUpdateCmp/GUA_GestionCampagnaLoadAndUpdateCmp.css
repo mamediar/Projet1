@@ -1,0 +1,15 @@
+.THIS .slds-table_header-fixed_container.slds-scrollable_x {
+    margin-top: 25px;
+}
+
+.THIS .slds-form-element__control.slds-grow.slds-input-has-icon.slds-input-has-icon_left-right {
+    margin-left: 80%;
+}
+
+.THIS label.slds-form-element__label.slds-no-flex {
+    margin-left: 80%;
+}
+
+.THIS #input-element {
+    margin-left: 80%;
+}

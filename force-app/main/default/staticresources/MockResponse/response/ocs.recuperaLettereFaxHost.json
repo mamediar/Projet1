@@ -1,0 +1,38 @@
+{
+    "resultCode": 0,
+    "resultMessage": "Ok",
+    "recuperaLettereFaxHostResponseDTO": {
+        "elencoLettere": [
+            {
+                "procedura": "CO",
+                "codCliente": "11781111",
+                "numPratica": "13152671",
+                "codLettera": "CC12",
+                "modalitaInvio": "F",
+                "oggettoFaxHost": "001-CUCOM408-7O18001",
+                "descrizioneFaxHost": "    ZAPATA FLORES JANET GYSELA                    ",
+                "data": "171018",
+                "ora": "14344444",
+                "operatore": "CUCOM408  ",
+                "operatoreFaxHost": "V408",
+                "numero": "0644252706     ",
+                "email": "                                                  "
+            },
+            {
+                "procedura": "CO",
+                "codCliente": "11781111",
+                "numPratica": "12044707",
+                "codLettera": "CC12",
+                "modalitaInvio": "F",
+                "oggettoFaxHost": "001-CUCOM408-7O18002",
+                "descrizioneFaxHost": "    ZAPATA FLORES JANET GYSELA                    ",
+                "data": "171018",
+                "ora": "14351420",
+                "operatore": "CUCOM408  ",
+                "operatoreFaxHost": "V408",
+                "numero": "0644252706     ",
+                "email": "                                                  "
+            }
+        ]
+    }
+}

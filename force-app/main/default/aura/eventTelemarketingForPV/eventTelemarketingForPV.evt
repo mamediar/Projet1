@@ -1,0 +1,9 @@
+<aura:event type="APPLICATION" description="Event template">
+<aura:attribute type="String" name="PVSel"/>
+<aura:attribute type="String" name="TabSel"/>
+<aura:attribute name="dispPresel1" type="String"/>
+<aura:attribute name="dispPresel2" type="String"/>
+<aura:attribute name="dispPresel3" type="String"/>
+<aura:attribute name="dispPresel4" type="String"/>
+<aura:attribute name="checkboxAttribute" type="String"/>
+</aura:event>

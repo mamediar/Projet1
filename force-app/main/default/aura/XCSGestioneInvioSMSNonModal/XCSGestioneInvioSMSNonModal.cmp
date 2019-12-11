@@ -1,0 +1,13 @@
+<aura:component controller="XCSGestioneInvioSMSController" implements="force:appHostable,force:hasRecordId,flexipage:availableForAllPageTypes,lightning:isUrlAddressable,force:lightningQuickAction" access="global">
+    
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="button" type="Object">
+        <lightning:button variant="destructive" label="Conferma" title="avanti" onclick="{! c.sendSMSwithChildComponent }"/>
+    </aura:attribute>
+    <aura:handler name="XCSInvioSMSEvent" event="c:XCSInvioSMSEvent" action="{!c.gestioneInvioSMSEvent}"/>
+    <c:XCSGestioneInvioSMS aura:id="MainInvioSMS" recordId="{!v.recordId}" footerButton="{!v.button}" />
+
+    <div>
+        
+    </div>
+</aura:component>

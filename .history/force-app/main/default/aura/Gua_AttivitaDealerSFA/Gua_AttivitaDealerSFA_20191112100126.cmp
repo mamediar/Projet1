@@ -1,0 +1,19 @@
+<aura:component >
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" />
+    
+    <aura:attribute name="columns" type="List" />
+    
+    <div>
+        <span>Actività Dealer SFA - Report</span>
+        <div class="slds-m-top_small">
+            
+            <lightning:datatable
+                                 keyField="id"
+                                 data="{}"
+                                 columns="{!v.columns}"
+                                 hideCheckboxColumn="true"
+                                 class="myTable"
+                                 />
+        </div>
+    </div>
+</aura:component>

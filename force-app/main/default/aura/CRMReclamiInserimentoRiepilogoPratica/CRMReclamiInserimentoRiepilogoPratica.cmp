@@ -1,0 +1,45 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" 
+                access="global" 
+                >
+    
+    <aura:attribute name="aziendaSelezionata" type="String"/>
+    <aura:attribute name="clienteSelezionato" type="OCSCliente"/>
+    <aura:attribute name="praticaSelezionata" type="Object"/>
+    <aura:attribute name="infoPraticaSelezionata" type="Object"/>
+    <aura:attribute name="filiale" type="String"/>
+  
+    <c:CRMReclamiRiepilogoPraticaCampiComuni aziendaSelezionata="{!v.aziendaSelezionata}"
+                                             praticaSelezionata="{!v.praticaSelezionata}"
+                                             clienteSelezionato="{!v.clienteSelezionato}"
+                                             />
+    
+    <aura:if isTrue="{!v.aziendaSelezionata=='Futuro'}">
+        <c:CRMReclamiInserimentoRiepilogoPraticaCampiFuturo praticaSelezionata="{!v.praticaSelezionata}"
+                                                            />
+         
+        <aura:set attribute="else">
+            <c:CRMReclamiInserimentoRiepilogoPraticaCampiCompassMBC aziendaSelezionata="{!v.aziendaSelezionata}"
+                                                                    praticaSelezionata="{!v.praticaSelezionata}"
+                                                                    clienteSelezionato="{!v.clienteSelezionato}"
+                                                                    filiale="{!v.filiale}"
+                                                                    />
+            <aura:if isTrue="{!v.aziendaSelezionata=='Compass'}">
+                <!--Riepilogo Pratica {!v.aziendaSelezionata}-->
+                <br/>
+                <c:CRMReclamiInserimentoRiepilogoPraticaCompass aziendaSelezionata="{!v.aziendaSelezionata}"
+                                                                praticaSelezionata="{!v.praticaSelezionata}"
+                                                                infoPraticaSelezionata="{!v.infoPraticaSelezionata}"
+                                                                />
+                
+                <aura:set attribute="else">
+                    <br/>
+                    <!--Riepilogo Pratica {!v.aziendaSelezionata}-->
+                    <c:CRMReclamiInserimentoRiepilogoPraticaMBC aziendaSelezionata="{!v.aziendaSelezionata}"
+                                                                clienteSelezionato="{!v.clienteSelezionato}"
+                                                                />
+                </aura:set>
+            </aura:if>
+        </aura:set>
+    </aura:if>
+    
+</aura:component>

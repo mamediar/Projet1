@@ -1,0 +1,65 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" controller="GD_AttachToIscrittiOutsourcer">
+
+    <aura:attribute name="fileToBeUploaded" type="Object[]" />
+    <aura:attribute name="TargetFileNameCorsi" type="String" description="" />
+    <aura:attribute name="fileName" type="String" default="No File Selected.." />
+    <aura:attribute name="annoRiferimento" type="List" />
+    <aura:handler name="init" value="this" action="{!c.doInit}" />
+    <aura:attribute name="attachment" type="IVASS_Dealer_courses_attachments__c" default="{'sObjectType':'IVASS_Dealer_courses_attachments__c',
+                             'Name':'','Codice_Referente__c':'',
+                             'Anno_di_riferimento__c':'', 
+                             'Link_Documento__c':'',
+                             'Note_Outsourcer__c':'', 
+                             'Status__c':'',
+                             'External_Id__c':''}" />
+
+    <aura:attribute name="recordId" type="String" />
+    <lightning:notificationsLibrary aura:id="notifLib" />
+
+
+    <article class="slds-card">
+        <div class="slds-card__header">
+
+            <lightning:input aura:id="caricamentoCorso" type="file" files="{!v.fileToBeUploaded}" onchange="{!c.onFileUploaded}" label="Allegato da caricare" name="file" multiple="true" accept="image/jpeg, image/png, image/bmp, image/gif, .zip, .doc, .docx, .rtf, .ppt, .pptx, .xls, .xlsx, .pdf, .txt"
+                required="true" />
+
+            <!--
+              <lightning:fileUpload label="File da caricare" multiple="{!v.multiple}"   
+                                              accept="{!v.accept}" recordId="{!v.recordId}"   
+                                              onuploadfinished="{!c.UploadFinished}" />  
+              -->
+
+
+            <ui:outputRichText class="uiOutputRichText slds-m-around--large" value="{!v.TargetFileNameCorsi}" />
+
+            <div class="row">
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning:select aura:id="caricamentoAttachment" name="annoRiferimento" label="Anno di Riferimento :" messageWhenValueMissing="Il Campo è obbligatorio!" onchange="{!c.fetchSelectAnnoRiferimento}">
+                            <aura:iteration items="{!v.annoRiferimento}" var="item">
+                                <option value="{!item}">{!item}</option>
+                            </aura:iteration>
+                        </lightning:select>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="slds-grid slds-gutters">
+
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning:textarea aura:id="caricamentoAttachment" name="esitoNote" label="Note" value="{!v.attachment.Note_Outsourcer__c}" messageWhenValueMissing="Il Campo è obbligatorio!" />
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+        <footer class="slds-card__footer">
+            <div class="row slds-align_absolute-center">
+                <lightning:button variant="destructive" label="Avvia Caricamento" onclick="{!c.avviaCaricamento}" disabled="{!v.errorFile}" />
+            </div>
+        </footer>
+    </article>
+</aura:component>

@@ -1,0 +1,23 @@
+<aura:component controller="CRMTMKMasterScriptEdit" implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId" access="global">
+    <force:recordData aura:id="campagna" recordUpdated="{!c.init}" recordId="{!v.recordId}" fields="Id,ScriptAssociatedAtCampaign__c, SemaforoForStatus__c, FileType__c, ErrorDescription__c,  EndProcessDate__c, StartProcessDate__c, Status__c, isAllCampaignHaveScript__c, NumRows__c, FileName__c,CampaignType__c" targetFields="{!v.fileRecord}" targetError="{!v.recordLoadError}"/>
+<aura:attribute name="fileRecord" type="Object"/>
+    <aura:attribute name="recordId" type="String"/>
+     <aura:attribute name="data" type="String[]"/> 
+     <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="boolModal" type="boolean"/>
+    <aura:attribute name="tipologiaSel" type="String"/>
+    <aura:attribute name="codiceAzioneSel" type="String"/>
+    <aura:attribute name="codiceProdottoSel" type="String"/>
+    <aura:attribute name="codiceTMKSel" type="String"/>
+    <aura:attribute name="descrizioneSel" type="String"/>
+<h1 class="slds-text-body_regular" ><b>Lista Script Associati a questa Campagna</b></h1>
+        <lightning:datatable columns="{! v.columns }" 
+                             data="{! v.data }" 
+                             keyField="id" 
+                             hideCheckboxColumn="true"
+                             onrowaction="{! c.redirect }"
+                            />
+    <c:CRMTelemarketingModalMasterScriptEdit openModaleScriptEdit="{!v.boolModal}" fileId="{!v.recordId}" 
+    tipologiaSel="{!v.tipologiaSel}" codiceAzioneSel="{!v.codiceAzioneSel}" codiceTMKSel="{!v.codiceTMKSel}" codiceProdottoSel="{!v.codiceProdottoSel}" descrizioneSel="{!v.descrizioneSel}"/>
+
+</aura:component>

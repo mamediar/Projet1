@@ -1,0 +1,15 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,lightning:isUrlAddressable" access="global">
+    <aura:handler name='init' value='{!this}' action='{!c.hideButton}' />    
+    <aura:handler event="c:eventTelemarketingForPV" action="{!c.hideButton}"/>
+    <lightning:workspaceAPI aura:id="workspace"/>
+    <aura:attribute name="parametriEsterni" type="PVInserimentoController.PVInserimentoParamEsterni" />
+    <lightning:navigation aura:id="navService"/>
+    <aura:attribute name="caseId" type="String"/>
+    <aura:attribute name="codCategoria" type="String"/>
+    <aura:attribute name="codClienteOCS" type="String"/>
+    <aura:attribute name="codPraticaOCS" type="String"/>
+    <aura:attribute name="commissioneEDI0C" type="String"/>    
+    
+    <c:PVInserimento parametriEsterni="{!v.parametriEsterni}"/>
+    <lightning:button variant="destructive" label="Torna Alla Chiamata" onclick="{!c.redirect}" />
+</aura:component>

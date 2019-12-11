@@ -1,0 +1,28 @@
+<aura:component controller="SFAPraticheIrregBottoneFilialeCntroller" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes">
+    <aura:attribute name="recordId" type="String"/>
+    
+    <aura:attribute name="caseNumber" type="String"/>
+    <aura:attribute name="caseId" type="String"/>
+    <aura:attribute name="isVisualizeButton" type="Boolean"/>
+    <aura:attribute name="disableButton" type="Boolean"/>
+    <aura:attribute name="myText" type="String" default=""/>
+
+    <aura:attribute name="dataScadenza" type="Date" />
+    <aura:attribute name="base64" type="String" />
+    <aura:attribute name="fileName" type="String" />
+    <aura:attribute name="fileExtension" type="String" />
+    
+    <aura:attribute name="isNotaFilialeInserita" type="Boolean"/>
+
+    <aura:attribute name="url" type="String"/>
+    <aura:attribute name="pageReference" type="Object"/>
+    <lightning:navigation aura:id="navService"/>    
+    
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+            
+            <div class="slds-m-top_medium">
+                <lightning:button aura:id="confermaPraticaPerGDV" label="Conferma Pratica per GDV" disabled="{!v.disableButton}" variant="destructive" onclick="{!c.changeStatus}"/>   <!--variant="destructive" ?????-->
+            </div>
+        	<ui:outputText value="{!v.myText}"/>      
+            
+</aura:component>

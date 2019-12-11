@@ -1,0 +1,48 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" access="global">
+    <aura:handler name="init" value="{! this }" action="{! c.init }" />
+    <aura:attribute name="checkload" type="boolean" default="false" />
+
+    <!-- PAGE HEADER -->
+    <lightning:layout class="slds-page-header slds-page-header--object-home">
+        <lightning:layoutItem>
+            <lightning:icon iconName="standard:scan_card" alternativeText="Gestione Campagna" />
+        </lightning:layoutItem>
+        <lightning:layoutItem padding="horizontal-small">
+            <div class="page-section page-header">
+                <h1 class="slds-text-heading--label">Campagna</h1>
+                <h2 class="slds-text-heading--medium">Gestione Campagna</h2>
+            </div>
+        </lightning:layoutItem>
+    </lightning:layout>
+    <!-- / PAGE HEADER -->
+
+    <div class="slds-tabs_scoped">
+        <ul class="slds-tabs_scoped__nav" role="tablist">
+            <li aura:id="nuovaCampagnaId" class="slds-tabs--scoped__item slds-text-title--caps  customClassForTab" title="Nuova Campagna" role="presentation"><a class="slds-tabs--scoped__link" href="javascript:void(0);" onclick="{!c.navigToNomecampagnaTab}" role="tab" tabindex="0" aria-selected="false" aria-controls="tab-default-1" id="NuovaCampagna_linking">Nuova Campagna</a></li>
+
+            <li aura:id="modifiaCampagnaId" class="slds-tabs--scoped__item slds-text-title--caps customClassForTab" title="Modifia Campagna" role="presentation"><a class="slds-tabs--scoped__link" href="javascript:void(0);" onclick="{!c.navigToModifiacampagnaTab}" role="tab" tabindex="-1" aria-selected="true" aria-controls="tab-default-2" id="ModifiaCampagna_linking">Modifica Campagna</a></li>
+
+            <li aura:id="contatiCaricaExelId" class="slds-tabs--scoped__item slds-text-title--caps customClassForTab" title="Color Name" role="presentation"><a class="slds-tabs--scoped__link" href="javascript:void(0);" onclick="{!c.contatiCaricaExelTab}" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-3" id="ContatiCaricaExel_linking">Contati-Carica Exel</a></li>
+
+            <li aura:id="annullaChiamateId" class="slds-tabs--scoped__item slds-text-title--caps customClassForTab" title="Color Name" role="presentation"><a class="slds-tabs--scoped__link" href="javascript:void(0);" onclick="{!c.annullaChiamateTab}" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-4" id="annullaChiamate_linking">Annulla Chiamate</a></li>
+        </ul>
+
+        <div name="tabdataName" aura:id="nuovaCampagnaTabDataId" id="tab-default-1" class="slds-tabs--scoped__content slds-hide customClassForTabData" role="tabpanel" aria-labelledby="NuovaCampagnaId_linking">Creazione Campagna
+            <br />
+            <c:GUA_GestioneCampagnaFormCmp />
+        </div>
+        <div name="tabdataName" aura:id="modifiaCampagnaTabDataId" id="tab-default-2" class="slds-tabs--scoped__content slds-hide customClassForTabData" role="tabpanel" aria-labelledby="modifiaCampagna_linking">
+            <c:GUA_ModifiaCampagnaCmp />
+        </div>
+        <div name="tabdataName" aura:id="contatiCaricaExelTabDataId" id="tab-default-3" class="slds-tabs--scoped__content slds-hide customClassForTabData" role="tabpanel" aria-labelledby="contatiCaricaExel_linking">
+            <c:GUA_LoadContactOnCampaignCmp />
+        </div>
+        <div name="tabdataName" aura:id="annullaChiamateTabDataId" id="tab-default-4" class="slds-tabs--scoped__content slds-hide customClassForTabData" role="tabpanel" aria-labelledby="annullaChiamate_linking">
+            <c:GUA_AnnullaChiamateOutbound />
+        </div>
+        <aura:if isTrue="{!v.checkload}">
+            <c:GUA_LoadCampagnaCmp />
+        </aura:if>
+
+    </div>
+</aura:component>

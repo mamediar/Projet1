@@ -1,0 +1,28 @@
+<aura:component controller="ProcessContractsBarcodeController" implements="force:lightningQuickAction,force:hasRecordId,lightning:availableForFlowScreens">
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="lotList" type="SFALotto__c[]"/>
+    <aura:attribute name="lotto" type="SFALotto__c"/>
+    <aura:attribute name="contratti" type="Contract[]"/>
+    <aura:attribute name="accountName" type="String"/>
+    <aura:attribute name="countLotti" type="Integer"/>
+    <aura:attribute name="checkFind" type="Boolean" default="false"/>
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/> 
+    <aura:handler name="barCodeEvent" event="c:BarCodeReady" action="{!c.checkIsIn}"/>
+     <aura:if isTrue="{!v.checkFind}">                
+        <ui:message title="Attenzione" severity="warning" closable="false">                    
+            Lotto non trovato nel case.                                        
+        </ui:message>                                      
+    </aura:if> 
+    Leggi il bar code su una scatola per iniziare a lavorare i contratti. <br/>
+    
+    ci sono {!v.countLotti} scatole/lotti in attesa di lavorazione. <br/>
+    
+    Clicca sul box di testo qui sotto e quindi leggi il bar code su una scatola. il sistema inizierà automaticamente il processo per la gestione dei contratti contenuti in esso:
+   <br/>
+    <c:BarCode placeholder="Scannerizza il barcode di un lotto da inviare"
+              length="18"
+              label="Barcode:"/>
+    	
+	
+    
+</aura:component>

@@ -1,0 +1,42 @@
+<aura:component controller="FilterLotListController" 
+                implements="force:hasRecordId,force:appHostable,flexipage:availableForAllPageTypes">
+	<aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="lotList" type="SFALotto__c[]"/>
+    <aura:attribute name="lotListData" type="SFALotto__c[]"/>
+    <aura:attribute name="filter" type="Boolean"/>
+    <aura:attribute name="filterValue" type="String" default="TODAY"/>
+    <aura:attribute name="status" type="String"/>
+    <aura:attribute name="title" type="String"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="showList" type="Boolean" default="true"/>
+    
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    <aura:handler event="force:refreshView" action="{!c.init}" />
+    <aura:handler name="change" value="{!v.filterValue}" action="{!c.onFilterChange}"/>
+
+    <lightning:card>
+        
+        <aura:set attribute="title">
+        	<lightning:icon iconName="custom:custom42" size="small"/>
+            <b style="margin-left:10px;">Lotti {! v.title }</b>
+        </aura:set>
+        
+        <aura:if isTrue="{!v.showList}">
+             <lightning:datatable
+                             keyField="Id"
+                             sortBy="OCSLottoId__c"
+                             sortDirection="asc"
+                             data="{!v.lotListData }"
+                             columns="{! v.columns }"
+                             resizeColumnDisabled="true"
+                             hideCheckboxColumn="true"
+                             />
+            <aura:set attribute="else">               
+                <ui:message title="Attenzione" severity="warning" closable="false">                    
+                    Nella lista non sono presenti lotti.
+                </ui:message>
+            </aura:set>
+        </aura:if>
+
+    </lightning:card>
+</aura:component>

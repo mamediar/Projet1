@@ -1,0 +1,25 @@
+{
+	"resultCode":0,
+	"resultMessage":"Ok",
+	"recuperaRetentionCarteResponse":{
+		"elencoCarte":[{
+				"numCarta":"24100015679",
+				"statoCarta":"70",
+				"bloccoCarta":"LS",
+				"prodottoCarta":"01",
+				"esitoRetention":"",
+				"valoreRetention":"",
+				"prodottoAttributo":""
+				},
+				{
+				"numCarta":"8185777259",
+				"statoCarta":"50",
+				"bloccoCarta":"",
+				"prodottoCarta":"DI",
+				"esitoRetention":"KO",
+				"valoreRetention":"non cal",
+				"prodottoAttributo":""
+				}
+			      ]
+	}
+}

@@ -1,0 +1,174 @@
+<!--
+//Component Name : CRMReclamiInserimentoContainer
+//Autor          :  
+//Date           : 22/05/2019
+//Description    : Component che contiene il form per l'inserimento del reclamo
+//Version        : 1.0
+-->
+<aura:component controller="CRMReclamiInserimentoContainerController"
+                implements="flexipage:availableForAllPageTypes" 
+                access="global"> 
+    
+    <aura:attribute name="aziendaSelezionata" type="String" default=""/>
+    <aura:attribute name="stepInserimentoCliente" type="Integer"/>
+    <aura:attribute name="clienteSelezionatoContainer" type="OCSCliente"/>
+    <aura:attribute name="praticaSelezionataContainer" type="Object"/>
+    <aura:attribute name="infoPraticaSelezionata" type="Object"/>
+    <aura:attribute name="reclamoSelezionato" type="Case"/>
+    <aura:attribute name="categoriaDettagli" type="XCS_Categoria__c"/>
+    <aura:attribute name="reclamoIdAfterSave" type="String"/>
+    <aura:attribute name="filiale" type="String"/>
+    <aura:attribute name="contattoPrecedente" type="String"/> <!-- aggiunto questo attributo e fatto il BINDING con dettagliContainer -->
+    <!--<aura:attribute name="outputObjGestione" type="Object"/> aggiunto questo attributo per il BINDING con Inserimento Container  -->
+    
+    <aura:attribute name="fileList" type="Attachment[]"/>
+    <aura:attribute name="mittentiList" type="XCS_Mittente__c[]"/>
+    <aura:attribute name="isDettagliOk" type="Boolean"/>
+    <aura:attribute name="dettagliErrorMessage" type="String"/>
+    <aura:attribute name="dettagliOutputObj" type="Object"/>
+    <aura:attribute name="isSconosciuto" type="Boolean"/>
+    <aura:attribute name="spinner" type="Boolean" default="false"/>
+
+    
+    <aura:attribute name="errorMessage" type="String"/>
+    <aura:attribute name="orgPath" type="String"/>
+    <aura:attribute name="showMessage" type="Boolean" default="false"/>
+
+    
+    <!---->
+    <aura:attribute name="selectionOptions" type="List" default="[
+        {'label': 'Compass', 'value': 'Compass'},
+        {'label': 'Futuro', 'value': 'Futuro'},
+        {'label': 'Creditech', 'value': 'MBCredit Solutions'},
+        ]"/>
+    <!---->
+
+    <aura:attribute name="codaSelezionata" type="CodaXSocieta__mdt"/>
+    <aura:attribute name="delegaPresente" type="Boolean"/>
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+
+    <aura:if isTrue="{!v.spinner}">
+        <lightning:spinner alternativeText="Loading" size="large" />
+    </aura:if>
+    
+    <aura:if isTrue="{!v.showMessage}">
+        <div style="height:640px">
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_small" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
+                            
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Messaggio Utente</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium slds-text-align_center" id="modal-content-id-1">
+                        <p>I dati inseriti andranno persi. Vuoi continuare?</p>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning:button class="slds-button slds-button_neutral" onclick="{!c.reset}" value="Si" label ="Conferma"/>
+                            <lightning:button class="slds-button slds-button_brand" onclick="{!c.reset}" value="No" label="Annulla"/>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </aura:if>
+    
+    <aura:if isTrue="{!(!v.showMessage)}">
+       <div class="slds-grid slds-gutters">
+           <div class="slds-col">
+               
+           </div>
+           <div class="slds-col">
+               
+               <div class="slds-form-element slds-text-align_center">
+                  
+
+              
+                <lightning:combobox aura:id="selection" name="selection" label="Selezionare il tipo di reclamo che si desidera inserire:" options="{! v.selectionOptions }" value="{!v.aziendaSelezionata}" disabled="{!v.aziendaSelezionata != ''}" placeholder=""/>
+              
+               </div>
+               
+           </div>
+           <div class="slds-col"></div>
+           
+    </div>
+    <br/>
+    <aura:if isTrue="{!v.aziendaSelezionata != ''}">   
+        <div class="slds-grid slds-grid_align-center">
+            <div class="slds-col">
+                <div class="slds-button-group" role="group">
+                    <lightning:button label="Salva" class="slds-button slds-button_destructive" onclick="{!c.salvaReclamo}"/>
+                    <lightning:button label="Reset" class="slds-button slds-button_neutral" onclick="{!c.reset}" value="modal"/>
+                </div>
+            </div>
+        </div>
+        
+            
+            <br/>
+            <lightning:tabset selectedTabId="one">
+            <lightning:tab label="Contatto" id="one">
+                <lightning:layout >
+                    <!-- colonna inserimento e riepilogo  -->
+                    <lightning:layoutItem size="8"> <!--9-->
+                        <div class="slds-p-left_x-small">
+                            <c:CRMReclamiInserimentoClienteContainer stepInserimentoCliente="{!v.stepInserimentoCliente}"
+                                                                     aziendaSelezionata="{!v.aziendaSelezionata}"
+                                                                     clienteSelezionatoContainer="{!v.clienteSelezionatoContainer}"
+                                                                     praticaSelezionataContainer="{!v.praticaSelezionataContainer}"
+                                                                     infoPraticaSelezionata="{!v.infoPraticaSelezionata}"
+                                                                     reclamoSelezionato="{!v.reclamoSelezionato}"
+                                                                     isSconosciuto="{!v.isSconosciuto}"
+                                                                     contattoPrecedente='{!v.contattoPrecedente}'
+                                                                     filiale="{!v.filiale}"
+                                                                     />
+                        </div> 
+                    </lightning:layoutItem>
+                    
+                    <!-- colonna dettagli  -->
+                    <lightning:layoutItem size="4"><!--3-->
+                    <div class="slds-box" style="margin-left:15px;margin-right:15px;">
+                        <!--<div class="slds-p-right_xx-small" style="margin-left:15px;margin-right:15px;margin-top:16px;">-->
+                                <div class="slds-p-right_xx-small">
+                                        <div style="font-weight:bold;font-size: 150%;margin-bottom:15px;">Dettaglio Reclamo</div>
+
+                            <c:CRMReclamiInserimentoDettagliContainer aura:id="coda_dettaglio"
+                                                                      aziendaSelezionata="{!v.aziendaSelezionata}"
+                                                                      dettagliOutputObj="{!v.dettagliOutputObj}"
+                                                                      isOk="{!v.isDettagliOk}"
+                                                                      errorMessage="{!v.dettagliErrorMessage}"
+                                                                      categoriaDettagli='{!v.categoriaDettagli}'
+                                                                      contattoPrecedente='{!v.contattoPrecedente}'
+                                                                      codaSelezionata = '{!v.codaSelezionata}'
+                                                                      delegaPresente="{!v.delegaPresente}"
+                                                                      
+                                                                      />
+                        </div>
+                    </div>
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </lightning:tab>
+            
+            <lightning:tab label="Mittenti" id="two">
+                <div class="slds-p-left_x-small">
+                    <c:CRMReclamiInserimentoMittentiContainer aziendaSelezionata="{!v.aziendaSelezionata}"
+                                                              clienteSelezionato="{!v.clienteSelezionatoContainer}"
+                                                              praticaSelezionata="{!v.praticaSelezionataContainer}"
+                                                              mittentiList="{!v.mittentiList}"
+                                                              />
+                    
+                </div>
+            </lightning:tab>
+            
+            <div class="slds-p-left_x-small">
+                <lightning:tab label="Allegati" id="three">
+                    <c:CRMReclamiInserimentoAllegatiContainer fileList="{!v.fileList}"/>
+                </lightning:tab>
+            </div>
+        </lightning:tabset>
+    </aura:if>
+
+    </aura:if>
+
+</aura:component>

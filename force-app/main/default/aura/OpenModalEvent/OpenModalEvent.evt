@@ -1,0 +1,5 @@
+<aura:event type="APPLICATION">
+  <aura:attribute name="openModal" type="Boolean" />
+  <aura:attribute name="title" type="String" />
+  <!-- <aura:attribute name="action" type="Aura.Action" /> -->
+</aura:event>

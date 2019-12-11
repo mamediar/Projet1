@@ -1,0 +1,11 @@
+/*.THIS .slds-table th {*/
+    /*!*padding: .25rem .5rem;*!*/
+     /*white-space: pre-wrap !important;*/
+    /*!*position: relative;*!*/
+/*}*/
+.THIS .slds-truncate {
+    /*padding: .25rem .5rem;*/
+     white-space: pre-wrap !important;
+    display: -webkit-box !important;
+    /*position: relative;*/
+}

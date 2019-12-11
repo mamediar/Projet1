@@ -1,0 +1,257 @@
+<apex:page renderAs="PDF" controller="SchedaVerificaFilialeStampaPDFController" action="{!init}" applyBodyTag="false" >
+      <head>
+        <style>
+          body {
+             font-family: serif;
+             font-weight: lighter ;
+             font-size: 13px !important;
+          }
+          tr {
+            border: 0.5px solid black;
+            font-weight: normal !important ;
+            page-break-inside: avoid !important;
+          } 
+          th {
+            border: 0.5px solid black;
+            font-weight: normal !important ;
+            page-break-inside: avoid !important;
+          }
+          .boldWithItalic{
+            font-weight: bold !important;
+            font-style: italic;
+           }
+          table{
+            border-collapse: collapse;
+            border: 0.5px solid black;
+            
+          }
+          
+          .bold {
+            font-family: sans-serif;
+            font-weight: bold;
+          }
+          .intestazioneLeft {
+            float: left;
+          }
+          .intestazioneRight{
+            float: right; 
+            padding: 20px;
+            border: 0.5px solid black;   
+          }
+          .thPaddingRight{
+            padding: 20px;
+           }
+            
+           .repeatTableHeader{-fs-table-paginate: paginate;}
+        </style>
+      </head>
+      <body>
+            <!----------------------------------------------------INTESTAZIONE----------------------------------------------->      
+          <apex:outputPanel rendered="{!showIntestazioneScheda}">
+                <br/>
+            
+                <div >
+                  <span class="intestazioneLeft boldWithItalic">
+                    Verifiche presso la Filiale di: 
+                  </span>
+                  <span class="intestazioneRight">
+                    {!nomeFiliale}
+                  </span>
+                  
+                </div>
+            
+                
+            
+                <br/><br/><br/>
+                <br/><br/><br/>
+                
+                <table align="center" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th width="20%"><i>Periodo:    </i></th>
+                            <th width="20%" align="center"><i>dal {!periodoDal}</i></th>
+                            <th width="20%" align="center"><i>al {!periodoAl}</i></th>
+                
+                        </tr>
+                    </thead>
+            
+                </table>
+            
+                <br/><br/>
+                  
+                <table align="center" cellspacing="0">
+                    <thead>
+                        <tr class="boldWithItalic">
+                            <th width="20%" align="center"><b>Responsabile Attuale</b></th>
+                            <th width="20%" align="center"><b>dal</b></th>
+                            <th width="20%" align="center"><b>Responsabile Precedente</b></th> 
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th width="20%" align="center">{!scheda.Responsabile_Attuale__c}</th>
+                            <th width="20%" align="center">{!responsabileDal}</th>
+                             <th width="20%" align="center">{!scheda.Responsabile_Precedente__c}</th>
+                        </tr>
+                    </tbody>
+                </table>
+                  <div class="bold" style="font-size: 10px; padding-left: 15px;">
+                      N.B. 
+                  </div>
+                  <div style="font-size: 10px; padding-left: 15px;">
+                      Il responsabile precedente va indicato solo se quello attuale ha un’anzianità nella Filiale inferiore all’anno.
+                  </div>
+            
+                <br/><br/>
+                  
+                   <table align="center" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th width="20%" align="center"><i><b>Verifiche Precedenti</b></i></th>
+                            <th width="20%" align="center"><i><b>Periodo</b></i></th> 
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th width="20%" align="center">Coordinatore</th>
+                            <th width="20%" align="center">{!coordinatore}</th>
+                        </tr>
+                        <tr>
+                            <th width="20%" align="center">Internal Auditing</th>
+                            <th width="20%" align="center">{!internalAuditing}</th>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                  <br/><br/>
+                
+                  <div style="color:red;">
+                      <ins>Considerazioni/Conclusioni</ins>
+                  </div>
+                  
+                  <br/><br/>
+                  
+                  
+                  <div style="border: 1px solid black;" class="boldWithItalic">
+                      {!scheda.Considerazioni_Conclusioni__c}
+                  </div>
+                  
+            
+                  <br/><br/>
+                  <br/><br/><br/>
+                  <table align="center" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th width="20%" align="center">Data</th>
+                            <th width="20%" align="center">Coordinatore</th> 
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th width="20%" align="center">{!dataCreazione}</th>
+                            <th width="20%" align="center">{!scheda.CreatedBy.name}</th>
+                        </tr>
+            
+                    </tbody>
+                </table>
+              
+              <!--CAMBIO PAGINA-->  
+              <apex:outputPanel rendered="{!or(showListaPratiche,showQuestionario)}">
+                    <div style="page-break-after:always;"/>
+              </apex:outputPanel>
+          </apex:outputPanel>
+            
+          <!----------------------------------------------------QUESTIONARIO----------------------------------------------->
+            <apex:outputPanel rendered="{!showQuestionario}">
+
+          
+          
+          
+          <table align="center" cellspacing="0" class="repeatTableHeader" style="page-break-inside:auto !important;">
+            <thead>
+                <tr style="background-color: #FF0000; color: white;">
+                    <th width="5%" align="center"><strong><i>RIF</i></strong></th>
+                        <th width="10%" align="center"><strong><i>TIPOLOGIA</i></strong></th>
+                    <th width="10%" align="center"><strong><i>SEZIONE</i></strong></th>
+                    <th width="25%" align="center"><strong><i>ARGOMENTO</i></strong></th>
+                    <th width="6%" align="center"><strong><i>Evideze Precendenti</i></strong></th>
+                    <th width="5%" align="center"><strong><i>Esito Controllo Attuale</i></strong></th>
+                    <th width="20%" align="center"><strong><i>Note/commento generale</i></strong></th>
+                    <th width="10%" align="center"><strong><i>Nuova Scadenza</i></strong></th>
+                   
+                </tr>
+            </thead>
+            <tbody style="font-size: 10px !important;">
+                <apex:repeat value="{!listaQuestionari}" var="questionario" id="theRepeat2">
+                    <tr>
+                        <th width="5%" align="center">{!questionario.Rif__c}</th>
+                        <th width="10%" align="center"> {!questionario.Tipologia__c}</th>
+                        <th width="10%" align="center">{!questionario.Sezione__c  }</th>
+                        <th width="25%" align="center">{!questionario.Argomento__c}</th>
+                        <th width="6%" align="center">{!questionario.Evidenze_Precedenti__c}</th>
+                        <th width="5%" align="center">{!questionario.Esito_controllo_Attuale__c}</th>
+                        <th width="20%" align="center">{!questionario.Note_commento_generale__c}</th>
+                        <th width="10%" align="center">{!questionario.Nuova_Scadenza__c}</th>
+                    </tr>
+                </apex:repeat>
+
+            </tbody>
+        </table>
+                <div style="page-break-after:always;"/>
+          </apex:outputPanel>
+          
+          
+          <!----------------------------------------------------LISTA PRATICHE----------------------------------------------->
+          <apex:outputPanel rendered="{!showListaPratiche}">
+
+          
+          
+          
+          <table align="center" cellspacing="0" class="repeatTableHeader" style="page-break-inside:auto !important;">
+                
+              <thead style="font-size: 14px !important;">
+                <tr style="background-color: #FF0000; color: white;">
+                    <th colspan="11" scope="colgroup" align="center"><strong><i>elenco pratiche</i></strong></th>
+                  </tr>
+                <tr style="background-color: #FF0000; color: white;">
+                    
+                    <th width="10%" align="center"><strong><i>numero pratica</i></strong></th>
+                        <th width="20%" align="center"><strong><i>tipologia</i></strong></th>
+                    <th width="5%" align="center"><strong><i>tipo prodotto</i></strong></th>
+                    <th width="5%" align="center"><strong><i>prodotto</i></strong></th>
+                    <th width="10%" align="center"><strong><i>cod.cliente</i></strong></th>
+                    <th width="18%" align="center"><strong><i>ragione sociale</i></strong></th>
+                    <th width="5%" align="center"><strong><i>data liqui dazione</i></strong></th>
+                    <th width="20%" align="center"><strong><i>finanziato</i></strong></th>
+                    <th width="20%" align="center"><strong><i>canale</i></strong></th>
+                    <th width="5%" align="center"><strong><i>procedura</i></strong></th>
+                    <th width="15%" align="center"><strong><i>intermediario</i></strong></th>
+                   
+                </tr>
+            </thead>
+            <tbody>
+                <apex:repeat value="{!listaPratiche}" var="pratica" id="theRepeat">
+                    <tr>
+                        <th width="10%" align="center">{!pratica.Numero_Pratica__c}</th>
+                        <th width="20%" align="center"> {!pratica.Tipologia__c}</th>
+                        <th width="5%" align="center">{!pratica.Tipo_Prodotto__c}</th>
+                        <th width="5%" align="center">{!pratica.Prodotto__c}</th>
+                        <th width="10%" align="center">{!pratica.Cod_Cliente__c}</th>
+                        <th width="18%" align="center">{!pratica.Ragione_Sociale__c}</th>
+                        <th width="5%" align="center">{!pratica.Data_Liquidazione__c}</th>
+                        <th width="20%" align="center">{!pratica.Finanziato__c}</th>
+                        <th width="20%" align="center">{!pratica.Canale__c}</th>
+                        <th width="5%" align="center">{!pratica.Procedura__c}</th>
+                        <th width="15%" align="center">{!pratica.Intermediario__c}</th>
+                    </tr>
+                </apex:repeat>
+
+            </tbody>
+        </table>
+          </apex:outputPanel>
+         
+          
+          
+
+      </body>
+    </apex:page>

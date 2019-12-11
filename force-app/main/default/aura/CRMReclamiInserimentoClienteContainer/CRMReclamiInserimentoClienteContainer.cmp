@@ -1,0 +1,123 @@
+<!--
+//Component Name : CRMReclamiInserimentoClienteContainer
+//Autor          : 
+//Date           : 05/06/2019
+//Description    : Component che contiene il form per l'inserimento del cliente nel reclamo
+//Version        : 1.0
+-->
+<aura:component controller="CRMReclamiInsClienteContainerCtrl"
+                implements="force:appHostable,flexipage:availableForAllPageTypes" 
+                access="global">
+    
+    <aura:attribute name="aziendaSelezionata" type="String"/>
+    <aura:attribute name="stepInserimentoCliente" type="Integer"/>
+    <aura:attribute name="idCliente" type="String"/>
+    <aura:attribute name="listaClienti" type="OCSCliente[]"/>
+    <aura:attribute name="clienteSelezionato" type="OCSCliente"/>
+    <aura:attribute name="clienteSelezionatoContainer" type="OCSCliente"/>
+    <aura:attribute name="isSconosciuto" type="Boolean" default="false"/>
+    <aura:attribute name="listaPratiche" type="List"/>
+    <aura:attribute name="praticaSelezionata" type="Object"/>
+    <aura:attribute name="infoPraticaSelezionata" type="Object"/>
+    <aura:attribute name="reclamoSelezionato" type="Case"/>
+    <aura:attribute name="praticaSelezionataContainer" type="Object"/><!--OCSPratica oppure OCSPraticaFuturo-->
+    <aura:attribute name="listaInfoPratiche" type="List"/> <!--Inner class di CRMReclamiInsClienteContainerCtrl: InfoPraticaOutput-->
+    <aura:attribute name="numeroReclamo" type="String"/>
+    <aura:attribute name="showCambiaProdotto" type="Boolean" default="true"/>
+    <aura:attribute name="contattoPrecedente" type="String"/>
+    <aura:attribute name="filiale" type="String"/>
+    <aura:attribute name="spinner" type="Boolean" default="false"/>
+    <aura:attribute name="showAlert2" type="Boolean"/>
+
+    <!-- <aura:attribute name="outputObjGestione" type="Object"/>  aggiunto questo attributo per il BINDING con Inserimento Container  -->
+    
+    <!-- era commentato. Motivo: lo sa solo Failli -->
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    
+    <aura:handler name="change" value="{!v.listaClienti}" action="{!c.onListaClientiChange}"/>
+    <aura:handler name="change" value="{!v.clienteSelezionato}" action="{!c.onClienteChange}"/>
+    <aura:handler name="change" value="{!v.listaPratiche}" action="{!c.onListaPraticheChange}"/>
+    <aura:handler name="change" value="{!v.praticaSelezionata}" action="{!c.onPraticaChange}"/>
+    
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    
+    <aura:if isTrue="{!v.spinner}">
+        <lightning:spinner alternativeText="Loading" size="large" />
+    </aura:if>
+    
+    <aura:if isTrue="{!v.stepInserimentoCliente==1}">
+        <!-- cmp inserimento cliente -->
+        <div style="font-weight:bold;font-size: 150%;margin-top:17px;margin-bottom:15px;margin-left:15px;">Inserimento Cliente {!v.aziendaSelezionata}</div>
+        <c:CRMReclamiInserimentoCliente aziendaSelezionata="{!v.aziendaSelezionata}"
+                                        clienteSelezionato="{!v.clienteSelezionato}"
+                                        listaClienti="{!v.listaClienti}"
+                                        isSconosciuto="{!v.isSconosciuto}"
+                                        reclamoSelezionato="{!v.reclamoSelezionato}"
+                                        stepInserimentoCliente="{!v.stepInserimentoCliente}"
+                                        numeroReclamo="{!v.numeroReclamo}"
+                                        showAlert2="{!v.showAlert2}"
+                                        />
+        
+        <aura:set attribute="else">
+            <aura:if isTrue="{!v.stepInserimentoCliente==2}">
+                
+                <!-- cmp selezione cliente -->
+                <div style="font-weight:bold;font-size: 150%;margin-top:17px;margin-left:15px;">Selezione Cliente {!v.aziendaSelezionata}</div>
+                <c:CRMReclamiInserimentoSelezioneCliente listaClienti="{!v.listaClienti}"
+                                                         clienteSelezionato="{!v.clienteSelezionato}"
+                                                         aziendaSelezionata="{!v.aziendaSelezionata}"
+                                                         />
+              
+                <aura:set attribute="else">
+                    <aura:if isTrue="{!v.stepInserimentoCliente==3}">
+                        
+                        <!-- cmp selezione pratica -->
+                        <div style="font-weight:bold;font-size: 150%;margin-top:17px;margin-bottom:15px;margin-left:15px;">Selezione Pratica {!v.aziendaSelezionata}</div>
+                        <c:CRMReclamiListaPratiche listaPratiche="{!v.listaPratiche}"
+                                                   listaInfoPratiche="{!v.listaInfoPratiche}"
+                                                   praticaSelezionata="{!v.praticaSelezionata}"
+                                                   infoPraticaSelezionata="{!v.infoPraticaSelezionata}"
+                                                   aziendaSelezionata = "{!v.aziendaSelezionata}"
+                                                   />
+                        
+                        <aura:set attribute="else">
+                            <aura:if isTrue="{!v.stepInserimentoCliente==4}">
+                                
+                                <!-- cmp riepilogo e collegamento reclamo con altro reclamo -->
+                                <div style="font-weight:bold;font-size: 150%;margin-top:17px;margin-bottom:15px;margin-left:15px;">Riepilogo Reclamo {!v.aziendaSelezionata}</div>
+                                <aura:if isTrue="{!v.clienteSelezionato!=null}">
+                                    <c:CRMReclamiInserimentoRiepilogoCliente aziendaSelezionata="{!v.aziendaSelezionata}"
+                                                                             clienteSelezionato="{!v.clienteSelezionato}"
+                                                                             praticaSelezionata="{!v.praticaSelezionata}"
+                                                                             stepInserimentoCliente="{!v.stepInserimentoCliente}"
+                                                                             infoPraticaSelezionata="{!v.infoPraticaSelezionata}"
+                                                                             reclamoSelezionato="{!v.reclamoSelezionato}"
+                                                                             numeroReclamo="{!v.numeroReclamo}"
+                                                                             showCambiaProdotto="{!v.showCambiaProdotto}"
+                                                                             filiale="{!v.filiale}"
+                                                                             />
+                                </aura:if>
+                                
+                                <aura:set attribute="else">
+                                    Eventuale spazio per Riepilogo Finale {!v.aziendaSelezionata}
+                                </aura:set>
+                            </aura:if>
+                        </aura:set>
+                    </aura:if>
+                </aura:set>
+            </aura:if>
+            <div class="slds-p-top_x-small" style="margin-left:15px;margin-top:10px;">
+                <c:CRMReclamiInserimentoNuovaRicercaButton listaClienti="{!v.listaClienti}"
+                                                           clienteSelezionato="{!v.clienteSelezionato}"
+                                                           clienteSelezionatoContainer="{!v.clienteSelezionatoContainer}"
+                                                           listaPratiche="{!v.listaPratiche}"
+                                                           praticaSelezionata="{!v.praticaSelezionata}"
+                                                           stepInserimentoCliente="{!v.stepInserimentoCliente}"
+                                                           listaInfoPratiche="{!v.listaInfoPratiche}"
+                                                           infoPraticaSelezionata="{!v.infoPraticaSelezionata}"
+                                                           praticaSelezionataContainer="{!v.praticaSelezionataContainer}"
+                                                           />
+            </div>
+        </aura:set>
+    </aura:if>
+</aura:component>

@@ -1,0 +1,32 @@
+<aura:component controller="OCSCartaDatiFinanziariController" implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId" access="global" >
+    <aura:registerEvent name="appEvent" type="c:eventTelemarketing"/>
+    <aura:registerEvent name="sendMessage" type="ltng:sendMessage"/>
+    <force:recordData aura:id="case" recordUpdated="{!c.init}" recordId="{!v.recordId}" fields="ActivityType__c,NumeroPratica__c" targetFields="{!v.CaseRecord}" targetError="{!v.recordLoadError}"/>
+    <aura:attribute name="CaseRecord" type="Object" />
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="Numero" type="String"/>
+    <aura:attribute name="Prodotto" type="String"/>
+    <aura:attribute name="DataScadenza" type="String"/>
+    <aura:attribute name="Statocarta" type="String"/>
+    <aura:attribute name="StatoRinnovo" type="String"/>
+    <aura:attribute name="Fido" type="String"/> 
+    <aura:attribute name="Disponibilita" type="String"/>
+    <aura:attribute name="ModalitaPagamento" type="String"/>
+    <aura:attribute name="Iban" type="String"/>
+    <aura:attribute name="ModalitaCalcoloRata" type="String"/>
+    <lightning:card iconName="action:approval" footer="Prodotto" title="Dettaglio Prodotto">
+        <p class="slds-p-horizontal_small">
+        <div class=".slds-dl_inline">Numero Carta:         <b>{!v.Numero}</b></div>
+        <div class=".slds-dl_inline">Prodotto:              <b>{!v.Prodotto}</b></div>
+        <div class=".slds-dl_inline">Data Scadenza:         <b>{!v.DataScadenza}</b></div>
+        <div class=".slds-dl_inline">Stato Carta:           <b>{!v.Statocarta}</b></div>
+        <div class=".slds-dl_inline">Stato Rinnovo:         <b>{!v.StatoRinnovo}</b></div>
+        <div class=".slds-dl_inline">Fido:                  <b>{!v.Fido}</b></div>
+        <div class=".slds-dl_inline">Disponibilità:         <b>{!v.Disponibilita}</b></div>
+        <div class=".slds-dl_inline">Modalità Pagamento:    <b>{!v.ModalitaPagamento}</b></div>
+        <div class=".slds-dl_inline">Iban:                  <b>{!v.Iban}</b></div>
+        <div class=".slds-dl_inline">Modalità Calcolo Rata: <b>{!v.ModalitaCalcoloRata}</b></div>
+        </p>
+    </lightning:card>
+	
+</aura:component>

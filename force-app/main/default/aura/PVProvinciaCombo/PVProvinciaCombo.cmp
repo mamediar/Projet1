@@ -1,0 +1,22 @@
+<aura:component controller='PVProvinciaLuogoController' implements="flexipage:availableForAllPageTypes" access="global" >
+    <aura:handler name='init' value='{!this}' action='{!c.loadProvince}'/>
+
+    <aura:attribute name='provinceList' type='XCS_Town__c[]'/>
+    <aura:attribute name='label' type='String'/>
+    <aura:attribute name="required" type="Boolean"/>
+    <!-- valori da parent da preselezionare -->
+    <aura:attribute name='provinciaSelection' type='String'/>
+    
+    <lightning:select  aura:id='provinceMenuId' 
+                        label='{!v.label}' 
+                        required='{!v.required}' 
+                        name='provinceMenu' 
+                        value='{!v.provinciaSelection}' 
+                        class="slds-p-horizontal_medium" >
+        <option text='Selezionare' value=''/>
+        <aura:iteration items='{!v.provinceList}' var='provinciaVar'>
+            <option text='{!provinciaVar.Comune__c}' value='{!provinciaVar.Provincia__c}' selected='{!provinciaVar.Provincia__c==v.provinciaSelection}'/>
+        </aura:iteration>
+    </lightning:select>
+    
+</aura:component>

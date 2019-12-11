@@ -1,0 +1,118 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" 
+                access="global" 
+                >
+    
+    <aura:attribute name="praticaSelezionata" type="Object"/>
+    <aura:attribute name="clienteSelezionato" type="OCSCliente"/>
+    <aura:attribute name="aziendaSelezionata" type="String"/>
+    <aura:attribute name="tipo" type="String"/>
+    <aura:attribute name="numInterno" type="String"/>
+    <aura:attribute name="stato" type="String"/>
+    <aura:attribute name="classifRec" type="String"/>
+    <aura:attribute name="attributo" type="String"/>
+    <aura:attribute name="dataCarcamRichiesta" type="String"/>
+    <aura:attribute name="recuperatore" type="String"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    <br/>
+    <div style="margin-left:15px;margin-right:15px;">
+    <hr style="margin:0%"></hr>
+    <div class="slds-grid slds-gutters">
+        <div class="slds-col">
+            <lightning:input label="Società:" value="{!v.aziendaSelezionata}" readonly="true"/>
+        </div>
+        <div class="slds-col">
+            <lightning:input label="Numero Interno:" value="{!v.numInterno}" readonly="true"/>
+        </div>
+        <div class="slds-col">
+            <lightning:input label="" value="" readonly="true"/>
+        </div>
+    </div>
+
+    <hr style="margin:0%"></hr>
+
+    <aura:if isTrue="{!v.aziendaSelezionata!='MBCredit Solutions'}">
+
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col">
+                        <lightning:input label="Tipo:"
+                        value="{!v.tipo}"
+                        readonly="true"
+                        />
+                </div>
+                <div class="slds-col">
+                        <lightning:input label="Stato:"
+                        value="{!v.stato}"
+                        readonly="true"
+                        />
+                </div>
+                <div class="slds-col">
+                        <lightning:input label="Classificazione Rec."
+                        value="{!v.classifRec}"
+                        readonly="true"
+                        />
+                </div>
+            </div>    
+            <hr style="margin:0%"></hr>
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col">
+                        <lightning:input label="Attributo:"
+                        value="{!v.attributo}"
+                        readonly="true"
+                        />
+                </div>
+                <div class="slds-col">
+                        <lightning:input label="Data Caricamento/Richiesta:"
+                        value="{!v.dataCarcamRichiesta}"
+                        readonly="true"
+                        />
+                </div>
+                <div class="slds-col">
+                        <lightning:input label="Recuperatore:"
+                        value="{!v.recuperatore}"
+                        readonly="true"
+                        />
+                </div>
+            </div>            
+            
+    </aura:if>
+    <hr style="margin:0%"></hr>
+    </div>
+    <!--
+    <lightning:input label="Società:"
+                     value="{!v.aziendaSelezionata}"
+                     readonly="true"
+                     />
+    <lightning:input label="Numero Interno:"
+                     value="{!v.numInterno}"
+                     readonly="true"
+                     />
+    <aura:if isTrue="{!v.aziendaSelezionata!='MBCredit Solutions'}">
+        <lightning:input label="Tipo:"
+                         value="{!v.tipo}"
+                         readonly="true"
+                         />
+        <lightning:input label="Stato:"
+                         value="{!v.stato}"
+                         readonly="true"
+                         />
+        <lightning:input label="Classificazione Rec."
+                         value="{!v.classifRec}"
+                         readonly="true"
+                         />
+        <lightning:input label="Attributo:"
+                         value="{!v.attributo}"
+                         readonly="true"
+                         />
+        <lightning:input label="Data Caricamento/Richiesta:"
+                         value="{!v.dataCarcamRichiesta}"
+                         readonly="true"
+                         />
+        <lightning:input label="Recuperatore:"
+                         value="{!v.recuperatore}"
+                         readonly="true"
+                         />
+    </aura:if>
+
+    -->
+</aura:component>

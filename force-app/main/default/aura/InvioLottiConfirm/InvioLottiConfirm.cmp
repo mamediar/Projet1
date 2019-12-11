@@ -1,0 +1,19 @@
+<aura:component implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens">
+	<aura:attribute name="selectedRows" type="SFALotto__c[]" />
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="barCodeVector" type="String"/>
+    
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/> 
+    <aura:handler name="barCodeEvent" event="c:BarCodeReady" action="{!c.saveBarcode}"/>
+    
+    <div> Lotti selezionati:&nbsp;
+        <aura:iteration items="{!v.selectedRows}" var="lotto">
+            <aura:text value="{!lotto.OCSLottoId__c}"/>;&nbsp;
+        </aura:iteration>
+    </div>
+    
+    <c:BarCode placeholder="Scannerizza il barcode del vettore"
+               length="11"
+               label="Barcode Vettore:"/>
+    
+</aura:component>

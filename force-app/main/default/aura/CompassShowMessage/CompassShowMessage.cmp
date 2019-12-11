@@ -1,0 +1,10 @@
+<aura:component implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes">
+    
+    <aura:attribute name="title" type="String"/>
+    <aura:attribute name="message" type="String"/>
+    <aura:attribute name="severity" type="String"/>
+    
+    <ui:message title="{!v.title}" severity="{!v.severity}" closable="false">                    
+    	{!v.message}
+    </ui:message>
+</aura:component>

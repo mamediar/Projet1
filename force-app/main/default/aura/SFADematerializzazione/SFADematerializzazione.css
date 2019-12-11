@@ -1,0 +1,21 @@
+.THIS .bk-color-green{
+    background-color: rgb(28, 218, 3);
+    text-align: center;
+    padding-left: 2px;
+    padding-right: 2px; 
+    -webkit-text-fill-color: white;
+}
+.THIS .bk-color-orange{
+    background-color: orange; 
+    text-align: center;
+    padding-left: 2px;
+    padding-right: 2px;
+    -webkit-text-fill-color: white;
+}
+.THIS .bk-color-red{
+    background-color: red;
+    text-align: center;
+    padding-left: 2px;
+    padding-right: 2px; 
+    -webkit-text-fill-color: white;
+}

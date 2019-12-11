@@ -1,0 +1,17 @@
+<design:component>
+    <design:attribute name="lotto" label="Lotto"/>
+    <design:attribute name="barcodeCartella" label="oldBarcode"/>
+    <design:attribute name="countContract" label="Count"/>
+    <design:attribute name="countMissingContract" label="countMancanti"/>
+    <design:attribute name="countContractProcessed" label="countprocessed"/>
+    <design:attribute name="contratto" label="Contratto"/>
+    <design:attribute name="contractList" label="listacontratti"/>
+    <design:attribute name="contractfromprocessed" label="contractFromProcessed"/>
+    <design:attribute name="accountName" label="account"/>
+    <design:attribute name="isIn" label="isIn"/>
+    <design:attribute name="checkTrovato" label="checkTrovato"/>
+    <design:attribute name="checkMessage" label="checkMessage"/>
+    <design:attribute name="checkEndActivity" label="checkEndActivity"/>
+    <design:attribute name="messaggio" label="messaggio"/>
+    <design:attribute name="messaggio2" label="messaggio2"/>
+</design:component>

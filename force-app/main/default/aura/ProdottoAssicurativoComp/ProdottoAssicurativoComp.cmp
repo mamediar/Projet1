@@ -1,0 +1,197 @@
+<!--
+ - Created by PC on 3/26/2019.
+ -->
+
+ <aura:component controller="ComodityApexClass" description="ProdottoAssicurativoComp"  implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+ access="global">
+<aura:attribute name="nuovaIntervista" type="COM_Intervista__c"/>
+     <aura:attribute type="COM_CRMComodity_Check_Asc_Desc__c[]" name="comodityCheklist"/>
+     <!--
+     default="{'sobjectype':'COM_CRMComodity_Check_Asc_Desc__c',
+                                                                                 'COM_CRMTipo__c':'',
+                                                                                 'COM_CRMDefinizione__c':'',
+                                                                                 'COM_CRMflag_prod_sani_non_conn__c':'',
+                                                                                 'Descrizione__c':'',
+                                                                                 'COM_CRMTermini_Recesso__c':'',
+                                                                                 'COM_CRMEstinzione__c':''}"/> -->
+<aura:attribute type="Risposte__c" name="rispondeQuezione" default="{'sobjectype':'Risposte__c',
+                                                 'D0__c':'',
+                                                 'D1__c':'',
+                                                 'D2__c':'',
+                                                 'D3__c':'',
+                                                 'D4__c':'',
+                                                 'D5__c':'',
+                                                 'D6__c':'',
+                                                 'D7__c':'',
+                                                 'D8__c':'',
+                                                 'Intervista__c':''
+                                             }"/>
+
+<aura:attribute name="risposta" type="Risposte__c"/>
+<aura:attribute name="quezione2" type="string"/>
+<aura:attribute name="quezione1" type="string"/>
+<aura:attribute name="quezione" type="string"/>
+<aura:attribute name="NumeroAssicurazioneStr1" type="string" />
+<aura:attribute name="NumeroAssicurazioneStr2" type="string" />
+<aura:attribute name="stringAssicurazione" type="string" default=""/>
+<aura:attribute name="status" type="string" default=" Sig. "/>
+<aura:attribute name="TextListAssicuratico" type="string" default="polizza a copertura del credito-contratta con Metlife"/>
+<aura:attribute name="AppuntamentoFissato" type="string"/>
+<aura:attribute name="isShown" type="boolean" default="true"/>
+<aura:attribute name="showButton" type="boolean" default="false"/>
+<aura:attribute name="isShownSottoscirtta" type="boolean" default="false"/>
+<aura:attribute name="isRispostaExist" type="boolean" default="false"/>
+<aura:attribute name="assicurativoTracciaturaRecesso" type="boolean" default="false"/>
+<aura:attribute name="assicurativoPerche" type="boolean"/>
+<aura:attribute name="cancella" type="boolean" default="false"/>
+<aura:attribute name="isShownForNo" type="boolean" default="false"/>
+<aura:attribute name="disponibileNonAdesso" type="boolean" default="false"/>
+<aura:attribute name="FlussoDomanda" type="String" default=''/>
+<aura:handler name="init" value="{!this}" action="{!c.getComodityCheckList}" />
+<aura:attribute name="indexFlag" type="boolean" default="false"/>
+<!--
+<aura:attribute name="Index_num_mesi" type="String" default=''/> -->
+<aura:attribute name="Index_num_mesi_assic_non_connessa" type="String" default=''/>
+     
+     
+<aura:attribute name="VarAssicurativoTraccRecesso" type="boolean" default="false"/>
+<aura:attribute name="FissaAppuntamentoFlag" type="boolean" default="false"/>
+<aura:attribute name="Frase_SP_1" type="String" default=''/>
+<aura:attribute name="Frase_SP_2" type="String" default=''/>     
+<aura:attribute name="NumeroModuliStr" type="String" default=''/>
+     
+<!-- CSS Styles -->
+ <ltng:require styles="{!$Resource.AssicurativoCSSFiles}" />     
+     
+     
+    <hr />
+    <aura:if isTrue="{!v.isShown}">
+         <div class="cmp-intApput">
+              <div class="">
+                 <p>{!v.status} {!v.nuovaIntervista.COM_NomeCliente__r.Name} l'assicurazione di cui parliamo è già compresa nella sua rata mensile di € {!v.nuovaIntervista.COM_Importo_Rata__c}</p>
+                 <p>Quando si è recata per il prestito, insieme al contratto di finanziamento ha firmato {!v.comodityCheklist.length}  {!v.NumeroModuliStr} per l'adesione all'assicurazione che copre {!v.TextListAssicuratico}.</p>
+                <p>Non ricorda di averla sottoscritta?</p>
+              </div>
+            <div>
+                 <lightning:input type="radio" name="radioNonProdoto" label="Si" value="Si" onchange="{!c.getDomandaProdottoSi}"/>
+                 <lightning:input type="radio" name="radioNonProdoto" label="NO/NON RICORDO / NON HO SOTTOSCRITTO NULLA" value="nonRicordo" onchange="{!c.getDomandaProdottoNon}"/>
+            </div>
+         </div>
+    </aura:if>
+
+    <aura:if isTrue="{!v.assicurativoPerche}">
+         <div class="cmp-intApput slds-grid">
+              <c:AssicurativoPerche nuovaIntervista="{!v.nuovaIntervista}" 
+                                    comodityCheklist="{!v.comodityCheklist}" 
+                                    stringAssicurazione="{!v.stringAssicurazione}"
+                                    quezione1="{!v.quezione1}" 
+                                    risposta="{!v.risposta}" 
+                                    quezione="{!v.quezione}" 
+                                    assicurativoTracciaturaRecesso="{!v.VarAssicurativoTraccRecesso}"
+                                    quezione2 = "{!v.quezione2}"
+                                    FlussoDomanda = "{!v.FlussoDomanda}"/>
+        </div>
+    </aura:if>
+    
+    <aura:if isTrue="{!v.isShownSottoscirtta}">
+         <div class="cmp-intApput">
+              <hr/>
+              <div class="">
+                  <p>Vedo, inoltre, che il suo finanziamento ha una durata pari a {!v.nuovaIntervista.COM_Durata_Sanitarie__c}; {!v.Frase_SP_1}
+                    {!v.stringAssicurazione} {!v.Frase_SP_2} {!v.Index_num_mesi_assic_non_connessa} giorni?</p>
+              </div>
+             
+              <div>
+                     <lightning:input type="radio" name="disponibileSi" label="Si" value="Si" onchange="{!c.getDomandaProdottosottoscirttaSi}"/>
+                     <lightning:input type="radio" name="disponibileSi" label="No" value="nonRicordo" onchange="{!c.getDomandaProdottosottoscirttaNon}"/>
+              </div>
+        </div>
+    </aura:if>
+
+    <aura:if isTrue="{!v.isShownForNo}">
+         <div class="cmp-intApput">
+             <hr/>
+             <div class="">
+                 <p> Va bene {!v.status} {!v.nuovaIntervista.COM_NomeCliente__r.Name} , non si preoccupi. Per prima cosa tenga presente
+                     che nei documenti che le ha rilasciato la filiale trova sia il contratto assicurativo
+                     sia le condizioni di Polizza. Poi possiamo fare così: io le faccio comunque un breve
+                     riepilogo delle caratteristiche{!v.NumeroAssicurazioneStr2}. Dopo di che le consiglio
+                     di leggere attentamente le condizioni di polizza; questo genere di copertura/e le può
+                     effettivamente essere utile! Se poi ha ancora qualche dubbio, la invito a recarsi in
+                     filiale per rivedere la sua pratica con i colleghi. Sapranno sicuramente trovare la
+                     miglior soluzione per le sue esigenze.<br/><br/><u>Tenga comunque presente che lei ha la facoltà di
+                     recedere dall'assicurazione entro i termini riportati sulle condizioni di Polizza in suo
+                     possesso.</u>
+                 </p>
+                 <p><br/></p>
+                 <p><br/><u>Se il cliente desidera fissare un appuntamento in filiale 
+                            <a style="color: #3366BB" onclick="{!c.redirect}" >FISSA APPUNTAMENTO</a></u></p>
+                 
+                   <aura:if isTrue="{!v.FissaAppuntamentoFlag}">
+                       <div role="dialog" tabindex="-1" aria-labelledby="header43" aura:id="Modalbox" class="slds-modal slds-fade-in-open">
+                          <div class="slds-modal__container ">
+                               <div class="slds-modal__header">
+                                    <button class="slds-button slds-modal__close slds-button--icon-inverse" title="Close" onclick="{!c.closeModal}">
+                                        <lightning:icon iconName="utility:close" size="medium" variant="bare"/> 
+                                    </button>
+                               </div>
+                               <div class="slds-modal__content slds-p-around--large">
+                                    <div>
+                                        <c:creaAppuntamento idCliente="{!v.nuovaIntervista.COM_NomeCliente__c}"/>
+                                    </div>
+                                    <!--IsCalledFromAssicurativo="{!v.FissaAppuntamentoFlag}" /> -->
+                               </div>
+                               <div class="slds-modal__footer"></div>
+                          </div>
+                       </div>
+                       <div class="slds-backdrop slds-backdrop--open" aura:id="Modalbackdrop"></div>
+                   </aura:if>
+            </div>
+             
+             
+           
+             
+             
+             
+             <div>
+                 <p>Appuntamento Fissato:</p>
+                 <table style="width:15%;overflow:auto;">
+                     <tbody>
+                        <tr>
+                            <td><lightning:input type="radio" id="AppuntamentoFissato" label="Si" name="AppuntamentoFissato" value="Si" onchange="{!c.AppuntamentoFissatoSi}"/></td>
+                            <!--<td>&nbsp;</td>-->
+                            <td><lightning:input type="radio" id="AppuntamentoFissato" label="No" name="AppuntamentoFissato" value="Non" onchange="{!c.AppuntamentoFissatoNon}"/></td>
+                        </tr>
+                     </tbody> 
+                 </table>
+                 
+             </div>
+             
+             <c:AssicurativoPerche quezione = "{!v.quezione}" quezione1="{!v.quezione1}" 
+                                   nuovaIntervista="{!v.nuovaIntervista}"
+                                   comodityCheklist="{!v.comodityCheklist}" 
+                                   risposta="{!v.risposta}" 
+                                   stringAssicurazione="{!v.stringAssicurazione}" 
+                                   assicurativoTracciaturaRecesso="{!v.VarAssicurativoTraccRecesso}"
+                                   quezione2 = "{!v.quezione2}"
+                                   FlussoDomanda = "{!v.FlussoDomanda}"/>
+         </div>
+    </aura:if>
+     
+    <aura:if isTrue="{!v.assicurativoTracciaturaRecesso}">
+        <c:AssicurativoTracciaturaRecesso quezione1="{!v.quezione1}" 
+                                          risposta="{!v.risposta}"
+                                          nuovaIntervista="{!v.nuovaIntervista}" FlagFinanzPolizza = "true"
+                                          quezione2 = "{!v.quezione2}"
+                                          FlussoDomanda = "{!v.FlussoDomanda}" />
+    </aura:if>
+    
+    <!--
+    <aura:if isTrue="{!v.disponibileNonAdesso}">
+          <div class="cmp-intApput slds-grid">
+               <c:ApputamentoTelephonicoAssicurativo  quezione="{!v.quezione}"
+                                                      nuovaIntervista="{!v.nuovaIntervista}"/>
+          </div>
+    </aura:if> -->
+
+</aura:component>

@@ -1,0 +1,1323 @@
+<!-- @component : ClienteFuturoDetail
+       @description: Contiene i dettagli del cliente Futuro
+       @author: Mady COLY
+       @dateCreated: 21/05/2019
+       @dateLastModified: 07/06/2019 -->
+<aura:component controller="CommodityFuturoCnt" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+                access="global">
+    
+    <!--handler -->
+    <aura:handler name="init" value="this" action="{!c.doInit}"/>
+    <!--handler End-->
+    
+    <!--attributes-->
+    <!-- Attributti Sobject -->
+    <aura:attribute name="clienteFuturo" type="Com_Commodity_Survey__c" default="{'sobjectype':'Com_Commodity_Survey__c',
+                                                                                 'Name':'',
+                                                                                 'COM_CODICE_AGENTE__c':'',
+                                                                                 'COM_NOME_CEDENTE__c':'',
+                                                                                 'COM_CED_TELEFONO_CELL__c':'',
+                                                                                 'COM_TIPO_PRODOTTO__c':'',
+                                                                                 'COM_CATEGORIA_PRODOTTO__c':'',
+                                                                                 'COM_COD_SUB_AGENTE__c':'',
+                                                                                 'COM_SUB_AGENTE__c':'',
+                                                                                 'COM_AGENTE__c':'',
+                                                                                 'Ultimo_Esito__c':'',
+                                                                                 'Data_Ultimo_Esito__c':'',
+                                                                                 'COM_Status_FUTURO__c':'',
+                                                                                 'COM_NETTO_EROGATO__c':'',
+                                                                                 'COM_IMPORTO_RATA__c':'',
+                                                                                 'COM_NUMERO_RATE__c':'',
+                                                                                 'COM_DATA_CONTRATTO__c':'',
+                                                                                 'Interviste_Utili__c':'',
+                                                                                 'COM_TipoRinnovo__c':'',
+                                                                                 'Stato__c':'',
+                                                                                 'CreatedDate':'',
+                                                                                 'LastModifiedDate':''
+                                                                                 }" />
+    <aura:attribute type="Risposte__c" name="rispondeIntervista" default="{'sobjectype':'Risposte__c',
+                                                                          'D1_Futuro__c':'',
+                                                                          'D2_Futuro__c':'',
+                                                                          'D3_Futuro__c':'',
+                                                                          'D4_Futuro__c':'',
+                                                                          'D5_Futuro__c':'',
+                                                                          'D6_Futuro__c':'',
+                                                                          'D6bis_Futuro__c':'',
+                                                                          'D7_Futuro__c':'',
+                                                                          'D8_Futuro__c':'',
+                                                                          'D9_Futuro__c':'',
+                                                                          'D10_Futuro__c':'',
+                                                                          'D11_Futuro__c':'',
+                                                                          'Valutazione__c':'',
+                                                                          'COM_Note_Contratto__c':'',
+                                                                          'COM_Note_Contratto_Assicurazione__c':'',
+                                                                          'COM_Note_Documenti_Assicurazione__c':'',
+                                                                          'COM_Note_Motivazione_Recesso__c':'',
+                                                                          'COM_Note_Precontratto__c':'',
+                                                                          'COM_Note_Questionario_Assicurativo__c':'',
+                                                                          'COM_Note_Secci__c':'',
+                                                                          'COM_Note_Soddisfazione_Cliente__c':'',
+                                                                          'COM_Note9__c':'',
+                                                                          'COM_Note_10__c':'',
+                                                                          'COM_Note_11__c':'',
+                                                                          }" />
+    <!-- Finire Attributti Sobject -->                                                                            
+    <!-- Attributti String -->                                                                                                                                             
+    <aura:attribute name="Id" type="String"/>
+    <aura:attribute name="selectedStep" type="string" default="stepQuezione1"/>         
+    <aura:attribute name="status" type="string" default=" Sig. "/>   
+    <aura:attribute name="rispondeQuezione1" type="string" default=""/>   
+    <aura:attribute name="rispondeQuezione2" type="string" default=""/>   
+    <!--Finire Attributti String --> 
+    <!-- Attributti Boolean -->                                                                                                                                   
+    <aura:attribute name="responseNon" type="Boolean" default="true"/>                                                                   
+    <aura:attribute name="iniziaIntervista" type="Boolean" default="false"/>                                                                   
+    <aura:attribute name="startIntervista" type="Boolean" default="false"/>                                                                   
+    <aura:attribute name="concludiIntervista" type="Boolean" default="false"/>                                                                   
+    <aura:attribute  name="terminataIntervista" type="Boolean" default="false"/> 
+    <aura:attribute type="Boolean" name="fromAmministrazione" default="false" />
+    <!-- Attributi per dire se la nota è obbligatoria o no  | type : Boolean -->  
+    <aura:attribute name="noteToIntervista2Required" type="Boolean" default="false"/>                                                                   
+    <aura:attribute name="noteToIntervista3Required" type="Boolean" default="false"/>                                                                   
+    <aura:attribute name="noteToIntervista4Required" type="Boolean" default="false"/>                                                                   
+    <aura:attribute name="noteToIntervista5RequiredSI" type="Boolean" default="false"/> 
+    <aura:attribute name="noteToIntervista5RequiredNO" type="Boolean" default="false"/> 
+    <aura:attribute name="noteToIntervista6Required" type="Boolean" default="false"/>                                                                   
+    <aura:attribute name="noteToIntervista6bisRequired" type="Boolean" default="false"/>                                                                   
+    <aura:attribute name="noteToIntervista7Required" type="Boolean" default="false"/>                                                                   
+    <aura:attribute name="noteToIntervista8Required" type="Boolean" default="false"/>                                                                   
+    <aura:attribute name="noteToIntervista9Required" type="Boolean" default="false"/>                                                                   
+    <aura:attribute name="noteToIntervista10Required" type="Boolean" default="false"/>                                                                   
+    <aura:attribute name="noteToIntervista11Required" type="Boolean" default="false"/> 
+    <!-- Finire Attributti per dire se la nota è obbligatoria o no-->  
+    <aura:attribute  name="showError" type="Boolean" default="false"/> 
+    <aura:attribute  name="loading" type="Boolean" default="true"/> 
+    <aura:attribute  name="btnLeftDisabled" type="Boolean" default="false"/> 
+    <aura:attribute  name="btnRightDisabled" type="Boolean" default="false"/> 
+    <!--Finire Attributti Boolean--> 
+    
+    <!--attributes End-->
+    
+    <!--Body-->
+    <aura:if isTrue="{!v.loading}">
+        <div class="demo-only" style="height:6rem">
+            <div class="slds-spinner_container">
+            <div role="status" class="slds-spinner slds-spinner_medium slds-spinner_brand">
+            <span class="slds-assistive-text">Loading</span>
+            <div class="slds-spinner__dot-a"></div>
+            <div class="slds-spinner__dot-b"></div>
+            </div>
+            </div>
+        </div>
+    </aura:if>
+    <aura:if isTrue="{!not(v.loading)}">
+    <div class="">
+        <div class="slds-card slds-m-top_large">
+            <!--Start details interview-->
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th style="text-align:center;background-color:#6a89e5;color:#fff;" scope="col" colspan="4">
+                            <div class="slds-p-around_small slds-text-heading_medium" title="" >Dettagli Pratica Futuro</div>
+                        </th>
+                    </tr>
+                </thead>
+                
+                <tbody>
+                    <tr class="slds-hint-parent">
+                        <td>
+                            <div class="slds-p-around_small"><b>Nome Cliente</b>
+                                
+                            </div>
+                        </td>
+                        <td>
+                            <ui:outputText aura:id="NomeCliente" title="Nome Cliente"
+                                           value="{!v.clienteFuturo.COM_NOME_CEDENTE__c}" />
+                        </td>
+                        <td>
+                            <div class="slds-p-around_small"><b>&nbsp;</b>                                                
+                            </div>                        
+                        </td>
+                        <td>
+                            &nbsp;
+                        </td>
+                    </tr>
+                    
+                    <tr class="slds-hint-parent">
+                        <td>
+                            <div class="slds-p-around_small"><b>Data Stipula:</b></div>
+                        </td>
+                        <td>
+                            <ui:outputDate format="dd/MM/yyyy" aura:id="NumeroTelefonoCel" 
+                                           value="{!v.clienteFuturo.COM_DATA_CONTRATTO__c}" />
+                        </td>
+                        <td>
+                            <div class="slds-p-around_small"><b>Data Liquidazione :</b></div>
+                        </td>
+                        <td>
+                            <ui:outputDate format="dd/MM/yyyy" aura:id="DataLiquidazione"
+                                           value="{!v.clienteFuturo.LastModifiedDate}" />
+                        </td>
+                    </tr>
+                    <tr class="slds-hint-parent">
+                        <td>
+                            <div class="slds-p-around_small"><b>Numero Cellulare:</b></div>
+                        </td>
+                        <td>
+                            <ui:outputText aura:id="NumeroTelefonoCel" title="NumeroTelefonoCel"
+                                           value="{!v.clienteFuturo.COM_CED_TELEFONO_CELL__c}" />
+                        </td>
+                        <td>
+                            <div class="slds-p-around_small"><b>Recapito Telefono :</b></div>
+                        </td>
+                        <td>
+                            <ui:outputText aura:id="RecapitoTelefono2"
+                                           value="{!v.clienteFuturo.COM_CED_TELEFONO1__c}" />
+                        </td>
+                    </tr>
+                    
+                    <tr class="slds-hint-parent">
+                        <!--<aura:if isTrue="{!v.clienteFuturo.COM_cin_z_calc__c=='R'}">-->
+                        <td>
+                            <div class="slds-p-around_small">
+                                <b>Sub Agente:</b>
+                            </div>
+                        </td>
+                        <td>
+                            <ui:outputText aura:id="CodiceDescrizione1"
+                                           title="Codice Desc Assicurazione 1:"
+                                           value="{!v.clienteFuturo.COM_SUB_AGENTE__c}" />
+                        </td>
+                        <td>
+                            <div class="slds-p-around_small">
+                                <b>Agente:</b>&nbsp;&nbsp;&nbsp;
+                                
+                            </div>
+                        </td>
+                        <td>
+                            <ui:outputText aura:id="CodiceDescrizione3"
+                                           title="Codice Desc Assicurazione 3:"
+                                           value="{!v.clienteFuturo.COM_AGENTE__c}" />
+                        </td>
+                        <!--</aura:if>-->
+                    </tr>
+                    
+                    <tr class="slds-hint-parent">
+                        <!--<aura:if isTrue="{!v.clienteFuturo.COM_cin_z_calc__c=='G'}">-->
+                        <td>
+                            <div class="slds-p-around_small">
+                                <b>Prodotto:</b>
+                            </div>
+                        </td>
+                        <td>
+                            <ui:outputText aura:id="CodiceDescrizione1"
+                                           title="Codice Desc Assicurazione 1:"
+                                           value="{!v.clienteFuturo.COM_TIPO_PRODOTTO__c}" />
+                        </td>
+                        <td>
+                            <div class="slds-p-around_small">
+                                <b>Categoria Prodotto:</b>
+                            </div>
+                        </td>
+                        <td>
+                            <ui:outputText aura:id="CodiceDescrizione3"
+                                           title="Codice Desc Assicurazione 3:"
+                                           value="{!v.clienteFuturo.COM_CATEGORIA_PRODOTTO__c}" />
+                        </td>
+                        <!--</aura:if>-->
+                    </tr>
+                    <tr class="slds-hint-parent">
+                        <!--<aura:if isTrue="{!v.clienteFuturo.COM_cin_z_calc__c=='V'}">-->
+                        <td>
+                            <div class="slds-p-around_small">
+                                <b>Importo Erogato:</b>
+                            </div>
+                        </td>
+                        <td>
+                            <ui:outputText aura:id="CodiceDescrizione1"
+                                           title="Codice Desc Assicurazione 1:"
+                                           value="{!v.clienteFuturo.COM_NETTO_EROGATO__c}" />
+                        </td>
+                        <td>
+                            <div class="slds-p-around_small">
+                                <b>Rata:</b>
+                            </div>
+                        </td>
+                        <td>
+                            <ui:outputText aura:id="CodiceDescrizione3"
+                                           title="Codice Desc Assicurazione 3:"
+                                           value="{!v.clienteFuturo.COM_IMPORTO_RATA__c}" />
+                        </td>
+                        <!--</aura:if>-->
+                    </tr>
+                    
+                    <tr class="slds-hint-parent">
+                        <td>
+                            <div class="slds-p-around_small"><b>Codice Pratica:</b></div>
+                        </td>
+                        <td>
+                            <ui:outputText aura:id="CodicePratica" 
+                                           value="{!v.clienteFuturo.Name}" />
+                        </td>
+                        <td>
+                            <div class="slds-p-around_small"><b>Numero Rate:</b></div>
+                        </td>
+                        <td>
+                            <ui:outputText aura:id="NumeroRate" 
+                                           value="{!v.clienteFuturo.COM_NUMERO_RATE__c}" />
+                        </td>
+                    </tr>
+                    <aura:if isTrue="{!v.clienteFuturo.Ultimo_Esito__c!=''}">
+                        <tr class="slds-hint-parent">
+                            <td>
+                                <div class="slds-p-around_small"><b>Ultimo Esito:</b></div>
+                            </td>
+                            <td>
+                                <ui:outputText aura:id="NumNonRisponde" value="{!v.clienteFuturo.Ultimo_Esito__c}" />
+                            </td>
+                            <td>
+                                <div class="slds-p-around_small"><b>Data Esito:</b></div>
+                            </td>
+                            <td>
+                                {!v.clienteFuturo.Data_Ultimo_Esito__c}
+                            </td>
+                        </tr>
+                    </aura:if>
+                </tbody>
+            </table>
+        </div>           
+        <aura:if isTrue="{! not(v.fromAmministrazione)}">
+            <lightning:card>
+                    <div class="slds-m-right_large slds-m-top_large slds-m-bottom_large">
+                            <lightning:button label="Indietro" onclick="{!c.redirectToFuturoImpaginazioneComp}"
+                                              class="slds-m-top--medium slds-m-left_medium indietro" />
+                            <aura:if isTrue="{! not(v.fromAmministrazione)}">
+                                <lightning:button label="Non risponde Richiamare"
+                                                  class="slds-m-top--medium slds-float_right nonRispondeAlTelefono" variant="brand"
+                                                  onclick="{!c.nonRisponde}" />
+                                
+                                <lightning:button label="Irreperibile"
+                                                  class="slds-m-top--medium slds-float_right Irreperibile" variant="brand"
+                                                  onclick="{!c.irreperibile}" />
+                                <lightning:button label="Non accetta intervista"
+                                                  class="slds-m-top--medium slds-float_right" variant="brand"
+                                                  onclick="{!c.nonAccetta}" />     
+                            </aura:if>      
+                        </div> 
+                <aura:if isTrue="{!v.iniziaIntervista}">
+                    <lightning:progressIndicator currentStep="{!v.selectedStep}" type="base">
+                        <lightning:progressStep label="Domanda 1" value="stepIntervistaDomanda1" />
+                        <lightning:progressStep label="Domanda 2" value="stepIntervistaDomanda2" />
+                        <lightning:progressStep label="Domanda 3" value="stepIntervistaDomanda3" />
+                        <lightning:progressStep label="Domanda 4" value="stepIntervistaDomanda4" />
+                        <lightning:progressStep label="Domanda 5" value="stepIntervistaDomanda5" />
+                        <lightning:progressStep label="Domanda 6" value="stepIntervistaDomanda6" />
+                        <aura:if isTrue="{!v.clienteFuturo.COM_TipoRinnovo__c!='' }">
+                            <lightning:progressStep label="Domanda 6 bis" value="stepIntervistaDomanda6bis" />
+                        </aura:if>
+                        <lightning:progressStep label="Domanda 7" value="stepIntervistaDomanda7" />
+                        <lightning:progressStep label="Domanda 8" value="stepIntervistaDomanda8" />
+                        <lightning:progressStep label="Domanda 9" value="stepIntervistaDomanda9" />
+                        <lightning:progressStep label="Domanda 10" value="stepIntervistaDomanda10" />
+                        <lightning:progressStep label="Domanda 11" value="stepIntervistaDomanda11" />
+                    </lightning:progressIndicator>
+                </aura:if>   
+                <div class="slds-p-around--medium">
+                    <div class="{!v.selectedStep == 'stepQuezione1' ? 'slds-show' : 'slds-hide'}">
+                        <div class="question">
+                            <h2 class="slds-text-heading_medium">Domanda :</h2>
+                            <p class="slds-m-bottom_medium">Buongiorno/Buonasera, {!v.status} <strong>{!v.clienteFuturo.COM_NOME_CEDENTE__c}</strong></p> 
+                            <p class="slds-m-bottom_medium">Sono [nome operatore] e La chiamo dall'Italia su incarico di Futuro che, attraverso delle verifiche effettuate campione,
+                                intende appurate il rispetto degli adempimenti contrattuali relativi alla trasparenza, circa il contratto di finanziamento 
+                                rimborsabile mediante cessione del quinto/delegazione di pagamento, da Lei sottoscritto il 
+                                <ui:outputDate format="dd/MM/yyyy" value="{!v.clienteFuturo.COM_DATA_CONTRATTO__c}" />
+                                presso {!v.clienteFuturo.COM_AGENTE__c}.</p>
+                            
+                            <p class="slds-m-bottom_medium">A tal proposito, dovrei porle alcune domande. Le chiedo, pertanto, se puo reperire tutta la documentazione le è stata consegnata ( cambia l'accento ), inerente il finanziamento.
+                                Con l'occasione Le ricordiamo che i documenti che Le sono stati consegnati, nel corso dell'iter  istruttorio. sono contrassegnati ciascuno con apposito numero che potrà 
+                                ritrovare nei documenti stessi,posizionati in alto a destra.
+                            </p>
+                            <p class="slds-m-bottom_medium">
+                                Se questo Le richiedesse del tempo, potrei richiamarLa all'orario che retiene opportuno ( accento per la u ). Le ricordiamo che i suoi dati personali verranno trattati conformemente a 
+                                quanto previsto dall'informativa privacy da Lei sottoscritta e consultabile anche sui sito <a href="http://www.futuro.it/" target="_blank">www.futuro.it</a>.</p>
+                            <p class="slds-m-bottom_medium">
+                                In questo momento ha a sua disposizione tutti i documenti che l'agente le ha consegnato ?
+                            </p>
+                            
+                        </div>
+                        <div class="slds-m-top_x-large slds-m-bottom_small slds-box riposta">
+                            <h2 class="slds-text-heading_medium">Riposta:</h2>
+                            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <lightning:input  type="radio" name="risponse" label="SI"
+                                                             value="SI" onchange="{!c.getRespondeQuezione1}" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <lightning:input type="radio" name="risponse" label="NO"
+                                                             value="NO" onchange="{!c.getRespondeQuezione1}" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>		                                          
+                    </div>
+                    <div class="{!v.selectedStep == 'stepRisponde1NO' ? 'slds-show' : 'slds-hide'}">
+                        <c:ApputamentoTelephonicoFuturo clienteFuturo="{!v.clienteFuturo}"/>
+                    </div>
+                    
+                    <div class="{!v.selectedStep == 'stepRisponde1SI' ? 'slds-show' : 'slds-hide'}">
+                        <div class="question">
+                            <h2 class="slds-text-heading_medium">Avviso Legale</h2>
+                            <p class="slds-m-bottom_medium">
+                                "Devo informaria che questa chiamata sarà registrata e chi ci fornira saranno trattati da Futuro,
+                                conformemente a quanto previsto dall'informativa privacy da Lei sottoscritta e consultabile anche
+                                sul sito <a href="http://www.futuro-spa.com/" target="_blank">www.futuro-spa.com</a>.
+                            </p>
+                            <p class="slds-m-bottom_medium">
+                                Dà il suo consenso alla registrazione, {!v.status} {!v.clienteFuturo.COM_NOME_CEDENTE__c} ?"
+                            </p>
+                        </div>
+                            <div class="slds-m-top_x-large slds-m-bottom_small slds-box riposta">
+                                <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <lightning:input  type="radio" name="risponse" label="SI"
+                                                                 value="SI" onchange="{!c.rispondeQuezioneIntervista}" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <lightning:input type="radio" name="risponse" label="NO"
+                                                                 value="NO" onchange="{!c.rispondeQuezioneIntervista}" />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <aura:if isTrue="{!v.concludiIntervista}">	
+                                <p class="slds-m-bottom_medium">
+                                    <strong>Non dà il consenso alla registrazione</strong>: "In questo caso dobblamo interrompere l'iter, e comunicheremo la sua
+                                    decisione a Futuro e all Agente {!v.clienteFuturo.COM_AGENTE__c}. Grazie per la sua attenzione."    
+                                </p>   	
+                            </aura:if>
+                    </div>
+                    <div class="{!v.selectedStep == 'stepIntervistaDomanda1' ? 'slds-show' : 'slds-hide'}">
+                        <div class="question">
+                            <h2 class="slds-text-heading_medium">Domanda 1:</h2>
+                            <p class="slds-m-bottom_medium">
+                                Come ha avuto conoscenza della possibilità di richiedere o di rinnovare un finanziamento
+                                rimborsabile mediante cessione del quinto/delegazione di pagamento? Le sottopongo alcune
+                                possibilità di risposta: 
+                            </p>
+                        </div>
+                        <div class="slds-m-top_x-large slds-m-bottom_small slds-box riposta">
+                            <h2 class="slds-text-heading_medium">Riposta:</h2>
+                            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande1"  type="radio" name="intervistaDomande1" label="Sono stato contattato da un operatore finanziario "
+                                                             value="Sono stato contattato da un operatore finanziario" onchange="{!c.rispondeIntervista1}" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande1" type="radio" name="intervistaDomande1" label="Mi sono rivolto direttamente ad un operatore finanziario di mia conoscenza "
+                                                             value="Mi sono rivolto direttamente ad un operatore finanziario di mia conoscenza " onchange="{!c.rispondeIntervista1}" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande1" type="radio" name="intervistaDomande1" label="Mi sono rivolto direttamente ad un operatore finanziario che non conoscevo prima "
+                                                             value="Mi sono rivolto direttamente ad un operatore finanziario che non conoscevo prima" onchange="{!c.rispondeIntervista1}"  required="true"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande1" type="radio" name="intervistaDomande1" label="ALTRO"
+                                                             value="ALTRO" onchange="{!c.rispondeIntervista1}"  required="true"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande1" type="radio" name="intervistaDomande1" label="NON RICORDA"
+                                                             value="NON RICORDA" onchange="{!c.rispondeIntervista1}"  required="true"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="{!v.selectedStep == 'stepIntervistaDomanda2' ? 'slds-show' : 'slds-hide'}">
+                        <div class="question">
+                            <h2 class="slds-text-heading_medium">Domanda 2:</h2>
+                            <p class="slds-m-bottom_medium">	
+                                Una volta manifestata la sua volontà a richiedere informazioni relative al finanziamento, 
+                                ha ricevuto il modulo inerente l’informativa sulla privacy e ha sottoscritto il consenso al trattamento dei suo dati? 
+                            </p>
+                            <p class="slds-m-bottom_medium">
+                                (Se il cliente non ricorda o chiede maggiori informazioni: l’ Informativa sulla Privacy
+                                è contrassegnata con il numero ❶, che trova posizionato, all’interno del documento stesso, in alto a destra) . 
+                            </p>
+                        </div>
+                        
+                        <div class="slds-m-top_x-large slds-m-bottom_small slds-box riposta">
+                            <h2 class="slds-text-heading_medium">Riposta:</h2>
+                            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande2" type="radio" name="intervistaDomande2" label="SI"
+                                                             value="SI" onchange="{!c.rispondeIntervista2}" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande2" type="radio" name="intervistaDomande2" label="NO"
+                                                             value="NO" onchange="{!c.rispondeIntervista2}" />
+                                            <aura:if isTrue="{!v.noteToIntervista2Required}">
+                                                <div class="slds-form-element__control slds-col">
+                                                    <lightning:textarea aura:id="intervistaDomande2" name="noteToIntervista2" label="Note" value="{!v.rispondeIntervista.COM_Note_Contratto__c}" required="{!v.noteToIntervista2Required}" messageWhenValueMissing="Il Campo è obbligatorio!"/>
+                                                </div>
+                                            </aura:if>    
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande2" type="radio" name="intervistaDomande2" label="NON RICORDA"
+                                                             value="NON RICORDA" onchange="{!c.rispondeIntervista2}" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="{!v.selectedStep == 'stepIntervistaDomanda3' ? 'slds-show' : 'slds-hide'}">
+                        <div class="question">
+                            <h2 class="slds-text-heading_medium">Domanda 3:</h2>
+                            <p class="slds-m-bottom_medium">
+                                Prima di stipulare il contratto, Le è stato consegnato il documento “Informazioni Europee di Base sul Credito ai Consumatori”?
+                            </p>
+                            <p class="slds-m-bottom_medium">
+                                (Se il cliente non ricorda o chiede maggiori informazioni, il documento in questione è contrassegnato con il numero ❷
+                                che trova posizionato in alto a destra, e deve essere consegnato in fase precontrattuale e riassume le caratteristiche
+                                finanziarie dell’operazione proposta sulla base delle esigenze espresse; è composto di due pagine e sulla prima,
+                                è riportato un riquadro con indicati i “Dati consumatore”, quindi il nome, cognome,  codice fiscale e la data di nascita) 
+                            </p>
+                            
+                        </div>
+                        <div class="slds-m-top_x-large slds-m-bottom_small slds-box riposta">
+                            <h2 class="slds-text-heading_medium">Riposta:</h2>
+                            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande3" type="radio" name="intervistaDomande3" label="SI"
+                                                             value="SI" onchange="{!c.rispondeIntervista3}" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande3" type="radio" name="intervistaDomande3" label="NO"
+                                                             value="NO" onchange="{!c.rispondeIntervista3}" />
+                                            <aura:if isTrue="{!v.noteToIntervista3Required}">
+                                                <div class="slds-form-element__control slds-col">
+                                                    <lightning:textarea aura:id="intervistaDomande3" name="noteToIntervista3" label="Note" value="{!v.rispondeIntervista.COM_Note_Contratto_Assicurazione__c}" required="{!v.noteToIntervista3Required}" messageWhenValueMissing="Il Campo è obbligatorio!"/>
+                                                </div>
+                                            </aura:if>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande3" type="radio" name="intervistaDomande3" label="NON RICORDA"
+                                                             value="NON RICORDA" onchange="{!c.rispondeIntervista3}" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                        </div>                                     
+                        
+                    </div>
+                    
+                    <div class="{!v.selectedStep == 'stepIntervistaDomanda4' ? 'slds-show' : 'slds-hide'}">
+                        <div class="question">
+                            <h2 class="slds-text-heading_medium">Domanda 4:</h2>
+                            <p class="slds-m-bottom_medium">
+                                Prima di stipulare il contratto, poteva richiedere la copia Idonea per la Stipula”. L’ha richiesta? 
+                            </p>
+                            <p class="slds-m-bottom_medium">
+                                (Se il cliente non ricorda o chiede maggiori informazioni, il documento è contrassegnato con il numero ❸, 
+                                che trova posizionato in alto a destra ed è una copia completa del testo contrattuale,
+                                privo dei dati del cliente e dei dati finanziari, che il cliente può facoltativamente richiedere pima di sottoscrivere il contratto.
+                                E’ utile a fini informativi e non necessario per il proseguo della istruttoria della richiesta di finanziamento) 
+                            </p>
+                            
+                        </div>
+                        <div class="slds-m-top_x-large slds-m-bottom_small slds-box riposta">
+                            <h2 class="slds-text-heading_medium">Riposta:</h2>
+                            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande4" type="radio" name="intervistaDomande4" label="NON RICHIESTA"
+                                                             value="NON RICHIESTA " onchange="{!c.rispondeIntervista4}" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande4" type="radio" name="intervistaDomande4" label="RICHIESTA E OTTENUTA"
+                                                             value="RICHIESTA E OTTENUTA" onchange="{!c.rispondeIntervista4}" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande4" type="radio" name="intervistaDomande4" label="RICHIESTA E NON OTTENUTA"
+                                                             value="RICHIESTA E NON OTTENUTA" onchange="{!c.rispondeIntervista4}" />
+                                            <aura:if isTrue="{!v.noteToIntervista4Required}">
+                                                <div class="slds-form-element__control slds-col">
+                                                    <lightning:textarea aura:id="intervistaDomande4" name="noteToIntervista4" label="Note" value="{!v.rispondeIntervista.COM_Note_Documenti_Assicurazione__c}" required="{!v.noteToIntervista4Required}" messageWhenValueMissing="Il Campo è obbligatorio!"/>
+                                                </div>
+                                            </aura:if>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande4" type="radio" name="intervistaDomande4" label="NON RICORDA"
+                                                             value="NON RICORDA" onchange="{!c.rispondeIntervista4}" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="{!v.selectedStep == 'stepIntervistaDomanda5' ? 'slds-show' : 'slds-hide'}">
+                        <div class="question">
+                            <h2 class="slds-text-heading_medium">Domanda 5:</h2>
+                            <p class="slds-m-bottom_medium">
+                                Le è stata consegnata una copia del contratto?  
+                            </p>
+                            <p class="slds-m-bottom_medium">
+                                (Se il cliente non ricorda o chiede maggiori informazioni, il documento in questione è contrassegnato con il numero ❸, 
+                                che trova posizionato, all’interno del documento stesso, in alto a destra) 
+                            </p>
+                        </div>
+                        <div class="slds-m-top_x-large slds-m-bottom_small slds-box riposta">
+                            <h2 class="slds-text-heading_medium">Riposta:</h2>
+                            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande5" type="radio" name="intervistaDomande5" label="SI"
+                                                             value="SI" onchange="{!c.rispondeIntervista5}" />
+                                            <aura:if isTrue="{!v.noteToIntervista5RequiredSI}">
+                                                <div class="slds-form-element__control slds-col">
+                                                    <lightning:textarea aura:id="intervistaDomande5" name="noteToIntervista5" label="Note" value="{!v.rispondeIntervista.COM_Note_Motivazione_Recesso__c}" required="{!v.noteToIntervista5RequiredSI}" messageWhenValueMissing="Il Campo è obbligatorio!"/>
+                                                </div>
+                                            </aura:if>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande5" type="radio" name="intervistaDomande5" label="NO"
+                                                             value="NO" onchange="{!c.rispondeIntervista5}" />
+                                             <aura:if isTrue="{!v.noteToIntervista5RequiredNO}">
+                                                <p class="slds-m-bottom_medium">            
+                                                    NO Domanda ulteriore: Quando ha sottoscritto il contratto, cosa le hanno comunicato in riferimento alla consegna? 
+                                                </p>
+                                             </aura:if>
+                                            <aura:if isTrue="{!v.noteToIntervista5RequiredNO}">
+                                                <div class="slds-form-element__control slds-col">
+                                                    <lightning:textarea aura:id="intervistaDomande5" name="noteToIntervista5" label="Note" value="{!v.rispondeIntervista.COM_Note_Motivazione_Recesso__c}" required="{!v.noteToIntervista5RequiredNO}" messageWhenValueMissing="Il Campo è obbligatorio!"/>
+                                                </div>
+                                            </aura:if>
+                                        </td>
+                                    </tr>   
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande5" type="radio" name="intervistaDomande5" label="NON RICORDA"
+                                                             value="NON RICORDA" onchange="{!c.rispondeIntervista5}" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                    </div>
+                    
+                    <div class="{!v.selectedStep == 'stepIntervistaDomanda6' ? 'slds-show' : 'slds-hide'}">
+                        <div class="question">
+                            <h2 class="slds-text-heading_medium">Domanda 6:</h2>
+                            <p class="slds-m-bottom_medium">
+                                Lei aveva la facoltà di consultare la “Guida pratica all’Arbitro Bancario Finanziario (ABF)”. L’ha richiesta? 
+                            </p>
+                            <p class="slds-m-bottom_medium">
+                                (Se il cliente non ricorda o chiede maggiori informazioni, il documento “Guida all’Arbitro Bancario Finanziario”
+                                fornisce le informazioni di base per la presentazione del ricorso all’Arbitro Bancario Finanziario). 
+                            </p>
+                        </div>
+                        <div class="slds-m-top_x-large slds-m-bottom_small slds-box riposta">
+                            <h2 class="slds-text-heading_medium">Riposta:</h2>
+                            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande6" type="radio" name="intervistaDomande6" label="NON RICHIESTA"
+                                                             value="NON RICHIESTA" onchange="{!c.rispondeIntervista6}" />
+                                        </td>
+                                    </tr>	
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande6" type="radio" name="intervistaDomande6" label="RICHIESTA E OTTENUTA"
+                                                             value="RICHIESTA E OTTENUTA" onchange="{!c.rispondeIntervista6}" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande6" type="radio" name="intervistaDomande6" label="RICHIESTA E NON OTTENUTA"
+                                                             value="RICHIESTA E NON OTTENUTA" onchange="{!c.rispondeIntervista6}" />
+                                            <aura:if isTrue="{!v.noteToIntervista6Required}">
+                                                <div class="slds-form-element__control slds-col">
+                                                    <lightning:textarea aura:id="intervistaDomande6" name="noteToIntervista6" label="Note" value="{!v.rispondeIntervista.COM_Note_Precontratto__c}" required="{!v.noteToIntervista6Required}" messageWhenValueMissing="Il Campo è obbligatorio!"/>
+                                                </div>
+                                            </aura:if>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande6" type="radio" name="intervistaDomande6" label="NON RICORDA"
+                                                             value="NON RICORDA" onchange="{!c.rispondeIntervista6}" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                    </div>
+                    <aura:if isTrue="{!v.clienteFuturo.COM_TipoRinnovo__c!='' }">
+                        <div class="{!v.selectedStep == 'stepIntervistaDomanda6bis' ? 'slds-show' : 'slds-hide'}">
+                            <div class="question">
+                                <h2 class="slds-text-heading_medium">Domanda 6 BIS :</h2>
+                                <p class="slds-m-bottom_medium">
+                                    (DOMANDA DA EFFETTUARE SOLO PER OPERAZIONI DI RINNOVO)
+                                </p>
+                                <p class="slds-m-bottom_medium">
+                                    Con riferimento alla domanda precedente, ha preso accordi per presentare un reclamo per
+                                    la restituzione di somme a seguito dell’estinzione anticipata del Suo precedente finanziamento? 
+                                </p>
+                                <p class="slds-m-bottom_medium">
+                                    Se si, con chi? 
+                                </p>
+                            </div>
+                            <div class="slds-m-top_x-large slds-m-bottom_small slds-box riposta">
+                                <h2 class="slds-text-heading_medium">Riposta:</h2>
+                                <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <lightning:input aura:id="intervistaDomande6bis" type="radio" name="intervistaDomande6bis" label="NO"
+                                                                 value="NO" onchange="{!c.rispondeIntervista6bis}" />
+                                            </td>
+                                        </tr>	
+                                        <tr>
+                                            <td>
+                                                <lightning:input aura:id="intervistaDomande6bis" type="radio" name="intervistaDomande6bis" label="SI"
+                                                                 value="SI" onchange="{!c.rispondeIntervista6bis}" />
+                                                <aura:if isTrue="{!v.noteToIntervista6bisRequired}">
+                                                    <div class="slds-form-element__control slds-col">
+                                                        <lightning:textarea aura:id="intervistaDomande6bis" name="noteToIntervista6bis" label="Note" value="{!v.rispondeIntervista.COM_Note_Questionario_Assicurativo__c}" required="{!v.noteToIntervista6bisRequired}" messageWhenValueMissing="Il Campo è obbligatorio!"/>
+                                                    </div>
+                                                </aura:if>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <lightning:input aura:id="intervistaDomande6bis" type="radio" name="intervistaDomande6bis" label="RICHIESTA E NON OTTENUTA"
+                                                                 value="NON RICORDA" onchange="{!c.rispondeIntervista6bis}" />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                        </div>
+                    </aura:if>
+                    <div class="{!v.selectedStep == 'stepIntervistaDomanda7' ? 'slds-show' : 'slds-hide'}">
+                        <div class="question">
+                            <h2 class="slds-text-heading_medium">Domanda 7:</h2>
+                            <p class="slds-m-bottom_medium">
+                                Lei aveva la facoltà di consultare la “Guida il Credito ai Consumatori in parole semplici”. L’ha richiesta?
+                            </p>
+                            <p class="slds-m-bottom_medium">
+                                (Se il cliente non ricorda o chiede maggiori informazioni, si tratta di un documento che
+                                fornisce indicazioni pratiche e illustra i principali diritti del cliente) 
+                            </p>
+                        </div>
+                        <div class="slds-m-top_x-large slds-m-bottom_small slds-box riposta">
+                            <h2 class="slds-text-heading_medium">Riposta:</h2>
+                            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande7" type="radio" name="intervistaDomande7" label="NON RICHIESTA"
+                                                             value="NON RICHIESTA" onchange="{!c.rispondeIntervista7}" />
+                                        </td>
+                                    </tr>	
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande7" type="radio" name="intervistaDomande7" label="RICHIESTA E OTTENUTA"
+                                                             value="RICHIESTA E OTTENUTA" onchange="{!c.rispondeIntervista7}" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande7" type="radio" name="intervistaDomande7" label="RICHIESTA E NON OTTENUTA"
+                                                             value="RICHIESTA E NON OTTENUTA" onchange="{!c.rispondeIntervista7}" />
+                                            <aura:if isTrue="{!v.noteToIntervista7Required}">
+                                                <div class="slds-form-element__control slds-col">
+                                                    <lightning:textarea aura:id="intervistaDomande7" name="noteToIntervista7" label="Note" value="{!v.rispondeIntervista.COM_Note_Secci__c}" required="{!v.noteToIntervista7Required}" messageWhenValueMissing="Il Campo è obbligatorio!"/>
+                                                </div>
+                                            </aura:if>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande7" type="radio" name="intervistaDomande7" label="NON RICORDA"
+                                                             value="NON RICORDA" onchange="{!c.rispondeIntervista7}" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                    </div>
+                    <div class="{!v.selectedStep == 'stepIntervistaDomanda8' ? 'slds-show' : 'slds-hide'}">
+                        <div class="question">
+                            <h2 class="slds-text-heading_medium">Domanda 8:</h2>
+                            <p class="slds-m-bottom_medium">
+                                Prima di stipulare il contratto Lei ha sottoscritto il “Modulo di adesione /sottoscrizione” della compagnia assicurativa,
+                                le è stato indicato il motivo della sottoscrizione ed il contenuto della stessa?
+                            </p>
+                            <p class="slds-m-bottom_medium">
+                                (Se il cliente non ricorda o chiede maggiori spiegazioni il “modulo di adesione” è un documento che Futuro trasmette 
+                                alla compagnia assicurativa al fine di ottenere la copertura assicurativa obbligatoria per tali tipologie di finanziamento. La polizza assicurativa, il cui costo
+                                è a carico di Futuro (che è anche il contraente e beneficiario), è obbligatoria per stipulare una cessione del quinto/delegazione di pagamento. All’ interno del 
+                                “modulo di adesione” sono richieste alcune informazioni sullo stato di salute del richiedente il finanziamento, 
+                                necessarie alla compagnia assicurativa per valutare, assieme ai dettagli dell’operazione proposta, il rilascio della polizza)  
+                            </p>
+                        </div>
+                        <div class="slds-m-top_x-large slds-m-bottom_small slds-box riposta">
+                            <h2 class="slds-text-heading_medium">Riposta:</h2>
+                            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande8" type="radio" name="intervistaDomande8" label="SI"
+                                                             value="SI" onchange="{!c.rispondeIntervista8}" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande8" type="radio" name="intervistaDomande8" label="NO"
+                                                             value="NO" onchange="{!c.rispondeIntervista8}" />
+                                            <aura:if isTrue="{!v.noteToIntervista8Required}">
+                                                <div class="slds-form-element__control slds-col">
+                                                    <lightning:textarea aura:id="intervistaDomande8" name="noteToIntervista8" label="Note" value="{!v.rispondeIntervista.COM_Note_Soddisfazione_Cliente__c}" required="{!v.noteToIntervista8Required}" messageWhenValueMissing="Il Campo è obbligatorio!"/>
+                                                </div>
+                                            </aura:if>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande8" type="radio" name="intervistaDomande8" label="Non ricorda"
+                                                             value="NON RICORDA" onchange="{!c.rispondeIntervista8}" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                    </div>
+                    <div class="{!v.selectedStep == 'stepIntervistaDomanda9' ? 'slds-show' : 'slds-hide'}">
+                        <div class="question">
+                            <h2 class="slds-text-heading_medium">Domanda 9:</h2>
+                            <p class="slds-m-bottom_medium">
+                                In occasione della richiesta di finanziamento, Le è stato richiesto da parte del soggetto con cui è entrato in contatto il pagamento diretto di un compenso?
+                            </p>
+                            <p class="slds-m-bottom_medium">
+                                (Se il cliente non ricorda o chiede maggiori informazioni, si tratta di “oneri” 
+                                diversi e/o ulteriori rispetto a quelli espressamente indicati nel contratto - ovvero nel documento contrassegnato con il numero ❸, che trova posizionato in alto a destra) 
+                            </p>
+                        </div>
+                        <div class="slds-m-top_x-large slds-m-bottom_small slds-box riposta">
+                            <h2 class="slds-text-heading_medium">Riposta:</h2>
+                            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande9"  type="radio" name="intervistaDomande9" label="NO"
+                                                             value="NO" onchange="{!c.rispondeIntervista9}" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande9" type="radio" name="intervistaDomande9" label="SI"
+                                                             value="SI" onchange="{!c.rispondeIntervista9}" />
+                                            <aura:if isTrue="{!v.noteToIntervista9Required}">
+                                                <div class="slds-form-element__control slds-col">
+                                                    <lightning:textarea aura:id="intervistaDomande9" name="noteToIntervista9" label="Note" value="{!v.rispondeIntervista.COM_Note9__c}" required="{!v.noteToIntervista9Required}" messageWhenValueMissing="Il Campo è obbligatorio!"/>
+                                                </div>
+                                            </aura:if>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande9" type="radio" name="intervistaDomande9" label="NON RICORDA"
+                                                             value="NON RICORDA" onchange="{!c.rispondeIntervista9}" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="{!v.selectedStep == 'stepIntervistaDomanda10' ? 'slds-show' : 'slds-hide'}">
+                        <div class="question">
+                            <h2 class="slds-text-heading_medium">Domanda 10:</h2>
+                            <p class="slds-m-bottom_medium">
+                                Dopo aver ricevuto la liquidazione della somma richiesta con il finanziamento, le è stata recapitata una lettera da parte di Futuro nella quale viene confermata la somma erogata in suo favore 
+                                - allegato il piano di ammortamento - nonché indicati i documenti consegnati nel corso dell’ iter istruttorio?
+                            </p>
+                            <p class="slds-m-bottom_medium">
+                                Se in precedenza ha risposto NO alla DOMANDA 5 (sulla consegna della documentazione contrattuale), chiedere al cliente: 
+                            </p>
+                            <p class="slds-m-bottom_medium">
+                                Perché non ha richiesto al Servizio Clienti di Futuro la documentazione contrattuale, visto che nella lettera che ha ricevuto sono indicati i riferimenti telefonici del Servizio Clienti?
+                            </p>
+                        </div>
+                        <div class="slds-m-top_x-large slds-m-bottom_small slds-box riposta">
+                            <h2 class="slds-text-heading_medium">Riposta:</h2>
+                            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <lightning:input  aura:id="intervistaDomande10" type="radio" name="intervistaDomande10" label="SI"
+                                                             value="SI" onchange="{!c.rispondeIntervista10}" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <lightning:input  aura:id="intervistaDomande10" type="radio" name="intervistaDomande10" label="NO"
+                                                             value="NO" onchange="{!c.rispondeIntervista10}" />
+                                            <aura:if isTrue="{!v.noteToIntervista10Required}">
+                                                <div class="slds-form-element__control slds-col">
+                                                    <lightning:textarea aura:id="intervistaDomande10" name="noteToIntervista10" label="Note" value="{!v.rispondeIntervista.COM_Note_10__c}" required="{!v.noteToIntervista10Required}" messageWhenValueMissing="Il Campo è obbligatorio!"/>
+                                                </div>
+                                            </aura:if>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <lightning:input  aura:id="intervistaDomande10" type="radio" name="intervistaDomande10" label="NON RICORDA"
+                                                             value="NON RICORDA" onchange="{!c.rispondeIntervista10}" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="{!v.selectedStep == 'stepIntervistaDomanda11' ? 'slds-show' : 'slds-hide'}">
+                        <div class="question">
+                            <h2 class="slds-text-heading_medium">Domanda 11:</h2>
+                            <p class="slds-m-bottom_medium">
+                                Infine, ritiene che quanto Le è stato esposto in fase di stipula  del contratto, in termini di caratteristiche del prodotto richiesto (rata, durata e l’importo erogato) 
+                                sia stato chiaro e completo e che le sue eventuali domande abbiano ricevuto risposta?
+                            </p>
+                        </div>
+                        <div class="slds-m-top_x-large slds-m-bottom_small slds-box riposta">
+                            <h2 class="slds-text-heading_medium">Riposta:</h2>
+                            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande11" type="radio" name="intervistaDomande11" label="SI"
+                                                             value="SI" onchange="{!c.rispondeIntervista11}" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <lightning:input aura:id="intervistaDomande11" type="radio" name="intervistaDomande11" label="NO"
+                                                             value="NO" onchange="{!c.rispondeIntervista11}" />
+                                            <aura:if isTrue="{!v.noteToIntervista11Required}">
+                                                <div class="slds-form-element__control slds-col">
+                                                    <lightning:textarea aura:id="intervistaDomande11" name="noteToIntervista11" label="Note" value="{!v.rispondeIntervista.COM_Note_11__c}" required="{!v.noteToIntervista11Required}" messageWhenValueMissing="Il Campo è obbligatorio!"/>
+                                                </div>
+                                            </aura:if>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                    </div>
+                    <aura:if isTrue="{!v.showError}">
+                        <!-- Show the message to ui -->
+                        <h5 class="slds-align_absolute-center" style="color: rgb(194, 57, 52)">Scegliere una risposta.</h5>               
+                    </aura:if>
+                    <aura:if isTrue="{!v.terminataIntervista}">
+                        <h1 class="slds-m-bottom_medium slds-align_absolute-center" style="color: rgb(194, 57, 52)">
+                            L'intervista è terminata. La ringrazio della collaborazione e le auguro una buona giornata/ serata.
+                        </h1>
+                    </aura:if>
+                    
+                </div>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col" style="margin-left: 5em">
+                        <aura:if isTrue="{!v.startIntervista}">
+                            <lightning:button variant="success" label="Inizia intervista" onclick="{! c.iniziaIntervista }"/>
+                        </aura:if>
+                        <aura:if isTrue="{!v.concludiIntervista}">	
+                            <lightning:button variant="destructive" label="Concludi intervista" onclick="{! c.concludiIntervista }"/>
+                       </aura:if>
+                        <aura:if isTrue="{!v.selectedStep == 'stepIntervistaDomanda11'}">
+                             <aura:if isTrue="{!v.terminataIntervista}">   
+                                 <lightning:button variant="destructive" label="Concludi intervista" onclick="{! c.terminataIntervista }"/>
+                             </aura:if>
+                         </aura:if>    
+                     </div>
+                    <div class="slds-col">
+                        <div class="">
+                            <lightning:buttonIcon iconName="utility:left" disabled="{!v.btnLeftDisabled == true ? '' : 'disabled'}" variant="brand" size="large" onclick="{!c.handlePrev}"   />
+                            <lightning:buttonIcon iconName="utility:right" disabled="{!v.btnRightDisabled == true ? '' : 'disabled'}" variant="brand" size="large" onclick="{!c.handleNext}"/>
+                        </div>
+                    </div>
+                </div>
+            </lightning:card>
+        </aura:if>
+        <aura:if isTrue="{! v.fromAmministrazione}">
+            <div class="slds-card slds-m-top_large">
+                <!--Start details interview-->
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                    <thead>
+                        <tr class="slds-line-height_reset">
+                            <th style="text-align:center;background-color:#6a89e5;color:#fff;" scope="col" colspan="4">
+                                <div class="slds-p-around_small slds-text-heading_medium" title="" >Risposte dell' intervista</div>
+                            </th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody>
+                        <tr class="slds-hint-parent">
+                            <td>
+                                <div class="slds-p-around_small"><b>Domande 1 :</b>
+                                    
+                                </div>
+                            </td>
+                            <td>
+                                <ui:outputText  value="{!v.rispondeIntervista.D1_Futuro__c}" />  
+                            </td>
+                            <td>
+                                <div class="slds-p-around_small"><b>&nbsp;</b>                                                
+                                </div>                        
+                            </td>
+                            <td>
+                                &nbsp;
+                            </td>
+                        </tr>
+                        <tr class="slds-hint-parent">
+                            <td>
+                                <div class="slds-p-around_small"><b>Domande 2 :</b></div>
+                            </td>
+                            <td>
+                                <ui:outputText  value="{!v.rispondeIntervista.D2_Futuro__c}" />  
+                            </td>
+                            
+                            <td>
+                                <div class="slds-p-around_small"><b>Note :</b></div>
+                            </td>
+                            <aura:if isTrue="{!v.rispondeIntervista.COM_Note_Contratto__c!='' }">
+                                <td>
+                                    <ui:outputText  value="{!v.rispondeIntervista.COM_Note_Contratto__c}" />  
+                                </td>
+                            </aura:if>
+                            <aura:if isTrue="{!v.rispondeIntervista.COM_Note_Contratto__c=='' }">
+                                    <td>
+                                            <lightning:badge class="badgeNote" label=" nessuna nota"/>
+                                            
+                                    </td>
+                            </aura:if>
+                        </tr>
+                        <tr class="slds-hint-parent">
+                            <td>
+                                <div class="slds-p-around_small"><b>Domande 3 :</b></div>
+                            </td>
+                            <td>
+                                <ui:outputText  value="{!v.rispondeIntervista.D3_Futuro__c}" />  
+                            </td>
+                            <td>
+                                <div class="slds-p-around_small"><b>Note :</b></div>
+                            </td>
+                            <aura:if isTrue="{!v.rispondeIntervista.COM_Note_Contratto_Assicurazione__c!='' }">
+                                <td>
+                                    <ui:outputText  value="{!v.rispondeIntervista.COM_Note_Contratto_Assicurazione__c}" />  
+                                </td>
+                            </aura:if>
+                            <aura:if isTrue="{!v.rispondeIntervista.COM_Note_Contratto_Assicurazione__c=='' }">
+                                    <td>
+                                            <lightning:badge class="badgeNote" label=" nessuna nota"/>
+                                       
+                                    </td>
+                            </aura:if>
+                        </tr>
+                        
+                        <tr class="slds-hint-parent">
+                            <!--<aura:if isTrue="{!v.clienteFuturo.COM_cin_z_calc__c=='R'}">-->
+                            <td>
+                                <div class="slds-p-around_small">
+                                    <b>Domande 4 :</b>
+                                </div>
+                            </td>
+                            <td>
+                                <ui:outputText  value="{!v.rispondeIntervista.D4_Futuro__c}" />  
+                            </td>
+                            <td>
+                                <div class="slds-p-around_small">
+                                    <b>Note :</b>&nbsp;&nbsp;&nbsp;
+                                    
+                                </div>
+                            </td>
+                            <aura:if isTrue="{!v.rispondeIntervista.COM_Note_Documenti_Assicurazione__c!='' }">
+                                <td>
+                                    <ui:outputText  value="{!v.rispondeIntervista.COM_Note_Documenti_Assicurazione__c}" />  
+                                </td>
+                            </aura:if>
+                            <aura:if isTrue="{!v.rispondeIntervista.COM_Note_Documenti_Assicurazione__c=='' }">
+                                    <td>
+                                            <lightning:badge class="badgeNote" label=" nessuna nota"/>
+                                       
+                                    </td>
+                            </aura:if>
+                        </tr>
+                        
+                        <tr class="slds-hint-parent">
+                            <td>
+                                <div class="slds-p-around_small">
+                                    <b>Domande 5 :</b>
+                                </div>
+                            </td>
+                            <td>
+                                <ui:outputText  value="{!v.rispondeIntervista.D5_Futuro__c}" />  
+                            </td>
+                            <td>
+                                <div class="slds-p-around_small">
+                                    <b>Note :</b>
+                                </div>
+                            </td>
+                            <aura:if isTrue="{!v.rispondeIntervista.COM_Note_Motivazione_Recesso__c!='' }">
+                                <td>
+                                    <ui:outputText  value="{!v.rispondeIntervista.COM_Note_Motivazione_Recesso__c}" />  
+                                </td>
+                            </aura:if>
+                            <aura:if isTrue="{!v.rispondeIntervista.COM_Note_Motivazione_Recesso__c=='' }">
+                                    <td>
+                                            <lightning:badge class="badgeNote" label=" nessuna nota"/>
+                                       
+                                    </td>
+                            </aura:if>
+                        </tr>
+                        <tr class="slds-hint-parent">
+                            <td>
+                                <div class="slds-p-around_small">
+                                    <b>Domande 6 :</b>
+                                </div>
+                            </td>
+                            <td>
+                                <ui:outputText  value="{!v.rispondeIntervista.D6_Futuro__c}" />  
+                            </td>
+                            <td>
+                                <div class="slds-p-around_small">
+                                    <b>Note :</b>
+                                </div>
+                            </td>
+                            <aura:if isTrue="{!v.rispondeIntervista.COM_Note_Precontratto__c!='' }">
+                                <td>
+                                    <ui:outputText  value="{!v.rispondeIntervista.COM_Note_Precontratto__c}" />  
+                                </td>
+                            </aura:if>
+                            <aura:if isTrue="{!v.rispondeIntervista.COM_Note_Precontratto__c=='' }">
+                                    <td>
+                                            <lightning:badge class="badgeNote" label=" nessuna nota"/>
+                                       
+                                    </td>
+                            </aura:if>
+                        </tr>
+                        <aura:if isTrue="{!v.clienteFuturo.COM_TipoRinnovo__c!='' }">
+                            <tr class="slds-hint-parent">
+                                <td>
+                                    <div class="slds-p-around_small"><b>Domande 6 bis :</b></div>
+                                </td>
+                                <td>
+                                    <ui:outputText  value="{!v.rispondeIntervista.D6bis_Futuro__c}" />  
+                                </td>
+                                <td>
+                                    <div class="slds-p-around_small"><b>Note :</b></div>
+                                </td>
+                                <aura:if isTrue="{!v.rispondeIntervista.COM_Note_Questionario_Assicurativo__c!='' }">
+                                    <td>
+                                        <ui:outputText  value="{!v.rispondeIntervista.COM_Note_Questionario_Assicurativo__c}" />  
+                                    </td>
+                                </aura:if>
+                                <aura:if isTrue="{!v.rispondeIntervista.COM_Note_Questionario_Assicurativo__c=='' }">
+                                        <td>
+                                                <lightning:badge class="badgeNote" label=" nessuna nota"/>
+                                           
+                                        </td>
+                                </aura:if>
+                            </tr>
+                        </aura:if>
+                        <tr class="slds-hint-parent">
+                            <td>
+                                <div class="slds-p-around_small"><b>Domande 7:</b></div>
+                            </td>
+                            <td>
+                                <ui:outputText  value="{!v.rispondeIntervista.D7_Futuro__c}" />  
+                            </td>
+                            <td>
+                                <div class="slds-p-around_small"><b>Note :</b></div>
+                            </td>
+                            <aura:if isTrue="{!v.rispondeIntervista.COM_Note_Secci__c!='' }">
+                                <td>
+                                    <ui:outputText  value="{!v.rispondeIntervista.COM_Note_Secci__c}" />  
+                                </td>
+                            </aura:if>
+                            <aura:if isTrue="{!v.rispondeIntervista.COM_Note_Secci__c=='' }">
+                                    <td>
+                                            <lightning:badge class="badgeNote" label=" nessuna nota"/>
+                                       
+                                    </td>
+                            </aura:if>
+                        </tr>
+                        <tr class="slds-hint-parent">
+                            <td>
+                                <div class="slds-p-around_small"><b>Domande 8:</b></div>
+                            </td>
+                            <td>
+                                <ui:outputText  value="{!v.rispondeIntervista.D8_Futuro__c}" />  
+                            </td>
+                            <td>
+                                <div class="slds-p-around_small"><b>Note :</b></div>
+                            </td>
+                            <aura:if isTrue="{!v.rispondeIntervista.COM_Note_Soddisfazione_Cliente__c!='' }">
+                                <td>
+                                    <ui:outputText  value="{!v.rispondeIntervista.COM_Note_Soddisfazione_Cliente__c}" />  
+                                </td>
+                            </aura:if>
+                            <aura:if isTrue="{!v.rispondeIntervista.COM_Note_Soddisfazione_Cliente__c=='' }">
+                                    <td>
+                                            <lightning:badge class="badgeNote" label=" nessuna nota"/>
+                                       
+                                    </td>
+                            </aura:if>
+                        </tr>
+                        <tr class="slds-hint-parent">
+                            <td>
+                                <div class="slds-p-around_small"><b>Domande 9:</b></div>
+                            </td>
+                            <td>
+                                <ui:outputText  value="{!v.rispondeIntervista.D9_Futuro__c}" />  
+                            </td>
+                            <td>
+                                <div class="slds-p-around_small"><b>Note :</b></div>
+                            </td>
+                            <aura:if isTrue="{!v.rispondeIntervista.COM_Note9__c!='' }">
+                                <td>
+                                    <ui:outputText  value="{!v.rispondeIntervista.COM_Note9__c}" />  
+                                </td>
+                            </aura:if>
+                            <aura:if isTrue="{!v.rispondeIntervista.COM_Note9__c=='' }">
+                                    <td>
+                                            <lightning:badge class="badgeNote" label=" nessuna nota"/>
+                                       
+                                    </td>
+                            </aura:if>
+                        </tr>
+                        <tr class="slds-hint-parent">
+                            <td>
+                                <div class="slds-p-around_small"><b>Domande 10:</b></div>
+                            </td>
+                            <td>
+                                <ui:outputText  value="{!v.rispondeIntervista.D10_Futuro__c}" />  
+                            </td>
+                            <td>
+                                <div class="slds-p-around_small"><b>Note :</b></div>
+                            </td>
+                            <aura:if isTrue="{!v.rispondeIntervista.COM_Note_10__c!='' }">
+                                <td>
+                                    <ui:outputText  value="{!v.rispondeIntervista.COM_Note_10__c}" />  
+                                </td>
+                            </aura:if>
+                            <aura:if isTrue="{!v.rispondeIntervista.COM_Note_10__c=='' }">
+                                    <td>
+                                            <lightning:badge class="badgeNote" label=" nessuna nota"/>
+                                       
+                                    </td>
+                            </aura:if>
+                        </tr>
+                        <tr class="slds-hint-parent">
+                            <td>
+                                <div class="slds-p-around_small"><b>Domande 11:</b></div>
+                            </td>
+                            <td>
+                                <ui:outputText  value="{!v.rispondeIntervista.D11_Futuro__c}" />  
+                            </td>
+                            <td>
+                                <div class="slds-p-around_small"><b>Note :</b></div>
+                            </td>
+                            <aura:if isTrue="{!v.rispondeIntervista.COM_Note_11__c!='' }">
+                                <td>
+                                    <ui:outputText  value="{!v.rispondeIntervista.COM_Note_11__c}" />  
+                                </td>
+                            </aura:if>
+                            <aura:if isTrue="{!v.rispondeIntervista.COM_Note_11__c=='' }">
+                                <td>
+                                        <lightning:badge class="badgeNote" label=" nessuna nota"/>
+                                   
+                                </td>
+                            </aura:if>        
+                        </tr>
+                        <tr class="slds-hint-parent">
+                            <td style="text-align: center">
+                                <div class="slds-p-around_small"><b>Valutazione:</b></div>
+                            </td>
+                            <td style="text-align: center;"  colspan="3">
+                                    <aura:if isTrue="{!v.rispondeIntervista.Valutazione__c == 'NEGATIVO'}">
+                                    <span class="slds-badge slds-badge_inverse badgeValutazioneNeagativo">
+                                            <span class="slds-badge__icon slds-badge__icon_left slds-badge__icon_inverse">
+                                            </span>
+                                              <ui:outputText value="{!v.rispondeIntervista.Valutazione__c}" />
+                                    </span>
+                                    <aura:set attribute="else">
+                                                    <span class="slds-badge slds-badge_inverse badgeValutazionePositivo">
+                                                            <span class="slds-badge__icon slds-badge__icon_left slds-badge__icon_inverse">
+                                                                </span>
+                                                            <ui:outputText value="{!v.rispondeIntervista.Valutazione__c}" />
+                                                    </span>
+                                    </aura:set>
+                                </aura:if>
+ 
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div> 
+            
+        </aura:if>    
+    </div>
+    </aura:if>
+    <!--finire Body-->
+</aura:component>

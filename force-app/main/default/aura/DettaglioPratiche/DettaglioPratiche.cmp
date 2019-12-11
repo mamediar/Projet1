@@ -1,0 +1,23 @@
+<aura:component >
+
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="praticheList" type="List"/>
+
+    <aura:attribute name="sortedBy" type="String" />
+    <aura:attribute name="sortedDirection" type="String" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+	<lightning:card title="Pratiche">
+        <c:SpinnerComponent aura:id="spinnerCounterDettaglioPratiche" />
+
+        <lightning:datatable
+                keyField="id"
+                data="{!v.praticheList}"
+                columns="{!v.columns}"
+                hideCheckboxColumn="true"
+                class="dataTableWrap"
+                onsort="{!c.updateColumnSorting}"
+                sortedDirection="{!v.sortedDirection}"
+                sortedBy="{!v.sortedBy}"/>
+    </lightning:card> 
+</aura:component>

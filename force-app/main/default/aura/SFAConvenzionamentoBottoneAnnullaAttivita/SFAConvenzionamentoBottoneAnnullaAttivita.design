@@ -1,0 +1,4 @@
+<design:component>
+	<design:attribute name="buttonLabel" label="Button Label" />
+    <design:attribute name="nameListViewToNavigate" label="List View DeveloperName to navigate to" />
+</design:component>

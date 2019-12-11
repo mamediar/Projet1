@@ -1,0 +1,15 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+	
+    <c.COM_CheckFilialeSFA_Gestione/>
+    
+    
+    <c.COM_CheckFilialeSFA_GestioneQuestionario/>
+    
+    <c.COM_CheckFilialeSFA_GestioneAllegati/>
+    
+    
+    
+    
+    
+    
+</aura:component>

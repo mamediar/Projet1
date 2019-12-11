@@ -1,0 +1,7 @@
+.THIS .containerRow {
+    position: relative;
+}
+.THIS .elementRow{
+    position: absolute;
+    bottom: 0;
+}

@@ -1,0 +1,114 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" controller="CRMReclamiGestioneCorrispondenzaCtrl" access="global" >
+    
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="headerColumns" type="List" />
+    <aura:attribute name="noteList" type="Note[]"/>
+    <aura:attribute name="fileList" type="Attachment[]"/>
+    
+    <aura:attribute name="showInternalModal" type="Boolean" default="false"/>
+    <aura:attribute name="toastMsg" type="String"/> 
+
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+	<aura:method name="refresh"  action="{!c.init}"/>
+    
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+
+    <br/>
+    <button class="slds-button slds-button_brand" onclick="{!c.openInternalModal}">Inserisci Nuova Nota</button>
+    <br/>
+    <br/>
+
+    <!--START MODAL-->
+    <aura:if isTrue="{!v.showInternalModal}">                
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container slds-is-relative modal-width">
+                <header class="slds-modal__header">
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Nuova Nota</h2>
+                </header>
+
+                <!--BODY MODAL-->
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <lightning:textarea aura:id="newTextNote" placeholder="Inserire il testo della nota..." messageWhenValueMissing="Non può essere inserita una nota vuota." style="min-height:100px"/>
+                    <aura:if isTrue="{!v.showSpinner}">
+                        <lightning:spinner class="slds-is-relative slds-align_absolute-center" alternativeText="Loading" size="10px"/>
+                    </aura:if>
+                </div>
+                <!--END BODY MODAL-->
+                
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_brand" onclick="{!c.insertNewNote}">Inserisci Nota</button>
+                    <button class="slds-button slds-button_brand" onclick="{!c.goBack}">Annulla</button>
+                </footer>
+                
+                
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+    <!-- END MODAL -->
+
+    <aura:if isTrue="{!v.noteList.length>0}">
+        <div>
+            <table class="slds-table slds-table--edit slds-table--bordered" role="grid">
+                <!--TABLE HEAD-->
+                <thead>
+                    <tr class="slds-line-height--reset">
+                        <aura:iteration items="{!v.headerColumns}" var="col">
+                            <th scope="row">
+                                <div class="slds-truncate" title="{!col}">{!col}</div>
+                            </th>
+                        </aura:iteration>
+                    </tr>
+                </thead>
+
+                <tbody aura:id="targetList">
+                    <aura:iteration items="{!v.noteList}" var="note">
+                        <tr class="slds-hint-parent">
+                            <td scope="row"> 
+                                <div class="slds-truncate" title="data">
+                                    <lightning:formattedDateTime value="{!note.CreatedDate}" year="numeric" month="2-digit" day="2-digit" hour="2-digit" minute="2-digit"/>
+                                </div>
+                            </td>
+                            
+                            <td scope="row"> 
+                                <div class="slds-truncate" title="utente">
+                                    {!note.Title}
+                                </div>
+                            </td>
+
+                            <td scope="row">
+                                <div class="slds-truncate" title="testo">
+                                    <!--<lightning:textarea name="myTextArea" value="{!note.Body}" readonly="true"
+                                    maxlength="300" style="min-height:100px"/>-->
+                                    <textarea rows="8" readonly="true" cols="100">
+                                        {!note.Body}
+                                    </textarea>
+                                </div>
+                            </td>
+
+                            <td scope="row">
+                                <aura:if isTrue="{!v.fileList.length>0}">
+                                    <aura:iteration items="{!v.fileList}" var="file">
+                                        <aura:if isTrue="{!(file.ParentId == note.ParentId)}">
+                                            <div class="slds-truncate slds-p-right_small" title="allegati">{!file.Name}</div>
+                                        </aura:if>
+                                    </aura:iteration>
+                                </aura:if>
+                            </td>  
+                            
+                        </tr>
+
+                    </aura:iteration>
+                </tbody>
+            </table>
+        </div>
+
+    <aura:set attribute="else">
+            <div align="center">Nessuna Corrispendenza Trovata</div>
+    </aura:set>
+
+    </aura:if>
+    
+
+</aura:component>

@@ -1,0 +1,20 @@
+/*.THIS .table-spese lightning-primitive-header-actions {
+            display: none;
+}
+
+.THIS .table-spese{
+    font-size: 0.70rem;
+}
+.THIS .table-spese thead th span {
+    font-size: 0.75rem;
+}
+
+.THIS   .slds-truncate {
+    white-space: normal!important;
+    overflow-wrap: break-word!important;
+    word-wrap: break-word!important;
+}
+
+.THIS .slds-has-button-menu .slds-th__action {
+    padding-right: 0.5rem;
+}*/

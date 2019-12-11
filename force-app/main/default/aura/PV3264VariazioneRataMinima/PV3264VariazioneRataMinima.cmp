@@ -1,0 +1,52 @@
+<!--
+  @File Name          : PV3264VariazioneRataMinima.cmp
+  @Description        : 
+  @Author             : Federico Negro
+  @Group              : 
+  @Last Modified By   : Federico Negro
+  @Last Modified On   : 21/10/2019, 10:13:35
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    14/10/2019   Federico Negro     Initial Version
+-->
+<aura:component extends="c:PVSubComponentBase" controller="PV3264VariazioneRataMinimaInserimento" access="global">
+
+    <!-- Info Carta -->
+    <aura:attribute name="infoCartaData" type="OCSRecuperaInfoCartaResponse.RecuperaInfoCartaResponse" />
+
+    <!-- valori old -->
+    <aura:attribute name="rata_OLD" type="String" />
+    <aura:attribute name="percentuale_OLD" type="String" />
+    <aura:attribute name="rataMinimaConsentita" type="String" />
+
+    <lightning:card class='slds-form_stacked'>
+
+        <lightning:layout class="slds-wrap slds-form" multipleRows="true">
+
+            <lightning:layoutItem size="4" padding="horizontal-small">
+
+                <lightning:input type="number" formatter="currency" currencyCode="EUR" name="rata_min_consentita"
+                    aura:id="rata_min_consentita" value="{!v.rataMinimaConsentita}" label="Rata minima consentita:"
+                    disabled="true" />
+            </lightning:layoutItem>
+
+
+            <lightning:layoutItem size="4" padding="horizontal-small">
+                <lightning:input type="number" name="percentuale" aura:id="percentuale"
+                    value="{!v.cartaDatiFinanziariData.pagamentoMinimoPerc}" label="Percentuale del saldo:"
+                    required="true" step="0.01" min="0" />
+            </lightning:layoutItem>
+
+
+            <lightning:layoutItem size="4" padding="horizontal-small">
+                <lightning:input label="Rata minima:" formatter="currency" currencyCode="EUR" name="rata_minima"
+                    aura:id="rata_minima" type="number" value="{!v.cartaDatiFinanziariData.pagamentoMinimo}"
+                    required="true" min="{!v.rataMinimaConsentita}" max="1000" />
+
+            </lightning:layoutItem>
+
+        </lightning:layout>
+
+    </lightning:card>
+
+</aura:component>

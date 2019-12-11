@@ -1,0 +1,64 @@
+<aura:component controller="CapComuneClass" implements="flexipage:availableForAllPageTypes">
+    
+    <aura:attribute name="branchSel" type="String" />
+    <aura:attribute name="branchOCSExternalId" type="Object" />
+    <aura:attribute name="capComuniList" type="Object"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="zonePerFiliale" type="Map"/>
+    <aura:attribute name="zoneList" type="List" />
+    <aura:attribute name="selectedRow" type="Object" />
+    <aura:attribute name="selectedZone" type="String" />
+    <aura:attribute name="branches" type="List"/>
+    <aura:attribute name="capComuniMap" type="Map"/>
+    
+    <aura:method name="openPopUp" action="{!c.openPopUp}" description="apertura del popup"/> 
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    <aura:handler name="change" value="{!v.branchSel}" action="{!c.init}"/>
+    <aura:handler event="ltng:sendMessage" action="{!c.sendMessageHandler}"/> 
+
+    <lightning:card title="Cap/Comune">
+        <c:SpinnerComponent aura:id="spinnerComponent"/>
+        <lightning:layout multipleRows="true">
+                <lightning:layoutItem size="12" padding="around-small"> 
+                    <lightning:layout>
+                        <lightning:layoutItem size="3"> 
+                            <lightning:select name="utr" aura:id="utrId" value="{!v.branchOCSExternalId}"  label="Filiale" onchange="{!c.onChangeBranchSelect}">
+                                <aura:iteration items="{!v.branches}" var="branch">
+                                    <option text="{!branch.Name + ' ('+branch.TypeLabel+')'}" value="{!branch.OCS_External_Id__c}" selected="{!v.branchOCSExternalId == branch.OCS_External_Id__c}" />
+                                </aura:iteration>  
+                            </lightning:select>
+                        </lightning:layoutItem>
+                    </lightning:layout> 
+                </lightning:layoutItem>
+            <lightning:layoutItem padding="around-small" size ="auto">
+                <lightning:datatable
+                        keyField="Id"
+                        data="{! v.capComuniList }"
+                        columns="{! v.columns }"
+                        onrowaction="{! c.handleRowAction }"
+                        hideCheckboxColumn="true"
+                        suppressBottomBar ="false"/>
+            </lightning:layoutItem>
+        </lightning:layout>  
+    </lightning:card>
+
+    <c:GenericPopUp class="smallPopUp" aura:id="theStaticModal" title="Assegna Zona" isDirectional="true" isLarge="false" hasCloseIcon="true">
+    <lightning:layout verticalAlign="center" multipleRows="true">
+    <!-- riga 1 -->
+        <lightning:layoutItem size="12">
+            <lightning:layout horizontalAlign="center">
+                <lightning:select name="utr" aura:id="utrId" value="{!v.selectedRow.Zone__c}"  label="Seleziona Zona">
+                    <aura:iteration items="{!v.zoneList}" var="zona">
+                        <option text="{!zona.Name}" value="{!zona.Id}" selected="{!v.selectedRow.Zone__c == zona.Id}"/>
+                    </aura:iteration>  
+                </lightning:select> 
+            </lightning:layout>
+        </lightning:layoutItem>
+    </lightning:layout>
+    <aura:set attribute="footer">
+        <lightning:button label="Annulla" onclick="{!c.closePopUp}"/>
+        <lightning:button variant="brand" label="Ok" onclick="{!c.saveNewZone}"/>
+    </aura:set>
+    </c:GenericPopUp>
+
+</aura:component>

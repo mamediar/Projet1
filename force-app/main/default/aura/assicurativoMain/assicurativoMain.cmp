@@ -1,0 +1,12 @@
+<!--
+ - Created by Salimata NGOM on 15/03/2019.
+ -->
+<aura:component   implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+                  access="global" description="assicurativoMain">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler event="c:eventNavigateToAssicurativo" action="{!c.doInit}"/>
+    <aura:handler action="{!c.navigationAssicurativo}" event="c:eventNavigationAssicurativo" />
+    <aura:handler action="{!c.GoBackToAssicurativoPratiche}" event="c:eventNavigationAssicurativoPratiche" />
+
+    {!v.body}
+</aura:component>

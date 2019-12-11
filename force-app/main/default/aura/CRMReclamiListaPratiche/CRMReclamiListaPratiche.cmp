@@ -1,0 +1,26 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" 
+                access="global" 
+                >
+    <aura:attribute name="listaPratiche" type="List"/>
+    <aura:attribute name="listaInfoPratiche" type="List"/> <!--Inner class di CRMReclamiInsClienteCrtl: InfoPraticaOutput-->
+    <aura:attribute name="infoPraticaSelezionata" type="Object"/> <!--Inner class di CRMReclamiInsClienteCrtl: InfoPraticaOutput-->
+    <aura:attribute name="praticaSelezionata" type="Object"/> <!--OCSPratica oppure OCSPraticaFuturo-->
+    <aura:attribute name="aziendaSelezionata" type ="String"/>
+    <aura:attribute name="columns" type="List"/>
+
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    <div style="margin-left:15px;margin-right:15px;">
+        <aura:if isTrue="{!v.listaPratiche.length>0}">
+            <lightning:datatable data="{!v.listaInfoPratiche}"
+                                columns="{!v.columns}"
+                                keyField="numPratica"
+                                maxRowSelection="1"
+                                onrowselection="{!c.selectPratica}"/>
+            
+            <aura:set attribute="else">
+                Attenzione: lista pratiche vuota!
+            </aura:set>
+        </aura:if>
+    </div>
+</aura:component>

@@ -1,0 +1,78 @@
+<!--
+  @Component Name     : PV1760CopiaContratto.cmp
+  @Description        : 
+  @Author             : Lorenzo Marzocchi
+  @Group              : 
+  @Last Modified By   : Andrea Vanelli
+  @Last Modified On   : 3/10/2019, 16:44:59
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    2019-8-29 11:45:45   Lorenzo Marzocchi     Initial Version
+-->
+<aura:component extends="c:PVSubComponentBase" access='global' controller='PV1760CopiaContrattoInserimento'>
+
+    <!-- Attributi del PV -->
+    <aura:attribute name="optionsDestinatario" type="List" default="[                                                                                                                      
+    {'label': 'Cliente', 'value': 'Cliente'},                                                                                  
+    {'label': 'Filiale o Sede', 'value': 'Sender'},]" />
+    <!-- Attributi del PV in maschera -->
+    <!-- main -->
+    <lightning:card class='slds-form_stacked'>
+        <table class="slds-table slds-table_bordered slds-table_col-bordered">
+            <tbody>
+                <tr class="slds-hint-parent">
+                    <td colspan="3" class="slds-cell-buffer_left">
+                        <p class="slds-p-horizontal_small slds-text-color_error slds-text-title_bold">
+                            Se il contratto non deve essere postalizzato al cliente, selezionare FILIALE\SEDE.
+                        </p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- menu a tendina per selezionare il destinatario -->
+        <lightning:layoutItem size="6" padding="horizontal-small">
+            <span>
+                <lightning:combobox name="Destinatario" placeholder="Seleziona" value="{!v.PVForm.destinatario}"
+                    variant="standard" dropdownAlignment="Left" options="{!v.optionsDestinatario}"
+                    label='Destinatario' />
+            </span>
+        </lightning:layoutItem>
+
+        <!-- se il destinatario è il cliente visualizzo l'indirizzo -->
+        <aura:if isTrue="{!v.PVForm.destinatario == 'Cliente'}">
+
+            <lightning:layout horizontalAlign="left">
+                <lightning:layoutItem size="6">
+                    <lightning:input name='address' aura:id='address' label='Indirizzo di spedizione'
+                        value='{!v.PVForm.cliente.indirizzo}' type='String' required="true" />
+                </lightning:layoutItem>
+                <lightning:layoutItem size="6">
+                    <lightning:input name='postalCode' aura:id='cap' label='CAP' value='{!v.PVForm.cliente.cap}'
+                        type='String' minlength="5" maxlength="5" required="true" />
+                </lightning:layoutItem>
+            </lightning:layout>
+            <lightning:layout horizontalAlign="left">
+                <lightning:layoutItem size="6">
+                    <c:PVProvinciaCombo provinciaSelection="{!v.PVForm.cliente.provincia}" label="Provincia"
+                        required="true" aura:id="provincia">
+                    </c:PVProvinciaCombo>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="6">
+                    <c:PVComuneCombo provinciaSelection="{!v.PVForm.cliente.provincia}"
+                        comuneSelection="{!v.PVForm.cliente.localita}" label="Città" required="true" aura:id="comune">
+                    </c:PVComuneCombo>
+                </lightning:layoutItem>
+            </lightning:layout>
+        </aura:if>
+        <aura:if isTrue="{!v.PVForm.statoLotto == 'FILIALE'}">
+            <lightning:card title="Contratto in Filiale" iconName="action:script" variant="base">
+
+                <p>Comunicare al cliente che il contratto è ancora in Filiale. </p>
+                <p>La richiesta, una volta inserita, verrà esitata automaticamente</p>
+
+            </lightning:card>
+        </aura:if>
+    </lightning:card> <!-- /main -->
+</aura:component>

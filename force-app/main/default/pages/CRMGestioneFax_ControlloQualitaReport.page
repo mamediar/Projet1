@@ -1,0 +1,334 @@
+<apex:page controller="CRMGestioneFaxReportController"
+           action="{!init}"
+           contentType="application/vnd.ms-excel#reportQualita.xls"
+           cache="true"> 
+    <!--  	contentType="application/vnd.ms-excel#reportQualita.xlsx" -->
+    
+    <style>
+        .headerValutazioni{
+        background-color:#366092;
+        height: 40px;
+        weight: 410px;
+        border: 1px solid black;
+        
+        color:white;
+        text-align: center;
+        vertical-align: middle;
+        }
+        .corner{
+        border: 1px solid windowtext; 
+        }
+        .cornerRiepilogo{
+        background-color:#DAEEF3;
+        color: #002060;
+        border: 1px solid black;
+        height:148px;
+        weight:145px;
+        text-align:center;
+        vertical-align: middle;
+        }
+        .cornerValutazioni{
+        border: 1px solid #002060;
+        color: #002060;
+        weight:120px;
+        text-align:center;
+        vertical-align: middle;
+        }
+        .corner-colorRed{
+        border: 1px solid #002060;
+        color: red;
+        text-align: center;
+        weight:110px;
+        }
+        .corner-colorGreenYellow {
+        border: 1px solid #002060;
+        color: GreenYellow ;
+        text-align: center;
+        weight:110px;
+        }
+        .corner-colorYellow{
+        border: 1px solid #002060;
+        color: yellow;
+        text-align: center;
+        weight:110px;
+        }
+        .corner-colorGreen{
+        border: 1px solid #002060;
+        color: green;
+        text-align: center;
+        weight:110px;
+        }
+        .sidecorner{
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+        text-align:center;
+        color: #002060;
+        }
+        .leftcorner{
+        border-left: 1px solid black;
+        text-align:center;
+        color: #002060;
+        }
+        .rightcorner{
+        border-right: 1px solid black;
+        text-align:center;
+        color: #002060;
+        }
+        .aC{
+        text-align:center;
+        }
+        .rowHeight{
+        min-height: 268px;
+        }
+        .uppercorner{
+        border-top: 1px solid black;
+        }
+        .v{
+        height: 268px;
+        vertical-align: middle;
+        text-align:center;
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+        background:#FFFFCC;
+            mso-rotate: 90;
+        }
+        .v2{
+        height: 268px;
+        vertical-align: middle;
+        text-align:center;
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+        background:#DAEEF3;
+            mso-rotate: 90;
+        }
+       	.v3{
+        height: 268px;
+        vertical-align: middle;
+        text-align:center;
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+        background:#C00000;
+        color:white;
+        mso-rotate: 90;
+        }
+        .v4{
+        height: 268px;
+        vertical-align: middle;
+        text-align:center;
+        border: 1px solid black;
+        background:#92D050;
+            mso-rotate: 90;
+        }
+        .v5{
+        height: 268px;
+        vertical-align: middle;
+        text-align:center;
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+        background:#6495ed;
+        color:white;
+            mso-rotate: 90;
+        }
+        .v6{
+        height: 268px;
+        vertical-align: middle;
+        text-align:center;
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+        background:#ffd700;
+        color:white;
+            mso-rotate: 90;
+        }
+        .v7{
+        height: 268px;
+        vertical-align: middle;
+        text-align:center;
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+        background:#00bfff;
+        color:white;
+            mso-rotate: 90;
+        } 
+    </style>
+            <table>
+                <tr/><tr/>
+                <tr>
+                    <td/>
+                    <td class="headerValutazioni" colspan="3"><b>VALUTAZIONE FINALE</b></td>
+                    <td/><td/><td/>
+                    <td class="cornerValutazioni"><b>VOTO FINALE</b></td>
+                    <td class="cornerValutazioni">{!VotoMedio}</td>
+                </tr>
+                <tr>
+                    <td/>
+                    <td class="cornerValutazioni" colspan="2"><b>Raggiunto con ampio margine</b></td>
+                    <td class="corner-colorGreen"><apex:outputText value=">3,50"/></td>
+                </tr>
+                <tr>
+                    <td/>
+                    <td class="cornerValutazioni" colspan="2"><b>Raggiunto</b></td>
+                    <td class="corner-colorGreenYellow" ><apex:outputText value=">2,51 - <= 3,50"/></td>
+                </tr>
+                <tr>
+                    <td/>
+                    <td class="cornerValutazioni" colspan="2"><b>Non raggiunto</b></td>
+                    <td class="corner-colorYellow"><apex:outputText value="1,51 - <= 2,50"/></td>
+                </tr>
+                <tr>
+                    <td/>
+                    <td class="cornerValutazioni" colspan="2"><b>Non raggiunto con ampio margine</b></td>
+                    <td class="corner-colorRed"><apex:outputText value="0>-<= 1,50"/></td>
+                </tr>
+                <tr/>
+                <tr>
+                    <td/>
+                    <td style="color:#002060;"><u><b>Altri campi</b> raggruppa la totalita' delle attivita' Cpay ad eccezione del campo utente chiusura conto</u></td>
+                </tr>    
+                <tr/>
+                <tr style="height:110px;"/>
+                <tr>
+                    <td/>
+                    <td class="cornerRiepilogo"><b>id gruppo</b></td>
+                    <td class="cornerRiepilogo"><b>PRODOTTO</b></td>
+                    <td class="cornerRiepilogo"><b>CAMPO UTENTE</b></td>
+                    <td class="cornerRiepilogo"><b>TOT. SEMESTRE</b></td>
+                    <td class="cornerRiepilogo"><b>Campione analisi mese in corso</b></td>
+                    <td class="cornerRiepilogo"><b>Documenti analizzati nel mese</b></td>
+                    <td class="cornerRiepilogo"><b>Punteggio</b></td>
+                </tr>
+   			            <apex:repeat value="{!ListTotalRiepilogo}" var="Riep">
+        		<tr>
+            		<td/>
+                    <td class="sidecorner">{!Riep.Id_Gruppo}</td> 
+                    <td class="sidecorner">{!Riep.Prodotto}</td>
+                    <td class="sidecorner">{!Riep.Campo_Utente}</td>
+                    <td class="sidecorner">{!Riep.TOT_Semestre}</td>
+                    <td class="sidecorner">{!Riep.Campione_Analiasi}</td>
+                    <td class="sidecorner">{!Riep.Documenti_analizzati}</td>
+                    <td class="sidecorner">{!Riep.Punteggio } </td>
+                  
+
+            	</tr>
+       			</apex:repeat>   
+                <tr>
+                    <td/>
+                    <td class="uppercorner" colspan="7"/>
+                </tr>
+                <tr/><tr/>
+            </table>
+    		<tr/><tr/><tr/><tr/>
+    		<table>
+            	<tr class="row-height">
+                	<td class="v">Incident</td>
+                    <td class="v">Data richiesta</td>
+                    <td class="v">Pratica</td>
+                    <td class="v">Group_id</td>
+                    <td class="v">Campo Utente</td>
+                    <td class="v">Categoria</td>
+                    <td class="v">Prodotto</td>
+                    <td class="v">Operatore</td>
+                    <td class="v3" style="border-right: 1px solid black;">sla_minutes</td>
+                	<td class="v2">SLA</td>
+                    <td class="v2">Identificazione</td>
+                    <td class="v2">Operatività</td>
+                    <td class="v2">Note</td>
+                    <td class="v2" style="border-right: 1px solid black;">Archiviazione</td>
+                    <td class="v2">Commenti</td>
+                    <td class="v2">Controllo</td>
+                    <td class="v2" style="border-right: 1px solid black;">audit_controller_date</td>
+                    <td class="v5">audit_controller_approved_user</td>
+                    <td class="v5" style="border-right: 1px solid black;">audit_controller_approved_date</td>
+                    <td class="v6">audit_controller_SLA</td>
+                    <td class="v6">audit_outsourcer_identification</td>
+                    <td class="v6">audit_outsourcer_operation</td>
+                    <td class="v6">audit_outsourcer_ocs_notes</td>
+                    <td class="v6" style="border-right: 1px solid black;">audit_outsourcer_archiviation</td>
+                    <td class="v6">audit_outsourcer_note</td>
+                    <td class="v6">audit_outsourcer_user</td>
+                    <td class="v6" style="border-right: 1px solid black;">audit_outsourcer_date</td>
+                    <td class="v7">audit_controller_SLA</td>
+                    <td class="v7">audit_after_identification</td>
+                    <td class="v7">audit_after_operation</td>
+                    <td class="v7">audit_after_ocs_notes</td>
+                    <td class="v7" style="border-right: 1px solid black;">audit_after_archiviation</td>
+                    <td class="v7">audit_after_note</td>
+                    <td class="v7">audit_after_user</td>
+                    <td class="v7" style="border-right: 1px solid black;">audit_after_date</td>
+                    <td class="v3">Count Errore</td>
+                    <td class="v3">Voto Netto</td>
+                    <td class="v3" style="border-right: 1px solid black;">Errore Operativita'</td>
+                    <td class="v3">Count Errore</td>
+                    <td class="v3">Voto Netto</td>
+                    <td class="v3" style="border-right: 1px solid black;">Errore Operativita'</td>
+                    <td class="v3">Count Errore</td>
+                    <td class="v3">Voto Netto</td>
+                    <td class="v3" style="border-right: 1px solid black;">Errore Operativita'</td>
+                    <td class="v4">Voto Finale</td>
+                    <td class="v3" style="border-right: 1px solid black;">ERRORE OPER. FINALE</td>
+                </tr>
+                     <apex:repeat value="{!ListTotalExcelOut}" var="ExelOut">
+        		<tr>
+            	<td class="aC">{!ExelOut.Incident}</td>                                        
+				<td class="aC">{!ExelOut.Data_richiesta}</td>                    
+				<td class="aC">{!ExelOut.Pratica}</td>                    
+				<td class="aC">{!ExelOut.Group_id}</td>                    
+				<td class="aC">{!ExelOut.Campo_Utente}</td>                    
+				<td class="aC">{!ExelOut.Categoria}</td>                    
+				<td class="aC">{!ExelOut.Prodotto}</td>                    
+				<td class="aC">{!ExelOut.Operatore}</td>                    
+				<td class="aC">{!ExelOut.sla_minutes}</td>                    
+				<td class="aC">{!ExelOut.SLA}</td>
+				<td class="aC">{!ExelOut.Identificazione}</td>                    
+				<td class="aC">{!ExelOut.Operativita}</td>                    
+				<td class="aC">{!ExelOut.Note}</td>                    
+				<td class="aC">{!ExelOut.Archiviazione}</td>                    
+				<td class="aC">{!ExelOut.Commenti}</td>                    
+				<td class="aC">{!ExelOut.Controllo}</td>                    
+				<td class="aC">{!ExelOut.audit_controller_date}</td>                    
+				<td class="aC">{!ExelOut.audit_controller_approved_user}</td>                    
+				<td class="aC">{!ExelOut.audit_controller_approved_date}</td>
+				<td class="aC">{!ExelOut.audit_controller_SLA}</td>                    
+				<td class="aC">{!ExelOut.audit_outsourcer_identification}</td>                    
+                <td class="aC">{!ExelOut.audit_outsourcer_operation}</td>                    
+                <td class="aC">{!ExelOut.audit_outsourcer_ocs_notes}</td>                    
+				<td class="aC">{!ExelOut.audit_outsourcer_archiviation}</td>                    	
+				<td class="aC">{!ExelOut.audit_outsourcer_note}</td>                    
+				<td class="aC">{!ExelOut.audit_outsourcer_user}</td>                    
+				<td class="aC">{!ExelOut.audit_outsourcer_date}</td>                    	
+				<td class="aC">{!ExelOut.audit_controller_SLA2}</td>
+				<td class="aC">{!ExelOut.audit_after_identification}</td>                    
+				<td class="aC">{!ExelOut.audit_after_operation}</td>                    
+				<td class="aC">{!ExelOut.audit_after_ocs_notes}</td>                    
+				<td class="aC">{!ExelOut.audit_after_archiviation}</td>                    
+				<td class="aC">{!ExelOut.audit_after_note}</td>                    
+				<td class="aC">{!ExelOut.audit_after_user}</td>                    
+				<td class="rightcorner">{!ExelOut.audit_after_date}</td>                    
+				<td class="aC">{!ExelOut.Count_Errore_f1}</td>                    
+				<td class="aC">{!ExelOut.Voto_Netto_f1}</td>
+				<td class="rightcorner">{!ExelOut.Errore_Operativita_f1}</td>                    
+				<td class="aC">{!ExelOut.Count_Errore_f2}</td>                    
+				<td class="aC">{!ExelOut.Voto_Netto_f2}</td>                    
+				<td class="rightcorner">{!ExelOut.Errore_Operativita_f2}</td>                    
+				<td class="aC">{!ExelOut.Count_Errore_f3}</td>                    
+				<td class="aC">{!ExelOut.Voto_Netto_f3}</td>                               
+				<td class="rightcorner">{!ExelOut.Errore_Operativita_f3}</td>                       
+				<td class="rightcorner">{!ExelOut.Voto_Finale}</td>          
+				<td class="rightcorner">{!ExelOut.ERRORE_OPER_FINALE}</td>  
+            	</tr>
+       			</apex:repeat>   
+                <tr>
+                	<td class="uppercorner" colspan="46"/>
+                </tr>
+                
+                
+                
+    		</table>
+    		
+    
+    
+    
+    
+    
+    
+    
+</apex:page>

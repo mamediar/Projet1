@@ -1,0 +1,264 @@
+<aura:component controller="SFAConvenzionamentoMDDossierCtrller" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes,force:hasSObjectName,flexipage:availableForRecordHome">
+
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="caseId" type="String" />
+    <aura:attribute name="dealerId" type="String" />
+    <aura:attribute name="dossierId" type="String" />
+    <aura:attribute name="OCSExternalDealer" type="String" />
+    <aura:attribute name="documentiList" type="Object"/>
+    <aura:attribute name="columnsDocumenti" type="List"/> 
+    <aura:attribute name="filesDossierDocumentSelezionato" type="List"/> 
+    <aura:attribute name="selectedDossierDocumentId" type="String"/> 
+    <aura:attribute name="openModale" type="Boolean" default="false"/> 
+    <aura:attribute name="accept" type="List" default="['.jpg', '.jpeg','.pdf','.csv','.xlsx','.png','.gif']"/>
+    <aura:attribute name="multiple" type="Boolean" default="false"/>
+    <aura:attribute name="disableButtonConferma" type="Boolean" default="true"/>
+    <aura:attribute name="isInManoAdMD" type="Boolean" default="false"/>
+    <aura:attribute name="messageNonLavorazione" type="String"/> 
+    <aura:attribute name="note" type="String"/> 
+    <aura:attribute name="dataAssegnazioneAdAV" type="Datetime"/> 
+    <aura:attribute name="dataRiconsegnaAFiliale" type="Datetime"/> 
+    <aura:attribute name="isInManoAdUtenteConnesso" type="Boolean" default="false"/> 
+    <aura:attribute name="messageNonOwnerDossier" type="String"/> 
+    
+    <aura:attribute name="showButtonApprova" type="Boolean" default="false"/>
+    <aura:attribute name="showButtonRichiediMaggioriInformazioni" type="Boolean" default="false"/>
+    <aura:attribute name="showButtonSospendi" type="Boolean" default="false"/>
+    <aura:attribute name="showButtonRespingi" type="Boolean" default="false"/>
+    <aura:attribute name="showButtonCambiaStato" type="Boolean" default="false"/>     
+    <aura:attribute name="showDispositionsSelection" type="Boolean" default="false"/> 
+	<aura:attribute name="showStoricoEventi" type="Boolean" default="false"/> 
+    <aura:attribute name="showButtonVisualizzaMotivo" type="Boolean" default="false"/> 
+    <aura:attribute name="showStoricoMotivi" type="Boolean" default="false"/> 
+	<aura:attribute name="showButtonPrendiCase" type="Boolean" default="false"/> 
+	<aura:attribute name="spinnerCounter" type="Integer" default="0"/>   
+
+    <aura:handler event="c:XCS_DispositionReady" action="{!c.handleDispositionReadyEvent}"/>
+
+    <aura:handler name="init" value="{! this }" action="{! c.doInit }" /> 
+    
+
+        <lightning:card variant="Narrow" title="MD - GESTIONE DOSSIER" iconName="action:new_account" footer=" ">
+            <c:SpinnerComponent aura:id="spinnerComponent"
+                                spinnerCounter="{!v.spinnerCounter}"/>            
+            <p class="slds-p-horizontal_small">
+               <aura:if isTrue="{!v.isInManoAdMD}"> 
+                   <aura:if isTrue="{!v.isInManoAdUtenteConnesso}">  
+                           <!--OK-->
+                           <aura:if isTrue="{!v.showButtonPrendiCase}">
+                               <lightning:button label="Prendi Dossier"  
+                                                 variant="destructive"
+                                                 class="slds-m-top_medium"
+                                                 onclick="{!c.actionButtonPrendiCase}"/> <br></br> <br></br>                 
+                           </aura:if>                   
+                          <aura:if isTrue="{! !v.showDispositionsSelection}">
+                            <lightning:recordViewForm recordId="{!v.dealerId}" objectApiName="Account" >  
+                               <lightning:layout horizontalAlign="spread" multipleRows="true">
+                                   
+                                   <label for="ragioneSociale" class="slds-form-element__label slds-no-flex">Ragione Sociale</label>
+                                   <lightning:layoutItem flexibility="grow" size="12">
+                                       <lightning:outputField aura:id="ragioneSociale" fieldName="Name" disabled="true" variant="label-hidden"/>
+                                   </lightning:layoutItem>
+                                   
+                                   <label for="OCS_External_Id__c" class="slds-form-element__label slds-no-flex">Codice OCS</label>
+                                   <lightning:layoutItem flexibility="grow" size="12">
+                                       <lightning:outputField aura:id="OCS_External_Id" fieldName="OCS_External_Id__c" disabled="true" variant="label-hidden"/>
+                                   </lightning:layoutItem>                                            
+                                   
+                                   <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="12">
+                                       <lightning:outputField aura:id="Partita_IVA__c" fieldName="Partita_IVA__c"/>
+                                   </lightning:layoutItem>
+                                   
+                               </lightning:layout>
+                           </lightning:recordViewForm> 
+                              
+                              
+                            <lightning:recordViewForm recordId="{!v.dossierId}" objectApiName="Dossier__c" >  
+                               <lightning:layout horizontalAlign="spread" multipleRows="true">
+        
+                                   <lightning:layoutItem flexibility="grow" size="12">
+                                       <lightning:outputField aura:id="Autonomia" fieldName="Autonomia__c"/>
+                                   </lightning:layoutItem>
+                                   
+                                   
+                                   <label for="DataRiferimento__c" class="slds-form-element__label slds-no-flex">Data Ultima Attivazione</label>
+                                   <lightning:layoutItem flexibility="grow" size="12">
+                                       <lightning:outputField aura:id="DataRiferimento__c" fieldName="DataRiferimento__c"  variant="label-hidden"/>
+                                   </lightning:layoutItem>
+                                   
+                               </lightning:layout>
+                           </lightning:recordViewForm>   
+                              
+                              
+                        <aura:if isTrue="{!v.showButtonVisualizzaMotivo}">
+                            <lightning:button label="Visualizza Motivo"  
+                                              variant="destructive"
+                                              class="slds-m-top_medium"
+                                              onclick="{!c.actionButtonVisualizzaMotivo}"/>                   
+                        </aura:if>
+                        <lightning:button label="Visualizza storico eventi"  
+                                          variant="destructive"
+                                          class="slds-m-top_medium"
+                                          onclick="{!c.actionButtonVisualizzaStoricoEventi}"/>    
+                        <lightning:button label="Dettaglio Convenzionato"  
+                                          variant="destructive"
+                                          class="slds-m-top_medium"
+                                          onclick="{!c.actionButtonDettaglioConvenzionato}"/>      <br></br>  <br></br>                   
+        
+                        <aura:if isTrue="{!v.showStoricoEventi}"> 
+                            <aura:if isTrue="{!v.caseId}">    
+                                <c:NoteInserisciEStorico recordId="{!v.caseId}"
+                                                         showInsertNota="false"
+                                                         filterOnTitle="true"
+                                                         filterNotesTitle="Evento"
+                                                         cardTitle="Storico eventi"
+                                                         tableFieldNoteTitle="Descrizione"
+                                                         tableFieldDataTitle="Data evento"/> 
+                                
+                                
+                            </aura:if>                     
+                        </aura:if>
+                              
+                        <aura:if isTrue="{!v.showStoricoMotivi}"> 
+                             <aura:if isTrue="{!v.dataAssegnazioneAdAV}">    
+                                <c:NoteInserisciEStorico recordId="{!v.caseId}"
+                                                         showInsertNota="false"
+                                                         cardTitle="Storico Motivi"
+                                                         filterOnDate="true"
+                                                         filterStartDate="{!v.dataAssegnazioneAdAV}"
+                                                         filterEndDate="{!v.dataRiconsegnaAFiliale}"/>                   
+                            </aura:if>       
+                               
+                            
+                        </aura:if>                         
+        
+                           <aura:if isTrue="{!v.showButtonCambiaStato}">  
+                               <lightning:button label="Cambia Stato"  
+                                                 variant="destructive"
+                                                 disabled="{!v.disableButtonCambiaStato}"
+                                                 class="slds-m-top_medium"
+                                                 onclick="{!c.actionButtonCambiaStato}"/>                 
+                           </aura:if>   <br></br><br></br>              
+            
+                        <lightning:card variant="Narrow" title="Dossier Checklist" iconName="action:record" footer=" ">
+                            <p class="slds-p-horizontal_small">
+                                <!--LIGHTNING TABLE OF DOCUMENTS-->            
+                                <lightning:datatable
+                                                     keyField="id"
+                                                     data="{! v.documentiList }"
+                                                     columns="{! v.columnsDocumenti }"
+                                                     hideCheckboxColumn="true"
+                                                     onrowaction="{! c.handleRowActionDocumenti }"/>                        
+                            </p>
+                        </lightning:card>
+                           
+                        <aura:if isTrue="{!v.caseId}">    
+                           <c:NoteInserisciEStorico recordId="{!v.caseId}"
+                                                    noFilter="true"
+                                                    showButtonInserisciNota="false"
+                                                    bodyNote="{!v.note}"/>                   
+                        </aura:if>
+                        
+                        <aura:if isTrue="{!v.openModale}">
+                                 
+                              <div class="slds-modal slds-fade-in-open">
+                                  <div class="slds-modal__container">
+        
+                                      <div class="slds-modal__content slds-p-around--medium">
+        
+                                
+                                          
+                                          <!--LISTA ALLEGATI-->
+                                            <div class="slds-box">
+                                              <p>
+                                                 <lightning:card variant="Narrow" title="File allegati" iconName="action:description" footer=" ">                                  
+                                                   <aura:iteration items="{!v.filesDossierDocumentSelezionato}" var="f">  
+                                                     <tr>  
+                                                       <td> <a href="" id="{!f.Id}" onclick="{!c.OpenFile}">{!f.Title}</a></td>
+                                                       <td class="slds-p-left_medium"> <a href="" id="{!'r'+f.Id}" onclick="{!c.cancellaFile}">Rimuovi file</a></td>
+                                                     </tr>  
+                                                   </aura:iteration>  
+                                                 </lightning:card>
+                                              </p>
+                                            </div>
+                                                  
+                                      </div>
+                                      <div class="slds-modal__footer">
+                                          <lightning:button variant="destructive" iconName="utility:close" label="Chiudi"
+                                                            onclick="{!c.closeModal}"/>
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="slds-backdrop slds-backdrop_open"></div>
+                        </aura:if>   
+                           
+            
+                       <aura:if isTrue="{!v.showButtonApprova}">  
+                        <lightning:button label="Approva"  
+                                          variant="destructive"
+                                          disabled="{!v.disableButtonApprova}"
+                                          class="slds-m-top_medium"
+                                          onclick="{!c.actionButtonApprova}"/>                 
+                       </aura:if>
+                       <aura:if isTrue="{!v.showButtonRichiediMaggioriInformazioni}">  
+                        <lightning:button label="Richiedi Maggiori Informazioni"  
+                                          variant="destructive"
+                                          disabled="{!v.disableButtonRichiediMaggioriInformazioni}"
+                                          class="slds-m-top_medium"
+                                          onclick="{!c.actionButtonRichiediMaggioriInformazioni}"/>                 
+                       </aura:if>
+                       <aura:if isTrue="{!v.showButtonSospendi}">  
+                        <lightning:button label="Sospendi"  
+                                          variant="destructive"
+                                          disabled="{!v.disableButtonSospendi}"
+                                          class="slds-m-top_medium"
+                                          onclick="{!c.actionButtonSospendi}"/>                 
+                       </aura:if>
+                       <aura:if isTrue="{!v.showButtonRespingi}">  
+                        <lightning:button label="Respingi"  
+                                          variant="destructive"
+                                          disabled="{!v.disableButtonRespingi}"
+                                          class="slds-m-top_medium"
+                                          onclick="{!c.actionButtonRespingi}"/>                 
+                       </aura:if>
+                              
+                            <aura:set attribute="else">
+                                   <lightning:button label="Indietro"  
+                                                     variant="destructive"
+                                                     disabled="{!v.disableButtonCambiaStato}"
+                                                     class="slds-m-top_medium"
+                                                     onclick="{!c.actionButtonCambiaStato}"/> 
+                                  <br></br><br></br>              
+                                
+                                    <aura:if isTrue="{!v.caseId}">    
+                                       <c:NoteInserisciEStorico recordId="{!v.caseId}"
+                                                                noFilter="true"
+                                                                showInsertNota="false"/>                   
+                                    </aura:if>                        
+                                    <p class="slds-p-horizontal_small">	
+                                        <table class="slds-m-top--medium">
+                                            <c:XCS_Disposition parentExternalId="DP1908"
+                                                               saveCase="true"
+                                                               visibilityOption="Dossier"   
+                                                               noteRequired="false"
+                                                               recordId="{!v.caseId}"
+                                                               inputSelectionLabel="Esito destinazione"
+                                                               usesDispositionAction="true"/>    
+                                        </table>   
+                                    </p>                       
+                            </aura:set>                      
+                        </aura:if>
+                
+                       <aura:set attribute="else">
+                           <ui:outputText value="Dossier già in mano ad un altro utente."/> 
+                       </aura:set>
+                    </aura:if>                        
+                       
+                <aura:set attribute="else">
+                        <ui:outputText value="{!v.messageNonLavorazione}"/> 
+                </aura:set>
+            </aura:if> 
+            </p>
+   		 </lightning:card>                        
+                        
+</aura:component>

@@ -1,0 +1,213 @@
+<!--
+  @Component Name     : PVGestione.cmp
+  @Description        : 
+  @Author             : Andrea Vanelli
+  @Group              : 
+  @Last Modified By   : Federico Negro
+  @Last Modified On   : 31/10/2019, 16:51:48
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    2019-6-17 15:28:16   Andrea Vanelli     Initial Version
+-->
+<aura:component controller="PVGestioneController"
+    implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId" access="global">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <!-- chiamato da child -->
+    <aura:method name="showToast" action="{!c.showToast}"
+        description="metodo richiamato dal componente child per visualizzare un toast">
+        <aura:attribute name="response" type="Object" />
+        <aura:attribute name="header" type="String" />
+        <aura:attribute name="message" type="String" />
+    </aura:method>
+    <aura:method name="methodShowWaitComponent" action="{!c.showWaitComponent}"
+        description="metodo richiamato dal componente child per visualizzare la rotella" />
+    <aura:method name="methodHideWaitComponent" action="{!c.hideWaitComponent}"
+        description="metodo richiamato dal componente child pernascondere la rotella" />
+
+    <aura:attribute name="userData" type="PVForm.UserData" default="null" />
+    <aura:attribute name="allegati" type="Attachment[]" />
+    <aura:attribute name="newStatusSelezionato" type="String" />
+    <aura:attribute name='note' type='String' />
+
+    <!-- lista dei PV che NON usano il modulo standard di gestione, serve perche non esiste aura:elseif e era impensabile di incapsularli tutti con le else (fatti due risate qua se pensi di avere une più anche solo di 10 http://ofthecloud.blogspot.com/2018/04/nested-auraifs-in-lightning-components.html) -->
+    <aura:attribute name="nonStandardPVList" type="String" default="1763,1768,2564,1760,1766,1768" />
+
+    <aura:attribute name="isNonStandardPV" type="Boolean" default="false" />
+    <aura:attribute name="theCase" type="Case" />
+    <aura:attribute name="branchOrOffice" type="String" />
+
+    <aura:attribute name="isErroreBloccante" type="Boolean" default="false" access="Global" />
+    <aura:attribute name="messaggiErrore" type="String" default="" access="Global" />
+    <aura:attribute name="messaggiErroreParent" type="String" access="Global" default="" />
+
+
+    <div class="slds-is-relative">
+        <c:SpinnerComponent aura:id="spinnerComponent" />
+
+        <lightning:layout horizontalAlign="space">
+            <!-- Colonna 0 -->
+            <lightning:layoutItem size="12">
+                <lightning:card title="Gestione Postvendita" iconName="utility:new" variant="base">
+                    <aura:set attribute="actions"></aura:set>
+                    <lightning:layout class="slds-wrap" multipleRows="true">
+                        <lightning:layoutItem size="12" padding="horizontal-small">
+
+                            <aura:if
+                                isTrue="{!or(v.userData.user.Branch_Or_Office__c == '',v.userData.user.Branch_Or_Office__c == undefined,v.userData.accountOffice.Id == '',v.userData.accountOffice.Id == undefined)}">
+                                utente/ufficio non riconosciuto
+                                <aura:set attribute="else">
+                                    <aura:if isTrue="{!v.userData.isAbilitatoGestione == false}">
+                                        Utente non abilitato alla gestione del Case
+                                        <aura:set attribute="else">
+                                            <aura:if
+                                                isTrue="{!or(v.theCase.Status=='New',v.theCase.Status=='Sospeso')}">
+
+                                                <aura:if isTrue="{! !v.isNonStandardPV}">
+                                                    <c:PV0000GestionStd theCase="{!v.theCase}" aura:id="child"
+                                                        parent="{! this }" allegati="{!v.allegati}"
+                                                        newStatus="{!v.newStatusSelezionato}" note="{!v.note}">
+                                                    </c:PV0000GestionStd>
+                                                    <aura:set attribute="else">
+                                                        <!-- aggiungere i componenti di gestione specifici qua sotto -->
+
+                                                        <aura:if
+                                                            isTrue="{!and(v.theCase.Categoria_Riferimento__r.External_Id__c == '1763',v.userData != null)}">
+
+                                                            <c:PV1763VariazioneAnagraficaGestione theCase="{!v.theCase}"
+                                                                aura:id="child" parent="{! this }"
+                                                                allegati="{!v.allegati}"
+                                                                newStatus="{!v.newStatusSelezionato}" note="{!v.note}">
+                                                            </c:PV1763VariazioneAnagraficaGestione>
+                                                        </aura:if>
+
+                                                        <aura:if
+                                                            isTrue="{!and(v.theCase.Categoria_Riferimento__r.External_Id__c == '2564',v.userData != null)}">
+                                                            <c:PV2564AzzeramentoSpeseGestione theCase="{!v.theCase}"
+                                                                aura:id="child" parent="{! this }"
+                                                                allegati="{!v.allegati}"
+                                                                newStatus="{!v.newStatusSelezionato}" note="{!v.note}">
+                                                            </c:PV2564AzzeramentoSpeseGestione>
+                                                        </aura:if>
+
+                                                        <aura:if
+                                                            isTrue="{!and(v.theCase.Categoria_Riferimento__r.External_Id__c == '1760',v.userData != null)}">
+                                                            <c:PV1760CopiaContrattoGestione theCase="{!v.theCase}"
+                                                                aura:id="child" parent="{! this }"
+                                                                allegati="{!v.allegati}"
+                                                                newStatus="{!v.newStatusSelezionato}" note="{!v.note}">
+                                                            </c:PV1760CopiaContrattoGestione>
+                                                        </aura:if>
+                                                        <aura:if
+                                                            isTrue="{!and(v.theCase.Categoria_Riferimento__r.External_Id__c == '1766',v.userData != null)}">
+                                                            <c:PV1766CancellazionePraticaGestione theCase="{!v.theCase}"
+                                                                aura:id="child" parent="{! this }"
+                                                                allegati="{!v.allegati}"
+                                                                newStatus="{!v.newStatusSelezionato}" note="{!v.note}">
+                                                            </c:PV1766CancellazionePraticaGestione>
+                                                        </aura:if>
+                                                        <aura:if
+                                                            isTrue="{!and(v.theCase.Categoria_Riferimento__r.External_Id__c == '1768',v.userData != null)}">
+                                                            <c:PV1768RipristinoRIDGestione theCase="{!v.theCase}"
+                                                                aura:id="child" parent="{! this }"
+                                                                allegati="{!v.allegati}"
+                                                                newStatus="{!v.newStatusSelezionato}" note="{!v.note}">
+                                                            </c:PV1768RipristinoRIDGestione>
+                                                        </aura:if>
+                                                        <aura:if
+                                                            isTrue="{!and(v.theCase.Categoria_Riferimento__r.External_Id__c == '1772',v.userData != null)}">
+                                                            <c:PV1772DaCustomerServAFilialeGestione theCase="{!v.theCase}"
+                                                                aura:id="child" parent="{! this }"
+                                                                allegati="{!v.allegati}"
+                                                                newStatus="{!v.newStatusSelezionato}" note="{!v.note}">
+                                                            </c:PV1772DaCustomerServAFilialeGestione>
+                                                        </aura:if>
+
+                                                    </aura:set>
+                                                </aura:if>
+                                                
+                                                <!--
+                                                <lightning:card title="Allegati" iconName="action:add_file">
+                                                    <aura:if isTrue="{!v.messaggiErroreParent != ''}">
+                                                        <ui:message title="Errore" severity="error" closable="true">
+                                                            <aura:unescapedHtml value="{!v.messaggiErroreParent}" />
+                                                        </ui:message>
+                                                    </aura:if>
+                                                    <p class="slds-p-horizontal_small">
+                                                        L'utilizzo del fax è consentito solo in caso di mancanza dello
+                                                        scanner.<br />In caso di malfunzionamento
+                                                        contattare tempestivamente l'ufficio competente.
+                                                    </p>
+                                                    <p class="slds-p-horizontal_small">
+                                                        <lightning:input type="checkbox" aura:id="checkFax"
+                                                            label="Invio via fax" checked="false" />
+                                                    </p>
+                                                    <p class="slds-p-horizontal_small">
+                                                        <c:XCSGestioneAllegati fileList="{!v.allegati}"></c:XCSGestioneAllegati>
+                                                    </p>
+                                                </lightning:card>
+        -->
+
+
+                                                Se la richiesta deve essere annullata premere l’apposito pulsante
+                                                "Annulla
+                                                Richiesta".<br />
+                                                Lo stato GESTITA invia la risposta al destinatario.<br />
+                                                Lo stato IN LAVORAZIONE deve essere imputato solo quando la gestione
+                                                della
+                                                richiesta richiede tempo.<br />
+
+                                                <lightning:select name="newStatus" label="Nuovo stato:" required="true"
+                                                    aura:id="newStatus" value="{!v.newStatusSelezionato}">
+                                                    <option text="" value="" />
+                                                    <option text="Gestita" value="Closed" />
+                                                    <option text="In Lavorazione" value="Sospeso" />
+                                                    <!--<option text="Reinviata al mittente... non trovo lo status" value="" />-->
+                                                </lightning:select>
+
+                                                <!-- Note -->
+                                                <lightning:textarea name="noteInput" label="Note" value="{!v.note}" />
+
+                                                <!-- messaggi di errore o segnalazioni dal Child al caricamento -->
+                                                <aura:if isTrue="{!v.messaggiErrore != ''}">
+                                                    <aura:if isTrue="{!v.isErroreBloccante}">
+                                                        <ui:message title="Errore" severity="error" closable="true">
+                                                            <aura:unescapedHtml value="{!v.messaggiErrore}" />
+                                                        </ui:message>
+                                                        <aura:set attribute="else">
+                                                            <ui:message title="Warning" severity="warning"
+                                                                closable="true">
+                                                                <aura:unescapedHtml value="{!v.messaggiErrore}" />
+                                                            </ui:message>
+                                                        </aura:set>
+                                                    </aura:if>
+                                                </aura:if>
+
+                                                <!-- Bottone Conferma -->
+                                                <!-- callChildMethod richiama la funzione save del componente figlio -->
+                                                <lightning:button label="Conferma" onclick="{! c.callChildMethod }"
+                                                    variant='destructive' />
+
+
+
+                                                <aura:set attribute="else">
+                                                    Nessuna azione prevista.
+                                                </aura:set>
+                                            </aura:if>
+                                        </aura:set>
+                                    </aura:if>
+
+                                </aura:set>
+                            </aura:if>
+
+
+
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </lightning:card>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </div>
+</aura:component>

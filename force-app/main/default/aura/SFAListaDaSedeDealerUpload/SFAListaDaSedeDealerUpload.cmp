@@ -1,0 +1,147 @@
+<aura:component controller="SFAListaDaSedeDealerUploadController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global">
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    
+    <aura:attribute name="toastMsg" type="String"/>
+    <aura:attribute name="TargetFileName" type="String"  description="Name of the file"/>
+    <aura:attribute name="tableheaders" type="Object[]" />
+    <aura:attribute name="fileContentData" type="String"/>
+    <aura:attribute name="filename" type="String"/>
+    <aura:attribute name="datenow" type="Datetime"/>
+    <aura:attribute name="showSpinner" type="Boolean" default="false"/>
+    <!-- It will display 100 records . Change for your requirement-->
+    <aura:attribute name="showMain" type="Boolean" default="false"/>
+    <aura:attribute name="fileToBeUploaded" type="Object[]"/>
+    <!-- #CAMPO tipo lita-->
+    <aura:attribute name="tipologia_lista" type="List" access="PRIVATE"/>
+    <aura:attribute name="tipo_lista_selezionata" type="String" access="PRIVATE"/>
+    <aura:attribute name="data_visibilita" type="Date" access="PRIVATE"/>
+    <!-- #CAMPO tipo attività-->
+    <aura:attribute name="tipologia_attivita" type="List" access="PRIVATE"/>
+    <aura:attribute name="tipo_attivita_selezionata" type="String" access="PRIVATE"/>
+    <aura:attribute name="errorHeader" type="String"/>
+    <aura:attribute name="errorBody" type="String"/>
+    <aura:attribute name="errorFooter" type="String"/>
+    <!--Campi per il report dopo il caricamento -->
+    <aura:attribute name="data" type="Object"/>
+    <aura:attribute name="columns" type="List"/>
+    <!--<aura:attribute name="recordId" type="String"/>-->
+    <aura:attribute name="pageNumber" type="Integer" default="1"/>
+    <aura:attribute name="pageSize" type="Integer" default="10"/>
+    <aura:attribute name="isLastPage" type="Boolean" default="true"/>
+    <aura:attribute name="resultSize" type="Integer" default="0"/>
+    <aura:attribute name="updatedRecord" type="Object[]" />
+    <aura:attribute name="disableElabora" type="Boolean" default="true"/>
+
+    <aura:attribute name="showOnly" type="Boolean" default="true"/>
+    <aura:attribute name="showAlert" type="Boolean"/>
+	
+    <lightning:notificationsLibrary aura:id="notifLib"/> 
+	
+    <!--THEME SALESFORCE -->
+    <div class="slds-box slds-theme_default slds-m-bottom_small">
+    
+
+    <aura:if isTrue="{!v.showAlert}">
+        <div class="slds-box slds-box_x-small slds-theme_shade">
+            <strong>Caricamento in corso...attendere! &ensp; </strong>                   
+        </div>
+        <aura:set attribute="else">
+            
+
+
+    <div class="slds-grid slds-wrap">
+        <div class="slds-form-element slds-col slds-size_2-of-12">
+            <div class="slds-form-element__control">
+                <lightning:input type="text" aura:id="nome_lista" name="nome_lista" label="Nome Lista: " placeholder="Nome lista" style="margin-right:10px" onblur="{!c.onCheckEnableElabora}" />
+            </div>
+        </div>
+        <div class="slds-form-element slds-col slds-size_5-of-12">
+            <div class="slds-form-element__control">
+                <lightning:select aura:id="tipo_lista" name="tipo_lista" label="Tipo Lista: " onchange="{!c.onChangeAttivita}">
+                    <option value="">Scegli...</option>
+                    <aura:iteration items="{!v.tipologia_lista}" var="option">
+                        <option text="{!option.Nome_Lista__c}" value="{!option.Id}"/>
+                    </aura:iteration>
+                </lightning:select>    
+            </div>
+        </div>
+    </div>
+    <div class="slds-grid slds-wrap">
+        <div class="slds-form-element slds-col slds-size_5-of-12">
+            <div class="slds-form-element__control">
+                <lightning:select aura:id="tipo_attivita" name="tipo_attivita" label="Tipo Attività: " value="{!v.tipo_attivita_selezionata}"  onchange="{!c.onCheckEnableElabora}">
+                    <option value="">Scegli...</option>
+                    <aura:iteration items="{!v.tipologia_attivita}" var="option">
+                        <!--<option text="{!option.Name}" value="{!option.Id}"/>-->
+                        <option text="{!option.Descrizione__c}" value="{!option.Id}"/>
+                    </aura:iteration>
+                </lightning:select>    
+            </div>
+        </div>
+    </div>
+    <div class="slds-grid slds-wrap">
+        	<div class="slds-form-element slds-col slds-size_4-of-12">
+                <div class="slds-form-element__control">
+                    <lightning:input type="date" aura:id="data_visibilita" name="data_visibilita" label="Data Visibilità: "/>
+                </div>
+            </div>
+    </div>
+    <br/>
+    <div>
+        <div class="slds-grid slds-wrap slds-col">
+                <lightning:input aura:id="file-input" type="file"
+                                 files="{!v.fileToBeUploaded}"
+                                 onchange="{!c.onFileUploaded}"
+                                 accept=".csv"
+                                 label="File da caricare"
+                                 name="file" multiple="true"/>
+            </div>
+        <aura:if isTrue="{!v.showMain}">
+            <ui:outputRichText class="uiOutputRichText slds-m-around--large" value="{!v.TargetFileName}"/> 
+            <div class="slds-p-around--large slds-align--absolute-center">
+                <lightning:button label="Elabora" variant="brand" onclick="{!c.processFileContent}" disabled="{!v.disableElabora}"
+                                  />
+                <lightning:button label="Cancella" variant="brand" 
+                                  onclick="{!c.cancel}" /> 
+            </div>
+        </aura:if>
+    </div> 
+    <br/>   
+
+
+    
+
+    <lightning:card title="Report Inserimento">
+        <ui:outputRichText class="uiOutputRichText slds-m-around--large" value="{!v.errorHeader}"/> 
+        <lightning:layout multipleRows="true" horizontalAlign="center">
+            <lightning:layoutItem padding="around-small" size="12">
+                <lightning:datatable
+                                     aura:id="accountDataTable"
+                                     columns="{! v.columns }"
+                                     data="{! v.data }"
+                                     keyField="Id"
+                                     hideCheckboxColumn="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="around-small" flexibility="auto">
+                <lightning:button label="Prev" iconName="utility:chevronleft" iconPosition="left"
+                                  onclick="{!c.onPrev}" disabled="{! v.pageNumber == 1}"/>
+                <span class="slds-p-horizontal_small">
+                    Page {!v.pageNumber} | Showing records from {! ((v.pageNumber-1)*v.pageSize)+' to '+((v.pageNumber-1)*v.pageSize+v.resultSize)}
+                </span>
+                <lightning:button label="Next" iconName="utility:chevronright" iconPosition="right" 
+                                  disabled="{! v.isLastPage}" onclick="{!c.onNext}"/>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </lightning:card>
+    <aura:if isTrue="{!v.showSpinner}">
+        <lightning:spinner alternativeText="Loading" size="large"/>
+    </aura:if>
+    <br/>
+    <br/>
+    <div>
+        <c:SFAListaDaSedeGestisciListeCaricate aura:id= "listecaricate" showOnly="{!v.showOnly}"></c:SFAListaDaSedeGestisciListeCaricate>
+    </div>
+</aura:set>
+</aura:if>
+    </div>
+</aura:component>

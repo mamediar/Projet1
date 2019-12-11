@@ -1,0 +1,74 @@
+<!--
+//Component Name : CRMReclamiInserimentoCliente
+//Autor          : 
+//Date           : 05/06/2019
+//Description    : Component figlio che contiene il form per l'inserimento del cliente nel reclamo
+//Version        : 1.0
+-->
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" 
+                access="global">
+
+    <aura:attribute name="aziendaSelezionata" type="String"/>
+    <aura:attribute name="cognome" type="String"/>
+    <aura:attribute name="nome" type="String"/>
+    <aura:attribute name="dataNascita" type="String"/>
+    <aura:attribute name="isSconosciuto" type="Boolean"/>
+    <aura:attribute name="clienteSelezionato" type="OCSCliente"/>
+    <aura:attribute name="listaClienti" type="OCSCliente[]" />
+    <aura:attribute name="reclamoSelezionato" type="Case"/>
+    <aura:attribute name="stepInserimentoCliente" type="Integer"/>
+    <aura:attribute name="numeroReclamo" type="String"/>
+    <aura:attribute name="showAlert2" type="Boolean"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    
+    <aura:if isTrue="{!or(v.aziendaSelezionata=='Compass',v.aziendaSelezionata=='Futuro')}">
+        <aura:if isTrue="{!v.aziendaSelezionata=='Compass'}">
+            <c:OCSRecuperaDatiPostvendita OCSClienti="{!v.listaClienti}"
+                                          showPratiche="false"
+                                          showClienti="false"
+                                          nomeCliente="{!v.nome}"
+                                          cognomeCliente="{!v.cognome}"
+                                          dataNascitaCliente="{!v.dataNascita}"
+                                          nameProcess="Reclami"
+                                          reclamoSelezionato="{!v.reclamoSelezionato}"
+                                          stepInserimentoCliente="{!v.stepInserimentoCliente}"
+                                          numeroReclamo="{!v.numeroReclamo}"
+                                          showAlert2="{!v.showAlert2}"
+                                          filtroTipoPratica="CA#CO#CQ#PB"
+                                          flagInfoCliente="true"
+                                      
+                                          />
+            <aura:set attribute="else">
+             <!--  {!v.aziendaSelezionata} -->
+       
+                <c:OCSRecuperaDatiFuturo OCSClienti="{!v.listaClienti}"
+                                         showPratiche="false"
+                                         showClienti="false"
+                                         nomeCliente="{!v.nome}"
+                                         cognomeCliente="{!v.cognome}"
+                                         dataNascitaCliente="{!v.dataNascita}"
+                                         nameProcess="Reclami"
+                                         />
+            </aura:set>
+        </aura:if>
+        
+        <div style="font-weight:bold;font-size: 150%;margin-bottom:15px;margin-left:15px;">Compilare i seguenti campi per creare il contatto sconosciuto:</div>
+        <c:XCSReclamiFormContattoSconosciuto nome="{!v.nome}"
+                                             cognome="{!v.cognome}"
+                                             dataNascita="{!v.dataNascita}"
+                                             listaClienti="{!v.listaClienti}"
+                                             clienteSelezionato="{!v.clienteSelezionato}"
+                                             isSconosciuto="{!v.isSconosciuto}"
+                                             aziendaSelezionata="{!v.aziendaSelezionata}"
+                                             />
+        
+        <aura:set attribute="else">
+          <!--  MBCredit Solutions -->
+            <c:XCSReclamiFormInserimentoMBCredit clienteSelezionato="{!v.clienteSelezionato}"
+                                                 listaClienti="{!v.listaClienti}"
+                                                 />
+        </aura:set>
+    </aura:if>
+    
+</aura:component>

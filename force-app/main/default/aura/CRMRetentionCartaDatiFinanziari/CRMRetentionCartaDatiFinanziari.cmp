@@ -1,0 +1,159 @@
+<aura:component controller="CRMRetentionCartaDFController" implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId,lightning:availableForFlowScreens">
+    
+    <aura:attribute name="codicePratica" type="String" />
+    <aura:attribute name="cartaDatiFinanziari" type="OCSCartaDatiFinanziariResponse" />
+    <aura:attribute name="isOutbound" type="boolean" default="false"/>
+    
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    <aura:handler name="change" value="{!v.codicePratica}" action="{!c.init}" />
+    
+    <lightning:card title="Dati Finanziari">
+        
+        <div class="slds-grid slds-gutters">
+            <div class="slds-size_3-of-12"></div> <!-- colonna spazio  -->
+            <div class="slds-col slds-size_2-of-12 txt-left"><span class="label">PRODOTTO</span></div>
+            <div class="slds-col slds-size_4-of-12 txt-left"><span>{! v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.codProdotto + ' ' + v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.desProdotto}</span></div>   
+            <div class="slds-size_3-of-12"></div> <!-- colonna spazio  -->
+        </div>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-size_3-of-12"></div> <!-- colonna spazio  -->
+            <div class="slds-col slds-size_2-of-12 txt-left"><span class="label">PAN</span></div>
+            <div class="slds-col slds-size_4-of-12 txt-left"><span>{! v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.pan}</span></div>   
+            <div class="slds-size_3-of-12"></div> <!-- colonna spazio  -->
+        </div>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-size_3-of-12"></div> <!-- colonna spazio  -->
+            <div class="slds-col slds-size_2-of-12 txt-left"><span class="label">DATA VALIDITA'</span></div>
+            <div class="slds-col slds-size_4-of-12 txt-left"><span>{! v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.dataValiditaSlashed}</span></div>   
+            <div class="slds-size_3-of-12"></div> <!-- colonna spazio  -->
+        </div>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-size_3-of-12"></div> <!-- colonna spazio  -->
+            <div class="slds-col slds-size_2-of-12 txt-left"><span class="label">DATA SCADENZA</span></div>
+            <div class="slds-col slds-size_4-of-12 txt-left"><span>{! v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.dataScadenzaSlashed}</span></div>   
+            <div class="slds-size_3-of-12"></div> <!-- colonna spazio  -->
+        </div>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-size_3-of-12"></div> <!-- colonna spazio  -->
+            <div class="slds-col slds-size_2-of-12 txt-left"><span class="label">STATO CARTA</span></div>
+            <div class="slds-col slds-size_4-of-12 txt-left"><span>{! v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.stato + ' ' + v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.statoCustom}</span></div>   
+            <div class="slds-size_3-of-12"></div> <!-- colonna spazio  -->
+        </div>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-size_3-of-12"></div> <!-- colonna spazio  -->
+            <div class="slds-col slds-size_2-of-12 txt-left"><span class="label">STATO RINNOVO</span></div>
+            <div class="slds-col slds-size_4-of-12 txt-left"><span>{! v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.statoRinnovoCustom}</span></div>   
+            <div class="slds-size_3-of-12"></div> <!-- colonna spazio  -->
+        </div>
+        <br/>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-size_3-of-12"></div> <!-- colonna spazio  -->
+            <div class="slds-col slds-size_2-of-12 txt-left"><span class="label">FIDO</span></div>
+            <div class="slds-col slds-size_4-of-12 txt-left"><span>{! v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.fidoTotaleDivide}</span></div>   
+            <div class="slds-size_3-of-12"></div> <!-- colonna spazio  -->
+        </div>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-size_3-of-12"></div> <!-- colonna spazio  -->
+            <div class="slds-col slds-size_2-of-12 txt-left"><span class="label">DISPONIBILITA'</span></div>
+            <div class="slds-col slds-size_4-of-12 txt-left"><span>{! v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.dispTotaleDivide}</span></div>   
+            <div class="slds-size_3-of-12"></div> <!-- colonna spazio  -->
+        </div>
+        <br/><br/>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-size_3-of-12"></div> <!-- colonna spazio  -->
+            <div class="slds-col slds-size_2-of-12 txt-left"><span class="label">RISERVE</span></div>
+            <div class="slds-col slds-size_6-of-12 txt-center">
+                <span>
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_2-of-12 txt-left"><span></span></div>
+                        <div class="slds-col slds-size_2-of-12 txt-left"><span><b>Affidamento</b></span></div>
+                        <div class="slds-col slds-size_2-of-12 txt-left"><span><b>Disponibilità</b></span></div>
+                        <div class="slds-col slds-size_1-of-12 txt-left"><span><b>Saldo</b></span></div>
+                        <div class="slds-col slds-size_1-of-12 txt-left"><span><b>Sconfino</b></span></div>
+                        <div class="slds-col slds-size_2-of-12 txt-left"><span><b>OverLimit</b></span></div>
+                        <div class="slds-col slds-size_2-of-12 txt-left"><span><b>Disp. Teorica Max</b></span></div>	
+                    </div>
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_2-of-12 txt-left"><span><b>Principale</b></span></div>
+                        <div class="slds-col slds-size_2-of-12 txt-left"><span>{! v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.riservaPrincipaleFidoSegno + 		v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.riservaPrincipaleFidoDivide}</span></div>
+                        <div class="slds-col slds-size_2-of-12 txt-left"><span>{! v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.riservaPrincipaleDispSegno + 		v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.riservaPrincipaleDispDivide}</span></div>
+                        <div class="slds-col slds-size_1-of-12 txt-left"><span>{! v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.riservaPrincipaleSaldoSegno + 		v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.riservaPrincipaleSaldoDivide}</span></div>
+                        <div class="slds-col slds-size_1-of-12 txt-left"><span>{! v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.riservaPrincipaleSconfinoSegno + 	v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.riservaPrincipaleSconfinoDivide}</span></div>
+                        <div class="slds-col slds-size_2-of-12 txt-left"><span>{! v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.riservaPrincipaleOverlimitSegno + 	v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.riservaPrincipaleOverlimitDivide}</span></div>
+                        <div class="slds-col slds-size_2-of-12 txt-left"><span>{! v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.riservaPrincipaleDispTeorMaxSegno + v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.riservaPrincipaleDispTeorMaxDivide}</span></div>	
+                    </div>
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_2-of-12 txt-left"><span><b>Salvadanaio</b></span></div>
+                        <div class="slds-col slds-size_2-of-12 txt-left"><span>{! v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.riservaSalvadanaioFidoSegno + 		v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.riservaSalvadanaioFidoDivide}</span></div>
+                        <div class="slds-col slds-size_2-of-12 txt-left"><span>{! v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.riservaSalvadanaioDispSegno + 		v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.riservaSalvadanaioDispDivide}</span></div>
+                        <div class="slds-col slds-size_1-of-12 txt-left"><span>{! v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.riservaSalvadanaioSaldoSegno + 		v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.riservaSalvadanaioSaldoDivide}</span></div>
+                        <div class="slds-col slds-size_1-of-12 txt-left"><span>{! v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.riservaSalvadanaioSconfinoSegno + 	v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.riservaSalvadanaioSconfinoDivide}</span></div>
+                        <div class="slds-col slds-size_2-of-12 txt-left"><span>{! v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.riservaSalvadanaioOverlimitSegno + 	v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.riservaSalvadanaioOverlimitDivide}</span></div>
+                        <div class="slds-col slds-size_2-of-12 txt-left"><span>{! v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.riservaSalvadanaioDispTeorMaxSegno + v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.riservaSalvadanaioDispTeorMaxDivide}</span></div>	
+                    </div>
+                </span></div>   
+            
+        </div>
+        <br/>
+        <br/>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-size_3-of-12"></div> <!-- colonna spazio  -->
+            <div class="slds-col slds-size_2-of-12 txt-left"><span class="label">TAN</span></div>
+            <div class="slds-col slds-size_4-of-12 txt-left"><span>{! v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.tassoTan}</span></div>   
+            <div class="slds-size_3-of-12"></div> <!-- colonna spazio  -->
+        </div>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-size_3-of-12"></div> <!-- colonna spazio  -->
+            <div class="slds-col slds-size_2-of-12 txt-left"><span class="label">TAEG</span></div>
+            <div class="slds-col slds-size_4-of-12 txt-left"><span></span>{! v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.tassoTaeg }</div>   
+            <div class="slds-size_3-of-12"></div> <!-- colonna spazio  -->
+        </div>
+        <br/>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-size_3-of-12"></div> <!-- colonna spazio  -->
+            <div class="slds-col slds-size_2-of-12 txt-left"><span class="label">MODALITA' PAGAMENTO</span></div>
+            <div class="slds-col slds-size_4-of-12 txt-left"><span>{! v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.pagamento}</span></div>   
+            <div class="slds-size_3-of-12"></div> <!-- colonna spazio  -->
+        </div>
+        <br/>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-size_3-of-12"></div> <!-- colonna spazio  -->
+            <div class="slds-col slds-size_2-of-12 txt-left"><span class="label">DATI BANCARI</span></div>
+            <div class="slds-col slds-size_4-of-12 txt-left"><span>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_2-of-12 txt-left"><span><b>ABI</b></span></div>
+                    <div class="slds-col slds-size_2-of-12 txt-left"><span><b>CAB</b></span></div>
+                    <div class="slds-col slds-size_3-of-12 txt-left"><span><b>NUM CONTO</b></span></div>
+                    <div class="slds-col slds-size_2-of-12 txt-left"><span><b>IBAN</b></span></div>
+                </div>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_2-of-12 txt-left"><span>{! v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.bancaCliAbi }</span></div>
+                    <div class="slds-col slds-size_2-of-12 txt-left"><span>{! v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.bancaCliCab }</span></div>
+                    <div class="slds-col slds-size_3-of-12 txt-left"><span>{! v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.contoCorrente }</span></div>
+                    <div class="slds-col slds-size_2-of-12 txt-left"><span>{! v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.iban }</span></div>
+                </div>
+                </span></div>   
+            <div class="slds-size_3-of-12"></div> <!-- colonna spazio  -->
+        </div>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-size_3-of-12"></div> <!-- colonna spazio  -->
+            <div class="slds-col slds-size_2-of-12 txt-left"><span class="label">MODALITA' CALCOLO RATA</span></div>
+            <div class="slds-col slds-size_4-of-12 txt-left"><span class="redTextColor">{! v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.modCalcoloRataCustom }</span></div>   
+            <div class="slds-size_3-of-12"></div> <!-- colonna spazio  -->
+        </div>
+        <aura:if isTrue='{! v.isOutbound}' >
+            <div class="slds-grid slds-gutters">
+                <div class="slds-size_3-of-12"></div> <!-- colonna spazio  -->
+                <div class="slds-col slds-size_2-of-12 txt-left"><span class="label">PERCENTUALE</span></div>
+                <div class="slds-col slds-size_4-of-12 txt-left"><span class="redTextColor">{! v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.pagamentoMinimoPerc }</span></div>   
+                <div class="slds-size_3-of-12"></div> <!-- colonna spazio  -->
+            </div>
+            <div class="slds-grid slds-gutters">
+                <div class="slds-size_3-of-12"></div> <!-- colonna spazio  -->
+                <div class="slds-col slds-size_2-of-12 txt-left"><span class="label">RATA MINIMA</span></div>
+                <div class="slds-col slds-size_4-of-12 txt-left"><span class="redTextColor">{! v.cartaDatiFinanziari.datiCartaDatiFinanziariResponse.pagamentoMinimo }</span></div>   
+                <div class="slds-size_3-of-12"></div> <!-- colonna spazio  -->
+            </div>    
+        </aura:if>
+    </lightning:card>
+</aura:component>

@@ -1,0 +1,9 @@
+.THIS button{
+    background-color:#6a89e5;
+    color:#fff;
+}
+
+.THIS button:hover{
+    background-color:#eee;
+    color:#6a89e5;
+}

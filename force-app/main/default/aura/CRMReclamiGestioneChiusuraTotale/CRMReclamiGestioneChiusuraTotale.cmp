@@ -1,0 +1,1114 @@
+<aura:component controller="CRMReclamiGestioneChiusuraTotaleCtrl"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" 
+                access="global" >
+    
+    <aura:attribute name="newSicValue" type="String"/>
+    <aura:attribute name="newSocRecValue" type="String"/>
+    <aura:attribute name="newSocAssValue" type="String"/>
+    <aura:attribute name="codaSelezionata" type="CodaXSocieta__mdt" default=''/>
+    <aura:attribute name="toastMsg" type="String"/>
+    
+    <!--Attributi per il case (id e campi)-->
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="campiCase" type = "Object"/>
+    
+    <aura:attribute name="radioOptions" type="List"/>
+    <aura:attribute name="tabChiusura" type="Boolean"/>
+    
+    <!-- attributi per gestire la Datatable Società di Recupero (Input, output)-->
+    <aura:attribute name="socRecListInit" type="List"/>
+    <aura:attribute name="socRecReversedMap" type="Map"/>
+    <aura:attribute name="socRecValue" type="Boolean"/>
+    <aura:attribute name="socRecColumns" type="List"/>
+    <aura:attribute name="socRecData" type="Object"/>
+    <aura:attribute name="socRecList" type="List"/>        
+    <aura:attribute name="socRecInput" type="String" default="-999"/>            
+    <aura:attribute name="recuperoMap" type="Map"/>
+    <aura:attribute name="socRecInit" type="String"/>
+    
+    <!-- attributi per gestire la Datatable Società di Assicurazioni (Input, output)-->
+    <aura:attribute name="socAssInit" type="String"/>
+    <aura:attribute name="socAssValue" type="Boolean"/>
+    <aura:attribute name="socAssColumns" type="List"/>
+    <aura:attribute name="socAssData" type="Object"/>
+    <aura:attribute name="socAssList" type="List"/>    
+    <aura:attribute name="assicurazioniMap" type="Map"/>
+    <aura:attribute name="assicurazioniReversedMap" type="Map"/>
+    <aura:attribute name="socAssListInit" type="List"/>    
+    <aura:attribute name="socAssInput" type="String" default="-999"/>
+    
+    <!-- attributi per gestire la Datatable SIC (Input, output)-->
+    <aura:attribute name="sicValue" type="Boolean"/>
+    <aura:attribute name="sicColumns" type="List"/>
+    <aura:attribute name="sicData" type="Object"/>
+    <aura:attribute name="sicList" type="List"/>    
+    <aura:attribute name="sicMap" type="Map"/>
+    <aura:attribute name="sicReversedMap" type="Map"/>
+    <aura:attribute name="sicInitList" type="List"/>
+    <aura:attribute name="sicInit" type="String"/>    
+    <aura:attribute name="sicInput" type="String" default="-999"/>
+    
+    <!-- attributi per gestire la pickList accolto-->
+    <aura:attribute name ="accoltoInput" type="String"/>
+    <aura:attribute name="accoltoDettagli" type="String"/>
+    <aura:attribute name="accoltoList" type="List"/>    
+    <aura:attribute name="accoltoInitData" type="String"/>    
+    <aura:attribute name="accoltoMap" type="Map"/>
+    <aura:attribute name="accoltoReversedMap" type="Map"/>
+    
+    <!-- attributi per gestire la pickList Decisione -->
+    <aura:attribute name="decisioneReversedMap" type="Map"/>
+    <aura:attribute name="decisioneForInit" type="String"/>
+    <aura:attribute name="decisioneInput" type="String"/>
+    <aura:attribute name = "decisioneDettagli" type = "String"/>
+    <aura:attribute name = "decisioneList" type = "List"/>    
+    <aura:attribute name = "decisioneMap" type="Map"/>
+    
+    <!-- attributi per gestire la pickList Intervento -->
+    <aura:attribute name = "interventoAutDettagli" type = "String"/>
+    <aura:attribute name = "interventoAutList" type = "List"/>
+    <aura:attribute name = "interventoAutDettagliInit" type = "String"/>    
+    <aura:attribute name = "interventoInput" type = "String"/>        
+    <aura:attribute name = "interventoMap" type="Map"/>
+    <aura:attribute name = "interventoReversedMap" type="Map"/>
+    
+
+
+    <aura:attribute name="sicValues" type="String" default="none"/>
+    <aura:attribute name="socAssValues" type="String" default="none"/>
+    <aura:attribute name="socRecValues" type="String" default="none"/>
+
+    <aura:attribute name="abbuonoValue" type="Boolean"/>
+    <aura:attribute name="abbuonoValues" type="String" default="none"/>
+    <aura:attribute name="abbuonoImportoValue" type="Double"/>
+    
+    <aura:attribute name="rimborsoValue" type="Boolean"/>
+    <aura:attribute name="rimborsoValues" type="String" default="none"/>
+    <aura:attribute name="rimborsoImportoValue" type="Double"/>
+
+    <aura:attribute name="rimborsoCommValue" type="Boolean"/>
+    <aura:attribute name="rimborsoCommValues" type="String" default="none"/>
+    <aura:attribute name="rimborsoImportoCommValue" type="Double"/>
+
+    <aura:attribute name="rimborsoProvValue" type="Boolean"/>
+    <aura:attribute name="rimborsoProvValues" type="String" default="none"/>
+    <aura:attribute name="rimborsoImportoProvValue" type="Double"/>
+
+    <aura:attribute name="rimborsoPremValue" type="Boolean"/>
+    <aura:attribute name="rimborsoPremValues" type="String" default="none"/>
+    <aura:attribute name="rimborsoImportoPremValue" type="Double"/>
+
+    <aura:attribute name="rimborsoVarValue" type="Boolean"/>
+    <aura:attribute name="rimborsoVarValues" type="String" default="none"/>
+    <aura:attribute name="rimborsoImportoVarValue" type="Double"/>
+
+    <aura:attribute name="rimborsoLegValue" type="Boolean"/>
+    <aura:attribute name="rimborsoLegValues" type="String" default="none"/>
+    <aura:attribute name="rimborsoImportoLegValue" type="Double"/>
+
+    <aura:attribute name="risarcimentoValue" type="Boolean"/>
+    <aura:attribute name="risarcimentoValues" type="String" default="none"/>
+    <aura:attribute name="risarcimentoImportoValue" type="Double"/>
+
+    <aura:attribute name="idmValue" type="Boolean"/>
+    <aura:attribute name="idmValues" type="String" default="none"/>
+
+    <aura:attribute name="riscontroValue" type="Boolean"/>
+    <aura:attribute name="riscontroValues" type="String" default="none"/>
+
+    <aura:attribute name="attesaValue" type="Boolean"/>
+    <aura:attribute name="attesaValues" type="String" default="none"/> 
+    
+    <aura:attribute name="fondatoValue" type="Boolean"/>
+    <aura:attribute name="fondatoValues" type="String" default="none"/>
+    
+    <aura:attribute name="allegatiCompletiValue" type="Boolean"/>
+    <aura:attribute name="allegatiCompletiValues" type="String" default="none"/>
+
+    <aura:attribute name="respValues" type="String" default="none"/>
+    <aura:attribute name="respValueToFound" type="String"/>
+
+    <!--END AFTER UAT 16/10-->
+    
+    <aura:attribute name = "isInterventoAutorita" type="Boolean" default="false"/> 
+    
+    <aura:attribute name="fileList" type="Attachment[]"/>
+    <aura:attribute name="allegatiSelezionati" type="Attachment[]" />
+    
+    <!--
+    <aura:attribute name="responsabilitaValue" type="Boolean"/>
+    <aura:attribute name="responsabilitaObject" type="Object"/>
+    <aura:attribute name="responsabilitaColumns" type="List"/>
+    <aura:attribute name="responsabilitaList" type="List"/>
+    -->
+
+    <aura:handler name = "init" value = "{!this}" action = "{!c.init}"/>
+    <aura:method name="salvaChiusura" action="{!c.salvaReclamo}" access="PUBLIC"/>
+    <aura:method name="makeChiusura" action="{!c.makeCaseChiusura}" access="PUBLIC"/> 
+    <aura:method name="makeCaseChiusuraDouble" action="{!c.makeCaseChiusuraDouble}" access="PUBLIC"/> 
+    <!--<aura:method name="check" action="{!c.check}" access="PUBLIC"/> -->
+    <aura:method name="checkCompass" action="{!c.checkCompass}" access="PUBLIC"/> 
+    <aura:method name="checkFuturo" action="{!c.checkFuturo}" access="PUBLIC"/> 
+    <aura:method name="creaReclamoIDM" action="{!c.createCase}" access="PUBLIC"/>
+    <aura:method name="refresh" action="{!c.init}" access="PUBLIC"/>
+    
+    <!--RESPONSABILITA-->
+    <aura:attribute name="respValue" type="Boolean" default="false"/>
+    <aura:attribute name="respSelected" type="String[]"/>
+    <aura:attribute name="respSelectedTemp" type="String[]"/>
+    <aura:attribute name="respStart" type="Boolean" default="false"/>
+    <aura:attribute name="readOnly" type="Boolean" default="false"/>
+    <aura:attribute name="columns" type="List"/>
+
+    <aura:attribute name="defaultValues" type="String[]"/>
+
+    <aura:attribute name="newSicValueReadOnly" type="String[]"/>
+    <aura:attribute name="newSocAssValueReadOnly" type="String[]"/>
+    <aura:attribute name="newSocRecValueReadOnly" type="String[]"/>
+    <aura:attribute name="respSelectedReadOnly" type="String[]"/>
+    
+    
+    
+    <aura:attribute name="responsabilitaList" type="List"/>
+    <aura:attribute name="createCaseIDM" type="Boolean" default="false"/>
+
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+
+    <div style="margin-left:15px;margin-right:15px;">
+        
+        
+        <div style="width: 100%">
+            <div style="display: flex">
+                
+                <aura:if isTrue="{!v.campiCase.Referenced_Company__c=='Compass' || !v.campiCase.Referenced_Company__c=='MBCredit Solutions' }">
+                    
+                    <div style="width: 33%"> 
+                        <div style="margin-right:30px;">
+                            <!--  - - - - - - ABBUONO - - - - - - -->
+                            <!--<lightning:radioGroup label="Abbuono"
+                                                  options="{!v.radioOptions}"
+                                                  value="{!v.abbuonoValue}"
+                                                  type="radio"
+                                                  class="customRadioCls" 
+                                                  onchange="{!c.handleAbbuono}"
+                                                  />-->     
+                            <lightning:combobox label="Abbuono"
+                                options="{!v.radioOptions}"
+                                value="{!v.abbuonoValues}"
+                                onchange="{!c.handleAbbuono}"
+                                readonly="{!v.readOnly}"
+                                />
+                        </div>
+
+                        <aura:if isTrue="{!v.abbuonoValue}">
+                            
+                            <div style="margin-top:10px">
+                                <div style="margin-right:30px;">
+                                    <lightning:input label="Importo Abbuono"
+                                                    value="{!v.abbuonoImportoValue}"  
+                                                    type="number" 
+                                                    formatter="currency"
+                                                    variant="label-hidden"
+                                                    step="0.01"
+                                                    onchange="{!c.checkImporto}"
+                                                    readonly="{!v.readOnly}"
+                                                    />
+                                </div>
+                            </div>
+                        </aura:if>
+                    </div>
+                    
+                    <div style="width: 33%">
+                        <!-- - - - - - - RIMBORSO - - - - - - -  -->
+                        <div style="margin-left:15px;margin-right:15px;">
+                            <!--<div style="margin-left:15px;margin-right:15px;">-->
+                                <!--<lightning:radioGroup label="Rimborso"
+                                                      options="{!v.radioOptions}"
+                                                      value="{!v.rimborsoValue}"
+                                                      type="radio"
+                                                      class="customRadioCls" 
+                                                      onchange="{!c.handleRimborso}"
+                                                      /> --> 
+                                <lightning:combobox label="Rimborso"
+                                    options="{!v.radioOptions}"
+                                    value="{!v.rimborsoValues}"
+                                    onchange="{!c.handleRimborso}"
+                                    readonly="{!v.readOnly}"
+                                />   
+                            <!--</div>-->
+                        </div>
+                        <aura:if isTrue="{!v.rimborsoValue}">
+                            <div style="margin-top:10px">
+                                <div style="margin-left:15px;margin-right:15px;">
+                                    <lightning:input label="Importo Rimborso"
+                                                    value="{!v.rimborsoImportoValue}" 
+                                                    type="number" 
+                                                    formatter="currency"
+                                                    variant="label-hidden"
+                                                    step="0.01"
+                                                    onchange="{!c.checkImporto}"
+                                                    readonly="{!v.readOnly}"
+                                                    />
+                                </div>
+                            </div>
+                        </aura:if>        
+                        
+
+                    </div>
+
+                </aura:if>
+                
+                
+                <aura:if isTrue="{!v.campiCase.Referenced_Company__c=='Futuro'}">
+
+                        <div style="width: 33%"> 
+                    <!-- - - - - - -  Rimborso provvigioni/accessorie- - - - - - -  -->
+                    <div style="margin-right:30px;">
+                            <!--<lightning:radioGroup label="Rimborso provvigioni/accessorie"
+                                                options="{!v.radioOptions}"
+                                                value="{!v.rimborsoProvValue}"
+                                                type="radio"
+                                                class="customRadioCls" 
+                                                onchange="{!c.handleRimborsoProv}"
+                                                /> --> 
+                                <lightning:combobox label="Rimborso provvigioni/accessorie"
+                                    options="{!v.radioOptions}"
+                                    value="{!v.rimborsoProvValues}"
+                                    onchange="{!c.handleRimborsoProv}"
+                                    readonly="{!v.readOnly}"
+                                />      
+                    </div> 
+
+                    <aura:if isTrue="{!v.rimborsoProvValue}">
+                        <div style="margin-top:10px">
+                            <div style="margin-right:30px;">
+                                <lightning:input label="Importo Rimborso commissioni"
+                                                value="{!v.rimborsoImportoProvValue}" 
+                                                type="number" 
+                                                formatter="currency"
+                                                variant="label-hidden"
+                                                step="0.01"
+                                                onchange="{!c.checkImporto}"
+                                                readonly="{!v.readOnly}"
+                                                />
+                            </div>
+                        </div>
+                    </aura:if>
+                        </div>
+
+
+                    <div style="width: 33%"> 
+                        <div style="margin-left:15px;margin-right:15px;">
+                            <!--<lightning:radioGroup label="Rimborso commissioni"
+                                                  options="{!v.radioOptions}"
+                                                  value="{!v.rimborsoCommValue}"
+                                                  type="radio"
+                                                  class="customRadioCls" 
+                                                  onchange="{!c.handleRimborsoComm}"
+                                                  />-->
+                            <lightning:combobox label="Rimborso commissioni"
+                                options="{!v.radioOptions}"
+                                value="{!v.rimborsoCommValues}"
+                                onchange="{!c.handleRimborsoComm}"
+                                readonly="{!v.readOnly}"
+                            />    
+                        </div>
+                        <aura:if isTrue="{!v.rimborsoCommValue}">
+                            <div style="margin-top:10px">
+                                <div style="margin-left:15px;margin-right:15px;">
+                                    <lightning:input label="Importo Rimborso commissioni"
+                                                    value="{!v.rimborsoImportoCommValue}"  
+                                                    type="number" 
+                                                    formatter="currency"
+                                                    variant="label-hidden"
+                                                    step="0.01"
+                                                    onchange="{!c.checkImporto}"
+                                                    readonly="{!v.readOnly}"
+                                                    />
+                                </div>
+                            </div>
+                        </aura:if>
+                    </div>  
+                </aura:if>        
+                        <!-- - - - - - -  Rimborso provvigioni/accessorie- - - - - - -  
+                        <div style="margin-left:15px;margin-right:15px;">
+                            <lightning:radioGroup label="Rimborso provvigioni/accessorie"
+                                                  options="{!v.radioOptions}"
+                                                  value="{!v.rimborsoProvValue}"
+                                                  type="radio"
+                                                  class="customRadioCls" 
+                                                  onchange="{!c.handleRimborsoProv}"
+                                                  />    
+                        </div> 
+
+                        <aura:if isTrue="{!v.rimborsoProvValue}">
+                            <div style="margin-top:10px">
+                                <div style="margin-left:15px;margin-right:15px;">
+                                    <lightning:input label="Importo Rimborso commissioni"
+                                                    value="{!v.rimborsoImportoProvValue}" 
+                                                    type="number" 
+                                                    formatter="currency"
+                                                    variant="label-hidden"
+                                                    step="0.01"
+                                                    onchange="{!c.checkImporto}"
+                                                    />
+                                </div>
+                            </div>
+                        </aura:if>-->
+                 <!--   <aura:if isTrue="{!v.campiCase.Referenced_Company__c=='Futuro'}">    
+                        - - - - - - Rimborso premio asscurativo - - - - - - -  
+                        <div style="margin-left:15px;margin-right:15px;">
+                            <lightning:radioGroup label="Rimborso premio assicurativo"
+                                                  options="{!v.radioOptions}"
+                                                  value="{!v.rimborsoPremValue}"
+                                                  type="radio"
+                                                  class="customRadioCls" 
+                                                  onchange="{!c.handleRimborsoPrem}"
+                                                  />  
+                        </div>
+
+                        <aura:if isTrue="{!v.rimborsoPremValue}">
+                            <div style="margin-top:10px">
+                                    <div style="margin-left:15px;margin-right:15px;">
+                                <lightning:input label="Importo Rimborso premio asscurativo"
+                                                 value="{!v.rimborsoImportoPremValue}"   
+                                                 type="number" 
+                                                 formatter="currency"
+                                                 variant="label-hidden"
+                                                 step="0.01"
+                                                 onchange="{!c.checkImporto}"
+                                                 />
+                                                 </div>
+                            </div>
+                        </aura:if>
+                        
+                         - - - - - - Rimborso varie- - - - - - -  
+                        <div style="margin-left:15px;margin-right:15px;">
+                            <lightning:radioGroup label="Rimborso varie"
+                                                  options="{!v.radioOptions}"
+                                                  value="{!v.rimborsoVarValue}"
+                                                  type="radio"
+                                                  class="customRadioCls" 
+                                                  onchange="{!c.handleRimborsoVar}"
+                                                  />      
+                        </div>  
+
+                        <aura:if isTrue="{!v.rimborsoVarValue}">
+                            <div style="margin-top:10px">
+                                    <div style="margin-left:15px;margin-right:15px;">
+                                <lightning:input label="Importo Rimborso varie"
+                                                 value="{!v.rimborsoImportoVarValue}" 
+                                                 type="number" 
+                                                 formatter="currency"
+                                                 variant="label-hidden"
+                                                 step="0.01"
+                                                 onchange="{!c.checkImporto}"
+                                                 />
+                                                 </div>
+                            </div>
+                        </aura:if>
+                        
+                         - - - - - - Rimborso spese legali- - - - - - -  
+                        <div style="margin-left:15px;margin-right:15px;">
+                        <lightning:radioGroup label="Rimborso spese legali"
+                                              options="{!v.radioOptions}"
+                                              value="{!v.rimborsoLegValue}"
+                                              type="radio"
+                                              class="customRadioCls" 
+                                              onchange="{!c.handleRimborsoLeg}"
+                                              />  
+                        </div>  
+                        <aura:if isTrue="{!v.rimborsoLegValue}">
+                            <div style="margin-top:10px">
+                                <div style="margin-left:15px;margin-right:15px;">
+                                    <lightning:input label="Importo Rimborso spese legali"
+                                                    value="{!v.rimborsoImportoLegValue}"  
+                                                    type="number" 
+                                                    formatter="currency"
+                                                    variant="label-hidden"
+                                                    step="0.01"
+                                                    onchange="{!c.checkImporto}"
+                                                    />
+                                </div>
+                            </div>
+                        </aura:if>
+                    </div>
+                </aura:if>-->
+            
+            
+            
+                <div style="width: 33%">
+                    <div style="margin-left:15px;margin-right:15px;">
+                        <!--<lightning:radioGroup label="Risarcimento"
+                                            options="{!v.radioOptions}"
+                                            value="{!v.risarcimentoValue}"
+                                            type="radio"
+                                            class="customRadioCls" 
+                                            onchange="{!c.handleRisarcimento}"
+                                            />-->
+                        <lightning:combobox label="Risarcimento"
+                            options="{!v.radioOptions}"
+                            value="{!v.risarcimentoValues}"
+                            onchange="{!c.handleRisarcimento}"
+                            readonly="{!v.readOnly}"
+                        />    
+                    </div>
+
+                    <aura:if isTrue="{!v.risarcimentoValue}">
+                        <div style="margin-top:10px">
+                            <div style="margin-left:15px;margin-right:15px;">
+                                <lightning:input label="Importo risarcimento"
+                                                value="{!v.risarcimentoImportoValue}"
+                                                type="number" 
+                                                formatter="currency"
+                                                variant="label-hidden"
+                                                step="0.01"
+                                                onchange="{!c.checkImporto}"
+                                                readonly="{!v.readOnly}"
+                                                />
+                            </div>
+                        </div>
+                    </aura:if>
+                </div>
+            
+            </div>
+        </div>
+        <hr></hr>
+    
+                        <!-- - - - - - -  Rimborso provvigioni/accessorie- - - - - - -  
+                        <div style="margin-left:15px;margin-right:15px;">
+                            <lightning:radioGroup label="Rimborso provvigioni/accessorie"
+                                                  options="{!v.radioOptions}"
+                                                  value="{!v.rimborsoProvValue}"
+                                                  type="radio"
+                                                  class="customRadioCls" 
+                                                  onchange="{!c.handleRimborsoProv}"
+                                                  />    
+                        </div> 
+
+                        <aura:if isTrue="{!v.rimborsoProvValue}">
+                            <div style="margin-top:10px">
+                                <div style="margin-left:15px;margin-right:15px;">
+                                    <lightning:input label="Importo Rimborso commissioni"
+                                                    value="{!v.rimborsoImportoProvValue}" 
+                                                    type="number" 
+                                                    formatter="currency"
+                                                    variant="label-hidden"
+                                                    step="0.01"
+                                                    onchange="{!c.checkImporto}"
+                                                    />
+                                </div>
+                            </div>
+                        </aura:if>-->
+        <aura:if isTrue="{!v.campiCase.Referenced_Company__c=='Futuro'}">   
+                <div style="width: 100%">
+                        <div style="display: flex">
+
+                            <div style="width: 33%">
+                                <!-- - - - - - - Rimborso premio asscurativo - - - - - - -  -->
+                                <div style="margin-right:30px;">
+                                    <!--<lightning:radioGroup label="Rimborso premio assicurativo"
+                                                          options="{!v.radioOptions}"
+                                                          value="{!v.rimborsoPremValue}"
+                                                          type="radio"
+                                                          class="customRadioCls" 
+                                                          onchange="{!c.handleRimborsoPrem}"
+                                                          /> -->
+                                    <lightning:combobox label="Rimborso premio assicurativo"
+                                        options="{!v.radioOptions}"
+                                        value="{!v.rimborsoPremValues}"
+                                        onchange="{!c.handleRimborsoPrem}"
+                                        readonly="{!v.readOnly}"
+                                    />  
+                                </div>
+        
+                                <aura:if isTrue="{!v.rimborsoPremValue}">
+                                    <div style="margin-top:10px">
+                                            <div style="margin-right:30px;">
+                                        <lightning:input label="Importo Rimborso premio asscurativo"
+                                                         value="{!v.rimborsoImportoPremValue}"   
+                                                         type="number" 
+                                                         formatter="currency"
+                                                         variant="label-hidden"
+                                                         step="0.01"
+                                                         onchange="{!c.checkImporto}"
+                                                         readonly="{!v.readOnly}"
+                                                         />
+                                            </div>
+                                    </div>
+                                </aura:if>
+                            </div>
+
+                            <div style="width: 33%">
+                                <!-- - - - - - - Rimborso varie- - - - - - -  -->
+                                <div style="margin-left:15px;margin-right:15px;">
+                                    <!--<lightning:radioGroup label="Rimborso varie"
+                                                            options="{!v.radioOptions}"
+                                                            value="{!v.rimborsoVarValue}"
+                                                            type="radio"
+                                                            class="customRadioCls" 
+                                                            onchange="{!c.handleRimborsoVar}"
+                                                            /> -->
+                                    <lightning:combobox label="Rimborso varie"
+                                        options="{!v.radioOptions}"
+                                        value="{!v.rimborsoVarValues}"
+                                        onchange="{!c.handleRimborsoVar}"
+                                        readonly="{!v.readOnly}"
+                                    />     
+                                </div>  
+        
+                                <aura:if isTrue="{!v.rimborsoVarValue}">
+                                    <div style="margin-top:10px">
+                                            <div style="margin-left:15px;margin-right:15px;">
+                                        <lightning:input label="Importo Rimborso varie"
+                                                            value="{!v.rimborsoImportoVarValue}" 
+                                                            type="number" 
+                                                            formatter="currency"
+                                                            variant="label-hidden"
+                                                            step="0.01"
+                                                            onchange="{!c.checkImporto}"
+                                                            readonly="{!v.readOnly}"
+                                                            />
+                                                            </div>
+                                    </div>
+                                </aura:if>
+                            </div>
+
+                            <div style="width: 33%">
+                                <!-- - - - - - - Rimborso spese legali- - - - - - -  -->
+                                <div style="margin-left:15px;margin-right:15px;">
+                                <!--<lightning:radioGroup label="Rimborso spese legali"
+                                                        options="{!v.radioOptions}"
+                                                        value="{!v.rimborsoLegValue}"
+                                                        type="radio"
+                                                        class="customRadioCls" 
+                                                        onchange="{!c.handleRimborsoLeg}"
+                                                        />-->
+                                        <lightning:combobox label="Rimborso spese legali"
+                                            options="{!v.radioOptions}"
+                                            value="{!v.rimborsoLegValues}"
+                                            onchange="{!c.handleRimborsoLeg}"
+                                            readonly="{!v.readOnly}"
+                                        />  
+                                </div>  
+                                <aura:if isTrue="{!v.rimborsoLegValue}">
+                                    <div style="margin-top:10px">
+                                        <div style="margin-left:15px;margin-right:15px;">
+                                            <lightning:input label="Importo Rimborso spese legali"
+                                                            value="{!v.rimborsoImportoLegValue}"  
+                                                            type="number" 
+                                                            formatter="currency"
+                                                            variant="label-hidden"
+                                                            step="0.01"
+                                                            onchange="{!c.checkImporto}"
+                                                            readonly="{!v.readOnly}"
+                                                            />
+                                        </div>
+                                    </div>
+                                </aura:if>
+                            </div>
+                        </div>
+                        </div>    
+                        <hr></hr>       
+        </aura:if>
+
+
+
+
+
+
+    
+        <div style="width: 100%">
+            <div style="display: flex">
+                <div style="width: 33%">
+                        <div style="margin-right:30px;">
+                        <!--<lightning:radioGroup label="Fondato"
+                                            options="{!v.radioOptions}"
+                                            value="{!v.fondatoValue}"
+                                            type="radio"
+                                            class="customRadioCls"   
+                                            onchange="{!c.handleFondato}"
+                                            />-->
+                            <lightning:combobox label="Fondato"
+                                options="{!v.radioOptions}"
+                                value="{!v.fondatoValues}"
+                                onchange="{!c.handleFondato}"
+                                readonly="{!v.readOnly}"
+                            />    
+                    </div>
+                    
+                </div>
+    
+                
+                <div style="width: 33%">
+                    <div style="margin-left:15px;margin-right:15px;">
+                        <!-- - - - - - - Attesa assegno - - - -  -->
+                        <!--<lightning:radioGroup label="Attesa assegno"
+                                            options="{!v.radioOptions}"
+                                            value="{!v.attesaValue}"
+                                            type="radio"
+                                            class="customRadioCls" 
+                                            onchange="{!c.handleAttesaValue}"
+                                            />-->
+                            <lightning:combobox label="Attesa assegno"
+                                options="{!v.radioOptions}"
+                                value="{!v.attesaValues}"
+                                onchange="{!c.handleAttesaValue}"
+                                readonly="{!v.readOnly}"
+                            /> 
+                    </div>
+                </div>
+                
+                  
+                <div style="width: 33%">
+                    <div style="margin-left:15px;margin-right:15px;">
+                        <!--<lightning:radioGroup label="Allegati completi"
+                                            options="{!v.radioOptions}"
+                                            value="{!v.allegatiCompletiValue}"
+                                            type="radio"
+                                            class="customRadioCls"   
+                                            onchange="{!c.handleAllegatiCompleti}"
+                                            />-->
+                            <lightning:combobox label="Allegati completi"
+                                options="{!v.radioOptions}"
+                                value="{!v.allegatiCompletiValues}"
+                                onchange="{!c.handleAllegatiCompleti}"
+                                readonly="{!v.readOnly}"
+                            />
+                    </div>
+                </div>
+                
+                
+            </div>
+        </div>
+        <hr></hr>
+    
+    
+
+    
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+
+
+<!-- <div style="width: 100%">
+    <div style="display: flex">-->
+        <!-- - - - - - - SIC - - - - - - -  -->
+        <div style="width: 100%;margin-right:30px;" class="slds-box">
+            
+                <!--<lightning:radioGroup label="Sic"
+                                    options="{!v.radioOptions}"
+                                    value="{!v.sicValue}"
+                                    type="radio"
+                                    class="customRadioCls" 
+                                    onchange="{!c.handleSic}"
+                                    /> -->
+                    <lightning:combobox label="Sic"
+                        options="{!v.radioOptions}"
+                        value="{!v.sicValues}"
+                        onchange="{!c.handleSic}"
+                        readonly="{!v.readOnly}"
+                    /> 
+             
+            <aura:if isTrue="{!v.sicValue}">
+
+                    <aura:if isTrue="{!v.readOnly}">  
+                            <div style="margin-top:10px;">                 
+                            <lightning:datatable
+                                columns="{! v.columns }"
+                                data="{! v.newSicValueReadOnly }"
+                                hideCheckboxColumn="true"
+                                keyField="id"
+                                />
+                            </div>
+                            
+                            
+                    <aura:set attribute="else">
+                   
+                    
+                    <lightning:recordEditForm  recordId="{!v.recordId}"
+                                            objectApiName="Case">
+                        <div style="height: 1px">
+                            <lightning:inputField fieldName="Referenced_Company__c" disabled='true' class="slds-hidden label-hidden"/>
+                        </div>
+                        <lightning:inputField fieldName="SIC__c" value="{!v.newSicValue}" variant="label-hidden" style="margin-top:10px;" readonly="{!v.readOnly}"/>
+                        
+                    </lightning:recordEditForm>
+
+                </aura:set>
+
+            </aura:if>
+                
+            </aura:if>
+            
+        </div>
+        <hr></hr>
+
+        <div style="width: 100%;margin-right:30px;" class="slds-box">
+            <!-- - - - - - - Società assicurative - - - - - - -  -->
+            
+                <!--<lightning:radioGroup label="Società assicurative"
+                                    options="{!v.radioOptions}"
+                                    value="{!v.socAssValue}"
+                                    type="radio"
+                                    class="customRadioCls" 
+                                    onchange="{!c.handleSocAss}"
+                                    />  -->
+
+                    <lightning:combobox label="Società assicurative"
+                        options="{!v.radioOptions}"
+                        value="{!v.socAssValues}"
+                        onchange="{!c.handleSocAss}"
+                        readonly="{!v.readOnly}"
+                    /> 
+             
+            <aura:if isTrue="{!v.socAssValue}">
+                    <aura:if isTrue="{!v.readOnly}">  
+
+                            <div style="margin-top:10px;">                  
+                        <lightning:datatable
+                            columns="{! v.columns }"
+                            data="{! v.newSocAssValueReadOnly }"
+                            hideCheckboxColumn="true"
+                            keyField="id"
+                            />
+                        </div>
+                    
+                    <aura:set attribute="else">
+                    
+                    <lightning:recordEditForm  recordId="{!v.recordId}"
+                                            objectApiName="Case">
+                        <div style="height: 1px">
+                            <lightning:inputField fieldName="Referenced_Company__c" disabled='true' class="slds-hidden"/>
+                        </div>
+                        <lightning:inputField fieldName="Societa_Assicurative__c" value="{!v.newSocAssValue}" variant="label-hidden" style="margin-top:10px;" readonly="{!v.readOnly}"/>
+                    </lightning:recordEditForm>
+                    </aura:set>
+                    </aura:if>
+               
+            </aura:if>
+            
+        </div>
+        <hr></hr>
+
+    <!-- </div>
+</div>-->
+
+
+
+<!--<div style="width: 100%">
+    <div style="display: flex">-->
+
+        <div style="width: 100%;margin-right:30px;" class="slds-box">
+            
+                        <!-- - - - - - - Società di recupero - - - - - - -  -->
+                        <!--<lightning:radioGroup label="Società di recupero"
+                                            options="{!v.radioOptions}"
+                                            value="{!v.socRecValue}"
+                                            type="radio"
+                                            class="customRadioCls" 
+                                            onchange="{!c.handleSocRec}"
+                                            />  --> 
+                                            
+                            <lightning:combobox label="Società di recupero"
+                                options="{!v.radioOptions}"
+                                value="{!v.socRecValues}"
+                                onchange="{!c.handleSocRec}"
+                                readonly="{!v.readOnly}"
+                            />
+                    
+                    <aura:if isTrue="{!v.socRecValue}">
+                            <aura:if isTrue="{!v.readOnly}">  
+
+                                    <div style="margin-top:10px;">                  
+                                    <lightning:datatable
+                                        columns="{! v.columns }"
+                                        data="{! v.newSocRecValueReadOnly }"
+                                        hideCheckboxColumn="true"
+                                        keyField="id"
+                                        />
+                                    </div>
+                            
+                            <aura:set attribute="else">
+                        
+                            <lightning:recordEditForm  recordId="{!v.recordId}"
+                                                    objectApiName="Case">
+                                <div style="height: 1px">
+                                    <lightning:inputField fieldName="Referenced_Company__c" disabled='true' class="slds-hidden"/>
+                                </div>
+                                <lightning:inputField fieldName="Societa_di_Recupero__c" value="{!v.newSocRecValue}" variant="label-hidden" style="margin-top:10px;" readonly="{!v.readOnly}"/>
+                            </lightning:recordEditForm>
+
+                            </aura:set>
+                            </aura:if>
+                           
+                    </aura:if>
+        </div>
+         
+        <hr></hr>
+        
+        <div style="width: 100%;margin-right:30px;" class="slds-box">
+            <!-- RESPONSABILITA -->
+
+        <!--<lightning:radioGroup label="Responsabilità"
+                            options="{!v.radioOptions}"
+                            value="{!v.respValue}"
+                            type="radio"
+                            class="customRadioCls" 
+                            onchange="{!c.handleResp}"
+                            /> --> 
+            <lightning:combobox label="Responsabilità"
+                options="{!v.radioOptions}"
+                value="{!v.respValues}"
+                onchange="{!c.handleResp}"
+                readonly="{!v.readOnly}"
+            />
+      
+    <aura:if isTrue="{!v.respValue}">
+            
+        <aura:if isTrue="{!v.readOnly}">   
+
+                <div style="margin-top:10px;">                  
+            <lightning:datatable
+                columns="{! v.columns }"
+                data="{! v.respSelected }"
+                hideCheckboxColumn="true"
+                keyField="id"
+                />
+            </div>
+        <aura:set attribute="else">
+
+        <lightning:input
+            aura:id="searchResp"
+            name="searchResp"
+            label="Cerca"
+            type="search"
+            onchange="{!c.getResponsabilita}"
+            readonly="{!v.readOnly}"
+        /> 
+
+        <lightning:dualListbox  name="responsabilita"  
+                                sourceLabel="Available" 
+                                selectedLabel="Chosen" 
+                                options="{!v.responsabilitaList}" 
+                                value="{!v.respSelected}" 
+                                disableReordering="true"
+                                onchange="{!c.setResponsabilita}"
+                                readonly="{!v.readOnly}"
+                                />
+        </aura:set>
+        </aura:if> 
+
+    </aura:if>
+        </div>
+        <hr></hr>
+    <!--</div>
+</div>-->
+
+
+
+
+
+
+
+<!--++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+    
+    
+        <div style="width: 100%">
+            <div style="display: flex">
+                <div style="width: 33%">
+                    <!-- - - - - - - Invio risposta da Idm - - - - - - -  -->
+                    <div style="margin-right:30px;">
+                        <!--<lightning:radioGroup label="Invio risposta da IDM"
+                                            options="{!v.radioOptions}"
+                                            value="{!v.idmValue}"
+                                            type="radio"
+                                            class="customRadioCls" 
+                                            onchange="{!c.handleIdmValue}"
+                                            /> -->
+                                
+                            <lightning:combobox label="Invio risposta da IDM"
+                                options="{!v.radioOptions}"
+                                value="{!v.idmValues}"
+                                onchange="{!c.handleIdmValue}"
+                                readonly="{!v.readOnly}"
+                            />
+                    </div>
+                    <aura:if isTrue="{!v.idmValue}">
+                        <div style="margin-right: 30px; margin-top:20px;">
+                        <!--<div style="margin-top:10px">    
+                            <div style="margin-left:15px;margin-right:15px;">-->
+                            <strong>File da stampare:</strong>
+                            <div>
+                                <c:CRMReclamiInserimentoAllegatiContainer fileList="{!v.fileList}"
+                                                                        isNotSelectable="{!v.readOnly}"
+                                                                        canDelete="{False}"
+                                                                        canUpload="{False}"
+                                                                        allegatiSelezionati="{!v.allegatiSelezionati}"
+                                                                        />
+                            </div>
+                            <!--</div>
+                        </div>-->
+                        </div>
+                    </aura:if>
+                </div>
+            
+                <div style="width: 33%">
+                          
+                            <div style="margin-left:15px;margin-right:15px;">  
+                           
+                                
+                                <lightning:combobox label="Accolto"
+                                    options="{!v.accoltoList}"
+                                    value="{!v.accoltoDettagli}"
+                                    placeholder="-None-"
+                                    readonly="{!v.readOnly}"
+                                /> 
+
+                            </div>
+                        
+                        
+                    </div>
+             
+            
+            
+            </div>
+        </div>
+        <hr></hr>
+    
+  
+    
+    
+    
+    
+        <div style="width: 100%">
+            <div style="display: flex">
+                <div style="width: 33%">
+                    <aura:if isTrue="{!v.campiCase.Tipo_Reclamo__c=='5412'}">
+                        
+                        <!-- - - - - DECISIONE - - - - -->
+                        
+                                <div style="margin-right:30px;">
+                                <!--<lightning:select label = "Decisione"
+                                                value = "{!v.decisioneDettagli}"
+                                                onfocus="{!c.focusDecisione}"
+                                                readonly="{!v.readOnly}"
+                                                >
+                                    <option>{!v.decisioneForInit}</option>
+                                    <aura:iteration items = "{!v.decisioneList}" var="mod">
+                                        <option value = "{!mod}">{!mod}</option>
+                                    </aura:iteration>
+                                </lightning:select> -->
+                            
+                                <lightning:combobox label="Decisione"
+                                    options="{!v.decisioneList}"
+                                    value="{!v.decisioneDettagli}"
+                                    readonly="{!v.readOnly}"
+                                />
+                            </div>         
+                        
+                        <aura:set attribute="else">
+                                <div style="margin-right:30px;">
+                            <lightning:combobox label="Decisione"
+                                options="{!v.radioOptions}"
+                                value="{!v.decisioneDettagli}"
+                                onchange="{!c.handleDecisione}"
+                                readonly="{!v.readOnly}"
+                                />
+                        </div>
+
+                        </aura:set>
+
+
+                    </aura:if>
+
+                    
+                </div>
+                
+                <div style="width: 33%">
+                    <!-- - - - - Intervento Autorita - - - - -->
+                    <aura:if isTrue="{!v.isInterventoAutorita}">
+                        <div style="margin-top:10px">
+                            <div style="margin-left:15px;margin-right:15px;"> 
+                                <lightning:select label="Intervento Autorità:"
+                                                value="{!v.interventoAutDettagli}"  
+                                                onfocus="{!c.focusIntervento}"
+                                                readonly="{!v.readOnly}"
+                                                >
+                                    <option> {!v.interventoAutDettagliInit}</option>
+                                    <aura:iteration items="{!v.interventoAutList}" var="mod">
+                                        <option value="{!mod}">{!mod}</option>
+                                    </aura:iteration>
+                                </lightning:select>
+                            </div>
+                        </div>
+                    </aura:if>
+                </div>
+                
+                
+                <!--<div style="width: 33%">
+                    
+                    <lightning:combobox aura:id="responsabilita" name="responsabilita" label="Responsabilita" options="{! v.responsabilitaList }" onchange="{}" />
+                -->
+                 <!--   
+                <div style="width: 33%;margin-right:15px;" class="slds-box">
+                     RESPONSABILITA 
+                    <div style="margin-left:15px;margin-right:15px;">
+                        <lightning:radioGroup label="Responsabilità"
+                                            options="{!v.radioOptions}"
+                                            value="{!v.respValue}"
+                                            type="radio"
+                                            class="customRadioCls" 
+                                            onchange="{!c.handleResp}"
+                                            />  
+                    </div>  
+                    <aura:if isTrue="{!v.respValue}">
+
+                        <lightning:dualListbox  name="responsabilita"  
+                                                    
+                                                sourceLabel="Available" 
+                                                selectedLabel="Selected" 
+                                                options="{!v.responsabilitaList}" 
+                                                value="{!v.respSelected}" 
+                                                disableReordering="true"
+                                                onchange="{!c.setResponsabilita}"/>
+                        
+                    </aura:if>
+                    
+                
+                </div>-->
+
+                <div style="width: 33%">
+                        <!-- - - - - - - Invio risposta da Idm - - - - - - -  -->
+                        <aura:if isTrue="{!v.codaSelezionata.DeveloperName == 'DN_57'}">
+                            <div style="margin-left:15px;margin-right:15px;">
+                                <!--<lightning:radioGroup label="In attesa di riscontro del cliente:"
+                                                    options="{!v.radioOptions}"
+                                                    value="{!v.riscontroValue}"
+                                                    type="radio"
+                                                    class="customRadioCls" 
+                                                    onchange="{!c.handleRiscontroValue}"
+                                                    /> -->
+                                    <lightning:combobox label="In attesa di riscontro del cliente:"
+                                        options="{!v.radioOptions}"
+                                        value="{!v.riscontroValues}"
+                                        onchange="{!c.handleRiscontroValue}"
+                                        placeholder="-None-"
+                                        readonly="{!v.readOnly}"
+                                    />
+                            </div>
+                        </aura:if>
+                    </div>
+                
+                
+            </div>
+        </div>
+    
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    </div>
+
+
+</aura:component>

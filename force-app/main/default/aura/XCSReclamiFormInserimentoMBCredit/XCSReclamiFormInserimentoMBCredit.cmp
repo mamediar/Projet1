@@ -1,0 +1,83 @@
+<aura:component controller="XCSReclamiFormInserimentoMBCreditCtrl"
+                implements="force:appHostable,flexipage:availableForAllPageTypes" 
+                access="global">
+    
+    <!--
+   Nel componente è contenuto un form per l'inserimento dati di sei campi differenti.
+    Viene effettuato un doppio controllo sui campi:
+    CONTROLLO 1 = se almeno un campo è vuoto, 
+    non viene permesso di schiacciare il bottone "Abbina contatto".
+     -->
+    
+    <aura:attribute name="isFormOk" type="Boolean"/>
+    <aura:attribute name="clienteSelezionato" type="OCSCliente"/>
+    <aura:attribute name="listaClienti" type="OCSCliente[]"/>
+    <aura:attribute name="ragioneSociale" type="string" />
+    <aura:attribute name="nome" type="string" />
+    <aura:attribute name="cognome" type="string" />
+    <aura:attribute name="cedCom" type="string" />
+    <aura:attribute name="numPratica" type="string" />
+    <aura:attribute name="dataNascita" type="Date" />
+    <aura:attribute name="provincia" type="string" />
+    <aura:attribute name="codFiscale" type="string"/>
+    <aura:attribute name="codCliente" type="string" />
+    <aura:attribute name="pan" type="string" />
+    <aura:attribute name="indirizzo" type="string"/>
+    <aura:attribute name="cap" type="string" />
+    <aura:attribute name="email" type="string"/>
+     <aura:attribute name="telCellulare" type="string"/>
+     <aura:attribute name="telefonoCasa" type="string"/>
+    <aura:attribute name="localita" type="string"/>
+
+    <aura:attribute name="toastMsg" type="String"/>
+    
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    
+    <!--Campi Obbligatori-->
+    <!-- TODO Cedente/Committente -->
+    <div style="display:flex;">
+    <div class="slds-p-horizontal_small slds-size_2-of-4 slds-medium-size_2-of-4 slds-large-size_2-of-4 border-right2 height160">        
+            <div class="slds-col">
+        <lightning:input aura:id="ragSociale" type="string" label="Rag. Sociale" value="{!v.ragioneSociale}" onchange="{!c.checkIfOk}"/>
+        <lightning:input aura:id="Nome" type="string" label="Nome" value="{!v.nome}" onchange="{!c.checkIfOk}"/>
+        <lightning:input aura:id="Cognome" type="string" label="Cognome" value="{!v.cognome}" onchange="{!c.checkIfOk}"/>
+        <lightning:input aura:id="Cedente" type="string" label="Cedente\Committente" value="{!v.cedCom}" onchange="{!c.checkIfOk}"/>
+        <lightning:input type="string" label="Provincia" value="{!v.provincia}"/>
+        <lightning:input type="string" label="Comune" pattern="^[a-zA-Z\s]*$" name="comune" value="{!v.localita}" messageWhenPatternMismatch="Il campo ha un formato non corretto"/>
+        <lightning:input aura:id="cap" pattern="[0-9]{5}" type="text" label="Cap" name="cap" value="{!v.cap}" onchange="{!c.checkLength}" messageWhenPatternMismatch="Il campo deve essere composto necessariamente da 5 numeri"/>
+    	<lightning:input type="date" label="Data di nascita" value="{!v.dataNascita}"/> 
+        </div>
+    </div>
+    <!--Campi -->
+    
+
+    <div class="slds-p-horizontal_small slds-size_2-of-4 slds-medium-size_2-of-4 slds-large-size_2-of-4 border-right2 height160">        
+            <div class="slds-col">
+        <!--<lightning:input type="string" label="Provincia" value="{!v.provincia}"/>-->
+        <!--<lightning:input type="string" label="Email" value="{!v.email}"/>-->
+                   
+        <!--<lightning:input type="string" label="Codice fiscale" value="{!v.codFiscale}" />-->
+        <lightning:input type="string" label="Codice Fiscale" name="codFiscaleCliente" value="{!v.codFiscale}" maxlength="16"/>           
+        <lightning:input type="string" label="Codice cliente" value="{!v.codCliente}" />
+        <lightning:input aura:id="NumPratica" type="string" label="Numero pratica" value="{!v.numPratica}" onchange="{!c.checkIfOk}"/>
+        <lightning:input type="email" label="Email" name="email" value="{!v.email}" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$" messageWhenPatternMismatch="Il campo deve avere un formato di questo tipo 'email@example.com' o 'email@example.it'"/>
+        
+        <lightning:input type="string" label="Pan carta di credito" value="{!v.pan}" />
+        <lightning:input type="string" label="Indirizzo" value="{!v.indirizzo}" />
+         <lightning:input  type="text" label="Tel. Fisso" name="telFisso" value="{!v.telefonoCasa}" pattern="^[0-9]*$" onchange="{!c.checkLength}" messageWhenPatternMismatch="Il campo deve essere numerico"/>
+    
+
+    <lightning:input type="text" label="Tel. Cell" name="telCell" value="{!v.telCellulare}" pattern="^[0-9]*$" onchange="{!c.checkLength}" messageWhenPatternMismatch="Il campo deve essere numerico"/>
+        <!--<lightning:input type="string" label="Cap" value="{!v.cap}" />-->
+        </div>
+    </div>
+</div>  
+    <div style="margin-left:15px;margin-right:15px;margin-top:10px;">
+        <div class="slds-p-top_x-small">
+            <lightning:button label="Abbina contatto"               
+                            variant="brand" 
+                            onclick="{!c.onButtonPressed}"
+                            />
+        </div>
+    </div>
+</aura:component>

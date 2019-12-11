@@ -1,0 +1,41 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" 
+                access="global" 
+                >
+    <aura:attribute name="campiCase" type="Object"/>
+    <aura:attribute name="abbuonoOutput" type="Object"/>
+    <aura:attribute name="risarcimentoOutput" type="Object"/>
+    <aura:attribute name="isAbbuonoOk" type="Boolean"/>
+    <aura:attribute name="isRisarcimentoOk" type="Boolean"/>
+    <aura:attribute name="abbuonoErrorMsg" type="String"/>
+    <aura:attribute name="risarcimentoErrorMsg" type="String"/>
+
+    <aura:attribute name="abbuonoSelection" type="String"/>
+    <aura:attribute name="abbuonoValue" type="String"/>
+    <aura:attribute name="risarcimentoSelection" type="String"/>
+    <aura:attribute name="risarcimentoValue" type="String"/>        
+    
+    <aura:attribute name="isOk" type="Boolean" default="false"/>
+    <aura:attribute name="errorMessage" type="String"/>
+    <aura:attribute name="output" type="Object"/>
+    
+    <aura:handler name="change" value="{!v.isAbbuonoOk}" action="{!c.handleChange}"/>
+    <aura:handler name="change" value="{!v.isRisarcimentoOk}" action="{!c.handleChange}"/>
+    <aura:handler name="change" value="{!v.abbuonoOutput}" action="{!c.handleChange}"/>
+    <aura:handler name="change" value="{!v.risarcimentoOutput}" action="{!c.handleChange}"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    
+    <c:XCSRadioGroupGenericReclami label="Abbuono:"
+                                   output="{!v.abbuonoOutput}"
+                                   isOk="{!v.isAbbuonoOk}"
+                                   showValue="{!v.abbuonoSelection}"
+                                   value="{!v.abbuonoValue}"
+                                   />
+    
+    <c:XCSRadioGroupGenericReclami label="Risarcimento:"
+                                   output="{!v.risarcimentoOutput}"
+                                   isOk="{!v.isRisarcimentoOk}"
+                                   showValue="{!v.risarcimentoSelection}"
+                                   value="{!v.risarcimentoValue}"
+                                   />
+</aura:component>

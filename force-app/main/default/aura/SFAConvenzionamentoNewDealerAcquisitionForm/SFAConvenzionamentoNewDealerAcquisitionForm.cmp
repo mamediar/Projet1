@@ -1,0 +1,244 @@
+<aura:component controller="SFAConvenzionamNewDealAcquisitCtrller" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes,force:hasSObjectName">
+                                                                   
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="dealerAcquisitionId" type="String" default=""/>  
+    <aura:attribute name="reportCervedId" type="String" />
+    <aura:attribute name="AssicurazioneDealer" type="String"  />   
+    <aura:attribute name="dealerRecordTypeId" type="String"  />   
+    <aura:attribute name="erroreSalvataggio" type="Boolean" default="false" />  
+    <aura:attribute name="checkboxCodiceAgente" type="Boolean" default="false" />
+	<aura:attribute name="FlagProforma" type="String" />
+    <aura:attribute name="FlagProfRist" type="String"  />
+    <aura:attribute name="FlagAllProforma" type="String" />
+    <aura:attribute name="FlagAllProfRist" type="String"/>
+    <aura:attribute name="reportOpened" type="Boolean"/>
+    <aura:attribute name="IsConvenzioneH3G" type="Boolean"/>
+    <aura:attribute name="IsConvenzioneAssicurativo" type="Boolean"/>
+    <aura:attribute name="SelMacroArea" type="String"/>
+    <aura:attribute name="SelProdDom" type="String"/>
+
+
+    <aura:attribute name="listaTipiAccordo" type="Object[]" />
+    <aura:attribute name="tipoAccordoSelezionato" type="String" />
+
+    <aura:handler name="init" value="{! this }" action="{! c.doInit }" /> 
+	<aura:handler event="c:ChangeCaseStepEvent" action="{!c.handleChangeCaseStepEvent}"/>
+
+	<aura:attribute name="spinnerCounter" type="Integer" default="0"/>
+    <c:SpinnerComponent aura:id="spinnerComponent" spinnerCounter="{!v.spinnerCounter}"/>
+    
+    <lightning:card variant="Narrow" title="Completa le informazioni" iconName="standard:account" footer=" ">
+        <p class="slds-p-horizontal_small">    
+           
+            <lightning:recordEditForm aura:id="FormDealer1" recordId="{!v.dealerAcquisitionId}" objectApiName="Account">
+         
+                <lightning:layout horizontalAlign="spread" multipleRows="true">
+        
+                    <label for="ragioneSociale" class="slds-form-element__label slds-no-flex">Ragione Sociale</label>
+                    
+                    
+                    <lightning:layoutItem flexibility="grow" size="12">
+                        <lightning:outputField aura:id="ragioneSociale" fieldName="Name" disabled="false" variant="label-hidden"  class="hidelabel"/>
+                    </lightning:layoutItem>
+                    
+                    <label for="ShippingAddress" class="slds-form-element__label slds-no-flex">Indirizzo</label>
+                    <lightning:layoutItem flexibility="grow" size="12">
+                        <lightning:outputField aura:id="ShippingAddress" fieldName="ShippingAddress" disabled="true" variant="label-hidden"   class="hidelabel"/>
+                    </lightning:layoutItem>     
+                    
+                    <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                        <lightning:outputField fieldName="Codice_Fiscale__c" disabled="true" />
+                    </lightning:layoutItem>            
+                    
+                    <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                        <lightning:outputField fieldName="Partita_IVA__c" disabled="true" />
+                    </lightning:layoutItem>
+        
+                    <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                        <lightning:outputField fieldName="Sae__c" disabled="true" />
+                    </lightning:layoutItem>   
+                    
+                    <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                        <lightning:outputField fieldName="Rae__c" disabled="true" />
+                    </lightning:layoutItem>            
+                    
+                    <lightning:layoutItem flexibility="grow" size="6">
+                        <lightning:outputField fieldName="DataInizioAttivita__c" disabled="true" />
+                    </lightning:layoutItem> 
+        
+        
+                    <lightning:layoutItem flexibility="grow" size="12">
+                        <lightning:outputField fieldName="Desc_Ateco__c" disabled="true" />
+                    </lightning:layoutItem>       
+                             
+                    
+        
+                </lightning:layout>
+            </lightning:recordEditForm>
+           
+            <lightning:recordEditForm aura:id="FormCase" recordId="{!v.recordId}" objectApiName="Case">
+        
+                <lightning:layout horizontalAlign="spread" multipleRows="true">
+
+                    <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                        <lightning:outputField fieldName="DataAnalisi__c" disabled="true" />
+                    </lightning:layoutItem>      
+                    
+                    <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                        <lightning:outputField fieldName="Pagamenti__c" disabled="true" />
+                    </lightning:layoutItem>            
+        
+                    <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                        <lightning:outputField fieldName="Fido__c" disabled="true" />
+                    </lightning:layoutItem>   
+
+                </lightning:layout>
+            </lightning:recordEditForm>      
+            
+            <lightning:recordEditForm aura:id="FormReportaCerved" recordId="{!v.reportCervedId}" objectApiName="ReportCerved__c" >
+        
+                <lightning:layout horizontalAlign="spread" multipleRows="true">
+
+                    <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="">
+                        <lightning:outputField fieldName="Rating__c" disabled="true" />
+                    </lightning:layoutItem>            
+                    
+        
+                </lightning:layout>
+            </lightning:recordEditForm>              
+            <aura:if isTrue="{!v.dealerAcquisitionId}"> 
+            	<lightning:recordEditForm aura:id="FormDealer" recordId="{!v.dealerAcquisitionId}" objectApiName="Account" recordTypeId="{!v.dealerRecordTypeId}">
+        
+                <lightning:layout horizontalAlign="spread" multipleRows="true">
+           
+                    
+                    <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                        <lightning:inputField  aura:id="Tipo_Intermediario__c" fieldName="Tipo_Intermediario__c"  onchange="{!c.initializeFlagProforma}" disabled="false"/>  
+                    </lightning:layoutItem>            
+                    
+                    <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                        <lightning:inputField  aura:id="Type_Anag__c" fieldName="Type_Anag__c" disabled="false"  />   
+                    </lightning:layoutItem>          
+                    
+                    <lightning:layoutItem class="slds-m-top_x-small slds-p-right_medium slds-p-left_xx-small" flexibility="grow" size="6">
+                        <ui:inputSelect aura:id="listaTipiAccordoId" label="Tipo accordo" change="{!c.handleSelezionaTipoAccordo}">
+                            <aura:iteration items="{!v.listaTipiAccordo}" var="l">
+                                <ui:inputSelectOption text="{!l.text}" label="{!l.label}" value="{!l.value}"/>
+                            </aura:iteration>
+                        </ui:inputSelect>
+                    </lightning:layoutItem> 
+                    
+                    <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="3">
+                        <lightning:inputField aura:id="IsConvenzioneAssicurativo__c"  fieldName="IsConvenzioneAssicurativo__c"  value="{!v.IsConvenzioneAssicurativo}" disabled="true"/>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="3">
+                        <lightning:inputField aura:id="IsConvenzioneH3G__c"  fieldName="IsConvenzioneH3G__c"  value="{!v.IsConvenzioneH3G}" disabled="true"/>
+                    </lightning:layoutItem>                    
+                    
+                    <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                        <lightning:inputField aura:id="Macroarea__c" fieldName="Macroarea__c" onchange="{!c.MacroA}" disabled="false"/>
+                    </lightning:layoutItem>            
+
+                    <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                        <lightning:inputField aura:id="ProdottoDominanteMacroarea__c" fieldName="ProdottoDominanteMacroarea__c"  onchange="{!c.ProdDom}" disabled="false"/>
+                    </lightning:layoutItem>             
+                  
+                    
+					<lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="12">
+                        <ui:inputCheckbox aura:id="checkbox" label="Codice Agente (solo se diverso da COMPASS)" value="{!v.checkboxCodiceAgente}"  disabled="false"/>
+                        
+                        <aura:if isTrue="{!v.checkboxCodiceAgente}">
+                            <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                                <lightning:inputField aura:id="CodiceAgente__c"  fieldName="CodiceAgente__c"   onchange="{!c.initializeFlagProforma}"  disabled="false" />
+                            </lightning:layoutItem>                    
+                        </aura:if>
+                    </lightning:layoutItem>
+                    
+                    <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>Flag Proforma </td>
+                                    <td><lightning:inputField fieldName="FlagProforma__c" aura:id="FlagProforma__c" value="{!v.FlagProforma}"  disabled="false"/></td>  
+                                    <td><lightning:inputField fieldName="FlagProfRist__c" aura:id="FlagProfRist__c" value="{!v.FlagProfRist}"  disabled="false"/></td>
+                                    <td><lightning:inputField fieldName="FlagAllProforma__c" aura:id="FlagAllProforma__c" value="{!v.FlagAllProforma}"  disabled="false" /></td>
+                                    <td><lightning:inputField fieldName="FlagAllProfRist__c" aura:id="FlagAllProfRist__c" value="{!v.FlagAllProfRist}"   disabled="false"/></td>
+                                </tr>
+                           </tbody>
+                        </table>
+                    </lightning:layoutItem>            
+        
+        
+                    
+                </lightning:layout>
+            </lightning:recordEditForm>    
+			</aura:if> 
+   			<br></br>
+               <div class="slds">  
+                 <div class="bordoTabella">  
+                   <div class="slds-page-header stileTabella" >                         
+                   </div>  
+                     
+                <lightning:recordEditForm  aura:id="FormCerved" recordId="{!v.reportCervedId}" objectApiName="ReportCerved__c" >
+             
+                   <table class="slds-table slds-table--bordered">  
+                     <thead>  
+                       <tr>  
+                         <th>Completare i seguenti controlli per proseguire nel processo:</th>  
+                         <th>   </th>   
+                       </tr>  
+                     </thead>  
+                     <tbody>  
+                         <tr>
+                                <td> Rilevati protesti/pregiudizievoli/ipoteche legali > di 20.000 euro?  </td>
+                                <td>  <lightning:inputField aura:id="ProtestiPregiudizievoliIpoteticheLegali__c" fieldName="ProtestiPregiudizievoliIpoteticheLegali__c"  class="hidelabel"/> </td>
+                         </tr> 
+                         <tr>
+                                <td> Rilevati finanziamenti/carte di credito irregolari?  </td>
+                                <td>  <lightning:inputField aura:id="FinanziamentiCarteIrregolari__c" fieldName="FinanziamentiCarteIrregolari__c" variant="label-hidden"  class="hidelabel"  />  </td>
+                         </tr>
+                         <tr>
+                                <td> Collegato associato a convenzione chiusa per irregolarita?  </td>
+                                <td>  <lightning:inputField aura:id="CollegatoConvenzChiusaIrregol__c" fieldName="CollegatoConvenzChiusaIrregol__c" variant="label-hidden"  class="hidelabel"  />   </td>
+                         </tr>
+                         <tr>
+                                <td> Tra i soci e' presente una fiduciaria?  </td>
+                                <td> <lightning:inputField aura:id="SociFiduciaria__c" fieldName="SociFiduciaria__c" variant="label-hidden"  class="hidelabel"  />  </td>
+                         </tr>             
+                         <tr>
+                                <td> Sospeso per irregolarita'?  </td>
+                                <td> <lightning:inputField aura:id="SospesoPerIrregolarita__c" fieldName="SospesoPerIrregolarita__c" variant="label-hidden"  class="hidelabel"  />   </td>
+                         </tr>              
+            
+                     </tbody>  
+                   </table>  
+                  </lightning:recordEditForm>        
+                    
+                 </div>  
+               </div>             
+            
+                 
+
+    	<lightning:layout horizontalAlign="left">
+                <lightning:layoutItem size="4">
+                    <aura:if isTrue="{!v.reportCervedId}">  
+                        <c:SFAConvenzionamentoVisualizzaReportCerved reportOpened="{!v.reportOpened}"
+                                                                     recordId="{!v.recordId}"/>
+                    </aura:if>
+                    <lightning:button class="slds-m-top_medium" variant="destructive" label="Avanti" onclick="{!c.avanti}" disabled="false"  />                                     
+                </lightning:layoutItem>
+    	</lightning:layout>             
+            
+            
+                 <div class="slds-text-body_big">
+                     <br></br>
+                     Completare i dati necessari per la verifica dell'autonomia del convenzionamento. <br></br>
+					 Fare riferimento al report CERVED associato.</div>           
+            	
+        </p>
+    </lightning:card>     
+
+
+	   
+    
+</aura:component>

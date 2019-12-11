@@ -1,0 +1,109 @@
+<aura:component controller="SFAListaDaSedeAttivitaFilialeController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+	
+    <!-- PARAMETERS FROM PARENT COMPONENT -->
+    <aura:attribute name="caseChildSelected" type="Object"/>
+    <aura:attribute name="showModal" type="Boolean"/>
+    <aura:attribute name="showSpinner" type="Boolean" default="false"/>
+    <aura:attribute name="hideBox" type="Boolean" default="true"/>
+    
+    <aura:attribute name="esitiList" type="Object" />
+    <aura:attribute name="answered" default="false" type="Boolean" />
+    <aura:attribute name="caseNumber" type="String" default=""/>
+    <aura:attribute name="headerColumns" type="List"/>
+    <aura:attribute name="showInternalModal" type="Boolean" default="false"/>
+    
+
+    <aura:attribute name="toastMsg" type="String"/>
+    <aura:attribute name="titolo" type="String" default=""/>
+
+    <aura:handler name="init" value="{!this }" action="{!c.init }"/>
+
+    <lightning:notificationsLibrary aura:id="notifLib"/> 
+
+    <aura:if isTrue="{!v.esitiList.length > 0}">
+
+        <div class="slds-section slds-is-open" aura:id="section">
+            <h3 class="slds-section__title slds-theme_shade">
+                <lightning:buttonStateful labelWhenOff="{!v.titolo}"
+                                        labelWhenOn="{!v.titolo}"
+                                        class="slds-section__title-action" />
+            </h3>
+
+            <div class="slds-section__content" aria-hidden="false" >
+        
+                <!--CASE DETAIL AND NOTES-->
+                <div class="slds-box slds-theme_default slds-m-bottom_small">
+                    <div>
+                        <!--Activity:  {!v.caseChildSelected.SFA_ListeCaricate__r.Tipo_Attivita__r.Name}-->
+                        Activity:  {!v.caseChildSelected.SFA_ListeCaricate__r.Tipo_Attivita__r.Descrizione__c}
+                    </div>
+                    <hr></hr>
+                    <lightning:textarea aura:id="note" name="note" label="Notes" />
+                </div>
+                <!--END CASE DETAIL AND NOTES-->
+
+                <br/>
+                <br/>
+                
+                <!--ESITI LIST-->
+                <!--<aura:if isTrue="{!v.esitiList.length > 0}">-->
+                    <div style="max-height: fit-content;">
+                        <div class="slds-is-relative"><!--style="height: 500px"-->
+                            <lightning:datatable
+                                                aura:id="table"
+                                                keyField="Id"
+                                                data="{!v.esitiList}"
+                                                columns="{!v.headerColumns}"
+                                                resizeColumnDisabled="true"
+                                                maxRowSelection="1"
+                                                autocomplete="off"/>
+                            
+                            <!--<aura:if isTrue="{!v.showSpinner}">
+                                <lightning:spinner alternativeText="Loading" size="large"/>
+                            </aura:if>-->
+                        </div>
+                    </div>
+                <!--</aura:if>-->
+                <!--END ESITI LIST-->
+                <br/>
+                
+                <div>
+                    <!--<lightning:button class="slds-button slds-button_brand" onclick="{!c.esita}">Completa Attività</lightning:button>-->
+                    <lightning:button class="slds-button slds-button_brand" onclick="{!c.openInternalModal}">Completa Attività</lightning:button>
+                </div>
+
+                <!--START MODAL-->
+                <aura:if isTrue="{!v.showInternalModal}">
+
+                        <aura:if isTrue="{!v.hideBox}">                    
+                        <br/>
+                        <div class="slds-box slds-box_x-small slds-theme_shade">
+                                <strong>Sei sicuro? &ensp; </strong>   
+                                <aura:if isTrue="{!v.showSpinner}">
+                                    <lightning:spinner class="slds-is-relative slds-align_absolute-center" alternativeText="Loading" size="10px"/>
+                                </aura:if>
+                            
+                            <!--END BODY MODAL-->
+                            
+                            
+                                <button class="slds-button slds-button_neutral" onclick="{!c.esita}">Si</button>
+                                <button class="slds-button slds-button_neutral" onclick="{!c.goBack}">No</button>
+                            
+                            </div>
+                        </aura:if>
+
+                    
+                </aura:if>
+                <!-- END MODAL -->
+            </div>
+        </div>
+
+    <aura:set attribute="else">
+        <div class="slds-align_absolute-center">            
+            Nessun esito disponibile per questo tipo di attività.
+        </div>
+    </aura:set>
+
+    </aura:if>
+
+</aura:component>

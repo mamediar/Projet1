@@ -1,0 +1,63 @@
+<aura:component controller= "SFAPraticheIrregolariNoteGDVController" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes">
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="bodyNote" type="String" default=""/>
+    <aura:attribute name="inserimentoNonAvvenuto" type="Boolean" default="false"/>
+ 	<aura:attribute name="notes" type="List"/>
+    <aura:attribute name="disableButton" type="Boolean" default="false"/>
+    <aura:attribute name="flagRimandaAllaFiliale" type="Boolean" default=""/>
+    <aura:attribute name="isFlagVisible" type="Boolean" default="false"/>
+
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>   
+    
+    <div class="slds">  
+            <div style="border-left: 1px solid rgb(221, 219, 218);  
+                        border-right: 1px solid rgb(221, 219, 218);  
+                        border-bottom: 1px solid rgb(221, 219, 218);  
+                    	border-top: 1px solid rgb(221, 219, 218);">  
+           
+            <table class="slds-table slds-table--bordered">  
+                <thead>  
+                    <tr>  
+                        <th>Nota</th>  
+                        <th>Data</th>  
+                        <th>Chi</th>  
+                        <th></th>  
+                    </tr>  
+                </thead>  
+                <tbody> 
+                    <aura:iteration items="{!v.notes}" var="currentNote">
+                        <tr>  
+                            <td>{!currentNote.Description}</td>
+                            <td><lightning:formattedDateTime value="{!currentNote.CreatedDate}"  year="2-digit" month="2-digit" day="2-digit" hour="2-digit" minute="2-digit" second="2-digit"/></td>
+                            <td>{!currentNote.Title}</td>                        	
+                        </tr>  
+                    </aura:iteration>
+             
+                </tbody>  
+            </table>  <br/><br/>  
+
+            <div class="slds-page-header" style="border-radius: 0px; border-right: 0px;border-left: 0px;border-top: 0px;  
+                                                 box-shadow: 0 0px 0px 0 rgba(0, 0, 0, 0.1);">                  
+            </div>
+                
+                <div class="slds-col slds-size---of-12">  
+    					<lightning:input aura:id="bodyNoteId" type="textarea" label="Nota da inserire:" 
+                                         disabled="{!v.disableButton}" class="topText" 
+                                         value="{!v.bodyNote}" maxlength="150"/>  <!--style="width: 660px; height: 240px"-->         
+                </div>  
+  
+                <aura:if isTrue="{!v.isFlagVisible}">
+                    <ui:inputCheckbox aura:id="checkbox1" label="rimanda alla Filiale" value="{!v.flagRimandaAllaFiliale}" />
+                </aura:if>                
+                
+            <div class="slds-m-top_medium">
+                <lightning:button aura:id="insertNoteId" label="Inserisci Nota" disabled="{!v.disableButton}" variant="destructive" onclick="{!c.inserisciNota}" />
+            </div>   
+                
+                
+        </div>  
+    </div>      
+    
+           
+</aura:component>

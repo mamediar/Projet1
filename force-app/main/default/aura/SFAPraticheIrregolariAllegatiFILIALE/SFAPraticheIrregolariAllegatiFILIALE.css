@@ -1,0 +1,6 @@
+.THIS .slds-file-selector__dropzone .slds-file-selector__text{ 
+    display: none;
+}
+.THIS .slds-file-selector__dropzone{ 
+    border: none;
+}

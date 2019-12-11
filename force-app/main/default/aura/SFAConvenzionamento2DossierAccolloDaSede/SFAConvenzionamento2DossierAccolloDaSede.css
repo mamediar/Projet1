@@ -1,0 +1,22 @@
+.THIS .tx-center {
+    text-align: center;
+    font-size: 16pt;
+}
+.THIS .leftFloat {
+    float:left;
+    
+}
+.THIS .message {
+    border-radius		: 3px;
+    -moz-transition		: all .4s ease-in;
+    -o-transition		: all .4s ease-in;
+    -webkit-transition	: all .4s ease-in;
+	transition			: all .4s ease-in;
+
+    border				: 0px solid #c0c0c0; 
+    font-size			: 11pt;
+    color				: #ff0000; 
+  	font-weight         : bold;
+    text-align			: center; 
+    padding				: 5px;
+}

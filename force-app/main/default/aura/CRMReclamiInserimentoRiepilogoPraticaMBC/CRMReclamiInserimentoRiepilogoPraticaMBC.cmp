@@ -1,0 +1,44 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" 
+                access="global" 
+                >
+	
+    <aura:attribute name="clienteSelezionato" type="OCSCliente"/>
+    <aura:attribute name="aziendaSelezionata" type="String"/>
+    
+    <div style="margin-left:15px;margin-right:15px;">
+        
+        <div class="slds-section slds-is-open">
+            <h3 class="slds-section__title slds-theme_shade">
+                <span class="slds-truncate slds-p-horizontal_small" title="Section Title">Riepilogo Pratica {!v.aziendaSelezionata}</span>
+            </h3>
+            <div aria-hidden="false" class="slds-section__content" style="margin-left:15px;margin-right:15px;">
+
+
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col">
+                        <lightning:input label="Cedente/Committente:" value="{!v.clienteSelezionato.pratiche[0].cedCom}" readonly="true"/>  
+                    </div>
+                    
+                    <div class="slds-col">
+                        <lightning:input label="Ragione Sociale:" value="{!v.clienteSelezionato.ragioneSociale}" readonly="true"/>
+                    </div>
+                        
+                </div>
+                <hr style="margin:0%"></hr>
+            </div>
+            <hr style="margin:0%"></hr>
+        </div>
+    </div>     
+
+
+    <!--
+    <lightning:input label="Cedente/Committente:"
+                     value="{!v.clienteSelezionato.pratiche[0].cedCom}"
+                     readonly="true"
+                     />
+    <lightning:input label="Ragione Sociale:"
+                     value="{!v.clienteSelezionato.ragioneSociale}"
+                     readonly="true"
+                     />
+-->
+</aura:component>

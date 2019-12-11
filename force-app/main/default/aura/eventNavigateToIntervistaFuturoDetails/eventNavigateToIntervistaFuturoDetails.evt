@@ -1,0 +1,4 @@
+<aura:event type="APPLICATION" description="event Navigate to Futuro details">
+     <aura:attribute name="intervistaFuturo" type="Intervista_integrativo__c"/>
+     <aura:attribute name="productsLimites" type="Map" />
+</aura:event>

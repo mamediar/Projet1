@@ -1,0 +1,67 @@
+<aura:component  implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+                access="global" controller="COM_UploadCSVFilesUtilities">
+    
+    <aura:attribute name="fileToBeUploaded" type="Object[]"/>
+    <aura:attribute name="cancelUploadFile" type="Boolean" default="true" />
+    <aura:attribute name="showcConfirm" type="Boolean" default="false" />
+    <aura:attribute name="fileName" type="String" default="No File Selected.." />
+    <aura:attribute name="errorMsg" type="String"/>
+    <aura:attribute name="TargetFileName" type="String"  description="Name of the file"/>
+    <aura:attribute name="headerList" type="List" />
+    <aura:attribute name="selectTipoFile" type="String"/>
+    <aura:attribute name="selectProdotto" type="String"/>
+    <aura:attribute name="errorsRecords" type="COM_UploadCSVFilesUtilities.Error[]"/>
+
+
+    <aura:handler name='init' value='{!this}' action='{!c.doInit}' />
+    <section role="dialog" tabindex="-1" aria-label="Meaningful description of the modal content" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+        <div class="slds-modal__container" style="width: 100%; max-width: 75rem;">
+            <header class="slds-modal__header slds-modal__header_empty">
+                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
+                    <span class="slds-assistive-text">Close</span>
+                </button>
+            </header>
+            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                <lightning:input aura:id="fileUploader" type="file"
+                                 files="{!v.fileToBeUploaded}"
+                                 onchange="{!c.onFileUploaded}"
+                                 accept=".csv"
+                                 label= "Selezionare il documento..." />
+                <ui:outputRichText value="{!v.TargetFileName}"/> 
+                <aura:if isTrue="{!v.errorMsg}">
+                    <ui:outputRichText class="slds-text-color_error" value="{!v.errorMsg}"/> 
+                </aura:if>
+                <br/>
+                <!-- TABLE ERRORI-->
+                    
+                    <aura:if isTrue="{!not(empty(v.errorsRecords))}">
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                               <tr>
+                                   <td><div class="slds-truncate" title="Errore">Errori</div>
+                                   </td>
+                               </tr>    
+                               <aura:iteration items="{!v.errorsRecords}" var="err">
+                                    <tr>
+                                        <td class="slds-line-height_reset">
+                                            <div class="slds-truncate" title="Errore">{!err.description}</div>
+                                      </td>
+                                    </tr>
+                               </aura:iteration>
+                                
+                          </table>
+                    </aura:if>
+                <aura:if isTrue="{!v.showcConfirm}">
+                    <button class="slds-button slds-button_success" onclick="{!c.confirm}">Conferma</button>
+                </aura:if>
+                <button class="slds-button slds-button_outline-brand" disabled="{!v.cancelUploadFile}"  onclick="{!c.cancelUploadedFile}">Cancel</button>
+            </div>
+                
+            <footer class="slds-modal__footer">
+                <button class="slds-button slds-button_brand" onclick="{!c.closeModal}">Close</button>
+            </footer>
+        </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open">
+        
+    </div>
+</aura:component>

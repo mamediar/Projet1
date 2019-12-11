@@ -1,0 +1,18 @@
+<aura:component controller="CRM_GestioneEmailChiusuraController"
+                implements="force:appHostable,flexipage:availableForRecordHome,flexipage:availableForAllPageTypes,force:hasRecordId" access="global" >
+    
+    <aura:attribute name="recordId" type="String"/>
+    <aura:handler event="c:EsitoReady" action="{!c.esitaCase}" />
+    
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    
+    <lightning:recordViewForm class="slds-m-top_small slds-m-bottom_medium" 
+                              recordId="{!v.recordId}" 
+                              objectApiName="Case" >
+      
+    </lightning:recordViewForm>
+    
+    <c:XCS_DispositionForAppBuilder onlyLeafDisposition="false" rootExternalId="DP1536" recordId="{!v.recordId}">
+    </c:XCS_DispositionForAppBuilder>
+    
+</aura:component>

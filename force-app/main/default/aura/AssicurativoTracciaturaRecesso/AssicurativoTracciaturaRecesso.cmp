@@ -1,0 +1,133 @@
+<!--Mamadou Lamine CAMARA !-->
+
+<aura:component description="AssicurativoTracciaturaRecesso"
+    implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+    access="global" controller="ComodityApexClass">
+    <aura:attribute name="quezione1" type="String" />
+    <aura:attribute name="quezione2" type="String" />
+    <aura:attribute name="motivazioneSi" type="boolean" />
+    <aura:attribute name="NomeCliente" type="String" />
+    <aura:attribute name="status" type="string" default=" Sig. "/>
+    <aura:attribute name="Note" type="String" default=''/>
+    <aura:attribute name="FlagFinanzPolizza" type="boolean" default="false" />
+    <aura:attribute name="ParentFlag1" type="boolean" default="false" />
+    <aura:attribute name="risposta" type="Risposte__c" />
+    <aura:attribute name="FlagConcludiInterview" type="boolean" />
+    <aura:attribute name="isOpen" type="Boolean" default="false" />
+    <aura:attribute name="showTextareaRequired" type="boolean" default="false" />
+    <aura:attribute name="showButton" type="boolean" default="false"/>
+    <aura:attribute name="selectTerminaQuezioneNo" type="boolean" default="false"/>
+    <aura:attribute name="isOn" type="boolean" default="true" />
+    <aura:attribute name="isRispostaExist"     type="boolean" />
+    <aura:attribute name="nuovaIntervista"     type="COM_Intervista__c" />
+    <aura:attribute name="UltimaDomanda"       type="boolean" default="false"/>
+    <aura:attribute name="PrimaDomanda"        type="boolean" default="false"/>
+    <aura:attribute name="RecessoDomandaSi"    type="boolean" default="false"/>
+    <aura:attribute name="RecessoDomandaNo"    type="boolean" default="false"/>
+    <aura:attribute name="RecessoRispostaNote" type="boolean" default="false"/>
+    <aura:attribute name="FlussoDomanda"       type="String"  default=''/>
+    
+    <aura:attribute name="RecessoNote"     type="boolean" default="false"/>
+    
+    <aura:attribute name="indexFlagTracc" type="boolean" default="false"/>
+
+    
+    <aura:registerEvent name="eventNavigationAssicurativoPratiche" type="c:eventNavigationAssicurativoPratiche" />
+
+    <aura:attribute type="Risposte__c" name="rispondeQuezione" default="{'sobjectype':'Risposte__c',
+                                                                            'D0__c':'',
+                                                                            'D1__c':'',
+                                                                            'D2__c':'',
+                                                                            'D3__c':'',
+                                                                            'D4__c':'',
+                                                                            'D5__c':'',
+                                                                            'D6__c':'',
+                                                                            'D7__c':'',
+                                                                            'D8__c':'',
+                                                                            'Intervista__c':''
+                                                                        }" />
+
+   
+    
+    <aura:if isTrue="{!v.isOn}">
+        <div>
+            <aura:if isTrue="{!v.isOpen}">
+            <hr />
+            <div>
+                <p>{!v.quezione1}</p>
+                <lightning:input type="radio" name="siPerche" label="Si" value="Si"
+                    onchange="{!c.getDomandaNoRicordoFinanziamentoPolizzaSi}" />
+                <lightning:input type="radio" name="siPerche" label="No" value="no"
+                    onchange="{!c.getDomandaNoRicordoFinanziamentoPolizzaNo}" />
+            </div>
+            </aura:if>
+            <aura:if isTrue="{!v.FlagFinanzPolizza}">
+                <hr />
+                <div>
+                    <p>{!v.quezione2}</p>
+                    <lightning:input type="radio" name="siPercheFlagFinanzPolizza" label="Si" value="Si"
+                        onchange="{!c.setParentFlag1Si}" />
+                    <lightning:input type="radio" name="siPercheFlagFinanzPolizza" label="No" value="no"
+                        onclick="{!c.setParentFlag1No}" />
+                </div>
+                <lightning:textarea name="input1" label="" aura:id="idQuestionNote" value="" />
+            </aura:if>
+
+            <div class="color__background_gray">
+                <p>TRACCIATURA RECESSO (nessuna domanda al cliente, solo tracciatura)</p>
+                <p>Il cliente esprime il desiderio di recedere?</p>
+                <lightning:input type="radio" name="siPercheTracciatura" label="Si" value="Si"
+                    onchange="{!c.getDomandaSiPerche2Si}" />
+                <lightning:input type="radio" name="siPercheTracciatura" label="No" value="no"
+                    onchange="{!c.getDomandaSiPerche2No}" />
+                <!-- SEZIONE MOTIVAZIONE TRACCIATURA RECESSO -->
+                <aura:if isTrue="{!v.motivazioneSi}">
+                    <p>Motivazione:</p>
+                    <div class="color__background_gray">
+                        <div class="slds-form-element__control slds-grid textarea">
+                            <div
+                                class="slds-form-element slds-form-element_horizontal textarea-content slds-is-editing slds-grid">
+                                <form class="slds-form--stacked">
+                                    <lightning:input aura:id="assTracc" type="radio" name="motivazione" 
+                                        label="Non sapeva di aver sottoscritto assicurazione"
+                                        value="Non sapeva di aver sottoscritto assicurazione"
+                                        onchange="{!c.handleRadioClick}" id="NonSapeva" />
+                                    <lightning:input aura:id="assTracc" type="radio" name="motivazione" 
+                                        label="Non ritiene utile la copertura offerta"
+                                        value="Non ritiene utile la copertura offerta" onchange="{!c.handleRadioClick}"
+                                        id="NonUtile" />
+                                    <lightning:input aura:id="assTracc" type="radio" name="motivazione"
+                                        label="Ripensamento generale"  id="RipensGenerale"
+                                        value="Ripensamento generale" onchange="{!c.handleRadioClick}" />
+                                    <lightning:input aura:id="assTracc" type="radio" name="motivazione" label="Altro"
+                                        value="altro" onchange="{!c.handleRadioClick}" id="IDaltro" />
+                                    <label><u>Inserite note aggiuntive spontanee</u> e fine tracciatura</label>
+                                    <lightning:textarea aura:id="assTracc" class="slds-float--left" name="input1"
+                                        variant="label-hidden" value="{!v.Note}" messageWhenValueMissing="Il Campo è obbligatorio!" required="{!v.showTextareaRequired}" />
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </aura:if>
+            </div>
+            <aura:if isTrue="{!v.FlagConcludiInterview}">
+                <br /><br />
+                Bene Sig.ra COLETTA MANUELA, la ringrazio per il tempo che mi ha dedicato e le ricordo che,
+                per qualsiasi informazione o necessità, può sempre rivolgersi alla filiale presso cui ha sottoscritto il
+                prestito,
+                può contattare il nostro Servizio Clienti al n° 02/48244412 (chiedere se vuole prendere nota) o può
+                accedere al sito www.compass.it
+                Buona giornata/serata!<br />
+                <lightning:button label="Intervista Terminata" class="slds-m-top--medium slds-float_left"
+                    variant="brand" onclick="{!c.TerminaIntervista}" />
+            </aura:if>
+
+            <aura:if isTrue="{!v.showButton}">
+                <aura:if isTrue="{!v.cancella}"></aura:if>
+                <lightning:button label="Concludi Intervista Assicurativo" class="slds-m-top--medium slds-float_right"
+                    variant="brand" onclick="{!c.concludi}" />
+            </aura:if>
+
+        </div>
+    </aura:if>
+</aura:component>

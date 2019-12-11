@@ -1,0 +1,9 @@
+<aura:component implements="lightning:homeTemplate">
+    <aura:attribute name="main" type="Aura.Component[]" /> 
+
+    <div>
+        <lightning:layout horizontalAlign="spread">
+            {!v.main}
+        </lightning:layout>
+    </div>
+</aura:component>

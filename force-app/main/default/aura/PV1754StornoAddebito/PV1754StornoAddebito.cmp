@@ -1,0 +1,79 @@
+<aura:component extends="c:PVSubComponentBase" access='global' controller='PV1754StornoAddebito'>
+
+   
+
+    <aura:attribute name="options" type="List" default="[
+    {'label': 'Si', 'value': 'Si'},
+    {'label': 'No', 'value': 'No'}
+    ]"/>
+    <aura:attribute name="value" type="String" default=""/>
+    <aura:attribute name="showDetails" type="Boolean" default="true"/>
+    <aura:attribute name="modalitaPagamentoSelected" type="String" default="" />
+    <aura:attribute name="optionsModalitaPagamento" type="List" default="[
+                                                        {'label': 'Assegno', 'value': 'Assegno'},
+                                                        {'label': 'Bonifico', 'value': 'Bonifico'},
+                                                        ]" />
+    <aura:attribute name="labelOptions" type="String" default="Modalità di rimborso" />                                                    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+  
+    
+                      
+
+    <div class="slds">
+
+      <!-- <aura:if isTrue="{!v.showDetails}">-->
+
+            <div class="slds-p-vertical_small">
+
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-3 slds-p-vertical_xx-small">
+                        <span class="slds-text-title_bold">Nome:&nbsp;</span>{!v.PVForm.cliente.nome}
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-3 slds-p-vertical_xx-small">
+                        <span class="slds-text-title_bold">Cognome:&nbsp;</span>{!v.PVForm.cliente.cognome}
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-3 slds-p-vertical_xx-small">
+                        <span class="slds-text-title_bold">Codice:&nbsp;</span>{!v.PVForm.cliente.codCliente}
+                    </div>
+                </div>
+
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-3 slds-p-vertical_xx-small">
+                        <span class="slds-text-title_bold">Pratica:&nbsp;</span>{!v.PVForm.pratica.numPratica}
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-3 slds-p-vertical_xx-small">
+                        <span class="slds-text-title_bold">Tipologia:&nbsp;</span>{!v.PVForm.pratica.tipoPratica}
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-3 slds-p-vertical_xx-small">
+                        <span class="slds-text-title_bold">Stato:&nbsp;</span>{!v.PVForm.pratica.statoPratica}
+                    </div>
+                </div>
+
+                
+
+            </div>
+            <lightning:radioGroup name="conRimborso"
+                          label="Con rimborso"
+                          options="{! v.options }"
+                          value="{! v.value }"
+                          type="radio"/>
+       <!--</aura:if>-->
+       <aura:if isTrue="{!v.value =='Si'}">
+            <lightning:layoutItem size="5">
+                <lightning:select name="modalitaPagamento" label="{! v.labelOptions }" aura:id="modalitaPagamento"
+                            value="{!v.modalitaPagamentoSelected}" required="{!v.required}">
+                            <option text="" value="" />
+                            <aura:iteration items="{!v.optionsModalitaPagamento}" var="modPag">
+                                <option text="{!modPag.label}" value="{!modPag.value}" />
+                            </aura:iteration>
+                </lightning:select>
+            </lightning:layoutItem>
+            <aura:if isTrue="{v.modalitaPagamentoSelected == 'Assegno'}">
+                <h1>Indirizzo di spedizione</h1>
+                
+            </aura:if>
+       </aura:if>
+    </div>
+
+
+</aura:component>

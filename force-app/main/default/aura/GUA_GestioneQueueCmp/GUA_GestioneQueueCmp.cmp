@@ -1,0 +1,36 @@
+<aura:component implements="flexipage:availableForAllPageTypes" controller="GUA_GestioneQueueCnt" access="global">
+    <aura:attribute type="Group[]" name="listQueus"/>
+    <aura:registerEvent name="QueueDetail" type="c:GUA_QueueToContactEvt"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    
+<div class="slds-grid slds-gutters">
+    <div class="slds-col slds-size_1-of-5 slds-p-top_x-large">
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th style="text-align:center;background-color:#9f201c;color:#fff;"></th>
+                    <th style="text-align:center;background-color:#9f201c;color:#fff;">Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <aura:if isTrue="{!v.listQueus.length>0}">
+                    <aura:iteration items="{!v.listQueus}" var="oneQueue">
+                    <tr>
+                        <td>
+                            <span class="slds-radio">
+                                <lightning:input type="radio" id="selectedQueu" value="{!oneQueue}" name="options" tabindex="-1"
+                                    onchange="{!c.queuSelected}" aria-labelledby="radio-button-label-01 column-group-header" />
+                            </span>
+                        </td>
+                        <td>{!oneQueue.Name}</td>
+                    </tr>
+                </aura:iteration>
+                </aura:if>
+            </tbody>
+        </table>
+    </div>
+    <div class="slds-col slds-size_4-of-">
+    	<c:GUA_GestioneContactCmp/>
+  	</div>
+</div>
+</aura:component>

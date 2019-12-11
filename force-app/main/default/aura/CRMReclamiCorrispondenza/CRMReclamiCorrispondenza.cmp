@@ -1,0 +1,23 @@
+<aura:component controller="CRMReclamiCorrispondenzaController"
+                implements="flexipage:availableForAllPageTypes,force:hasRecordId" 
+                access="global" 
+                >
+    
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="emailList" type="EmailMessage[]"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    
+    asdfghjklòasdfghjklsdfghjklòsdfghjkl7
+    
+    emailList = {!v.emailList}
+    
+    <lightning:recordForm
+        recordId="02s0Q000000aaa3QAA"
+        objectApiName="EmailMessage"
+        layoutType="Compact"
+        columns="2"/>
+    
+    
+    
+</aura:component>

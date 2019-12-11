@@ -1,0 +1,36 @@
+<aura:component controller="GUA_Dettaglio2ContactCnt">
+        <aura:attribute type="List" name="userDealerList" default="" />
+<div>
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Num</th>
+                        <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Utenza</th>
+                        <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Disabilitato</th>
+                        <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Canale</th>
+                        <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Reset</th>
+                        <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Cognome</th>
+                        <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Nome</th>
+                        <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <aura:iteration items="{!v.userDealerList}" var="userDealer">
+                        <tr>
+                            <td>
+                            </td>
+                            <td>{!userDealer.utenza}</td>
+                            <td>{!userDealer.flagDisabilitato}</td>
+                            <td>{!userDealer.canale}</td>
+                            <td>
+                                <lightning:button value="{!userDealer.utenza}" onclick="{!c.resetPassword}" name="options" tabindex="-1" label="Reset Password" />
+                            </td>
+                            <td>{!userDealer.cognome}</td>
+                            <td>{!userDealer.nome}</td>
+                            <td>{!userDealer.email}</td>
+                        </tr>
+                    </aura:iteration>
+                </tbody>
+            </table>
+</div>
+</aura:component>	

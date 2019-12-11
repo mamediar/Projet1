@@ -1,0 +1,37 @@
+<!--
+  @File Name          : PV1772DaCustomerServAFiliale.cmp
+  @Description        : 
+  @Author             : Federico Negro
+  @Group              : 
+  @Last Modified By   : Federico Negro
+  @Last Modified On   : 28/10/2019, 14:10:42
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    28/10/2019   Federico Negro     Initial Version
+-->
+<aura:component extends="c:PVSubComponentBase" controller="PV1772DaCustomerServAFilialeIns" access="global">
+
+
+    <!-- Opzioni Combo -->
+    <aura:attribute name="options" type="List" />
+    <aura:attribute name="selectedValue" type="String"/>
+
+    <lightning:card class='slds-form_stacked'>
+
+        <lightning:layout class="slds-wrap slds-form" multipleRows="true">
+
+            <lightning:layoutItem size="6" padding="horizontal-small">
+
+                <lightning:select name="elenco_filiali" label="Filiale destinataria:" aura:id="elenco_filiali" value="{!v.selectedValue}">
+                    <aura:iteration items="{!v.options}" var="item">
+                        <option text="{!item.label}" value="{!item.value}" selected="{!item.selected}"/>
+                    </aura:iteration>
+                </lightning:select>
+
+            </lightning:layoutItem>
+
+        </lightning:layout>
+
+    </lightning:card>
+
+</aura:component>

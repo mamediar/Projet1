@@ -1,0 +1,86 @@
+<!--
+  @Component Name     : PV1757RimborsoClienteSaldoRosso.cmp
+  @Description        : 
+  @Author             : ChangeMeIn@UserSettingsUnder.SFDoc
+  @Group              : 
+  @Last Modified By   : sabrina vitali
+  @Last Modified On   : 20/8/2019, 11:59:06
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    16/7/2019, 11:15:45   ChangeMeIn@UserSettingsUnder.SFDoc     Initial Version
+-->
+<aura:component extends="c:PVSubComponentBase" controller='PV1757RimborsoCliSaldoRossoInserimento' access='global'>
+    <aura:handler name='init' value='{!this}' action='{!c.init}' />
+
+    <!-- attributi PV -->
+    <aura:attribute name="today" type="Date" />
+    <aura:attribute name="provenienzaSaldo" type="Boolean" />
+    <aura:attribute name="erroriModRimborso" type="String" />
+    <aura:attribute name="notaModalitaRimborso" type="String" />
+    <aura:attribute name="modalitaRimborso" type="String" />
+    <!--<aura:attribute name="dataRid" type="Date" />-->
+
+    <!-- popolamento combo -->
+    <aura:attribute name="optionsProvenienzaSaldo" type="List" default="[                                                                                                                      
+                                                               {'label': 'Si', 'value': 'true'},                                                                                  
+                                                               {'label': 'No', 'value': 'false'},                                                                                  
+                                                             ]" />
+
+    <!--Main-->
+    
+    <lightning:card class="slds-form_stacked">
+        <lightning:layout class="slds-wrap" multipleRows="true">
+            <lightning:layoutItem size="4">
+                <lightning:input    aura:id="importo"   type="number" 
+                                    name="importo"      label="Importo"     formatter="currency"
+                                    step="0.01"         required="true" />
+            </lightning:layoutItem>
+            <lightning:layoutItem size="4">
+                <lightning:combobox aura:id="provenienzaSaldo"      name="provenienzaSaldo"
+                                    label="Saldo generato da incasso rid?"      placeholder="Seleziona" 
+                                    value="{!v.provenienzaSaldo}"   variant="standard" 
+                                    dropdownAlignment="Left"        options="{!v.optionsProvenienzaSaldo}"
+                                    required="true" />
+            </lightning:layoutItem>
+
+            <aura:if isTrue="{!v.provenienzaSaldo}">
+                <lightning:layoutItem size="4">
+                    <lightning:input    type="Date"         aura:id="dataRid" 
+                                        label="Data Rid"    name="dataRid"      
+                                        max="{!v.today}"    required="true" />
+                </lightning:layoutItem>
+                <lightning:layoutItem size="12">
+                    <div class="slds-text-color_error slds-text-title_bold">
+                        <table class="slds-table">
+                            <tbody>
+                                <tr class="slds-hint-parent">
+                                    <td colspan="3" class="slds-cell-buffer_left">
+                                        <p class="slds-p-horizontal_small slds-text-color_error slds-text-title_bold">
+                                            La richiesta sarà gestita a partire da 15gg dopo tale data.
+                                        </p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </lightning:layoutItem>
+            </aura:if>
+            <lightning:layoutItem size="12">
+                <c:PVModalitaRimborso   labelOptions="Modalità rimborso"
+                                        OCSClienteSelezionato="{!v.PVForm.cliente}" 
+                                        praticaSelezionata="{!v.PVForm.pratica}"
+                                        aura:id="modRimborso" 
+                                        errori="{!v.erroriModRimborso}"
+                                        modalitaPagamentoSelected="{!v.modalitaRimborso}" 
+                                        note="{!v.notaModalitaRimborso}" 
+                                        required="true">
+                </c:PVModalitaRimborso>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </lightning:card>
+
+    <!-- /main -->
+
+</aura:component>

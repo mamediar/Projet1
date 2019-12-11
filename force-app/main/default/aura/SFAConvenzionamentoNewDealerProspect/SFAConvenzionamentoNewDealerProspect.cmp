@@ -1,0 +1,251 @@
+<aura:component controller="SFAConvenzionamentoNewDealProspctCtrller" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes">
+
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="dealerProspectId" type="String" />
+    <aura:attribute name="reportUrl" type="String" default="" />
+    <aura:attribute name="step" type="String" />
+
+    <aura:attribute name="ragioneSociale" type="String" />
+    <aura:attribute name="statoSocieta" type="String" />
+    <aura:attribute name="indirizzo" type="String" />
+    <aura:attribute name="naturaGiuridica" type="String" />
+    <aura:attribute name="codiceFiscale" type="String" />
+    <aura:attribute name="partitaIva" type="String" />
+    <aura:attribute name="nRea" type="String" />
+    <aura:attribute name="iscrizioneCciaa" type="String" />
+    <aura:attribute name="attivita" type="String" />
+    
+    <aura:attribute name="isPartitaIvaValida" type="Boolean" default="false" />
+    <aura:attribute name="isCodiceFiscaleValido" type="Boolean" default="false" />
+    
+    <aura:attribute name="spinnerCounter" type="Integer" default="0"/>
+
+    <aura:attribute name="citta" type="String" />
+    <aura:attribute name="provincia" type="String" /> 
+
+    <aura:attribute name="richiestaQRPoptions" type="List" default="[
+                    {'label': 'Sì', 'value': 'true'},
+                    {'label': 'No', 'value': 'false'}
+                    ]"/>
+    <aura:attribute name="richiestaQRPvalue" type="String" />
+
+    <aura:attribute name="nota" type="String" />
+    <aura:attribute name="disposition" type="XCS_Disposition__c" />
+
+    <aura:handler event="c:XCS_DispositionReady" action="{!c.handleDispositionReadyEvent}"/>
+
+    <aura:attribute name="url" type="String"/>
+    <aura:attribute name="pageReference" type="Object"/>
+    <lightning:navigation aura:id="navService"/>
+
+    <aura:handler name="init" value="{! this }" action="{! c.doInit }" />
+
+    <c:SpinnerComponent aura:id="spinnerComponent" spinnerCounter="{!v.spinnerCounter}"/>
+    
+    <aura:if isTrue="{!v.step == 'NewDealerProspect_StepIniziale'}">
+
+        <div class="slds-m-bottom_medium">Per una corretta richiesta del report Cerved, verifica/completa i dati di P.IVA e C.F. per il prospect o in alternativa annulla l'attività se non intendi proseguire nel processo.</div>
+    
+        <lightning:recordEditForm recordId="{!v.dealerProspectId}" objectApiName="Account" onsubmit="{!c.handleSubmit}" onsuccess="{!c.handleSuccess}" onerror="{!c.handleError}">
+    
+            <lightning:layout horizontalAlign="spread" multipleRows="true">
+    
+                <label for="AddressState" class="slds-form-element__label slds-no-flex">Ragione Sociale</label>
+    
+                <lightning:layoutItem flexibility="grow" size="12">
+                    <lightning:inputField aura:id="ragioneSociale" fieldName="Name" disabled="true" variant="label-hidden"/>
+                </lightning:layoutItem>
+                
+                <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                    <lightning:inputField aura:id="partitaIva" fieldName="Partita_IVA__c" />
+                </lightning:layoutItem>
+    
+                <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                    <lightning:inputField aura:id="codiceFiscale" fieldName="Codice_Fiscale__c" />
+                </lightning:layoutItem>
+                
+                <div class="slds-m-top_medium">
+                    <lightning:button variant="destructive" type="submit" name="update" label="Salva e Continua" />
+                    <c:SFAConvenzionamentoBottoneAnnullaAttivita
+                        recordId="{!v.recordId}"
+                    />
+                </div>
+    
+            </lightning:layout>
+            
+        </lightning:recordEditForm>
+        
+    </aura:if>
+    
+    <aura:if isTrue="{!v.step == 'NewDealerProspect_ReportPresente'}">
+        <div>
+            Il report è disponibile. È possibile visualizzarlo <b><a href="{!v.reportUrl}" target="_blank">cliccando qui</a></b>.
+        </div>
+        <div>
+            <lightning:button class="slds-m-top_medium" variant="destructive" type="submit" name="update" label="Avanti" onclick="{!c.handleAvanti}"/>
+        </div>
+    </aura:if>
+    
+    <aura:if isTrue="{!v.step == 'NewDealerProspect_QuickReportRichiesto'}">
+        <div>
+            <div>Richiesta Quick Report in differita: riprovare fra qualche minuto.</div>
+            <lightning:button class="slds-m-top_medium" variant="destructive" type="submit" name="update" label="Aggiorna" onclick="{!c.handleAggiornaRichiestaQRP}"/>
+        </div>
+    </aura:if>
+    
+    <aura:if isTrue="{!v.step == 'NewDealerProspect_GlobalExpertRichiesto'}">
+        <div>
+            Il Global Expert è stato richiesto. Riceverai una mail di avviso quando il report sarà pronto.
+        </div>
+    </aura:if>
+    
+    <aura:if isTrue="{!v.step == 'NewDealerProspect_RichiediQuickReport'}">
+                
+        <table class="slds-m-top_medium">  
+            <tr>
+                <td class="slds-size_1-of-2 slds-p-right_small slds-p-bottom_small">
+                    <lightning:input type="text" value="{!v.ragioneSociale}" label="Ragione Sociale" disabled="true" />
+                </td>
+                <td class="slds-size_1-of-2 slds-p-bottom_small">
+                    <lightning:input type="text" value="{!v.statoSocieta}" label="Stato" disabled="true" />
+                </td>
+            </tr>
+            <tr>
+                <td class="slds-size_1-of-2 slds-p-right_small slds-align-bottom slds-p-bottom_small">
+                    <lightning:input type="text" value="{!v.indirizzo}" label="Indirizzo" disabled="true" />
+                </td>
+                <td class="slds-size_1-of-2 slds-p-bottom_small">
+                    <lightning:input type="text" value="{!v.naturaGiuridica}" label="Natura giuridica" disabled="true" />
+                </td>              
+            </tr>
+            <tr>
+                <td class="slds-size_1-of-2 slds-p-right_small slds-align-bottom slds-p-bottom_small">
+                    <lightning:input type="text" value="{!v.codiceFiscale}" label="Codice fiscale" disabled="true" />
+                </td>
+                <td class="slds-size_1-of-2 slds-p-bottom_small">
+                    <lightning:input type="text" value="{!v.partitaIva}" label="Partita IVA" disabled="true" />
+                </td>                    
+            </tr>
+            <tr>
+                <td class="slds-size_1-of-2 slds-p-right_small slds-align-bottom slds-p-bottom_small">
+                    <lightning:input type="text" value="{!v.nRea}" label="NREA" disabled="true" />
+                </td>
+                <td class="slds-size_1-of-2 slds-p-bottom_small">
+                    <lightning:input type="text" value="{!v.iscrizioneCciaa}" label="Iscrizione in CCIAA" disabled="true" />
+                </td>
+                
+            </tr>
+            
+        </table>
+
+        <table>  
+            <tr>
+                <td class="slds-size_2-of-2 slds-p-bottom_small">
+                    <lightning:input type="text" value="{!v.attivita}" label="Attività" disabled="true" />
+                </td>
+            </tr>
+        </table>
+
+        <div>
+            <lightning:radioGroup 
+                name="richiestaQRP"
+                label="Vuoi richiedere il Quick Report per questa azienda?"
+                options="{!v.richiestaQRPoptions}"
+                value="{!v.richiestaQRPvalue}"
+                type="radio"
+                onchange="{!c.handleChange}"
+            />
+        </div>
+
+        <div class="slds-p-top_small">
+            <span class="slds-p-right_small">
+                Non vuoi convenzionare questo dealer?
+            </span>
+            <span>
+                <c:SFAConvenzionamentoBottoneAnnullaAttivita
+                    recordId="{!v.recordId}"
+                />
+            </span>
+        </div>
+    </aura:if>
+    
+    <aura:if isTrue="{!v.step == 'NewDealerProspect_RichiediGlobalExpert'}">
+
+        <div class="slds-p-bottom_small">
+            Correggi o completa i dati per richiedere il Global Expert.
+        </div>
+
+        <lightning:recordEditForm recordId="{!v.dealerProspectId}" objectApiName="Account" onsubmit="{!c.handleSubmitRichiediGE}" onsuccess="{!c.handleSuccessRichiediGE}" onerror="{!c.handleErrorRichiediGE}">
+
+            <lightning:layout horizontalAlign="spread" multipleRows="true">
+    
+                <lightning:layoutItem flexibility="grow" size="12">
+                    <label for="ragioneSocialeRichiediGE" class="slds-form-element__label slds-no-flex">Ragione Sociale</label>
+                    <lightning:inputField aura:id="ragioneSocialeRichiediGE" fieldName="Name" class="label-hidden" variant="label-hidden"/>
+                </lightning:layoutItem>
+                
+                <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                    <lightning:inputField aura:id="partitaIvaRichiediGE" fieldName="Partita_IVA__c" />
+                </lightning:layoutItem>
+    
+                <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                    <label for="codiceFiscaleRichiediGE" class="slds-form-element__label slds-no-flex">Codice Fiscale*</label>
+                    <lightning:inputField aura:id="codiceFiscaleRichiediGE" fieldName="Codice_Fiscale__c" class="label-hidden" variant="label-hidden" />
+                </lightning:layoutItem>
+
+                <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                    <label for="indirizzoRichiediGE" class="slds-form-element__label slds-no-flex">Indirizzo</label>
+                    <!--label-hidden non funziona per ShippingStreet -->
+                    <lightning:inputField aura:id="indirizzoRichiediGE" fieldName="ShippingStreet" class="label-hidden" variant="label-hidden"/>
+                </lightning:layoutItem>
+      
+                <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                    <label for="capRichiediGE" class="slds-form-element__label slds-no-flex">Cap</label>
+                    <lightning:inputField aura:id="capRichiediGE" fieldName="ShippingPostalCode" class="label-hidden" variant="label-hidden"/>
+                </lightning:layoutItem>
+
+                <div>
+                        <c:XCSProvinceComuniPicklist 
+                                                     enabledProvincia="true"  
+                                                     labelProvincia="Provincia"
+                                                     labelCitta="Località"
+                                                     provinciaSelezionata="{!v.provincia}"
+                                                     cittaSelezionata="{!v.citta}"
+                                                    
+                        />
+                </div>
+
+                <table>
+                    <div class="slds-m-top_small slds-m-bottom_small">*Se ditta individuale o libero professionista, inserire il codice fiscale.</div>
+                </table>
+
+                <table>
+                    <lightning:button class="slds-m-top_medium" variant="destructive" type="submit" name="update" label="Salva e Continua" />
+                    <div class="slds-p-top_small">
+                        <span class="slds-p-right_small">
+                            Non vuoi convenzionare questo dealer?
+                        </span>
+                        <span>
+                            <c:SFAConvenzionamentoBottoneAnnullaAttivita
+                                recordId="{!v.recordId}"
+                            />
+                        </span>
+                    </div>
+                </table>
+    
+            </lightning:layout>
+            
+        </lightning:recordEditForm>
+
+    </aura:if>
+       
+    <aura:if isTrue="{!v.step == 'NewDealerProspect_EsitaCase'}">
+        <div><b>Esita case</b></div>
+        <c:XCS_Disposition
+			recordId="{!v.recordId}"
+            parentExternalId="3127"
+            usesCategory="true"
+        />
+    </aura:if>
+
+</aura:component>

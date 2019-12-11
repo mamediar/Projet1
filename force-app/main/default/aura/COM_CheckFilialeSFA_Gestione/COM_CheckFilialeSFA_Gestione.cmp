@@ -1,0 +1,24 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" 
+                controller = "COM_CheckFilialeSFA" access="global" >
+
+    <aura:attribute name="selectedActivity" type="Object"/>
+    <aura:attribute name="recDatiPratica" type="Object"/>
+    <aura:attribute name="recDatiCarta" type="Object"/>
+    
+    <aura:attribute name="showSpinner" type="Integer" default="0" />    
+    
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    
+    
+    <aura:attribute name="NumPratica" type="String"/>
+    
+    
+    <div class="bold">
+        <lightning:formattedText value="Numero Pratica"/>
+    
+    </div>
+    
+    
+    
+</aura:component>

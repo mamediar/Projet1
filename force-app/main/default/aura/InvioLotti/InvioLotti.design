@@ -1,0 +1,6 @@
+<design:component>
+	<design:attribute name="recordId" label="Record ID" />
+    <design:attribute name="selectedRows" label="Lista Lotti Invio" />
+    <design:attribute name="isListEmpty" label="Is Empty" />
+    <design:attribute name="closeCase" label="Close Case" />
+</design:component>

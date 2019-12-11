@@ -1,0 +1,6 @@
+.THIS .slds-table thead th,
+.THIS .slds-is-sortable .slds-th__action:hover,
+.THIS .slds-is-sortable .slds-th__action:focus{
+color: #ffffff !important;
+background-color:#6a89e5 !important;
+}

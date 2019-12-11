@@ -1,0 +1,15 @@
+<aura:component   implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+    access="global"
+                controller="GD_UtilsClass">
+                
+	  <aura:attribute name="recordId" type="String"/>
+      <aura:attribute name="objectList" type="sObject[]" default='[]' />
+      <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    
+      <button class="slds-button slds-button_success" onclick="{!c.downloadCsv}">
+              <lightning:icon iconName="doctype:csv" size="small" />
+               Esportare
+      </button>
+
+</aura:component>

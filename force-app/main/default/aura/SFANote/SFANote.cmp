@@ -1,0 +1,36 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId"> <!--inherit recordId attribute-->
+
+  <aura:attribute name="note" type="Object" />
+  <aura:attribute name="simpleNote" type="Object" />
+  <aura:attribute name="noteError" type="String" />
+
+  <aura:handler event="force:refreshView" value="{! this }" action="{! c.reload }"/>
+
+  <force:recordData aura:id="noteEditor"
+    layoutType="FULL"
+    recordId="{!v.recordId}"
+    targetError="{!v.noteError}"
+    targetRecord="{!v.note}"
+    targetFields="{!v.simpleNote}"
+    fields="{!v.fields}"
+    mode="EDIT" />
+
+    <!-- Display Lightning Data Service errors, if any -->
+    <aura:if isTrue="{!not(empty(v.noteError))}">
+      <div class="recordError">
+        <ui:message title="Error" severity="error" closable="true">
+          {!v.noteError}
+        </ui:message>
+      </div>
+    </aura:if>
+
+    <aura:if isTrue="{! (v.simpleNote.Status == 'Closed')}">
+      <lightning:input aura:id="simpleNote" name="simpleNote" label="Note" disabled="true"
+        onblur="{!c.launchEvent}" value="{!v.simpleNote.Note__c}" required="false"/>
+      <aura:set attribute="else">
+        <lightning:input aura:id="simpleNote" name="simpleNote" label="Note" disabled="false"
+          onblur="{!c.launchEvent}" value="{!v.simpleNote.Note__c}" required="false"/>
+      </aura:set>
+    </aura:if>
+
+</aura:component>

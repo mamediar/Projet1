@@ -1,0 +1,9 @@
+.THIS .slds-form-element__control .slds-radio, .THIS .slds-form-element__control .slds-checkbox {
+    display: inline;
+}
+.THIS {
+    width:100%;
+}
+.THIS .cliente-background {
+    background-color: #d99290;
+}

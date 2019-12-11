@@ -1,0 +1,95 @@
+<aura:component controller="CRMRetentionPrestitiController" implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId,lightning:availableForFlowScreens" access="global">
+
+    
+    <aura:attribute name='recordId' type='String' />
+    <aura:attribute name='listaRetention' type='CRM_Retention__c[]' />
+    <aura:attribute name='listaRetentionSelected' type='CRM_Retention__c[]' />
+    <aura:attribute name='currentCase' type='Case' />    
+    <aura:attribute name='tableColumns' type='List'/>
+    <aura:attribute name='listTasso' type='List'/>
+    <aura:attribute name='listObiezione' type='List'/>   
+    <aura:attribute name='dataTableFlag' type='boolean' default="true"/>
+    <aura:attribute name='noteValue' type='String' />
+    <aura:attribute name='obiezioneSelezionata' type='String'/>
+    <aura:attribute name='tassoSelezionato' type='String' />
+    
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    <aura:handler event="c:XCS_DispositionReady" action="{!c.saveSelection}"/>
+    
+    <lightning:card title="Dare un esito ad ogni pratica">
+    <aura:if isTrue="{! v.dataTableFlag}" >
+        <div>
+            <lightning:datatable
+                                 class= "slds-cell-wrap"
+                                 id="DatatableId"
+                                 columns="{! v.tableColumns }"
+                                 data="{! v.listaRetention }"
+                                 keyField="id"
+                                 onrowselection="{! c.getSelected}"
+                                 />
+        </div>
+        <br/>
+    </aura:if>
+    <div class="slds-grid slds-gutters">
+        <div class="slds-col slds-size_2-of-12 tx-left"></div>
+        <div class="slds-col slds-size_4-of-12 tx-left">
+            <c:XCS_Disposition saveCase="false" 
+                       visibilityOption="{! v.currentCase.ProcessType__c }" 
+                       activateNoteField="false"
+                       parentExternalId="DP1098" 
+                       />
+        </div>
+        <div class="slds-col slds-size_6-of-12 tx-right"></div>
+    </div>
+    
+    <div class="slds-grid slds-gutters">
+        <div class="slds-col slds-size_2-of-12 tx-right"></div>
+        <div class="slds-col slds-size_2-of-12">
+            <lightning:select onchange="{!c.handleSelezionaTasso}" aura:id ="tassoSelezione" label="Comunicato tasso al cliente con Maggiorazione del" required="true">
+                <aura:iteration items="{!v.listTasso}" var="tasso">
+                    <option value="{!tasso.value}">{!tasso.label}</option>
+                </aura:iteration>    
+            </lightning:select>     
+        </div>
+        <div class="slds-col slds-size_8-of-12 tx-right"></div>
+    </div> 
+    <div class="slds-grid slds-gutters">
+        <div class="slds-col slds-size_2-of-12 tx-right"></div>
+        <div class="slds-col slds-size_2-of-12">
+            <lightning:select onchange="{!c.handleSelezionaObiezione}" aura:id ="obiezioneSelezione" label="Obiezione del cliente" required="true">
+                <aura:iteration items="{!v.listObiezione}" var="obiezione">
+                    <option value="{!obiezione.value}">{!obiezione.label}</option>
+                </aura:iteration>    
+            </lightning:select>     
+        </div>
+        
+        <div class="slds-col slds-size_8-of-12 tx-right"></div>
+    </div> 
+    <div class="slds-grid slds-gutters">
+        <div class="slds-col slds-size_2-of-12 tx-left"></div>
+        <div class="slds-col slds-size_4-of-12 tx-right">
+            <lightning:textarea aura:id="noteTextarea" 
+                                label="Note"
+                                value="{!v.noteValue}"
+                                required="false"
+                                maxlength="1000"/> 
+        </div>
+        <div class="slds-col slds-size_6-of-12 tx-right"></div>
+    </div>
+    <div class="slds-grid slds-gutters">
+        <div class="slds-col slds-size_2-of-12 tx-left"></div>
+        <div class="slds-col slds-size_4-of-12 tx-left">
+            <lightning:button variant="destructive" label="Indietro" title="indietro" onclick="{! c.indietroAttivita }"/>
+        </div>
+        <div class="slds-col slds-size_6-of-12 tx-right"></div>
+    </div>
+    <br/>
+    <div class="slds-grid slds-gutters">
+        <div class="slds-col slds-size_2-of-12 tx-left"></div>
+        <div class="slds-col slds-size_4-of-12 tx-left">
+            <lightning:button variant="destructive" label="Continua" title="avanti" onclick="{! c.completaAttivita }"/>
+        </div>
+        <div class="slds-col slds-size_6-of-12 tx-right"></div>
+    </div> 
+    </lightning:card>
+</aura:component>

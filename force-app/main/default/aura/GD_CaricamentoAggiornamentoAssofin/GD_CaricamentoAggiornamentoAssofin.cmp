@@ -1,0 +1,28 @@
+<aura:component controller="GD_Dealer_Isvap_Update_Assofin"
+    implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+    access="global">
+    <aura:attribute name="dataToUpdate" type="List" />
+    <aura:attribute type="List" name="data" />
+    <lightning:card>
+        <aura:set attribute="title">
+            Caricamento Aggiornamento Assofin
+        </aura:set>
+        <aura:set attribute="footer">
+            <!-- Destructive variant: Identifies a potentially negative action -->
+            <lightning:button aura:id="chiudi-btn" variant="destructive" label="Chiudi" title="Chiudi " disabled="true" onclick="{! c.handleChiudiClick }"/>
+            <!-- Success variant: Identifies a successful action -->
+            <lightning:button aura:id="carica-btn" variant="success" label="Carica" title="Carica" disabled="true" onclick="{! c.handleCaricaClick }"/>
+        </aura:set>
+        <div class="slds-m-bottom_x-small slds-p-left_x-small slds-p-right_x-small slds-p-top_small">
+            <input type="file" class="file" aura:id="fileInput" accept=".csv, .CSV" onchange="{! c.handleUpload }"/>    
+            <!-- <lightning:input 
+                name="fileUploader" 
+                aura:id="fileInput"
+                type="file" 
+                label="Upload CSV File" 
+                accept=".csv, .CSV" 
+                onchange="{! c.handleUpload }"/> -->
+        </div>
+    </lightning:card>
+    <lightning:spinner aura:id="csvSpinner" class="slds-hide" variant="brand" size="small"/>
+</aura:component>

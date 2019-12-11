@@ -1,0 +1,4 @@
+<aura:component>
+    <aura:attribute type="Account" name="filiale" default=""/>
+    {!filiale.Id}
+</aura:component>	

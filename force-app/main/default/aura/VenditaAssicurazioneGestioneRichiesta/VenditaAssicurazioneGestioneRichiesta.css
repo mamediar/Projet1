@@ -1,0 +1,11 @@
+.THIS .slds-button_icon-bare{
+    display: none !important;
+}
+
+.THIS.slds-text-heading_medium{
+    text-transform: capitalize;
+    font-size: 40px;    
+}
+ .THIS .side-content.visible{
+    width: 380px;
+}

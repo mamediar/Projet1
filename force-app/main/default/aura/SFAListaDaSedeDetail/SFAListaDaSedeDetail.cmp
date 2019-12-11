@@ -1,0 +1,44 @@
+<aura:component  implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+	
+    <!-- PARAMETERS FROM PARENT COMPONENT -->
+    <aura:attribute name="caseChildSelected" type="Object"/>
+    
+    <aura:attribute name="esitiList" type="Object" />
+    <aura:attribute name="answered" default="false" type="Boolean" />
+
+    <!--<aura:handler name="init" value="{!this }" action="{!c.init }"/>-->
+    
+	<div class="slds-box slds-theme_default slds-m-bottom_small">
+        
+        <div>
+            case selezionato
+        </div>
+        <hr></hr>
+        
+        <lightning:textarea name="note" label="Notes" />
+        
+    </div>
+    
+    <br/>
+    <br/>
+    
+    <aura:if isTrue="{!v.esitiList.length > 0}">
+        <div style="max-height: fit-content;">
+            <div class="slds-is-relative"><!--style="height: 500px"-->
+                <lightning:datatable
+                                     aura:id="table"
+                                     keyField="Id"
+                                     data="{!v.esitiList}"
+                                     columns="{!v.headerColumns}"
+                                     resizeColumnDisabled="true"
+                                     maxRowSelection="1"
+                                     autocomplete="off"/>
+                
+                <aura:if isTrue="{!v.showSpinner}">
+                    <lightning:spinner alternativeText="Loading" size="large"/>
+                </aura:if>
+            </div>
+        </div>
+    </aura:if>
+    
+</aura:component>

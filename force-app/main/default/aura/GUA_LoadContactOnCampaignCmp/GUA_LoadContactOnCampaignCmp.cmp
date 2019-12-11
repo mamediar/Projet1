@@ -1,0 +1,88 @@
+<!--
+  @Component Name       :  GUA_LoadContactOnCampaign.cmp
+  @Description          : 
+  @Created by           :  Aminata GUEYE
+  @Modified by          : SANA BADJI | Date :25/09/19
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0       22/09/2019               Aminata GUEYE               Initial Version
+-->
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" access="global"
+    controller="GUA_LoadContactOnCampaignCnt">
+    <aura:attribute name="newCampaign" type="Campaign" default="{ 'sobjectType':
+    'Campaign',
+    'Name': '',
+    'StartDate': '',
+    'EndDate': '',
+    'UAF_Script__c': '',
+    'UAF_DatiAggiuntivi__c': ''}" />
+    <aura:attribute type="String[]" name="headers" />
+    <aura:attribute type="String[]" name="dataToSave" />
+    <aura:attribute name="fileToBeUploaded" type="Object[]" />
+    <aura:attribute type="List" name="data" />
+    <aura:attribute type="Boolean" name="fileTypeError" default="false" />
+    <aura:attribute name="campaignId" type="String" />
+    <aura:handler event="c:GUA_ModifiaCampagnaEvent" action="{!c.setSelectedCampaign}" />
+    <div class="slds-m-around_x-small ">
+        <aura:if isTrue="{!v.campaignId!=null}">
+            <div class="slds-m-around_x-small">
+                <lightning:input aura:id="file" files="{!v.fileToBeUploaded}" class="file" type="file"
+                    label="Allega File" accept=".csv, .CSV" messageWhenValueMissing="File is
+                Mandatory" multiple="true" required="" />
+                <lightning:button variant="brand" label="Upload" onclick="{! c.handleUpload }" />
+                <lightning:button variant="success" aura:id="btn-escluso" disabled="true" label="Salvo"
+                    onclick="{! c.handleSave }" />
+            </div>
+            <div class="slds-m-around_x-small">
+                <lightning:button label="Annulla" onclick="{! c.handleAnnulla}" />
+            </div>
+        </aura:if>
+        <div class="slds-m-around_x-small " style="width:700px;margin-top:25px;">
+            <aura:if isTrue="{!v.campaignId==null}">
+                <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning" role="alert">
+                    <span class="slds-assistive-text">warning</span>
+                    <h2> Selezionare dalla lista un elemento da modificare.
+                    </h2>
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning:button aura:id="submit" iconName="utility:clear" type="submit" label="vai all'elenco"
+                        class="slds-m-top_medium slds-button slds-button_destructive" onclick="{!c.cancelField}" />
+                </div>
+            </aura:if>
+        </div>
+
+        <aura:if isTrue="{!v.fileTypeError == true}">
+            Wrong file type!
+            <aura:set attribute="else">
+                <div class="slds-scrollable_y slds-scrollable--x">
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                        <thead>
+                            <tr class="slds-text-heading--label slds-line-height_reset">
+                                <aura:iteration items="{!v.headers}" var="h">
+                                    <th>
+                                        {!h}
+                                    </th>
+                                </aura:iteration>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <aura:iteration items="{!v.data}" var="row">
+                                <tr class="slds-text-heading--label slds-line-height_reset">
+                                    <aura:iteration items="{!row}" var="cell">
+                                        <td class="slds-is-sortable slds-text-title--caps">
+                                            {!cell}
+                                        </td>
+                                    </aura:iteration>
+                                </tr>
+                            </aura:iteration>
+                        </tbody>
+                    </table>
+                </div>
+            </aura:set>
+        </aura:if>
+
+    </div>
+    <!-- </lightning:card> -->
+    <lightning:spinner aura:id="csvSpinner" class="slds-hide" variant="brand" size="small" />
+</aura:component>

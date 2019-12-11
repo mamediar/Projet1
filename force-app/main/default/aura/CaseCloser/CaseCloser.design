@@ -1,0 +1,6 @@
+<design:component>
+	<!-- INPUT -->
+	<design:attribute name="label" label="Label" />
+	<design:attribute name="variant" label="Variant" />    	
+    <design:attribute name="checkAttachments" label="Verifica Allegati" />
+</design:component>

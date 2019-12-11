@@ -1,0 +1,5 @@
+<aura:component extends="c:PVSubComponentBase"  controller='PV5864RESRecessoServiziInserimento' access='global'>
+    <!-- main -->
+    <lightning:card class='slds-form_stacked'>
+    </lightning:card> <!-- /main -->
+</aura:component>

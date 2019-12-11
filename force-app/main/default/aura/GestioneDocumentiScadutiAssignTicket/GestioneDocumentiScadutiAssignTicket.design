@@ -1,0 +1,10 @@
+<design:component>
+    
+    <design:attribute name="recordId" label="recordId"/>
+    <design:attribute name="esito" label="esito" />
+    <design:attribute name="idcliente" label="idcliente" />
+    <design:attribute name="testo" label="testo"/>
+    <design:attribute name="notaAssign" label="notaAssign"/>
+    <design:attribute name="disposition" label="disposition"/>
+    
+</design:component>

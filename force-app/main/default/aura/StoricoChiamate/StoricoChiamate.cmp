@@ -1,0 +1,26 @@
+<aura:component>
+    <!--aura:attribute name="retention" type="Object" default="'retention':{'retentionMessage': 'Cliente da trattenere BAD', 'retentionMotivation':'KO'}"/-->
+    <aura:attribute name="lastCallDate" type="String" default="01/12/2018"/>
+    <aura:attribute name="lastCallResult" type="String" default="Appuntamento Fissato"/>
+    <aura:attribute name="surveyResult" type="String" default="ND/ND/ND"/>
+    <aura:attribute name="storicoChiamate" type="Object"/>
+    <aura:attribute name="CaseRecord" type="Case"/>
+    <aura:attribute name="LastCase" type="Case"/>
+    <aura:handler name="change" value="{!v.CaseRecord}" action="{!c.onChangeCase}"/>
+
+	<lightning:card class="slds-card_boundary" title="Storico chiamate">
+    <c:SpinnerComponent aura:id="spinnerComponent"/>
+        <lightning:layout multipleRows="true">
+            <lightning:layoutItem size="6" padding="around-small">
+               <lightning:input type="date" name="LastCallDate" value="{!v.storicoChiamate.ultimaChiamata}" label="Ultima Chiamata" readonly="true">
+              </lightning:input>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="6" padding="around-small">
+                <lightning:input type="text" name="LastCallResult" label="Esito ultima chiamata" value="{!v.storicoChiamate.esitoUltimaChiamata}" readonly="true"/>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="6" padding="around-small">
+                <lightning:input type="text" name="SurveyResult" label="Risultato Survey" value="{!v.storicoChiamate.esitoSurvey}" readonly="true"/>
+            </lightning:layoutItem> 
+    </lightning:layout>
+    </lightning:card>
+</aura:component>

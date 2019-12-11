@@ -1,0 +1,71 @@
+<aura:component controller="EasyCMClass">
+    <aura:attribute name="CaseRecord" type="Case"/>
+    <aura:attribute name="datiCliente" type="Object"/>
+    <aura:attribute name="emailTemp" type="String"/>
+    <aura:attribute name="account" type="Object"/>
+   
+    <lightning:card title="Dati Cliente" iconName="standard:account" class="slds-card_boundary">
+        <aura:set attribute="actions">
+            <c:LinkEvo task="TK000003B1" codiceCliente="{!v.datiCliente.codCliente}" />
+        </aura:set>
+        <lightning:layout>
+            <lightning:layoutItem size="6">
+                <lightning:input type="text" class="slds-var-p-around_xxx-small" name="CodiceOCS" label="Codice OCS" value="{!v.datiCliente.codCliente}" readonly="true"/>
+                <lightning:input type="text" class="slds-var-p-around_xxx-small" name="Nome" label="Nome" value="{!v.datiCliente.nome}" readonly="true"/>
+                <lightning:input type="date" class="slds-var-p-around_xxx-small" name="DataNascita" label="Data di Nascita" value="{!v.datiCliente.dataNascita}" readonly="true" />    
+            </lightning:layoutItem>
+            <lightning:layoutItem size="6">
+                <lightning:input type="text" class="slds-var-p-around_xxx-small" name="CodiceFisc" label="Codice Fiscale" value="{!v.datiCliente.codFiscale}" readonly="true"/>
+                <lightning:input type="text" class="slds-var-p-around_xxx-small" name="Cognome" label="Cognome" value="{!v.datiCliente.cognome}" readonly="true"/>
+                <lightning:input type="text" class="slds-var-p-around_xxx-small" name="LuogoNascita" label="Luogo di Nascita" value="{!v.datiCliente.luogoNascita +'('+ v.datiCliente.provNascita +')'}" readonly="true"/>    
+        </lightning:layoutItem>
+        </lightning:layout>
+        
+        <lightning:badge label="Recapiti" class="slds-var-p-around_xx-small"/>
+
+        <lightning:layout>
+            <lightning:layoutItem size="12">
+                <lightning:input type="text" class="slds-var-p-around_xxx-small" name="EmailOCS" label="Email OCS" value="{!v.datiCliente.email}" readonly="true"/>
+            </lightning:layoutItem>
+        </lightning:layout>
+        <lightning:layout>
+                <lightning:layoutItem size="11">
+                    <lightning:input type="text" class="slds-var-p-around_xxx-small" name="EmailCRM" label="Email CRM" value="{!v.account.PersonEmail}" readonly="true"/>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="1">
+                    <lightning:buttonIcon iconName="utility:edit" class="editButton" variant="bare" onclick="{!c.openModal}" alternativeText="Modifica mail CRM"/>
+                </lightning:layoutItem>
+        </lightning:layout>
+        <lightning:layout>
+            <lightning:layoutItem size="6">
+                <lightning:input type="text" class="slds-var-p-around_xxx-small" name="Abitazione" label="Abitazione" value="{!v.datiCliente.telefonoCasa}" readonly="true"/>    
+            </lightning:layoutItem>
+            <lightning:layoutItem size="6">
+                <lightning:input type="text" class="slds-var-p-around_xxx-small" name="Cellulare" label="Cellulare" value="{!v.datiCliente.telCellulare}" readonly="true"/>    
+            </lightning:layoutItem>
+        </lightning:layout>
+        <lightning:input type="text" name="Fax" class="slds-var-p-around_xxx-small" label="Fax" value="{!v.datiCliente.telFax}" readonly="true"/>
+        <lightning:badge label="Indirizzi" class="slds-var-p-around_xx-small"/>
+        <lightning:layout>
+            <lightning:layoutItem size="12">
+                <lightning:input type="text" class="slds-var-p-around_xxx-small" name="Residenza" label="Residenza" value="{!v.datiCliente.indirizzo + ' ' + v.datiCliente.localita  +'('+ v.datiCliente.provincia +')'}" readonly="true"/>  
+            </lightning:layoutItem>
+        </lightning:layout>
+        <lightning:layout>
+            <lightning:layoutItem size="12">
+                <lightning:input type="text" class="slds-var-p-around_xxx-small" name="Domicilio" label="Domicilio" value="{!v.datiCliente.indirizzoDomicilio + ' ' + v.datiCliente.localitaDomicilio  +'('+ v.datiCliente.provinciaDomicilio +')'}" readonly="true"/>   
+            </lightning:layoutItem>
+        </lightning:layout>
+    </lightning:card>
+
+    <c:GenericPopUp class="smallPopUp" aura:id="editPopUp" isDirectional="true" isLarge="false" hasCloseIcon="true">
+    <lightning:layout horizontalAlign="center" multipleRows="true">
+        <lightning:input aura:id="emailDatiClienteCRM" name="newMailInput" label="Inserire nuovo indirizzo e-mail" value="{!v.emailTemp}" required="false" type="email" messageWhenPatternMismatch="formato e-mail non valido" pattern="^[a-zA-Z0-9._|\\%#~`=?&amp;\/$^*!}{+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$"/>
+    </lightning:layout>
+    <aura:set attribute="footer">
+        <lightning:button label="Annulla" onclick="{!c.closeModal}"/>
+        <lightning:button variant="brand" label="Salva" onclick="{!c.updateAccount}"/>
+    </aura:set>
+    </c:GenericPopUp>
+
+</aura:component>

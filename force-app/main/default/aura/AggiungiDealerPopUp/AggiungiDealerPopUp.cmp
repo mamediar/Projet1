@@ -1,0 +1,44 @@
+<aura:component implements="flexipage:availableForAllPageTypes" access="global" controller="AggiungiDealerPopUpControllerApex" >
+    <aura:attribute name="CIP_CF_PIVA" type="String"/>
+    <aura:attribute name="ragioneSociale" type="String"/>
+    <aura:attribute name="data" type="List"/>
+    <aura:attribute name="dealerColumns" type="List"/>
+    <aura:attribute name="spinnerCounter" type="Integer" default="0"/>
+    <aura:attribute name="dealerSelected" type="Account"/>
+
+    <aura:method name="openPopUp" action="{!c.openPopUp}" description="apertura del popup"/> 
+    <aura:method name="closePopUp" action="{!c.closePopUp}" description="chiusura del popup"/> 
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+
+    <c:GenericPopUp class="smallPopUp" aura:id="theStaticModal" title="Aggiungi nuovo dealer" isDirectional="true" isLarge="false" hasCloseIcon="true">
+        <lightning:card>  
+            <c:SpinnerComponent aura:id="spinnerComponent" spinnerCounter="{!v.spinnerCounter}"/>
+            <lightning:layout verticalAlign="center" multipleRows="true">
+                <lightning:layoutItem size="12"> 
+                    <lightning:layout verticalAlign="center">         
+                        <lightning:layoutItem size="4" padding="around-small">
+                            <lightning:input type="text" name="CIP_CF_PIVA" label="Ricerca per CIP/CF/PIVA" value="{!v.CIP_CF_PIVA}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem size="4" padding="around-small">
+                            <lightning:input type="text" name="ragioneSociale" label="Ricerca per Ragione Sociale" value="{!v.ragioneSociale}"/>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem size="4" padding="around-small" class="slds-m-top_large">
+                            <lightning:button label="Cerca Dealer" onclick="{!c.searchDealer}"/>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="12">
+                        <lightning:datatable
+                        keyField="id"
+                        data="{!v.data }"
+                        columns="{!v.dealerColumns }"
+                        selectedRows="{!v.dealerSelected}"
+                        maxRowSelection="1"
+                        onrowselection="{!c.selectDealer}"
+                        showRowNumberColumn="true"/>
+                </lightning:layoutItem>
+            </lightning:layout>
+        </lightning:card>
+    </c:GenericPopUp>
+
+</aura:component>

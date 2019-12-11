@@ -1,0 +1,151 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" controller="SinistriAssicurativiCtrl">
+    
+    
+    <aura:attribute name="sinistriList" type ="List"/>
+    <aura:attribute name="sinistriTableColunms" 
+                    type="List" 
+                    default="[{label: 'Nominativo Assicurato', fieldName: 'nominativo', type: 'text'},
+                             {label: 'Numero Pratica', fieldName: 'numeroPratica', type: 'text'},
+                             {label: 'Tipo Pratica', fieldName: 'tipoPratica', type: 'text'},
+                             {label: 'Data sinistro', fieldName: 'dataSinistro', type: 'date' },
+                             {label: 'Tipo sinistro', fieldName: 'tipoSinistro', type: 'text'},
+                             {label: 'Stato sinistro', fieldName: 'statoSinistro', type: 'text'},
+                             {label: 'Esito', fieldName: 'esito', type: 'text'},
+                             {label: 'Lettera preconvalida', fieldName: 'letteraPreconvalida__c', type: 'text'},
+                             {label: 'Piano ammortamento - E/C', fieldName: 'pianoAmmortamentoEC__c', type: 'text'},
+                             {label: 'Anomalie', fieldName: 'anomalie', type: 'text'}]"
+                    />
+    
+    <lightning:spinner aura:id="spinnerSearch" class="slds-hide"/>
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    
+    <div class="slds-grid slds-gutters slds-m-bottom--medium">
+        <div class="slds-col">
+        </div>
+        <div class="slds-col">
+            <h1>Filtri </h1>
+            <br/>
+            <lightning:select aura:id="stato"
+                              label = "Stato"   name = "stato">
+                
+                <!-- <aura:iteration items = "{!v.StatoList}" var="mod">
+            <option value = "{!mod}">{!mod}</option>
+        </aura:iteration> -->
+                <option value = "all">Tutti</option>
+                <option value = "openLast15" selected="selected">Aperti negli ultimi 15 giorni</option>
+                <option value = "closedLast15">Chiusi negli ultimi 15 giorni</option>
+                <option value = "openClosedLast15">Aperti e Chiusi negli ultimi 15 giorni</option>
+                <option value = "allOpen">Aperti - Tutti</option>
+                <option value = "allClosed">Chiusi - Tutti</option>
+            </lightning:select>
+        </div>
+        <div class="slds-col">
+            <br/>
+            <br/>
+            <lightning:input aura:id="numPratica" type="string" label="Numero Pratica" placeholder="numero pratica" name="numPratica" value=""/>
+        </div>
+        <div class="slds-col">
+            <br/><br/>
+            <div class="slds-p-top_x-small align_filter">
+                <lightning:button label="Filtra"  variant="brand" onclick="{!c.doFilter}"/>
+            </div>
+            
+        </div>
+        
+    </div> 
+    
+    
+    
+    
+    <div class="slds-m-top_large slds-m-right_large">
+        <button class="slds-button align_export_xls" onclick="{!c.downloadExcel}">
+            <lightning:icon iconName="doctype:excel" size="small" />
+            Esporta
+        </button>
+    </div>
+    
+    
+    
+    
+    
+    <!--
+     <div class="slds-col">
+            <div class="slds-m-top_large slds-m-right_large">
+                <button class="slds-button slds-button_success" onclick="{!c.downloadRtf}">
+                    <lightning:icon iconName="doctype:rtf" size="small" />
+                    Esporta rtf
+                </button>
+            </div>
+        </div>
+    -->
+    
+    
+    <br/>
+    <div class="slds-grid">
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+            <thead>
+                <tr class="slds-text-heading--label thcompass" >
+                    
+                    <th class="thcompass" scope="col">Nominativo Assicurato</th>
+                    <th class="thcompass" scope="col">Numero Pratica</th>
+                    <th class="thcompass" scope="col">Tipo Pratica</th>
+                    <th class="thcompass" scope="col">Data sinistro</th>
+                    <th class="thcompass" scope="col">Tipo sinistro</th>
+                    <th class="thcompass" scope="col">Stato sinistro</th>
+                    <th class="thcompass" scope="col">Esito</th>
+                    <th class="thcompass" scope="col">Lettera preconvalida</th>
+                    <th class="thcompass" scope="col">Piano ammortamento - E/C</th>
+                    <th class="thcompass" scope="col">Anomalie</th>
+                </tr>
+            </thead>
+            <tbody>
+                <aura:iteration items="{!v.sinistriList}" var="elem" indexVar="index">
+                    <tr class="slds-line-height_reset"  >
+                        <td class="" scope="col">{!elem.nominativo}</td>
+                        <td class="" scope="col">{!elem.numeroPratica}</td>
+                        <td class="" scope="col">{!elem.tipoPratica}</td>
+                        <td class="" scope="col">{!elem.dataSinistro}</td>
+                        <td class="" scope="col">{!elem.tipoSinistro}</td>
+                        <td class="" scope="col">{!elem.statoSinistro}</td>
+                        <td class="" scope="col">{!elem.esito}</td>
+                        <!--  <td class="" scope="col"><p onclick="{!c.downloadRtf}" id="preconvalida" value="{!elem.id}">Apri</p></td>  -->
+                        <td class="" scope="col">
+                            <aura:if isTrue="{!elem.anomalie ==''}">
+                                <div >
+                                    <button class="slds-button " onclick="{!c.downloadPreconvalidaRtf}" id="{!elem.id}" >
+                                        <lightning:icon iconName="doctype:rtf" size="small" />
+                                    </button>
+                                </div>
+                               
+                            </aura:if>
+                        </td>
+                        <td class="" scope="col">
+                            <aura:if isTrue="{!elem.anomalie ==''}">
+                                <div >
+                                    <button class="slds-button " onclick="{!c.downloadAmmortamentoRtf}" id="{!elem.id}" >
+                                        <lightning:icon iconName="doctype:rtf" size="small" />
+                                    </button>
+                                </div>
+                               
+                            </aura:if>
+                        </td>
+                        <td class="" scope="col">{!elem.anomalie}</td>
+                    </tr> 
+                </aura:iteration>
+            </tbody>
+        </table>
+    </div>
+    
+    
+    
+    <!--
+    
+    <lightning:datatable style="  white-space: normal!important; overflow-wrap: break-word!important; word-wrap: break-word!important;"
+                         data="{!v.sinistriList}"
+                         columns="{!v.sinistriTableColunms}"
+                         keyField="Id"
+                         maxRowSelection="1"
+                     hideCheckboxColumn="true"
+                         showRowNumberColumn="false"
+                         resizeStep="20" />  -->
+</aura:component>

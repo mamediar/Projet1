@@ -1,0 +1,6 @@
+<!--
+ - Created by PC on 3/26/2019.
+ -->
+
+<aura:event type="APPLICATION" description="eventNavigateToAssicurativo">
+</aura:event>

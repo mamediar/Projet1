@@ -1,0 +1,66 @@
+<!--
+  @Component Name     : PV3267VariazioneIndirizzi.cmp
+  @Description        : 
+  @Author             : Raffaele Prudenzano
+  @Group              : 
+  @Last Modified By   : Raffaele Prudenzano
+  @Last Modified On   : 11/11/2019,  09:43:00
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    2019-11-11 09:43:00   Raffaele Prudenzano     Initial Version
+-->
+
+<aura:component extends="c:PVSubComponentBase" access="global" controller="PV3267VariazioneIndirizzi">
+
+    <aura:handler name="change" value="{!v.PVForm.cliente.codCliente}" action="{!c.recuperaIndirizziCliente}" />
+    <aura:attribute name="thisIndirizzo" type="List" />
+    <aura:attribute name="OCSIndirizzi" type="OCSIndirizzo[]" />
+    <aura:attribute name="OCSIndirizzoSelezionato" type="OCSIndirizzo" />
+
+
+    <aura:attribute name="OCSColumns" type="List" default="[{label: 'Tipo', fieldName: 'tipoIndirizzo', type: 'text'},
+        {label: 'Indirizzo', fieldName: 'indirizzo', type: 'text', initialWidth: 200 },
+        {label: 'CAP', fieldName: 'cap', type: 'text'},
+        {label: 'Località', fieldName: 'localita', type: 'text', initialWidth: 200 },
+        {label: 'Provincia', fieldName: 'provincia', type: 'text'}]" />
+
+    <div class="slds-box slds-box_xx-small slds-text-align_center  slds-theme_info slds-text-heading_small">
+        INDIRIZZI</div>
+    <lightning:datatable class="table-pv" data="{!v.OCSIndirizzi}" columns="{!v.OCSColumns}" keyField="tipoIndirizzo"
+        maxRowSelection="1" showRowNumberColumn="false" onrowselection="{!c.selectIndirizzo}" />
+
+    <!-- TABELLA DI VARIAZIONE INDIRIZZO -->
+
+    <aura:if isTrue="{!v.OCSIndirizzi.length>0}">
+
+        <div class="slds-box slds-box_xx-small slds-text-align_center  slds-theme_info slds-text-heading_small">
+            VARIAZIONE</div>
+        <div class="slds-grid slds-gutters slds-m-bottom--medium">
+            <!-- indirizzo cap -->
+            <!-- provincia -->
+            <!-- localita -->
+
+            <div class="slds-col">
+                <lightning:input type="string" label="Indirizzo" name="indirizzo"
+                    value="{!v.thisIndirizzo.indirizzo}" />
+                <lightning:input type="string" label="Provincia" name="provincia"
+                    value="{!v.thisIndirizzo.provincia}" />
+                <lightning:button label="Normalizza" class="slds-m-top--medium" variant="destructive"
+                    onclick="{!c.normalizza}" />
+            </div>
+            <div class="slds-col">
+                <lightning:input type="string" label="CAP" name="cap" value="{!v.thisIndirizzo.cap}" />
+                <lightning:input type="string" label="Località" name="localita" value="{!v.thisIndirizzo.localita}" />
+                <lightning:button label="Cancella" class="slds-m-top--medium" variant="neutral"
+                    onclick="{!c.cancella}" />
+            </div>
+
+        </div>
+    </aura:if>
+
+</aura:component>
+
+<!-- selectedRows="{!v.idOCSClienteSelezionato}" onrowselection="{!c.selectCliente}"  -->
+<!-- <lightning:button label="Cerca" class="slds-m-top-\-medium" variant="destructive" onclick="{!c.recuperaIndirizziClienteController}" /> -->

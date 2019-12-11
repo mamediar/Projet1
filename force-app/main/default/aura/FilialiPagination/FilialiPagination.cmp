@@ -1,0 +1,23 @@
+<aura:component >
+    <aura:attribute name="objectList" type="sObject[]" />
+    <!-- ATTRIBUTI RELATIVI ALLA PAGINAZIONE -->
+    <aura:attribute name="paginationList" type="sObject[]" default='[]' />
+    <aura:attribute name="totalPage" type="Integer" default="1" />
+    <aura:attribute name="currentPage" type="Integer" default="1" />
+    <aura:attribute name="totalRecord" type="integer" default="0" />
+    <aura:attribute name="pages" type="integer[]" />
+    <aura:attribute name="pageSize" type="Integer" default="5" />
+    <aura:attribute name="start" type="Integer" default="0" />
+    <aura:attribute name="end" type="Integer" default="0" />
+    <div class="slds-grid slds-wrap">
+        <div class="slds-col slds-size_1-of-1 slds-large-size_3-of-3 " style="text-align:center;font-size:14px">
+            <p class="slds-truncate" id="paginazione">Risultati {!v.currentPage} - {!v.totalPage} Pagine</p><!-- Record totali: {!v.totalRecord}</p> -->
+        </div>
+        <div style="width:100%!Important" class="slds-col slds-size_1-of-1 slds-large-size_3-of-3 stylePag">
+            <lightning:button class="slds-button slds-button_brand buttonPage"  onclick="{!c.goFirstPage}" disabled="{!0 >= v.start}"  label="Prima Pagina"/>  
+            <lightning:button class="slds-button slds-button_brand arrow" onclick="{!c.previousPage}"  disabled="{!0 >= v.start}" label="&lt;" />
+            <lightning:button aura:id="nextbtn" class="slds-button slds-button_brand arrow"  onclick="{!c.nextPage}" disabled="{!v.end >= v.totalRecord-1}" label="&gt;"/>
+            <lightning:button onclick="{!c.goLastPage}" class="slds-button slds-button_brand buttonPage"  disabled="{!v.end >= v.totalRecord-1}" label="Ultima Pagina" />
+        </div>
+    </div>
+</aura:component>

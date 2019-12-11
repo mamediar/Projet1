@@ -1,0 +1,31 @@
+.THIS .input-datetime{
+    width:100%;
+}
+
+.THIS .date-time{
+
+    padding: 0% !important;
+    display: inline-block !important;
+}
+
+.THIS .slds-form-element{
+
+    padding: 0% !important;
+}
+
+.THIS .slds-form_horizontal{
+
+    padding: 0% !important;
+}
+
+.THIS .slds-form-element__control{
+
+    padding: 0% !important;
+}
+
+.THIS .apputamento_quezione{
+
+    margin-bottom: 1%;
+    color: #9B111E;
+    font-size: large !important;
+}

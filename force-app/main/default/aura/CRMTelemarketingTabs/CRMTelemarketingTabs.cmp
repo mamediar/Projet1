@@ -1,0 +1,51 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId" access="global">
+        <aura:handler event="c:eventTelemarketingForPV" action="{!c.switchTab}"/>
+        <lightning:workspaceAPI aura:id="workspace" />
+        <aura:handler event="c:eventTelemarketingForTab" action="{!c.closeTab}"/>
+    <force:recordData aura:id="case" recordUpdated="{!c.init}" recordId="{!v.recordId}" fields="Account.Name, AccountId, Disposition__r.Name, Disposition__r.External_Id__c, CampaignId__c,CampaignId__r.ProductCode__c, CampaignId__r.ActionCode__c, CampaignId__r.TMKProductCode__c, CampaignId__r.CodPromotion__c, CampaignId__r.RecordType.Name,CampaignId__r.RecordTypeId, CampaignId__r.StartDate, CampaignId__r.EndDate, ActivityType__c" targetFields="{!v.CaseRecord}" targetError="{!v.recordLoadError}"/>
+    <aura:attribute name="CaseRecord" type="Object" />
+        <aura:attribute name="recordId" type="String"/>
+        <aura:attribute name="idTab" type="String"/>
+        <aura:attribute name="dispPresel1" type="String"/>
+        <aura:attribute name="dispPresel2" type="String"/>
+        <aura:attribute name="dispPresel3" type="String"/>
+        <aura:attribute name="dispPresel4" type="String"/>
+    	<aura:attribute name="rifiutaChiamata" type="boolean" default="false"/>
+        <aura:attribute name="checkboxAttribute" type="String"/>
+        <aura:attribute name="spinnerClass" type="String" default=""/>
+        <!--
+        <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}"/>
+        <aura:handler event="aura:waiting" action="{!c.showSpinner}"/>
+        -->
+        <aura:handler event="ltng:sendMessage" action="{!c.hideSpinner}"/>
+        <aura:if isTrue="{!v.CaseRecord.ActivityType__c == 'TMKCC'}">
+            <div class="{!v.spinnerClass}">
+                <lightning:spinner alternativeText="Loading" size="large" aura:id="spinner" />
+            </div>
+        </aura:if>
+        <lightning:tabset class="tabset slds-tabs_card uiTabset--base uiTabset--default uiTabset--dense uiTabset flexipageTabset" selectedTabId="{!v.idTab}">
+            <lightning:tab  label="Script Chiamata" id="scriptChiamata">
+                <c:CRMTelemarketingScriptChiamata recordId="{!v.recordId}" 
+                                                    idTab="{!v.idTab}"
+                                                    checkboxAttribute="{!v.checkboxAttribute}"
+                                                    dispPresel1="{!v.dispPresel1}"
+                                                    dispPresel2="{!v.dispPresel2}"
+                                                    dispPresel3="{!v.dispPresel3}"
+                                                    dispPresel4="{!v.dispPresel4}"
+                                                  rifiutaChiamata="{!v.rifiutaChiamata}"/>
+            </lightning:tab>
+            <lightning:tab label="Esita Chiamata" id="esitaChiamata">
+                <c:XCS_DispositionForAppBuilder  hideLevel1="true" hideLevel2="{!v.rifiutaChiamata}" recordId="{!v.recordId}" rootExternalId="DP1178" 
+                                                showScript="true"
+                                                observedAttribute="{!v.checkboxAttribute}" 
+                                                disposition1Preselection="{!v.dispPresel1}"
+                                                disposition2Preselection="{!v.dispPresel2}"
+                                                disposition3Preselection="{!v.dispPresel3}"
+                                                disposition4Preselection="{!v.dispPresel4}"/>
+            </lightning:tab>
+            <lightning:tab label="Gestione Obiezioni" id="gestioneObiezioni">
+                <c:CRMTelemarketingGestioneObiezioni recordId="{!v.recordId}"/>
+            </lightning:tab>
+            </lightning:tabset>
+
+</aura:component>

@@ -1,0 +1,95 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:lightningQuickAction,force:hasRecordId" controller="GUA_Dettaglio_FilialeCnt">
+    <aura:attribute name="recordId" type="String" default="" />
+    <aura:attribute name="case" type="Case" default="{ 'sobjectType' : 'Case' }" />
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    <aura:attribute type="List" name="userDealerList" default="" />
+    
+    
+    <!-- <aura:if isTrue="{!v.case.Id!=null}"> -->
+    
+    
+    
+    <lightning:card title="Riepilogo" variant="base">
+        <div class="slds-card__body_inner">
+            <lightning:layout>
+                <lightning:layoutItem size="6" class="slds-m-around_xxx-small">
+                    <div class="slds-p-around_xxx-small slds-text-heading_medium slds-m-bottom_small" style="text-align:center;background-color:#9f201c;color:#fff;">
+                        Dati Chiamata
+                    </div>
+                    <lightning:layout>
+                        <lightning:layoutItem size="6">
+                            <div class="slds-form-element   "><span class="slds-form-element__label">Numero Chiamato:</span>
+                                <div class="slds-form-element__control"><span class="slds-form-element__static"></span></div>
+                            </div>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem size="6">
+                            <div class="slds-form-element   "><span class="slds-form-element__label">Numero Chiamante:</span>
+                                <div class="slds-form-element__control"><span class="slds-form-element__static"></span></div>
+                            </div>
+                        </lightning:layoutItem>
+                    </lightning:layout> 
+                    <lightning:layout>
+                        <lightning:layoutItem size="6">
+                            <div class="slds-form-element   "><span class="slds-form-element__label">Codice Digitato:</span>
+                                <div class="slds-form-element__control"><span class="slds-form-element__static"></span></div>
+                            </div>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem size="6">
+                            <div class="slds-form-element   "><span class="slds-form-element__label">Navigazione IVR:</span>
+                                <div class="slds-form-element__control"><span class="slds-form-element__static"></span></div>
+                            </div>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="3" class="slds-m-around_xxx-small">
+                    <div class="slds-p-around_xxx-small slds-text-heading_medium slds-m-bottom_small" style="text-align:center;background-color:#9f201c;color:#fff;">
+                       Informazioni Filiale
+                    </div>
+                    <div class="slds-form-element   "><span class="slds-form-element__label">Filiale:</span>
+                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.case.Name}</span></div>
+                    </div>
+                    <div class="slds-form-element   "><span class="slds-form-element__label">Area:</span>
+                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.case.ShippingStreet}</span></div>
+                    </div>
+                    <div class="slds-form-element   "><span class="slds-form-element__label">Regione:</span>
+                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.case.ShippingCity}</span></div>
+                    </div>
+                    <div class="slds-form-element   "><span class="slds-form-element__label">Capo Filiale:</span>
+                        <div class="slds-form-element__control"><span class="slds-form-element__static"></span></div>
+                    </div>
+                    <div class="slds-form-element   "><span class="slds-form-element__label">Coordinatore:</span>
+                        <div class="slds-form-element__control"><span class="slds-form-element__static"></span></div>
+                    </div>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="3" class="slds-m-around_xxx-small">
+                    <div class="slds-p-around_xxx-small slds-text-heading_medium slds-m-bottom_small" style="text-align:center;background-color:#9f201c;color:#fff;">
+                       Recapiti
+                    </div>
+                    <div class="slds-form-element   "><span class="slds-form-element__label">Filiale di Riferimento:</span>
+                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.case.Branch__r.Name}</span></div>
+                    </div>
+                    <div class="slds-form-element   "><span class="slds-form-element__label">Indirizzo:</span>
+                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.case.Branch__r.Address_Abbr_Sms__c}</span></div>
+                    </div>
+                    <div class="slds-form-element   "><span class="slds-form-element__label">Tefeno:</span>
+                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.case.Phone}</span></div>
+                    </div>
+                    <div class="slds-form-element   "><span class="slds-form-element__label">Fax:</span>
+                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.case.Fax}</span></div>
+                    </div>
+                    <div class="slds-form-element   "><span class="slds-form-element__label">Email:</span>
+                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.case.PersonEmail}</span></div>
+                    </div>
+                    <div class="slds-form-element   "><span class="slds-form-element__label">Capo Filiale:</span>
+                        <div class="slds-form-element__control"><span class="slds-form-element__static"></span></div>
+                    </div>
+                    <div class="slds-form-element   "><span class="slds-form-element__label">Unità Affari:</span>
+                        <div class="slds-form-element__control"><span class="slds-form-element__static"></span></div>
+                    </div>
+                </lightning:layoutItem>
+            </lightning:layout>
+        </div>
+    </lightning:card>
+    
+    <!-- </aura:if> -->
+</aura:component>

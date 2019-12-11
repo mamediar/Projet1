@@ -1,0 +1,141 @@
+<apex:page controller="SinistriAssicurativiCtrl" contentType="application/msword#{!titlePreconvalida}.doc">
+  
+    <html>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <div>
+           <apex:image id="theImage" url="https://compass--dev--c.cs109.content.force.com/servlet/servlet.ImageServer?id={!idDocumento}&oid={!idOrganizzazione}" width="350" height="200" />
+           <div>
+               
+               <div style="width: 20%; float:right;text-align:right;padding-right:5%;">
+                     Spett.le 
+               
+                <br/>
+                Metlife Europe d.a.c.
+		       <br/> Via Andrea Vesalio, 6
+		        <br/>00161 ROMA
+
+               <!-- {!subject}-->
+               </div>
+            </div>
+            
+          
+            <br/>
+            <br/>
+            <div tyle="margin-top:20%;">
+                {!datePreconvalida}  
+            </div>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            
+        </div>
+        <div style='font-weight:bold;'>
+            Oggetto: contratto n. {!contractNumber}  (polizza  {!polizza}     ; decorrenza {!decorrenza}; cliente {!cliente}).
+        </div>
+        <br/>
+      
+        <br/>
+        <div>
+            <apex:outputText rendered="{!tipo=='PII'}"> 
+                <p  style="text-indent: 2em;font-size:12pt;text-align: justify;">
+                    In allegato alla presente, a seguito della denuncia del sinistro per {!tipo}      
+                    dell&#39; assicurato del {!dateAssicurato}, copia del piano di ammortamento dell&#39;emarginato contratto.
+                </p>
+                <br/>
+                <br/>
+                <p  style="text-indent: 2em;font-size:12pt;text-align: justify;">
+                    Vogliate cortesemente valutare l&#39;esistenza dei presupposti necessari per la liquidazione del debito residuo in linea capitale alla data  del sinistro; tale importo &egrave; stato quantificato in {!importo}  	&euro;.
+                </p>
+                <br/>
+            </apex:outputText>
+            
+            <apex:outputText rendered="{!tipo=='DC'}">
+                <p  style="text-indent: 2em;font-size:12pt;text-align: justify;">
+                    In allegato alla presente, a seguito della denuncia del sinistro per {!tipo}   
+                    dell&#39; assicurato del {!dateAssicurato}, copia del piano di ammortamento dell&#39;emarginato contratto.
+                </p>
+                <br/>
+                <br/>
+                <p style="text-indent: 2em;font-size:12pt;text-align: justify;">
+                    Vogliate cortesemente valutare l&#39;esistenza dei presupposti necessari per la liquidazione del debito residuo in linea capitale alla data  del sinistro; tale importo &egrave; stato quantificato in {!importo}  	&euro;.
+                </p>
+            </apex:outputText>
+            <apex:outputText rendered="{!tipo=='RO'}">
+                <p style="text-indent: 2em;">
+                    In allegato alla presente, a seguito della denuncia del sinistro per {!tipo}  dell&#39;assicurato del {!dateAssicurato}, copia del piano di ammortamento dell&#39;emarginato contratto.
+                </p>
+                <br/>
+                <br/>
+                <p style="text-indent: 2em;font-size:12pt;text-align: justify;">
+                    Vogliate cortesemente valutare l&#39;esistenza dei presupposti necessari per la liquidazione del previsto indennizzo assicurativo; importo rata mensile euro {!rata}.
+                    
+                </p>
+                
+            </apex:outputText>
+            
+            <apex:outputText rendered="{!tipo=='ITT'}">
+                <p style=" text-indent: 50px;font-size:12pt;text-align: justify;">
+                    In allegato alla presente, a seguito della denuncia del sinistro per {!tipo}  dell&#39;assicurato del {!dateAssicurato}, copia del piano di ammortamento dell&#39;emarginato contratto.
+                </p>
+                <br/>
+                <br/>
+                <p style="text-indent: 2em;font-size:12pt;text-align: justify;">
+                    Vogliate cortesemente valutare l&#39;esistenza dei presupposti necessari per la liquidazione del previsto indennizzo assicurativo; importo rata mensile euro {!rata}.
+                </p>
+                
+            </apex:outputText>
+            <apex:outputText rendered="{!tipo=='IPT'}"> 
+                <p  style="text-indent: 2em;font-size:12pt;text-align: justify;">
+                    In allegato alla presente, a seguito della denuncia del sinistro per {!tipo}      
+                    dell&#39; assicurato del {!dateAssicurato}, copia del piano di ammortamento dell&#39;emarginato contratto.
+                </p>
+                <br/>
+                <br/>
+                <p  style="text-indent: 2em;font-size:12pt;text-align: justify;">
+                    Vogliate cortesemente valutare l&#39;esistenza dei presupposti necessari per la liquidazione del debito residuo in linea capitale alla data  del sinistro; tale importo &egrave; stato quantificato in {!importo}  	&euro;.
+                </p>
+                <br/>
+            </apex:outputText>
+             <apex:outputText rendered="{!tipo=='MG'}"> 
+                <p  style="text-indent: 2em;font-size:12pt;text-align: justify;">
+                    In allegato alla presente, a seguito della denuncia del sinistro per {!tipo}      
+                    dell&#39; assicurato del {!dateAssicurato}, copia del piano di ammortamento dell&#39;emarginato contratto.
+                </p>
+                <br/>
+                <br/>
+                <p  style="text-indent: 2em;font-size:12pt;text-align: justify;">
+                    Vogliate cortesemente valutare l&#39;esistenza dei presupposti necessari per la liquidazione del debito residuo in linea capitale alla data  del sinistro; tale importo &egrave; stato quantificato in {!importo}  	&euro;.
+                </p>
+                <br/>
+            </apex:outputText>
+            
+            <p  style="text-indent: 2em;font-size:12pt;text-align: justify;">
+                Restando a Vostra disposizione per ogni ulteriore chiarimento, cogliamo l&#39;occasione per porgervi i nostri pi&ugrave;  cordiali saluti.
+                
+            </p>            
+            <br/><br/>
+            <p style="text-align:right;font-size:12pt;font-weight:bold;">
+                  Compass Banca S.p.A.
+            </p>
+          
+            
+            
+        </div>
+        
+       
+     
+       
+      
+        <br/>  <br/>
+        <br/>  <br/>
+        <br/> <br/>
+        <div >
+            <p style="position:absolute;bottom:0;text-align: justify;color:#a0a0a0;font-size:8pt;">
+                Compass Banca S.p.A. - Sede Legale e Direzione Generale: Via Caldera, 21 - 20153 Milano – Telefono 02 72 132.1 - Fax 02 72 132 374 - www.compass.it - Capitale euro 587.500.000 i.v.; Codice Fiscale, Partita IVA e Numero di Iscrizione nel Registro delle Imprese di Milano: 00864530159; Banca iscritta all&#39;Albo delle Banche e appartenente al Gruppo Bancario Mediobanca iscritto all&#39;Albo dei Gruppi Bancari. Iscritta all&#39;Albo degli Intermediari Assicurativi tenuto dall&#39;IVASS: D000203141 sez. D del RUI; Aderente al Fondo Interbancario di Tutela dei Depositi; Socio unico, direzione e coordinamento: Mediobanca S.p.A.. Associata ABI Associazione Bancaria Italiana – Associata ASSOFIN Associazione Italiana del Credito al Consumo e Immobiliare   
+            </p> 
+        </div>
+        
+        
+    </html>
+</apex:page>

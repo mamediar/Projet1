@@ -1,0 +1,198 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" controller="GD_PersonAccountRecordIvassController">
+    <aura:attribute name="userInfo" type="user" />
+    <aura:attribute name="ripostaList" type="List" />
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="myText" type="String" />
+    <aura:attribute name="textPersonAccount" type="String" />
+    <aura:attribute name="selectOpt" type="String" />
+    <aura:attribute name="showTextArea" type="Boolean" default="false" />
+    <aura:attribute name="showTable" type="Boolean" default="false" />
+    <aura:attribute name="showModal1" type="Boolean" default="false" />
+    <aura:attribute name="showModal2" type="Boolean" default="false" />
+    <aura:attribute name="showSpinner" type="Boolean" default="false" />
+    <aura:attribute name="requiredSavePA" type="Boolean" default="false" />
+    <aura:attribute name="personAccountObj" type="Account" />
+    <aura:attribute name="personAccountObjClone" type="Account" />
+    <aura:attribute name="courseIscritti" type="IVASS_Dealer_courses_Iscritti__c[]" />
+    <aura:attribute name="courseScriptOptList" type="IVASS_Dealer_courses_script_option__c[]" />
+    <aura:attribute name="optionRisposta" type="IVASS_Dealer_courses_script_risp__c[]" />
+    <aura:attribute name="notesForPA" type="Note[]" />
+    <aura:attribute name="myIscritto" type="String" />
+    <aura:handler name='init' value='{!this}' action='{!c.doInit}' />
+
+    <aura:if isTrue="{!v.courseIscritti.length > 0}">
+        <article class="slds-card">
+            <div class="slds-card__body slds-card__body_inner">
+                <div class="slds-grid slds-gutters slds-grid_vertical">
+                    <div class="slds-col">
+                        <span>Buongiorno, sono... e chiamo per conto della società Compass in
+                        merito ai corsi di formazione previsti dal Regolamento Ivass
+                        necessari per la vendita dei prodotti assicurativi. Posso parlare
+                        con il/la Sig./Sig.ra {! v.personAccountObj.Name} ( cod.
+                        fiscale : {! v.personAccountObj.Codice_Fiscale__c}   
+                        <aura:if isTrue="{!v.personAccountObj.PersonBirthdate}">
+                           - data nascita: {! v.personAccountObj.PersonBirthdate} 
+                        </aura:if>
+                        ) che risulta essere il referente IVASS per questa
+                        società {! v.personAccountObj.Denominazione_Azienda__c} 
+                    </span>
+                    </div>
+                    <div class="slds-col">
+                        <span>
+                        <lightning:combobox
+                            name="progress"
+                            value="inProgress"
+                            placeholder="Seleziona un valore"
+                            options="{! v.ripostaList }"
+                            onchange="{! c.handleRisposta }"/>
+                    </span>
+                    </div>
+                </div>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col">
+                        <br/>
+                        <button class="slds-button slds-button_brand" onclick="{!c.openModal1}">Aggiungi nota operativa</button>
+                        <button class="slds-button slds-button_brand" onclick="{!c.openModal2}">Mostra note operative</button>
+                    </div>
+                </div>
+                <aura:if isTrue="{!v.showTable}">
+                    <footer class="slds-card__footer">
+                        <div>
+                            <table class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols slds-table_col-bordered">
+                                <thead>
+                                    <tr class="slds-line-height_reset">
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate"></div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title="CORSO">CORSO</div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title="STATO">STATO</div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title="TEMPO TOTALE">TEMPO TOTALE</div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title="ESITO CONTATTO">ESITO CONTATTO</div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title="NOTE PRESIDIO">NOTE PRESIDIO</div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title="ULTIMO ACESSO">ULTIMO ACESSO</div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title="DATA TERMINE">DATA TERMINE</div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <aura:iteration items="{!v.courseIscritti}" var="iscritto">
+                                        <tr class="slds-hint-parent">
+                                            <th scope="iscritto">
+                                                <ui:inputRadio aura:id="rowSelectionCheckboxId" value="false" text="{!iscritto.Name}" name="others" change="{!c.onGroup}" />
+                                            </th>
+                                            <td>
+                                                <div class="slds-truncate" title="{!iscritto.Corso__r.Name}">{!iscritto.Corso__r.Name}</div>
+                                            </td>
+                                            <td>
+                                                <div class="slds-truncate" title="{!iscritto.Stato_Corso__c}">{!iscritto.Stato_Corso__c}</div>
+                                            </td>
+                                            <td>
+                                                <div class="slds-truncate"></div>
+                                            </td>
+                                            <td>
+                                                <div class="slds-truncate"></div>
+                                            </td>
+                                            <td>
+                                                <div class="slds-truncate"></div>
+                                            </td>
+                                            <td>
+                                                <div class="slds-truncate">
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="slds-truncate">
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </aura:iteration>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div>
+                            <lightning:accordion aura:id="accordion">
+                                <aura:iteration items="{!v.courseScriptOptList}" var="item">
+                                    <lightning:accordionSection name="{!item.Id}" label="{!item.User_question__c}" class="textColorRisposta">
+                                        <p style="color : #161515;">
+                                            <aura:unescapedHtml value="{!item.Answer__c}" />.</p>
+                                    </lightning:accordionSection>
+                                </aura:iteration>
+                            </lightning:accordion>
+                        </div>
+                    </footer>
+                </aura:if>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col">
+                        <br/>
+                        <br/>
+                        <aura:if isTrue="{!v.showTextArea}">
+                            <button class="slds-button slds-button_brand" onclick="{!c.saveRispostaSelected}" disabled="{!v.requiredSavePA}">salvare</button>
+                        </aura:if>
+                    </div>
+                </div>
+            </div>
+
+        </article>
+        <br/>
+        <!-- Modal 1 -->
+        <aura:if isTrue="{!v.showModal1}">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="{!c.closeModal1}">
+                        X
+                        <span class="slds-assistive-text">Close</span>
+                         </button>
+                        <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Aggiungi nota operativa</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <lightning:textarea name="textarea-id-01" label="Aggiungi testo" value="{!v.myText}" />
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_brand" onclick="{!c.savenote}">salvare</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </aura:if>
+        <!-- Modal 2 -->
+        <aura:if isTrue="{!v.showModal2}">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="{!c.closeModal2}">
+                        X
+                        <span class="slds-assistive-text">Close</span>
+            </button>
+                        <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Note operative</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <div class="slds-grid slds-grid_vertical">
+                            <aura:iteration items="{!v.notesForPA}" var="item">
+                                <div class="slds-col">
+                                    <span>{!item.CreatedDate} : {!item.Body}</span>
+                                </div>
+                            </aura:iteration>
+                        </div>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_brand" onclick="{!c.closeModal2}">Chuidi</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </aura:if>
+    </aura:if>
+</aura:component>

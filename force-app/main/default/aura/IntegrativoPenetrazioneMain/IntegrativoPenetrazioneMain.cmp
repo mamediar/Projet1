@@ -1,0 +1,19 @@
+<aura:component controller="IntegrativoPenetrazioneCnt" implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+                access="global">
+    
+<aura:attribute name="dataIntervistaList" type="Intervista_integrativo__c[]" />
+<aura:attribute name="paginationList" type="Intervista_integrativo__c[]" />
+<aura:attribute name="intervistaPenetrazioneList" type="Intervista_integrativo__c[]" />
+<aura:attribute name="customSettings" type="COM_Comodity_Questionario__c[]" />
+<aura:attribute name="productsLimites" type="Map" default='{}'/>
+<aura:attribute name='curDate' type='Datetime' />
+<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+<aura:attribute name="filterList" type="String" default='[]' />
+<aura:attribute name="limitedIntermediario" type="String[]" default='[]' />
+<!-- <aura:handler action="{!c.doInit}" event="c:eventNavigateToIntervista"/>  -->
+<aura:handler action="{!c.doInit}" event="c:eventNavigateToIntervistaPenetrazione"/> 
+<aura:handler action="{!c.navigateToIntervistaPenetrazioneDetails}" event="c:eventNavigateToIntervistaPenetrazioneDetails"/> 
+<aura:handler action="{!c.navigateToEsclusioni}" event="c:eventNavigateToEsclusioni"/> 
+
+    {!v.body}
+</aura:component>

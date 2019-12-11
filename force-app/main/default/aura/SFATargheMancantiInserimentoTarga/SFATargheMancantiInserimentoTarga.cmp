@@ -1,0 +1,70 @@
+<aura:component controller="SFATargheMancantiInserimentoTargaCtrller" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes">
+
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="numeroPratica" type="String" />
+    <aura:attribute name="isCompletaButtonDisabled" type="Boolean" default="false"/>
+
+    <aura:attribute name="lstAttribute" type="String" default="NumeroPratica__c,DescrizioneCliente__c,DealerId__c,RagioneSociale__c,Targa__c,Telaio__c,Prodotto__c,DataLiquidazione__c,Cserv1__c,Cserv2__c,DescrizioneBene__c"/>
+    <aura:attribute name="targa" type="String" />
+    <aura:attribute name="telaio" type="String" />
+    <aura:attribute name="notaFiliale" type="String" />
+    <aura:attribute name="notaAgenziaItalia" type="String" />
+
+    <aura:attribute name="ultimaDataUtile" type="Date" />
+
+    <aura:attribute name="casisticaScadenza" type="Integer" default="1"/>
+
+    <aura:attribute name="objectApiName" type="String" default="SFATargaMancante__c"/>
+    <aura:attribute name="numColums" type="Integer" default="2"/>
+    
+    <aura:attribute name="url" type="String"/>
+    <aura:attribute name="pageReference" type="Object"/>
+    <lightning:navigation aura:id="navService"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+    <div id="ultimaDataUtile" class="slds-m-top--medium slds-m-bottom--small">
+        Ultima data utile per l'inserimento di targa e telaio: <ui:outputDate value="{!v.ultimaDataUtile}" format="dd/MM/yyyy" />
+    </div>
+
+    <aura:if isTrue="{!v.casisticaScadenza == 1}">
+        <div class="slds-m-bottom--medium">
+            <span style="font-weight:bold">Aggiornare Targa e Telaio per il salvataggio su OCS.</span> Completando l'attività verrà chiusa.
+        </div>
+    </aura:if>
+
+    <aura:if isTrue="{!v.casisticaScadenza == 2}">
+        <div class="slds-m-bottom--medium">
+            <span style="font-weight:bold">Il termine per l'aggiornamento su OCS è scaduto.</span> Inserire i dati per l'invio al fornitore. Completando l'attività verrà chiusa.
+        </div>
+    </aura:if>
+
+    <aura:if isTrue="{!v.casisticaScadenza == 3}">
+        <div class="slds-m-bottom--medium">
+            <span style="font-weight:bold">Il termine per l'aggiornamento su OCS è scaduto.</span> Inserire i dati per comunicarli all'ufficio GDV. Completando l'attività verrà chiusa.
+        </div>
+    </aura:if>
+    
+    <c:DettaglioPratica
+        recordId="{!v.recordId}"
+        numColums="{!v.numColums}"
+        objectApiName="{!v.objectApiName}"
+        lstAttribute="{!v.lstAttribute}"
+        />
+
+    <div class="slds-size_1-of-2 slds-m-top--medium slds-m-bottom--small">
+        <ui:inputText label="Inserisci targa" value="{!v.targa}" />
+    </div>
+    <div class="slds-size_1-of-2 slds-m-bottom--small">
+        <ui:inputText label="Inserisci telaio" value="{!v.telaio}" />
+    </div>
+
+    <div class="slds-size_1-of-2 ">
+        <lightning:textarea aura:id="notaFilialeId" label="Note" value="{!v.notaFiliale}" required="false" class="slds-m-bottom--medium" maxlength="1000" />
+    </div>
+
+    <div class="slds-m-top_medium">
+        <lightning:button aura:id="completaPraticaButtonId" label="Completa" variant="destructive" onclick="{!c.handleCompletaPratica}" disabled="{!v.isCompletaButtonDisabled}" />
+    </div>
+
+</aura:component>

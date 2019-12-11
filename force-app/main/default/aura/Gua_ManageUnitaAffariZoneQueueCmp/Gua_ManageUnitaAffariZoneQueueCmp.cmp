@@ -1,0 +1,177 @@
+<aura:component controller="Gua_ManageUnitaAffariZoneQueueCnt" implements="force:appHostable,flexipage:availableForAllPageTypes">
+
+    <aura:attribute name="areasAffari" type="Account[]" />
+    <aura:attribute name="oldAreasAffari" type="Account[]" />
+    <aura:attribute name="areaAffari" type="Account" default="{'SObjectype':'Account', 
+                                                              'Name': '',
+                                                              'Region_Name__c': '',
+                                                              'OCSAreaId__c': null
+                                                              }" />
+
+    <aura:attribute name="editAreaAffari" type="Account" default="{'SObjectype':'Account', 
+                                                                  'Name': '',
+                                                                  'Region_Name__c': '',
+                                                                  'OCSAreaId__c': null
+                                                                  }" />
+
+    <aura:attribute name="regions" type="List" />
+    <aura:attribute name="listAffari" type="List" />
+    <aura:attribute name="listZoneRO" type="List" />
+    <aura:attribute name="listZoneRE" type="List" />
+    <aura:attribute name="listZoneRC" type="List" />
+    <aura:attribute name="listZoneRA" type="List" />
+    <aura:attribute name="listZoneRT" type="List" />
+    <aura:attribute name="listZoneRS" type="List" />
+    <aura:attribute name="listZones" type="List" />
+    <aura:attribute name="assegnazioniColumns" type="List" />
+    <aura:attribute name="esitiColumns" type="List" />
+    <aura:attribute name="isEditUnitaAffari" type="boolean" />
+    <aura:attribute name="rowIndex" type="integer" />
+    <aura:attribute name="isOpenDelete" type="boolean" />
+
+    <aura:attribute name="pageNumber" type="Integer" default="1" />
+    <aura:attribute name="pageSize" type="Integer" default="10" />
+    <aura:attribute name="isLastPage" type="Boolean" default="false" />
+    <aura:attribute name="dataSize" type="Integer" default="0" />
+
+    <aura:handler action="{!c.doInit}" name="init" value="{!this}" />
+
+    <lightning:card variant="base" class="slds-m-top_small slds-m-bottom_small">
+        <div class="slds-card__body_inner">
+            <lightning:layout>
+                <lightning:layoutItem size="3" class="slds-m-around_x-small">
+                    <lightning:select value="{!v.areaAffari.Region_Name__c}" aura:id="region" name="region" label="Regione" required="true" onchange="{!c.getAreas}">
+                        <option value=""></option>
+                        <aura:iteration items="{!v.regions}" var="region">
+                            <option value="{!region}">{!region}</option>
+                        </aura:iteration>
+                    </lightning:select>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="3" class="slds-m-around_x-small">
+                    <lightning:select value="{!v.areaAffari.OCSAreaId__c}" aura:id="area" name="area" required="true" label="Area" onchange="{!c.setArea}">
+                        <option value=""></option>
+                        <aura:iteration items="{!v.listZones}" var="zone">
+                            <option value="{!zone}">{!zone}</option>
+                        </aura:iteration>
+                    </lightning:select>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="3" class="slds-m-around_x-small">
+                    <lightning:select value="{!v.areaAffari.Name}" aura:id="unitaAffari" name="unitaAffari" label="Unita Affari" required="true" onchange="{!c.setQueue}">
+                        <option value=""></option>
+                        <aura:iteration items="{!v.listAffari}" var="affari">
+                            <option value="{!affari}">{!affari}</option>
+                        </aura:iteration>
+                    </lightning:select>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="3" class="slds-m-around_x-small">
+                    <lightning:button disabled="{!or(or( empty(v.areaAffari.Region_Name__c), empty(v.areaAffari.OCSAreaId__c)), empty(v.areaAffari.Name) )}" class="slds-m-top_large" variant="brand" label="Aggiungi" onclick="{!c.addZoneToQueue}" />
+                </lightning:layoutItem>
+            </lightning:layout>
+        </div>
+    </lightning:card>
+
+
+    <lightning:card variant="base" class="slds-m-top_small slds-p-bottom_small">
+        <div class="slds-card__body_inner">
+            <lightning:layout>
+                <lightning:layoutItem size="6">
+                    <lightning:card>
+                        <div class="slds-card__body_inner">
+                            <div class="slds-m-bottom_small slds-text-heading_medium">Area di interazione</div>
+                            <lightning:datatable aura:id="areaQueue" keyField="aQueue" data="{!v.areasAffari}" hideCheckboxColumn="true" showRowNumberColumn="false" columns="{!v.assegnazioniColumns}" onrowaction="{!c.removeZoneToQueue}" />
+                            <aura:if isTrue="{! v.areasAffari.length > 0}">
+                                <lightning:button class="slds-m-top_small" variant="brand" label="Conferma Assegnazioni" onclick="{!c.saveZoneToQueue}" />
+                            </aura:if>
+                        </div>
+                    </lightning:card>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="6">
+                    <lightning:card>
+                        <div class="slds-card__body_inner">
+                            <div class="slds-m-bottom_small slds-text-heading_medium">Attuali Assegnazioni</div>
+                            <lightning:datatable aura:id="oldAreaQueue" keyField="oldAreaQueue" data="{!v.oldAreasAffari}" hideCheckboxColumn="true" showRowNumberColumn="false" columns="{!v.esitiColumns}" onrowaction="{!c.handleRowEsitiAction}" />
+                            <lightning:layout class="slds-m-bottom_small slds-page-header">
+                                <lightning:layoutItem size="6">
+                                    <p class="">Page {!v.pageNumber} | Showing records from {! ((v.pageNumber-1)*v.pageSize)+' to '+((v.pageNumber-1)*v.pageSize+v.dataSize)}</p>
+                                </lightning:layoutItem>
+                                <lightning:layoutItem size="2">
+                                </lightning:layoutItem>
+                                <lightning:layoutItem size="4">
+                                    <div class="slds-float_right">
+                                        <lightning:button label="Prev" iconName="utility:chevronleft" iconPosition="left" onclick="{!c.handlePrev}" disabled="{! v.pageNumber == 1}" />
+                                        <lightning:button label="Next" iconName="utility:chevronright" iconPosition="right" disabled="{! v.isLastPage}" onclick="{!c.handleNext}" />
+                                    </div>
+                                </lightning:layoutItem>
+                            </lightning:layout>
+                        </div>
+                    </lightning:card>
+                </lightning:layoutItem>
+            </lightning:layout>
+        </div>
+    </lightning:card>
+
+
+    <aura:if isTrue="{! v.isEditUnitaAffari }">
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_small" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+            <div class="slds-modal__container modal-class">
+                <header class="slds-modal__header">
+                    <button onclick="{! c.cancelEditUnitaAffari }" class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
+                        <lightning:icon iconName="action:close" size='XX-small' />
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Edit Unita Affari</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <div class="slds-form-element">
+                        <lightning:select value="{!v.editAreaAffari.Region_Name__c}" aura:id="rEdit" name="region" label="Regione" required="true" onchange="{!c.setAreaEdit}">
+                            <aura:iteration items="{!v.regions}" var="region">
+                                <option value="{!region}">{!region}</option>
+                            </aura:iteration>
+                        </lightning:select>
+                    </div>
+                    <div class="slds-form-element">
+                        <lightning:select value="{!v.editAreaAffari.OCSAreaId__c}" aura:id="aEdit" name="area" required="true" label="Area" onchange="">
+                            <aura:iteration items="{!v.listZones}" var="zone">
+                                <option value="{!zone}">{!zone}</option>
+                            </aura:iteration>
+                        </lightning:select>
+                    </div>
+                    <div class="slds-form-element">
+                        <lightning:select value="{!v.editAreaAffari.Name}" aura:id="uEdit" name="unitaAffari" label="Unita Affari" required="true" onchange="">
+                            <aura:iteration items="{!v.listAffari}" var="affari">
+                                <option value="{!affari}">{!affari}</option>
+                            </aura:iteration>
+                        </lightning:select>
+                    </div>
+                </div>
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick="{!c.cancelEditUnitaAffari}">Cancel</button>
+                    <button class="slds-button slds-button_brand" onclick="{!c.editUnitaAffari}">Save</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+
+    <aura:if isTrue="{! v.isOpenDelete }">
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_small" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+            <div class="slds-modal__container modal-class">
+                <header class="slds-modal__header">
+                    <button onclick="{! c.cancelDelete }" class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
+                        <lightning:icon iconName="action:close" size='XX-small' />
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Delete Unita Affari</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    Are you sure you want to delete the unita affari with the Region <strong>{!v.editAreaAffari.Region_Name__c}</strong>, the area <strong>{!v.editAreaAffari.OCSAreaId__c}</strong> and the queue <strong>{!v.editAreaAffari.Name}</strong>
+                </div>
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick="{!c.cancelDelete}">Cancel</button>
+                    <button class="slds-button slds-button_brand" onclick="{!c.confirmDelete}">Delete</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+</aura:component>

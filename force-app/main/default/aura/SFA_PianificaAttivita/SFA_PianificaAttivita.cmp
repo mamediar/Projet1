@@ -1,0 +1,83 @@
+<aura:component controller="SFA_PianificaAttivitaController">
+    <aura:attribute name="slot" type="SFA_Slot__c" />
+    <aura:attribute name="nextSlotId" type="String" />
+    <aura:attribute name="nextSlot" type="SFA_Slot__c" />
+    
+    <aura:attribute name="isRischedula" type="Boolean"/>
+    <aura:attribute name="dealerDisabilitatiList" type="Object"/> 
+    <aura:attribute name="otherSlots" type="SFA_Slot__c[]"/>
+    <aura:attribute name="dealers" type="Account[]"/>
+    <aura:attribute name="dealersPianificati" type="Account[]"/>
+    <aura:attribute name="columns" type="List"
+                    default="[{label: 'Codice OCS', fieldName: 'CodiceClienteFilled__c', type: 'text'},
+                             {label: 'Nome', fieldName: 'Name', type: 'text'},
+                             {label: 'Indirizzo', fieldName: 'ShippingAddress', type: 'text' },
+                             {label: 'Attività', fieldName: 'actNumber', type: 'text'},
+                             {label: 'Urgenti', fieldName: 'actUrgentNumber', type: 'text'},
+                             {label: 'Altra Visita', fieldName: 'nextVisit', type: 'text'}]"
+    />
+    <!-- default="[{label: 'Codice OCS', fieldName: 'OCS_External_Id__c', type: 'text'}, -->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+	<lightning:card title="{! 'Pianifica Attività - ' + v.slot.XCS_Zone__r.Name +' - '+ v.slot.Date__c+' - '+ v.slot.Time__c}" iconName="utility:event">
+    <c:SpinnerComponent aura:id="spinnerComponent"/>
+        <aura:set attribute="actions">
+            <lightning:buttonIcon iconName="utility:home" onclick="{! c.goToHome }" alternativeText="Go To Home" />
+        </aura:set>
+        <lightning:layout multipleRows="true">  
+            
+            <lightning:layoutItem size="12" padding="around-small">
+                <lightning:datatable
+                aura:id="dealersTableId"
+                keyField="Id"
+                data="{! v.dealers }"
+                columns="{! v.columns }"
+                class="dataTableWrap"
+                hideCheckboxColumn="false"/>
+            </lightning:layoutItem>
+            
+            <lightning:layoutItem size="12" padding="around-small">
+            	<lightning:button variant="brand" label="Pianifica" title="Pianifica" onclick="{! c.pianificaThisSlot }" />
+				<lightning:button variant="brand" class="dealersTableId" label="Pianifica ad altra data" title="Brand action" onclick="{! c.openPianificaPopup }" />
+			</lightning:layoutItem>
+            
+            <aura:if isTrue="{!not(empty(v.dealersPianificati))}">
+                <lightning:layoutItem size="12" padding="around-small">
+                    <lightning:datatable
+                    aura:id="dealersPianifictiTableId"
+                    keyField="Id"
+                    data="{! v.dealersPianificati }"
+                    columns="{! v.columns }"
+                    class="dataTableWrap"
+                    hideCheckboxColumn="false"/>
+                </lightning:layoutItem>
+                
+                <lightning:layoutItem size="12" padding="around-small">
+                    <lightning:button variant="brand" label="Elimina Pianificazione" title="Elimina Pianificazione" onclick="{! c.removePianifica }" />
+                    <lightning:button variant="brand" class="dealersPianifictiTableId" label="Rischedula" title="Rischedula" onclick="{! c.openRischedulaPopup }" />
+                </lightning:layoutItem>
+            </aura:if>
+            
+        </lightning:layout>
+    </lightning:card>
+    
+    <c:GenericPopUp class="smallPopUp" aura:id="pianificaModalId" title="Pianifica Attivita" isDirectional="true" isLarge="false" hasCloseIcon="true">
+        <lightning:layout verticalAlign="center" multipleRows="true">
+            <lightning:layoutItem size="12">
+                <lightning:layout horizontalAlign="center">    
+                        <lightning:select value="{!v.nextSlotId}" name="activity"  label="Seleziona Slot">
+                                <aura:iteration items="{!v.otherSlots}" var="option">
+                                    <option text="{! option.Date__c+' - '+ option.Time__c }" value="{!option.Id}" />
+                                </aura:iteration>  
+                         </lightning:select> 
+                    </lightning:layout>
+                </lightning:layoutItem>
+            </lightning:layout>
+        <!-- Modal footer -->
+        <aura:set attribute="footer">
+            <lightning:button label="Annulla" onclick="{!c.closePianificaPopup}"/>
+            <lightning:button variant="brand" label="Conferma" onclick="{!c.pianificaNextSlot}" />
+        </aura:set>
+    </c:GenericPopUp>
+    
+</aura:component>

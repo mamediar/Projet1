@@ -1,0 +1,62 @@
+<aura:component controller='GestioneFaxLettereInviateController' implements="flexipage:availableForAllPageTypes,lightning:availableForFlowScreens,force:hasRecordId">
+    
+    <aura:attribute name='comunicazioniPresenti' type='Boolean'/> 
+    <aura:attribute name='tipoPratica' type='String'/>
+    <aura:attribute name='codiceCliente' type='String'/>
+    <aura:attribute name='numeroPratica' type='String'/>
+    <aura:attribute name='data' type='String'/>
+    <aura:attribute name='lettereInviateColumns' type='List'/>
+    <aura:attribute name='lettereInviateData' type='Object[]'/>
+    <aura:attribute name='hideMessage' type='Boolean'/>
+    
+    <aura:handler name='init' value='{!this}' action='{!c.init}'/>
+    
+    
+    <!-- NB::::::::::::::::: Response Mockata, la tabella si popola in base alla Mock response ::::::::::::::::: -->
+    
+    <div aura:id="gestioneContainer" class="roll-content slds-m-top_small slds-m-bottom_small"> 
+        <lightning:card variant="Narrow" title="Lettere Inviate" iconName="standard:poll"> 
+            
+            <lightning:layout>
+                <div class='slds-col_padded slds-m-bottom_x-small'>
+                    <div class="{!if(v.hideMessage==true, 'slds-hide','slds-show')}">
+                        <div class="{!if(v.comunicazioniPresenti==true, 'slds-show','slds-hide')}">
+                            <ui:message title=" " severity="warning" closable="false">
+                                Non ci sono comunicazioni da mostrare, premere il pulsante "Ricarica Comunicazioni Inviate" per visualizzarle.
+                            </ui:message> 
+                            
+                        </div>
+                        <div class="{!if(v.comunicazioniPresenti==false, 'slds-show','slds-hide')}">
+                            <ui:message title=" " severity="warning" closable="false">
+                                Nessuna comunicazione da visualizzare.
+                            </ui:message> 
+                        </div>
+                    </div>
+                </div>
+            </lightning:layout>
+            
+            <lightning:layout>
+                <lightning:datatable keyField="Id"
+                                     class='slds-col_padded slds-m-bottom_x-small'
+                                     resizeColumnDisabled="true"
+                                     hideCheckboxColumn="true" 
+                                     columns="{! v.lettereInviateColumns }" 
+                                     data="{! v.lettereInviateData }"
+                                     showRowNumberColumn="true"/>
+            </lightning:layout>
+            
+            <lightning:layout>
+                <div class='slds-col_padded slds-m-bottom_x-small'>
+                    <lightning:button label='Ricarica Comunicazioni Inviate'
+                                      type='button'
+                                      variant='brand'
+                                      onclick='{!c.getTable}'
+                                      />
+                </div>
+                
+            </lightning:layout>
+            
+        </lightning:card>  
+    </div>
+    
+</aura:component>

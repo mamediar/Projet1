@@ -1,0 +1,4 @@
+<aura:event type="APPLICATION" description="event Navigate to Penetrazione details">
+     <aura:attribute name="intervistaPenetrazione" type="Intervista_integrativo__c"/>
+     <aura:attribute name="productsLimites" type="Map" />
+</aura:event>

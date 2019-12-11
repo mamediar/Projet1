@@ -1,0 +1,74 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" 
+                access="global" 
+                >
+    
+    <aura:attribute name="campiCase" type="Object"/>
+    <aura:attribute name="aziendaSelezionata" type="String"/>
+    <aura:attribute name="rimborsoOutput" type="Object"/>
+    <aura:attribute name="standaloneOutput" type="Object"/>
+    <aura:attribute name="futuroOutput" type="Object"/>
+    <aura:attribute name="comuniOutput" type="Object"/>
+    <aura:attribute name="isRimborsoOk" type="Boolean"/>
+    <aura:attribute name="isStandaloneOk" type="Boolean"/>
+    <aura:attribute name="isRadioButtonsFuturoOk" type="Boolean"/>
+    <aura:attribute name="isRadioButtonsComuniOk" type="Boolean"/>
+    <aura:attribute name="comuniErrorMsg" type="String"/>
+    <aura:attribute name="futuroErrorMsg" type="String"/> 
+    <!--valori popolmento-->
+    <aura:attribute name="rimborsoSelection" type="String"/>
+    <aura:attribute name="rimborsoValue" type="String"/>
+    <aura:attribute name="standAloneSelection" type="String"/>
+    <aura:attribute name="standAloneValue" type="String"/>   
+    
+    <aura:attribute name="isOk" type="Boolean" default="false"/>
+    <aura:attribute name="errorMessage" type="String"/>
+    <aura:attribute name="outputObj" type="Object"/>
+    <aura:attribute name="dettagliOutputObj" type="Object"/> <!--Contiene tutti i dati per la creazione del case-->
+
+    <aura:handler name="change" value="{!v.isRimborsoOk}" action="{!c.handleChange}"/>
+    <aura:handler name="change" value="{!v.isStandaloneOk}" action="{!c.handleChange}"/>
+    <aura:handler name="change" value="{!v.isRadioButtonsFuturoOk}" action="{!c.handleChange}"/>
+    <aura:handler name="change" value="{!v.isRadioButtonsComuniOk}" action="{!c.handleChange}"/>
+    <aura:handler name="change" value="{!v.rimborsoOutput}" action="{!c.handleChange}"/>
+    <aura:handler name="change" value="{!v.standaloneOutput}" action="{!c.handleChange}"/>
+    <aura:handler name="change" value="{!v.futuroOutput}" action="{!c.handleChange}"/>
+    <aura:handler name="change" value="{!v.comuniOutput}" action="{!c.handleChange}"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    
+    <br/> <!--RBs Comuni-->
+    <c:CRMReclamiInserimentoDettagliRadioButtonsComuni isOk="{!v.isRadioButtonsComuniOk}"
+                                                       errorMessage="{!v.comuniErrorMsg}"
+                                                       output="{!v.comuniOutput}"
+                                                       />
+    
+    <aura:if isTrue="{!v.aziendaSelezionata=='Futuro'}">
+        <!--RBs Futuro-->
+        <c:CRMReclamiInserimentoDettagliRadioButtonsFuturo isOk="{!v.isRadioButtonsFuturoOk}"
+                                                           errorMessage="{!v.futuroErrorMsg}"
+                                                           output="{!v.futuroOutput}"
+                                                           />
+        
+        <aura:set attribute="else">
+            <!--RBc Compass/MBCS Comuni-->
+            <c:XCSRadioGroupGenericReclami label="Rimborso:"
+                                           output="{!v.rimborsoOutput}"
+                                           isOk="{!v.isRimborsoOk}"
+                                           showValue="{!v.rimborsoSelection}"
+                                           value="{!v.rimborsoValue}"
+                                           dettagliOutputObj="{!v.dettagliOutputObj}"
+                                           />
+            
+            <aura:if isTrue="{!v.aziendaSelezionata=='Compass'}">
+               <!-- RBs Compass -->
+                <c:XCSRadioGroupGenericReclami label="Stand Alone:"
+                                               showInput="false"
+                                               output="{!v.standaloneOutput}"
+                                               isOk="{!v.isStandaloneOk}"
+                                               showValue="{!v.standAloneSelection}"
+                                               />
+            </aura:if>
+        </aura:set>
+    </aura:if>
+
+</aura:component>

@@ -1,0 +1,4 @@
+<design:component>
+    <design:attribute name="seeButton" label="Show Button" />
+	<design:attribute name="checkModale" label="Show Modale" />
+</design:component>

@@ -1,0 +1,122 @@
+<aura:component controller="GD_ElencoAttestatoRicevuto" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+    access="global">
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" />
+    <aura:attribute name="searchText" type="String" default="" />
+    <aura:attribute name="stato" type="String" default="" />
+    <aura:attribute name="allStatus" type="List" default="" />
+    <aura:attribute name="results" type="IVASS_Dealer_courses_Iscritti__c[]" default="[]" />
+    <aura:attribute name="listToProcess" type="IVASS_Dealer_courses_Iscritti__c[]" default="[]" />
+
+    <lightning:card title="Elenco Nominativi con Attestato Ricevuto">
+        <div class="slds-m-bottom_x-small slds-p-left_x-small slds-p-right_x-small slds-p-top_small">
+            <lightning:layout>
+                <lightning:layoutItem padding="around-small" size="6">
+                    <div class="slds-truncate">Cod OCS</div>
+                    <div class="slds-form-element__control">
+                        <input type="text" id="text-input-id-1" class="slds-input" />
+                    </div>
+                    <div class="slds-truncate">Rag Soc</div>
+                    <div class="slds-form-element__control">
+                        <input type="text" id="text-input-id-1" class="slds-input" />
+                    </div>
+                    <div class="slds-truncate">Cod. Referente</div>
+                    <div class="slds-form-element__control">
+                        <input type="text" id="text-input-id-1" class="slds-input" />
+                    </div>
+                    <div class="slds-truncate">Cognome</div>
+                    <div class="slds-form-element__control">
+                        <input type="text" id="text-input-id-1" class="slds-input" />
+                    </div>
+                    <div class="slds-truncate">Nome</div>
+                    <div class="slds-form-element__control">
+                        <input type="text" id="text-input-id-1" class="slds-input" />
+                    </div>
+                <div>
+                    <button class="slds-button slds-button_neutral slds-float_left" 
+                                           onclick="">
+                                           Reset Filtri
+                                       </button>
+                    <button class="slds-button slds-button_neutral slds-align_absolute-center" 
+                                           onclick="">
+                                           Applica Filtri
+                                       </button>
+                </div>
+                </lightning:layoutItem>
+
+            </lightning:layout>
+        </div>
+        <div class="slds-m-bottom_x-small slds-p-left_x-small slds-p-right_x-small slds-p-top_small">
+            <div class="slds-scrollable_y slds-scrollable--x">
+                <table aria-multiselectable="true"
+                    class="slds-table slds-table--bordered slds-table--cell-buffer slds-max-medium-table--stacked-horizontal">
+                    <thead>
+                        <tr class="slds-text-heading--label">
+                            <th scope="col" class="nobordertop">
+                                <span class="slds-truncate"> Codice Referente</span>
+                            </th>
+                            <th scope="col" class="nobordertop">
+                                <span class="slds-truncate"> Cognome</span>
+                            </th>
+                            <th scope="col" class="nobordertop">
+                                <span class="slds-truncate"> Nome</span>
+                            </th>
+                            <th scope="col" class="nobordertop">
+                                <span class="slds-truncate"> Codice Intermediario</span>
+                            </th>
+                            <th scope="col" class="nobordertop">
+                                <span class="slds-truncate"> Nome Intermediario</span>
+                            </th>
+                            <th scope="col" class="nobordertop">
+                                <span class="slds-truncate"> Esito Contatto</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <aura:iteration items="{!v.results}" var="result" indexVar="index">
+                            <tr aria-selected="false" class="slds-hint-parent">
+
+                                <th scope="row">
+                                    <div class="slds-truncate"> {!result.Name}</div>
+                                </th>
+                                <th scope="row">
+                                    <div class="slds-truncate"> {!result.Cognome__c}</div>
+                                </th>
+                                <th scope="row">
+                                    <div class="slds-truncate"> {!result.Nome__c}</div>
+                                </th>
+                                <th scope="row">
+                                    <div class="slds-truncate"> {!result.Codice_Intermediario__c}</div>
+                                </th>
+                                <th scope="row">
+                                    <div class="slds-truncate"> </div>
+                                </th>
+                                <th scope="row">
+                                    <div class="slds-truncate"> </div>
+                                </th>
+
+                            </tr>
+                        </aura:iteration>
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </lightning:card>
+    <lightning:card>
+        <div class="slds-m-bottom_x-small slds-p-left_x-small slds-p-right_x-small">
+
+            <lightning:layout>
+                <lightning:layoutItem padding="around-small" size="4">
+                    <lightning:button label="Crea Report XLS" iconName="doctype:excel" disabled="true"
+                        aura:id="btnReport" class="slds-button slds-button_success" onclick="{!c.downloadCsv}" />
+                </lightning:layoutItem>
+                <lightning:layoutItem padding="around-small" size="4">
+                    <lightning:button label="Indietro" onclick="" />
+                </lightning:layoutItem>
+            </lightning:layout>
+
+
+        </div>
+    </lightning:card>
+</aura:component>

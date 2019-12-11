@@ -1,0 +1,18 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId" controller="NuovoCasoClienteController">
+    <aura:attribute name="clienteContestualizzato" type="String"/>
+    <aura:attribute name="itemList" type="List"/>
+    <aura:attribute name="casoSelezionato" type="SObject"/>
+    <aura:attribute name="recordId" type="String"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <lightning:navigation aura:id="navService"/>
+    <lightning:flow aura:id="flowData" />
+ 
+    <lightning:select name="caso" label="Crea un nuovo caso:" onchange="{!c.selezionaCaso}" aura:id="caso" value="{!v.casoSelezionato}" disabled="false">
+        <option text="" value=""/>
+        <aura:iteration items="{!v.itemList}" var="item" indexVar="idx">
+            <option text="{!item.Label}" value="{!idx}"/>
+        </aura:iteration>
+    </lightning:select>
+    
+</aura:component>

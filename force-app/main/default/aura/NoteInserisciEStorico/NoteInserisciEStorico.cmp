@@ -1,0 +1,78 @@
+<aura:component controller= "NoteInserisciEStoricoController" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes">
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="bodyNote" type="String" default=""/>
+    <aura:attribute name="inserimentoNonAvvenuto" type="Boolean" default="false"/>
+ 	<aura:attribute name="notes" type="Object"/>
+	<aura:attribute name="spinnerCounter" type="Integer" default="0"/>  
+    
+    <!--INPUT ATTRIBUTES  - DESIGN -->
+	<aura:attribute name="noteTitle" type="String" default=""/>
+    <aura:attribute name="cardTitle" type="String" default="Note"/>
+    <aura:attribute name="tableFieldDataTitle" type="String" default="Data"/>
+    <aura:attribute name="tableFieldNoteTitle" type="String" default="Nota"/>
+    <aura:attribute name="showButtonInserisciNota" type="Boolean" default="true"/>
+    <aura:attribute name="showInsertNota" type="Boolean" default="true"/>
+    
+    <!-- in base agli attributi passati permette di filtrare le note
+		FILTRO SULLA DATA: impostare l'attributo filterOnDate a true e fornire una data inizio e una fine 
+   		 oppure solamente una data inizio per averle tutte le note filtrate a partire da quella data
+		FILTRO SUL TITOLO: impostare l'attributo filterOnTitle a true e fornire il titolo delle note da filtrare
+		NESSUN FILTRO: impostare l'attributo noFilter per estrarre tutte le note-->
+    
+    <!--INPUT ATTRIBUTES  - FILTER ON TITLE -->
+    <aura:attribute name="filterOnTitle" type="Boolean" default="false"/>
+    <aura:attribute name="filterNotesTitle" type="String" default=""/>
+    
+    <!--INPUT ATTRIBUTES  - FILTER ON DATE -->
+    <aura:attribute name="filterOnDate" type="Boolean" default="false"/>
+    <aura:attribute name="filterStartDate" type="DateTime" default=""/>    
+    <aura:attribute name="filterEndDate" type="DateTime" default=""/>  
+    
+    <!--INPUT ATTRIBUTES  - NO FILTER-->
+    <aura:attribute name="noFilter" type="Boolean" default="false"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/> 
+        <lightning:card variant="Narrow" title="{!v.cardTitle}" iconName="action:new_notebook" footer=" ">
+            <c:SpinnerComponent aura:id="spinnerComponent"
+                                spinnerCounter="{!v.spinnerCounter}"/>            
+            <p class="slds-p-horizontal_small">             
+           
+            	<table class="slds-table slds-table--bordered">  
+                    <thead>  
+                        <tr>  
+                            <th>{!v.tableFieldDataTitle}</th>  
+                            <th>{!v.tableFieldNoteTitle}</th>  
+                            <th>Chi</th>  
+                        </tr>  
+                    </thead>  
+                    <tbody> 
+                        <aura:iteration items="{!v.notes}" var="currentNote">
+                            <tr>  
+                                <td><lightning:formattedDateTime value="{!currentNote.CreatedDate}"  year="2-digit" month="2-digit" day="2-digit" hour="2-digit" minute="2-digit" second="2-digit"/></td>
+                                <td>{!currentNote.TextPreview}</td> 
+                                <td>{!currentNote.CreatedBy.Name}</td> 
+                            </tr>  
+                        </aura:iteration>
+                 
+                    </tbody>  
+            	</table>  <br/><br/>  
+
+                <aura:if isTrue="{!v.showInsertNota}">
+                    <div class="slds-col slds-size---of-12">  
+                            <lightning:textarea aura:id="bodyNoteId" 
+                                                label="Nota da inserire:"
+                                                value="{!v.bodyNote}"
+                                                required="false"
+                                                maxlength="150"/>                    
+                    </div>  
+                    
+                    <aura:if isTrue="{!v.showButtonInserisciNota}">
+                        <div class="slds-m-top_medium">
+                            <lightning:button aura:id="insertNoteId" label="Inserisci Nota" disabled="{!v.disableButton}" variant="destructive" onclick="{!c.inserisciNota}" />
+                        </div>  
+                    </aura:if>
+                </aura:if>
+            </p>
+    	</lightning:card>
+     
+</aura:component>

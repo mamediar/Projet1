@@ -1,0 +1,4 @@
+<aura:event type="APPLICATION" description="eventNavigationToCommunityServey">
+ <aura:attribute name="Id" type="String"/>
+ <aura:attribute name="fromAmministrazione" type="Boolean"/>
+</aura:event>

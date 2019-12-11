@@ -1,0 +1,97 @@
+<!--
+  @Component Name     : PV1766CancellazionePratica.cmp
+  @Description        : 
+  @Author             : sabrina vitali
+  @Group              : 
+  @Last Modified By   : sabrina vitali
+  @Last Modified On   : 23/10/2019, 18:06:13
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    9/8/2019, 16:46:48   sabrina vitali     Initial Version
+-->
+<aura:component extends="c:PVSubComponentBase" controller="PV1766CancellazionePraticaInserimento" access='global'>
+    <aura:handler name='init' value='{!this}' action='{!c.init}' />
+    <aura:attribute name="parent" type="Aura.Component" required="true" description="componente padre per accedere ai metodi comuni"/>
+    
+    <!-- Attributi -->
+    <aura:attribute name="praticheList" type="PV1766CancellazionePraticaInserimento.Pratica[]" />
+    <aura:attribute name="clientiList" type="OCSCliente[]" />
+    <!-- Attributi del PV-->
+    <aura:attribute name="praticheTableColumns" type="List" default="[{label: 'Numero Pratica', fieldName: 'numPratica', type: 'text', initialWidth: 100},
+                            {label: 'Tipo', fieldName: 'tipoPratica', type: 'text', initialWidth: 25 },
+                            {label: 'Stato', fieldName: 'statoPratica', type: 'text', initialWidth: 25},
+                            {label: 'Carta Congiunta', fieldName: 'numPraticaDestinazione', type: 'text', initialWidth: 70},
+                            
+                            {label: 'Cliente', fieldName: 'codCliente', type: 'text', initialWidth: 80},                            
+                            {label: 'Cognome', fieldName: 'cognome', type: 'text', initialWidth: 100},                            
+                            
+                            {label: 'Deal', fieldName: 'dealerCode', type: 'text', initialWidth: 60},
+                            {label: 'Can', fieldName: 'canale', type: 'text', initialWidth: 50},
+                            {label: 'Motivo', fieldName: 'motivo', type: 'text', initialWidth: 150},
+                            {label: 'Quest', fieldName: 'questionario', type: 'text', initialWidth: 55},
+                            {label: 'Descrizione motivo', fieldName: 'descrizioneMotivo', type: 'text', initialWidth: 100}]" />
+    <aura:attribute name="selectedRows" type="List" />   
+    <aura:attribute name="rowsSelected" type="List" /> <!-- The rows to be saved and displayed latter. -->        
+
+    <!--radio-->
+    <aura:attribute name="optionsRadioSN" type="List" default="[{'label': 'Si', 'value': 'Si'},
+                                                                {'label': 'No', 'value': 'No'}]"/>
+    <aura:attribute name="optionsRadio12" type="List" default="[{'label': '1', 'value': '1'},
+                                                                {'label': '2', 'value': '2'}]"/>
+    <aura:attribute name="valueRadio" type="String" default=""/>
+
+    
+    <!-- main --> 
+    <lightning:card class='slds-form_stacked'>
+        <lightning:card title="" iconName="">
+            <lightning:datatable    class="table-pv table-pv-75"
+                                    aura:id="pratiche" 
+                                    data="{!v.praticheList}" 
+                                    columns="{!v.praticheTableColumns}" 
+                                    keyField="numPratica"
+                                    selectedRows="{!v.selectedRows}"
+                                    onrowselection="{! c.verificaSelezione }" />
+
+            <aura:if isTrue="{!v.PVForm.reasonMdt.uniqueId__c == 26}">
+                <lightning:radioGroup   name="radioGroupFirma"
+                                        aura:id="radioContratto"
+                                        label="Ha firmato l'informativa privacy?"
+                                        options="{! v.optionsRadioSN }"
+                                        value="{! v.valueRadio }"
+                                        type="radio"
+                                        required="true"/>           
+            </aura:if>                         
+            <aura:if isTrue="{!v.PVForm.reasonMdt.uniqueId__c == 3}">
+                <lightning:radioGroup   name="radioGroupFirma"
+                                        aura:id="radioFirma"
+                                        label="Ha firmato il contratto?"
+                                        options="{! v.optionsRadioSN }"
+                                        value="{! v.valueRadio }"
+                                        type="radio"
+                                        required="true"/>                                    
+
+            </aura:if>                         
+            <aura:if isTrue="{!v.PVForm.reasonMdt.uniqueId__c == 4}">
+                <lightning:radioGroup   name="radioGroupCopie"
+                                        aura:id="radioDoppioCaricamento"
+                                        label="Quanti fogli privacy ha firmato il cliente?"
+                                        options="{! v.optionsRadio12 }"
+                                        value="{! v.valueRadio }"
+                                        type="radio"
+                                        required="true"/>                                    
+            </aura:if>                         
+        
+            <!-- Bottone associazione motivo -->
+            <lightning:button       label="Associa motivo" 
+                                    onclick="{!c.associaMotivo }"
+                                    variant='destructive' />
+            <!-- Bottone rimuovi selezioni -->
+            <lightning:button       label="Rimuovi selezioni" 
+                                    onclick="{!c.rimuoviSelezionati }"
+                                    variant='destructive' />
+
+        </lightning:card>
+    </lightning:card> 
+</aura:component>

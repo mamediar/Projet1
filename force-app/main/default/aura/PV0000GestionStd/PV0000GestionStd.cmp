@@ -1,0 +1,18 @@
+<aura:component controller='PV0000GestionStd' access='global'>
+    <aura:handler name='init' value='{!this}' action='{!c.doInit}' />
+    <aura:attribute name="parent" type="Aura.Component" required="true" description="componente padre per accedere ai metodi comuni"/>
+    <aura:method name="save" action="{!c.save}" description="Metodo richiamato dal bottone del componente padre"></aura:method>    
+    
+    <!-- Attributi -->
+    <!-- da parent -->
+    <aura:attribute name="theCase" type="Case" />
+    <aura:attribute name="dispositionSelezionato" type="XCS_Disposition__c"/>
+    <aura:attribute name='note' type='String' />    
+    <aura:attribute name="allegati" type="Attachment[]"/>
+    <aura:attribute name="newStatus" type="String"/>    
+
+    <!-- main --> 
+    <lightning:card class='slds-form_stacked'>
+    </lightning:card> <!-- /main -->
+
+</aura:component>

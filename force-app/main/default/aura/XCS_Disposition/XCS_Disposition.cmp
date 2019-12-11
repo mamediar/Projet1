@@ -1,0 +1,76 @@
+<aura:component controller="XCS_DispositionController"
+                implements="flexipage:availableForAllPageTypes,force:appHostable,flexipage:availableForRecordHome,force:hasRecordId" access="global" >
+    
+    <aura:attribute name="listaDispositions" type="List"/>
+    <aura:attribute name="mapDispositions" type="Map"/>
+    <aura:attribute name="dispositionSelezionato" type="XCS_Disposition__c"/>
+    <aura:attribute name="dispositionSelezionatoId" type="String"/>
+    <aura:attribute name="noteValue" type="String" default=""/>
+    <aura:attribute name="label" type="String" default="Selezionare disposition"/>
+    <aura:attribute name="activateNoteField" type="boolean" default="true"/>
+    
+    
+    <!-- INPUT VALUES:: -->
+    <aura:attribute name="parentExternalId" type="String" default=""/>    
+    <aura:attribute name="visibilityOption" type="String" default=""/>    
+    <aura:attribute name="saveCase" type="Boolean" default="true"/>
+    <aura:attribute name="recordId" type="String" default=""/>        
+    <aura:attribute name="noteRequired" type="Boolean" default="false"/>
+    <aura:attribute name="showToastMessage" type="Boolean" default="false"/>
+    <aura:attribute name="disabledInit" type="Boolean" default="false"/>
+    <aura:attribute name="usesCategory" type="Boolean" default="false"/>
+    <aura:attribute name="usesDispositionAction" type="Boolean" default="false" />
+    <aura:attribute name="dispositionActionSObject" type="SObject"/>
+    <aura:attribute name="inputSelectionLabel" type="String" default=""/>
+    
+    <aura:registerEvent name="XCS_DispositionReady" type="c:XCS_DispositionReady"/>
+    
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+
+	<aura:attribute name="spinnerCounter" type="Integer" default="0"/>
+    <c:SpinnerComponent aura:id="spinnerComponent" spinnerCounter="{!v.spinnerCounter}"/>    
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="change" value="{!v.visibilityOption}" action="{!c.reInit}" />
+    
+        <div class="slds-size_1-of-3 slds-p-top--medium slds-p-right--medium">
+            <ui:inputSelect aura:id="risultatoChiamata" label="{!v.inputSelectionLabel}"
+                            value="{!v.dispositionSelezionatoId}" change="{!c.handleSelezionaDisposition}">
+                <ui:inputSelectOption text="" label="Seleziona un'opzione" value="true"/>
+                <aura:iteration items="{!v.listaDispositions}" var="cus" indexVar="key">
+                    <ui:inputSelectOption text="{!cus.key}" label="{!cus.value.Name}" value="false"/>
+                </aura:iteration>                
+            </ui:inputSelect>         
+        </div>
+
+    <aura:if isTrue="{!v.activateNoteField}">
+        <div class="slds-size_2-of-3 ">
+            <lightning:textarea aura:id="noteTextarea" 
+                                label="Note"
+                                value="{!v.noteValue}"
+                                required="false"
+                                maxlength="255"/>
+        </div>
+    </aura:if>
+    <div class="slds-m-top_medium">
+        <aura:if isTrue="{!v.noteRequired}">   
+            <lightning:button 
+                disabled="{! v.noteValue == '' || !v.dispositionSelezionato}" 
+                variant="destructive" 
+                label="Conferma" 
+                title="Conferma" 
+                onclick="{! c.handleClick }"
+            />
+        <aura:set attribute="else">
+            <lightning:button 
+                disabled="{!!v.dispositionSelezionato}" 
+                variant="destructive" 
+                label="Conferma" 
+                title="Conferma" 
+                onclick="{! c.handleClick }"
+            />
+        </aura:set>
+        </aura:if>
+    </div>
+    
+</aura:component>

@@ -1,0 +1,4 @@
+<design:component label="TabMenu Configurazione">
+    <design:attribute name="moveOnTop" label="Nascondi Header" description="Nasconde l'header delle custom tab" />
+    <design:attribute name="configurationName" label="Nome Della Configurazione" description="Inserire qui il nome della configurazione nel cmt" required="true"/>
+</design:component>

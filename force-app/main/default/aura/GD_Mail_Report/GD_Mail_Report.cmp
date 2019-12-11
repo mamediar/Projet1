@@ -1,0 +1,24 @@
+<aura:component controller="GD_Mail_ReportCnt" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global">
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" />
+    <aura:attribute name="profiles" type="List" default="[]" />
+    <aura:attribute name="value" type="List" default="" />
+
+
+    <lightning:card title="Testo Mail Report Filiali">
+        <div class="slds-m-bottom_x-small slds-p-left_x-small slds-p-right_x-small slds-p-top_small">
+            <lightning:layout>
+                <lightning:layoutItem padding="around-small" size="6">
+                    <lightning:textarea name="esitoNote" class="textnote" label="Inserire il testo della mail da inivare alle filiali" aura:id="noteText" />
+                    <lightning:checkboxGroup name="Checkbox Group" label="Profiles" options="{! v.profiles }" value="{! v.value }" onchange="{! c.handleChange }" />
+                    <div>
+                        <lightning:button aura:id="invia" onclick="{!c.send}" variant="success" label="Invia" />
+                        <lightning:button aura:id="annula" onclick="{!c.annula}" variant="brand" label="Annula" />
+                    </div>
+                </lightning:layoutItem>
+                <lightning:layoutItem padding="around-small" size="6">
+
+                </lightning:layoutItem>
+            </lightning:layout>
+        </div>
+    </lightning:card>
+</aura:component>

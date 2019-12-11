@@ -1,0 +1,437 @@
+<aura:component implements="flexipage:availableForAllPageTypes" controller="ModificaAppuntamentoController" access="global">
+    <aura:attribute type="Event" name="detailEvent" default=""/>
+    <aura:attribute type="Boolean" name="showDetail" default="false" />
+    <aura:attribute type="Boolean" name="ModifyEvent" default="false" />
+    <aura:attribute type="datetime" name="dateActuel" default="" />
+    <aura:attribute name="isOpen" type="boolean" default="false"/>
+    <aura:attribute name="showEsito" type="boolean" default="false"/>
+    <aura:attribute name="showMotivazione" type="boolean" default="false"/>
+    <aura:attribute name="listEsito" type="List" default=""/>
+    <aura:attribute name="listMotivazione" type="List" default=""/>
+    <aura:attribute name="disposition" type="String" default=""/>
+    <aura:attribute name="filialeEvent" type="Object" default="" />
+    <aura:handler event="c:EventToDetail" action="{!c.handleDetailEvent}" />
+    <aura:attribute type="Product2" name="DataglioProductValues" default="" />
+    <aura:attribute name="listTime" type="Time[]" default="" />
+    <aura:attribute type="String" name="timeEvent" default="" />
+    <aura:attribute type="String" name="fotocopieAllegare" default=""/>
+    <aura:attribute name="alertMessage" type="Boolean" default="false"/>
+    <aura:attribute name="messageError" type="String" default=""/>
+    <aura:if isTrue="{!v.showDetail}">
+          <div class="slds-card slds-m-top_xx-small">
+                <!--Start details interview-->
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped" >
+                  <thead>
+                    <tr class="slds-line-height_reset">
+                      <th
+                        style="text-align:center;background-color:#9f201c;color:#fff;"
+                        scope="col"
+                        colspan="4">
+                        <div
+                          class="slds-p-around_small slds-text-heading_medium"
+                          title="Opportunity Name"
+                          >Dettaglio Appuntamento</div
+                        >
+                      </th>
+                    </tr>
+                  </thead>
+            
+                  <tbody>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Dati Retention:</b> </div>
+                      </td>
+                      <td>
+                        <div
+                          class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">Dati Retention: </div>
+                      </td>
+                    </tr>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Esito:</b> </div>
+                      </td>
+                      <td>
+                        <div
+                          class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!v.detailEvent.Disposition__r.Name}</div>
+                      </td>
+                    </tr>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Valore:</b> </div>
+                      </td>
+                      <td>
+                        <div
+                          class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">Valore</div>
+                      </td>
+                    </tr>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Filiale:</b> </div>
+                      </td>
+                      <td>
+                        <div
+                          class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!v.filialeEvent.Name}</div>
+                      </td>
+                    </tr>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Tipologia:</b> </div>
+                      </td>
+                      <td>
+                        <div
+                          class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!v.detailEvent.Type}</div>
+                      </td>
+                    </tr>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Prodotto:</b> </div>
+                      </td>
+                      <td>
+                        <div
+                          class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!v.detailEvent.Product__r.Name}</div>
+                      </td>
+                    </tr>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Dettaglio Prodotto:</b> </div>
+                      </td>
+                      <td>
+                        <div
+                          class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!v.DataglioProductValues.Name}</div>
+                      </td>
+                    </tr>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Mediacode:</b> </div>
+                      </td>
+                      <td>
+                        <div
+                          class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">Mediacode</div>
+                      </td>
+                    </tr>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Data/Ora:</b> </div>
+                      </td>
+                      <td>
+                        <div
+                          class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">
+                          <lightning:formattedDateTime aura:id="dt"
+                            value="{!v.detailEvent.ActivityDateTime}"
+                            month="short"
+                            day="numeric"
+                            year="numeric"
+                            hour="2-digit"
+                            minute="2-digit"
+                            second="2-digit"
+                            hour12="true" />
+                          </div>
+                      </td>
+                    </tr>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Nome:</b> </div>
+                      </td>
+                      <td>
+                        <div
+                          class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!v.detailEvent.Customer__r.FirstName}</div>
+                      </td>
+                    </tr>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Cognome:</b> </div>
+                      </td>
+                      <td>
+                        <div
+                          class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!v.detailEvent.Customer__r.LastName}</div>
+                      </td>
+                    </tr>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Email:</b> </div>
+                      </td>
+                      <td>
+                        <div
+                          class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!v.detailEvent.Customer__r.PersonEmail}</div>
+                      </td>
+                    </tr>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Preventivo in sospeso:</b> </div>
+                      </td>
+                      <td>
+                        <div
+                          class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">Preventivo in sospeso</div>
+                      </td>
+                    </tr>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Preventivo da web:</b> </div>
+                      </td>
+                      <td>
+                        <div
+                          class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">Preventivo da web</div>
+                      </td>
+                    </tr>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Evo:</b> </div>
+                      </td>
+                      <td>
+                        <div class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">
+                          <c:LinkEvo task='TK000003B1'/>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Stato App.to:</b> </div>
+                      </td>
+                      <td>
+                        <div
+                          class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!v.detailEvent.Stato_Azione__c}</div>
+                      </td>
+                    </tr> 
+                    <aura:if isTrue="{!v.detailEvent.Stato_Azione__c=='GAFissato' || v.detailEvent.Stato_Azione__c=='Appuntamento modificato'}">
+                      <tr class="slds-hint-parent">      
+                        <td>
+                          <div class="slds-p-around_small"><b>Nuovo Stato App.to:</b> </div>
+                        </td>
+                        <td>
+                          <div class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">
+
+                              <select id="nuovoStato" variant="label-hidden" onchange="{!c.changeEvent}">
+                                  <option value="" disabled='disabled' selected='selected'>Selezionare...</option>
+                                  <option value="Appuntamento modificato">Appuntamento modificato</option>
+                                  <option value="Presentato">Presentato</option>
+                                  <option value="Non presentato/Annullato">Non presentato/Annullato</option>
+                              </select>
+                          </div>
+                        </td>
+                      </tr> 
+                    </aura:if>
+                    <aura:if isTrue="{!v.showEsito==true}">
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Esito App.to:</b> </div>
+                      </td>
+                      <td>
+                        <div>
+                            <select id="esitoList" class="slds-select" onchange="{!c.getvalueEsitoSelected}"> 
+                                <option value="" disabled='disabled' selected='selected'>Selezionare...</option>
+                                <aura:iteration items="{!v.listEsito}" var="esito">
+                                  <option value="{!esito.code + '-' + esito.value}">{!esito.value}</option>
+                                </aura:iteration>
+                            </select>
+                        </div>
+                      </td>
+                    </tr> 
+                  </aura:if>
+                  <aura:if isTrue="{!v.showMotivazione==true}">
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Motivazione:</b> </div>
+                      </td>
+                      <td>
+                        <div>
+                            <select id="motivazioneList" class="slds-select" onchange="{!c.getvalueMotivazioneSelected}"> 
+                                <option value="" disabled='disabled' selected='selected'>Selezionare...</option>
+                                <aura:iteration items="{!v.listMotivazione}" var="motivazione">
+                                  <option value="{!motivazione.code + '-' +motivazione.value}">{!motivazione.value}</option>
+                                </aura:iteration>
+                            </select>
+                        </div>
+                      </td>
+                    </tr> 
+                  </aura:if>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Note:</b> </div>
+                      </td>
+                      <td>
+                        <div class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!v.detailEvent.Note__c}</div>
+                      </td>
+                    </tr>  
+                  </tbody>
+                </table>
+              	<aura:if isTrue="{!v.ModifyEvent==true}">
+					<div>
+                        <span>Nuova data</span>
+                        <div class="slds-form-element__control">
+                          <div class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">
+                            <lightning:input  onchange="{!c.controlDateEvent}"  type="date" value="{!v.detailEvent.ActivityDate}"/> 
+                            <div class="slds-select_container">
+                              <select id="idListTime" class="slds-select" onchange="{!c.choiceHoure}">
+                                  <option value="">--</option>
+                                  <aura:iteration items="{!v.listTime}" var="time">
+                                      <option value="{!time}">{!time}</option>
+                                  </aura:iteration>
+                              </select>
+                          </div>
+                        </div>
+                        </div>
+                        <button class="slds-button slds-button_destructive" 
+                                    onclick="{!c.openModel}">Conferma</button>
+                    </div>                    
+              	</aura:if>
+              	 <aura:if isTrue="{!v.isOpen}">
+            
+            <!--###### MODAL BOX Start######--> 
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open slds-modal_small">
+                <div class="slds-modal__container">
+                    <!-- ###### MODAL BOX HEADER Start ######-->
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon iconName="utility:close"
+                                              onclick="{! c.closeModel }"
+                                              alternativeText="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"/>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Riepilogo Appuntamento</h2>
+                    </header>
+                    <!--###### MODAL BOX BODY Part Start######-->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <p>
+                  <div class="slds-float_right">
+                  	<button onclick="{!c.uploadRiepilogo}"> 
+                       <lightning:icon iconName="utility:print" alternativeText="scaricare Riepilogo"/>
+                   </button>
+                  </div>
+                  <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped" >
+                  <thead>
+                    <tr class="slds-line-height_reset">
+                      <th
+                        style="text-align:center;background-color:#9f201c;color:#fff;"
+                        scope="col"
+                        colspan="4">
+                        
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Data/Ora:</b> </div>
+                      </td>
+                      <td>
+                        <div
+                          class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">
+                            <lightning:formattedDateTime
+                                value="{!v.detailEvent.ActivityDateTime}"
+                                year="numeric" 
+                                month="numeric"
+                                day="numeric"
+                                hour="2-digit"
+                                minute="2-digit"
+                                hour12="false"
+                            />
+                            </div>
+                      </td>
+                    </tr>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Tipologia:</b> </div>
+                      </td>
+                      <td>
+                        <div
+                          class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">Appuntamento</div>
+                      </td>
+                    </tr>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Prodotto:</b> </div>
+                      </td>
+                      <td>
+                        <div
+                          class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!v.detailEvent.Product__r.Name}</div>
+                      </td>
+                    </tr>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Dettaglio Prodotto:</b> </div>
+                      </td>
+                      <td>
+                        <div
+                          class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!v.DataglioProductValues.Name}</div>
+                      </td>
+                    </tr>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Note:</b> </div>
+                      </td>
+                      <td>
+                        <div class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!v.detailEvent.Note__c}</div>
+                      </td>
+                    </tr>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Filiale:</b> </div>
+                      </td>
+                      <td>
+                        <div
+                          class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">
+                          {!v.filialeEvent.Name}</div>
+                      </td>
+                    </tr>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>telefono:</b> </div>
+                      </td>
+                      <td>
+                      	<div class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!v.detailEvent.Customer__r.PersonMobilePhone}</div>
+                      </td>
+                    </tr>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Fotocopie da Allegare</b> </div>
+                      </td>
+                      <td>
+                      	<div class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">
+                        <textarea class="slds-textarea slds-form-element__static">{!v.fotocopieAllegare}</textarea>
+                        <!--
+                          <textarea disabled='true' class="slds-textarea slds-form-element__static">{!v.fotocopieAllegare}</textarea>
+                        --> 
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                  </p>
+                    </div>
+                    <!--###### MODAL BOX FOOTER Part Start ######-->
+                    <footer class="slds-modal__footer">
+                        <lightning:button variant="neutral" 
+                                          label="Annulla"
+                                          onclick="{!c.closeModel}"/>
+                        <lightning:button variant="brand" 
+                                          label="Aggiorna Appuntamento"
+                                          onclick="{!c.aggiornaAppuntamento}"/>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+            <!--###### MODAL BOX Part END Here ######-->
+        </aura:if>
+                <!--End details interview-->
+          </div>
+    </aura:if>
+    <aura:if isTrue="{!v.alertMessage==true}">
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+                    <div class="slds-modal__container">
+                        <header class="slds-modal__header">
+                            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="{!c.closeMessageError}">
+                    
+                            </button>
+                            <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Conferma</h2>
+                            <br/>
+                        </header>
+                        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                            {!v.messageError}
+                        </div>
+                        <footer class="slds-modal__footer">
+                            <button class="slds-button slds-button_neutral" onclick="{!c.saveAnnulato}">salva</button>
+                            <button class="slds-button slds-button_neutral" onclick="{!c.closeMessageError}">Annulla</button>
+                        </footer>
+                    </div>
+                </section>
+    </aura:if>
+</aura:component>

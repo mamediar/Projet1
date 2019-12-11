@@ -1,0 +1,4 @@
+@Istest
+public class XCSCreazioneAnagraficaDealerTest {
+
+}

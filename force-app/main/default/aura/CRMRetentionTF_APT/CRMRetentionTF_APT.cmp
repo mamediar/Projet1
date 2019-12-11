@@ -1,0 +1,57 @@
+<aura:component controller="CRMRetentionTF_APTController" implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId,lightning:availableForFlowScreens" >
+    
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="currentCase" type="Case" />
+    <aura:attribute name="dispositionSelected" type="XCS_Disposition__c" />
+    <aura:attribute name="noteValue" type="String" />
+    
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    <aura:handler event="c:XCS_DispositionReady" action="{! c.saveSelection}"/>
+    
+    
+    <div class="slds-grid slds-gutters">
+        <div class="slds-col slds-size_2-of-12 tx-left"></div>
+        <div class="slds-col slds-size_4-of-12 tx-left">
+    		<span>Retention Task Force</span>
+        </div>
+        <div class="slds-col slds-size_6-of-12 tx-right"></div>
+    </div>
+     <div class="slds-grid slds-gutters">
+        <div class="slds-col slds-size_2-of-12 tx-left"></div>
+        <div class="slds-col slds-size_4-of-12 tx-left">
+    		<span class="message">Chiudere la chiamata ed esitarla qui di seguito</span>
+        </div>
+        <div class="slds-col slds-size_6-of-12 tx-right"></div>
+    </div>
+    
+    
+    
+    <div class="slds-grid slds-gutters">
+        <div class="slds-col slds-size_2-of-12 tx-left"></div>
+        <div class="slds-col slds-size_4-of-12 tx-left">
+            <c:XCS_Disposition saveCase="false" 
+                               visibilityOption="{! v.currentCase.ProcessType__c }" 
+                               activateNoteField="false"
+                               parentExternalId="DP1098" 
+                               />
+        </div>
+        <div class="slds-col slds-size_6-of-12 tx-right"></div>
+    </div>
+    <div class="slds-grid slds-gutters">
+        <div class="slds-col slds-size_2-of-12 tx-left"></div>
+        <div class="slds-col slds-size_4-of-12 tx-left">
+            <lightning:button variant="destructive" label="Indietro" title="indietro" onclick="{! c.indietroAttivita }"/>
+        </div>
+        <div class="slds-col slds-size_6-of-12 tx-right"></div>
+    </div>
+    <div class="slds-grid slds-gutters">
+        <div class="slds-col slds-size_2-of-12 tx-left"></div>
+        <div class="slds-col slds-size_4-of-12 tx-left">
+            <lightning:button variant="destructive" label="Continua" title="avanti" onclick="{! c.completa }"/>
+        </div>
+        <div class="slds-col slds-size_6-of-12 tx-right"></div>
+    </div>
+    
+    
+    
+</aura:component>

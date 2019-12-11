@@ -1,0 +1,28 @@
+<apex:page controller="ConfirmLotReceiptEXCELController"
+           action="{!init}"
+           contentType="application/vnd.ms-excel#SalesForceExport.xls"
+           cache="true">
+    <style>
+    .header{
+    	color:red;
+    }
+    td{
+       border: 1px solid black; 
+    }
+    </style>
+    
+    <table class="grid">
+        <tr class="header">
+        	<td>LOTTI LAVORATI</td>
+            <td>FILIALE</td>
+            <td>DATA RICEZIONE</td>
+        </tr>
+        <apex:repeat value="{!lotList}" var="lot">
+        	<tr>
+            	<td><apex:outputText value="{!lot.OCSLottoId__c}"/></td>
+                <td><apex:outputText value="{!lot.BranchId__c}"/></td>
+                <td><apex:outputText value="{!lot.DateReceivedIDM__c}"/></td>
+            </tr>
+        </apex:repeat>
+    </table>
+</apex:page>

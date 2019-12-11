@@ -1,0 +1,41 @@
+<!--
+  @Component Name     : PVSubComponentBase.cmp
+  @Description        : 
+  @Author             : Andrea Vanelli
+  @Group              : 
+  @Last Modified By   : Andrea Vanelli
+  @Last Modified On   : 24/9/2019, 14:47:55
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    15/8/2019, 19:04:39   Andrea Vanelli     Initial Version
+-->
+<aura:component extensible="true" abstract="true">
+
+  <!-- <aura:handler name="init" value="{!this}" action="{!c.init}" /> NON chiama quello del componenete che lo estende ma solo il suo-->
+  <aura:registerEvent name="PVSubComponentEvents" type="c:PVSubComponentEvents" />
+
+  <aura:method name="inserisciCase" action="{!c.inserisciCase }"
+    description="Metodo richiamato dal bottone del componente padre"></aura:method>
+
+  <aura:method name="onParentChange" action="{!c.onParentChange}"
+    description="Metodo richiamato dal padre al cambio subtype, reason, ...">
+    <aura:attribute name="whatIsChanged" type="String" />
+  </aura:method>
+
+  <!-- dati da parent -->
+  <aura:attribute name="PVForm" type="PVForm" />
+  <aura:attribute name="parametriEsterni" type="PVInserimentoController.PVInserimentoParamEsterni" />
+  <aura:attribute name="cartaDatiFinanziariData" type="OCSCartaDatiFinanziariResponse.DatiCartaDatiFinanziariResponseDTO" />
+  <aura:attribute name="showMarkup" type="Boolean" default="true"/>
+
+
+  <!-- componenete che estende -->  
+  <div aura:id="showMarkupDivooo">
+    <div aura:id="showMarkupDiv">
+  {!v.body}
+  </div>
+</div>
+  
+</aura:component>

@@ -1,0 +1,5 @@
+<design:component>
+    <design:attribute name="recordId" label="Record ID" />
+    <design:attribute name="barCodeVector" label="Barcode Vettore" />
+    <design:attribute name="selectedRows" label="Lista Lotti Invio" />
+</design:component>

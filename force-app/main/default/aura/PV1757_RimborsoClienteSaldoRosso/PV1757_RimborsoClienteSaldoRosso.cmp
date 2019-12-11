@@ -1,0 +1,43 @@
+<aura:component >
+    <aura:attribute name="clienteSelezionato" type="Account" />
+    <aura:attribute name="labelOptions" type="String" default="Modalità rimborso" />
+    <aura:attribute name="optionsProvenienzaSaldoRosso" type="List" default="[
+                                                        {'label': 'Si', 'value': 'Si'},
+                                                        {'label': 'No', 'value': 'No'}
+                                                        ]"/>
+    <aura:attribute name="value" type="String" default=""/>
+    
+    <lightning:card>
+        <p class="slds-p-horizontal_small">
+            <lightning:layout verticalAlign="center" multipleRows="true">
+                <lightning:layoutItem size="3">
+                    <lightning:input type="number" 
+                                     name="Importo" 
+                                     label="Importo" 
+                                     value="0" 
+                                     formatter="currency" 
+                                     step="0.01"
+                                     required="true"/>	
+                </lightning:layoutItem>
+                <lightning:layoutItem size="9">
+                </lightning:layoutItem>
+                <lightning:layoutItem size="3">
+                    <lightning:radioGroup name="radioGroupRequired"
+                                          label="Il saldo rosso è stato generato da un incasso RID?"
+                                          options="{! v.optionsProvenienzaSaldoRosso }"
+                                          value="{! v.value }"
+                                          type="radio"
+                                          required="true"/>        
+                </lightning:layoutItem>
+                <lightning:layoutItem size="9">
+                </lightning:layoutItem>
+                <lightning:layoutItem size="3">
+                    <c:PV_ModalitaRimborso labelOptions="{!v.labelOptions}"></c:PV_ModalitaRimborso>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="9">
+                </lightning:layoutItem>
+            </lightning:layout>
+        </p>
+    </lightning:card>        
+            
+</aura:component>

@@ -1,0 +1,14 @@
+<aura:component   implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,flexipage:availableForRecordHome,force:lightningQuickAction"
+                access="global">
+    <aura:attribute name="dataList" type="sObject[]" default='[]'/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler action="{!c.navigateToIntervistaPaginazioneCmp}" event="c:eventGetIntervista" />
+    <aura:handler action="{!c.doInit}" event="c:eventNavigateToFiliali"/>
+    <aura:handler action="{!c.navigateToIntervistaComp}" event="c:eventNavigateToIntervistaDettagli" />
+    <aura:handler action="{!c.navigateToIntervistaCompPratiche}" event="c:eventNavigateToPraticheFiliali" />
+    <aura:handler action="{!c.navigateToIntervistaDomandeComp}" event="c:eventNavigateToDomanda" />
+    <aura:handler action="{!c.navigateToApputamentoTelephonico}" event="c:eventNavigateToApputamentoTelephonico" />
+    <aura:handler action="{!c.navigationAssicurativo}" event="c:eventNavigationAssicurativo" />
+
+    {!v.body}
+</aura:component>

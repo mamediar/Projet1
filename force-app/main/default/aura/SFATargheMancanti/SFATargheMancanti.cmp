@@ -1,0 +1,72 @@
+<aura:component controller="SFATargheMancantiController" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes">
+
+    <aura:attribute name="caseNumber" type="String"/>
+    <aura:attribute name="caseId" type="String"/>
+    <aura:attribute name="hasCaseDescription" type="Boolean" default="false"/>
+    <aura:attribute name="isCasePending" type="Boolean" default="false"/>
+
+    <aura:attribute name="dataScadenza" type="Date" />
+    <aura:attribute name="fileContents" type="String" />
+    <aura:attribute name="fileName" type="String" />
+    <aura:attribute name="fileExtension" type="String" />
+
+    <aura:attribute name="url" type="String"/>
+    <aura:attribute name="pageReference" type="Object"/>
+    <lightning:navigation aura:id="navService"/>
+
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+
+    <lightning:card variant="Narrow" title="Targhe mancanti" iconName="standard:account" footer=" ">
+
+        <p class="slds-p-horizontal_small"> 
+
+            <aura:if isTrue="{!v.isCasePending}">
+
+                <aura:if isTrue="{!v.hasCaseDescription}">
+                    <div class="messaggioDiCortesia"><b>Attenzione:</b> si è verificato un problema durante il caricamento del caso <span class="slds-m-top_medium"> <b><a href="{!v.url}">{!v.caseNumber}</a></b></span>.
+                    <br></br> Cliccare sul numero per visualizzare l'errore oppure rieseguire un nuovo caricamento.</div>   <br></br>
+                    <lightning:button aura:id="PreparaNuovoCaricamentoId" label="Prepara un nuovo caricamento" disabled="false" variant="destructive" onclick="{!c.chiudiCasoCaricatoConErrore}" />
+
+                    <aura:set attribute="else">
+                        <div class="messaggioDiCortesia">Caricamento del caso <span class="slds-m-top_medium">numero <b><a href="{!v.url}">{!v.caseNumber}</a></b></span> in corso. <br></br>
+                            Attendere... <br></br><br></br><br></br><br></br>
+                            <div class="slds-align_absolute-center" style="height: 4rem;"> 
+                                <div role="alert" class="slds-spinner slds-spinner_medium slds-spinner_inline" > 
+                                    <span class="slds-assistive-text">Loading</span> 
+                                    <div class="slds-spinner__dot-a"></div> 
+                                    <div class="slds-spinner__dot-b"></div> </div> </div>
+    
+                        </div>
+                        
+                    </aura:set>
+                </aura:if>
+
+            <aura:set attribute="else">
+                <br></br>
+                <lightning:input aura:id="fileUploadId" type="file" label="Carica file" name="file" multiple="false" accept=".csv" onchange="{!c.loadFile}"/>
+
+                <div class="slds-size_2-of-12 slds-m-top_medium">
+                    <ui:inputDate aura:id="dataScadenza" value="{!v.dataScadenza}" displayDatePicker="true" format="dd/MM/yyyy" label="Data scadenza" required="true"/>
+                </div>
+                <br></br>
+                <div class="slds-m-top_medium">
+                    <lightning:button aura:id="uploadFileButtonId" label="Avvia caricamento" variant="destructive" onclick="{!c.uploadFile}" />
+                </div>
+
+                <br></br>
+                <aura:if isTrue="{!and(v.caseNumber != null, v.caseNumber != undefined)}">
+                    <div class="slds-m-top_large">Ultimo case inserito: <span>Case number <b><a href="{!v.url}">{!v.caseNumber}</a></b></span></div>
+                    <div class="slds-m-top_small">
+                        <lightning:button aura:id="goToScadenziarioButtonId" label="Scadenziario" variant="destructive" onclick="{!c.goToScadenziario}" />
+                    </div>
+                </aura:if>
+
+            </aura:set>
+
+            </aura:if>
+
+        </p>
+
+    </lightning:card>
+
+</aura:component>

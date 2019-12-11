@@ -1,0 +1,87 @@
+<apex:page renderAs="PDF" controller="GestionePraticheSmarritePDFController" action="{!init}" applyBodyTag="false">
+  <head>
+    <style>
+      .arial {
+        font-family: Arial Unicode MS ;
+        font-weight: normal;
+      }
+      .bold {
+        font-family: sans-serif;
+      }
+      .intestazione {
+        text-align: center;
+      }
+      .DICHIARA {
+        text-align: center;
+      }
+      .denunciante {
+        padding-left: 65%;
+      }
+      .pieDiPagina {
+        padding-top: 120px;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <br/>
+    <div class="container">
+
+      <div class="intestazione arial">
+        Dichiarazione sostitutiva di certificazione<br/>
+        (Art. 46 D.P.R. 445 del 28 dicembre 2000)
+      </div>
+
+      <br/><br/><br/>
+
+      <div class="primoParagrafo arial">
+        Il sottoscritto, Gian Luca Sichel, nato a Piacenza il 19.06.1968 e domiciliato per la carica in Milano,<br/>
+        Via Caldera n. 21, in qualita' di Legale Rappresentante della Societa' Compass Banca S.p.A. con sede legale in Milano, Via Caldera n. 21, P.I. 00864530159
+        <br/><br/>
+        Consapevole delle sanzioni penali, nel caso di dichiarazioni non veritiere, di formazione o uso di atti falsi richiamante dall'Art. 76 del D.P.R. 445 del 28 dicembre 2000
+      </div>
+
+      <br/><br/>
+
+      <div class="DICHIARA bold">
+        <b>DICHIARA</b>
+      </div>
+
+      <br/><br/>
+
+      <div class="secondoParagrafo arial">
+        per tutti gli effetti di legge lo smarrimento in luogo e data imprecisati, del contratto in originale:
+        <br/><br/>
+        n {!contractList[0].ContractNumber__c} intestato a {!contractList[0].AccountName__c}, {!contractList[0].AccountFiscalCode__c} , nato a {!contractList[0].AccountBirthcity__c} PROV {!contractList[0].AccountProvince__c} il
+        {!contractList[0].AccountBirthdate__c} e residente a {!contractList[0].AccountCity__c}
+        <br/><br/>
+        Dichiara inoltre di essere informato, ai sensi e per gli effetti di cui all'Art. 10 del D.Lgs 196/2003 che i dati personali raccolti saranno trattati, anche con strumenti informatici, esclusivamente nell'ambito del procedimento per il quale la
+        presente dichiarazione viene resa
+        <br/><br/><br/>
+        MILANO,.............
+      </div>
+
+      <br/><br/>
+
+      <div class="denunciante arial">
+        Il Denunciante
+        <br/><br/>
+        ..............................
+      </div>
+
+      <br/><br/>
+
+      <div class="terzoParagrafo bold">
+        <b>
+          La presente dichiarazione non necessita dell'autenticazione della firma e sostituisce a tutti gli effetti le normali certificazioni richieste o destinate ad una pubblica amministrazione nonche' ai gestori di pubblici servizi e ai privati che vi
+          consentono.
+        </b>
+      </div>
+
+      <div class="pieDiPagina">
+      	{!uniqCode}
+      </div>
+    </div>
+  </body>
+</apex:page>

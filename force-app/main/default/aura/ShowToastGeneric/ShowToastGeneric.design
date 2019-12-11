@@ -1,0 +1,6 @@
+<design:component>
+	<design:attribute name="messagge" label="messagge"/>
+    <design:attribute name="type" label="type"/>
+    <design:attribute name="title" label="title"/>
+    <design:attribute name="booleanFineFlow" label="booleanFineFlow"/>
+</design:component>

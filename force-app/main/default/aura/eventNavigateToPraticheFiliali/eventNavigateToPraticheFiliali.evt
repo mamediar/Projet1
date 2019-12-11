@@ -1,0 +1,7 @@
+<!--
+ - Created by Salimata NGOM on 18/03/2019.
+ -->
+<aura:event type="APPLICATION" description="Event template">
+    <aura:attribute name ="Id" type ="String" />
+    <aura:attribute type="Boolean" name="loadData" default="true"/>
+</aura:event>

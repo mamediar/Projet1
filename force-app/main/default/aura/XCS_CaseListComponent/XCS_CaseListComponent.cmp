@@ -1,0 +1,41 @@
+<aura:component implements="force:hasRecordId,flexipage:availableForAllPageTypes,force:appHostable" controller="XCS_CaseListComponentControllerApex">
+    <aura:attribute name="data" type="Object"/>
+    <aura:attribute name="dataBackup" type="Object"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="StatusDesired" type="String"/>
+    <aura:attribute name="Filter" type="Boolean" />
+    <aura:attribute name="sortedBy" type="String" />
+    <aura:attribute name="sortedDirection" type="String" />
+    <aura:attribute name="filterInput" type="String" />
+
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    <aura:handler event="lightning:tabRefreshed" action="{! c.init }"/> 
+    
+    <c:SpinnerComponent aura:id="spinnerComponent"/>
+
+    <lightning:card title="{! 'Case del cliente ('+ v.data.length +')'}" iconName="standard:case">
+            
+        <aura:if isTrue="{!v.Filter&amp;&amp;v.dataBackup.length>0}">
+            <lightning:layout>
+                <lightning:layoutItem size="2">
+                    <lightning:input type="text" onchange="{!c.filterMethod}" value="{!v.filterInput}" label="Fitro di ricerca" />
+                </lightning:layoutItem>
+            </lightning:layout>
+            <br/>
+        </aura:if>
+    
+    
+    
+
+        <lightning:datatable
+            keyField="id"
+            data="{! v.data }"
+            columns="{! v.columns }"
+            hideCheckboxColumn="true"
+            hidden="{! v.data==null}"
+            onsort="{!c.updateColumnSorting}"
+            sortedDirection="{!v.sortedDirection}"
+            sortedBy="{!v.sortedBy}"
+        />
+    </lightning:card>
+</aura:component>

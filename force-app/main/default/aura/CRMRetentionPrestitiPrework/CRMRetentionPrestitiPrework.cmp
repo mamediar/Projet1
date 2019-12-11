@@ -1,0 +1,181 @@
+<aura:component controller="CRMRetentionPrestitiPreworkController" implements="lightning:isUrlAddressable">
+    
+    <aura:attribute name="retentionNonPossibile" type="boolean" default="false"/>
+    <aura:attribute name="listaRetention" type="Object[]" />
+    <aura:attribute name="listaRetentionSelezionata" type="Object[]" />
+    <aura:attribute name="descRetention" type="String" />
+    <aura:attribute name="customerId" type="String" />
+    <aura:attribute name="customerEmail" type="String" />
+    <aura:attribute name="customerCellulare" type="String" />
+    <aura:attribute name="noteValue" type="String" />
+    <aura:attribute name="dataTableFlag" type="boolean" default="true"/>
+    <aura:attribute name="checkEndMessagge" type="boolean" default="true" />
+    <aura:attribute name="reference" type="Object"/>
+    
+    
+    <aura:attribute name="tableColumns" type="List" />
+    <aura:attribute name="radioGroupOptionConsenso" type="List"/>
+    <aura:attribute name="listaFasciaOraria" type="List" />
+    
+    <aura:attribute name="esitoCustomer" type="String" />
+    <aura:attribute name="esitoDescriptionCustomer" type="String" />
+    <aura:attribute name="valoreCustomer" type="String" />
+    <aura:attribute name="radioGroupOptionConsensoValue" type="boolean"/>
+    <aura:attribute name="fasciaSelezionata" type="String" />
+    <aura:attribute name="endMessage" type='String' />
+    
+    <lightning:navigation aura:id="navService"/>
+    
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    
+    <lightning:card title="Risultato verifica Retention per E.A">
+        <aura:if isTrue='{! v.checkEndMessagge}'>
+            
+            <br/>   
+            <aura:if isTrue="{!!v.retentionNonPossibile }">
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_4-of-12"></div> <!-- spazio  -->
+                    <div class="slds-col slds-size_4-of-12"><p style="text-align:center; widht:100%;">
+                        <span class="message">
+                            {!v.descRetention}
+                        </span>
+                        </p> </div>
+                    <div class="slds-col slds-size_4-of-12"></div>
+                    
+                </div>
+                
+                
+                <br/>
+                <aura:if isTrue="{! v.dataTableFlag}" >
+                    <div>
+                        <lightning:datatable
+                                             class= "slds-cell-wrap"
+                                             id="DatatableId"
+                                             columns="{! v.tableColumns }"
+                                             data="{! v.listaRetention }"
+                                             keyField="id"
+                                             onrowselection="{! c.getSelected}"
+                                             />
+                    </div>
+                    <br/>
+                </aura:if>
+                
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_2-of-12 "></div> <!-- spazio  -->
+                    <div class="slds-col slds-size_1-of-12"><span class="label">Esito :  </span></div>
+                    <div class="slds-col slds-size_6-of-12 tx-left"><span>{! v.esitoDescriptionCustomer}</span></div>
+                    <div class="slds-col slds-size_3-of-12"></div> <!-- spazio  -->
+                </div>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_2-of-12 "></div> <!-- spazio  -->
+                    <div class="slds-col slds-size_1-of-12"><span class="label">Valore cliente :  </span></div>
+                    <div class="slds-col slds-size_6-of-12 tx-left"><span>{! v.valoreCustomer}</span></div>
+                    <div class="slds-col slds-size_3-of-12"></div> <!-- spazio  -->
+                </div>
+                
+                
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_2-of-12 tx-right"></div>
+                    <div class="slds-col slds-size_2-of-12">
+                        <lightning:input type="String" name="email" label="Email" value="{! v.customerEmail}"/>
+                    </div>
+                    <div class="slds-col slds-size_8-of-12 tx-right"></div>
+                </div>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_2-of-12 tx-right"></div>
+                    <div class="slds-col slds-size_2-of-12">
+                        <lightning:input type="tel" name="cellulare" label="Cellulare" minlength="5" maxlength="14" value="{! v.customerCellulare}" pattern="\d{5,14}"/>
+                    </div>
+                    <div class="slds-col slds-size_8-of-12 tx-right"></div>
+                </div>
+                <br/>
+                
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_2-of-12 tx-right"></div>
+                    <div class="slds-col slds-size_2-of-12">
+                        <lightning:radioGroup label="Presta il Consenso ?"
+                                              name="radioButtonGroupConsenso" 
+                                              default="false" 
+                                              options="{! v.radioGroupOptionConsenso}" 
+                                              value="{! v.radioGroupOptionConsensoValue}" 
+                                              required="false" 
+                                              type="Button" />
+                        
+                    </div>
+                    <div class="slds-col slds-size_8-of-12 tx-right"></div>
+                </div>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_2-of-12 tx-right"></div>
+                    <div class="slds-col slds-size_2-of-12">
+                        <lightning:select onchange="{!c.handleSelezionaFascia}" aura:id ="fasciaOrariaSelezione" label="Fascia Oraria Ricontatto" required="true">
+                            <option value="">Seleziona un opzione...</option>
+                            <aura:iteration items="{!v.listaFasciaOraria}" var="fascia">
+                                <option value="{!fascia.value}">{!fascia.label}</option>
+                            </aura:iteration>    
+                        </lightning:select>     
+                    </div>
+                    
+                    <div class="slds-col slds-size_8-of-12 tx-right"></div>
+                </div>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_2-of-12 tx-left"></div>
+                    <div class="slds-col slds-size_5-of-12 tx-left">
+                        <span>Per completare la richiesta di consolidamento inserire qui eventuali note e premere Continua</span>
+                    </div>
+                    <div class="slds-col slds-size_5-of-12 tx-right"></div>
+                </div>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_2-of-12 tx-left"></div>
+                    <div class="slds-col slds-size_4-of-12 tx-right">
+                        <lightning:textarea aura:id="noteTextarea" 
+                                            label="Note"
+                                            value="{!v.noteValue}"
+                                            required="false"
+                                            maxlength="1000"/> 
+                    </div>
+                    <div class="slds-col slds-size_6-of-12 tx-right"></div>
+                </div>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_2-of-12 tx-left"></div>
+                    <div class="slds-col slds-size_4-of-12 tx-left">
+                        <lightning:button variant="destructive" label="Continua" title="avanti" onclick="{! c.closeAttivita }"/>
+                    </div>
+                    <div class="slds-col slds-size_6-of-12 tx-right"></div>
+                </div>
+                
+                
+                <aura:set attribute="else">
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_2-of-12 "></div> <!-- spazio  -->
+                        <div class="slds-col slds-size_8-of-12 tx-left"><p style="widht:100%;">
+                            <span class="message">
+                                {!v.descRetention}
+                            </span>
+                            </p></div>
+                        <div class="slds-col slds-size_2-of-12"></div>
+                    </div>
+                    <br/><br/>
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_2-of-12 "></div> <!-- spazio  -->
+                        <div class="slds-col slds-size_8-of-12 tx-left"><lightning:button variant="destructive" label="Esegui azione estinzione anticipata" title="avanti" onclick="{! c.reSendToPostvendita }"/></div>
+                        <div class="slds-col slds-size_2-of-12"></div>
+                    </div>
+                </aura:set>
+            </aura:if>
+             <aura:set attribute="else">
+                 <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_2-of-12 "></div> <!-- spazio  -->
+                        <div class="slds-col slds-size_8-of-12 tx-left"><p style="widht:100%;">
+                            <br/><br/>
+                            <span class="message">
+                                {!v.endMessage}
+                            </span>
+                            <br/><br/>
+                            </p></div>
+                        <div class="slds-col slds-size_2-of-12"></div>
+                    </div>
+            </aura:set>    
+        </aura:if>
+    </lightning:card>
+    
+</aura:component>

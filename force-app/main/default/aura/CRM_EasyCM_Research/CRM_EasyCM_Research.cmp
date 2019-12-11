@@ -1,0 +1,63 @@
+<aura:component implements="force:appHostable" controller="CRM_EasyCM_Research_ControllerApex">
+    <aura:attribute name="searchFirstName" type="String"/>
+    <aura:attribute name="searchLastName" type="String"/>
+    <aura:attribute name="searchBornDate" type="Date"/>
+    <aura:attribute name="searchFiscalCode" type="String"/>
+    <aura:attribute name="searchTelephoneNumber" type="String"/>
+    <aura:attribute name="searchCIP" type="String"/>
+    <aura:attribute name="idAccSelezionato" type="List"/>
+    <aura:attribute name="accountSelezionato" type="Account"/>
+    <aura:attribute name="accountList" type="Account[]"/>
+    
+    <aura:method name="researchExternalCall" action="{!c.externalCallAction}" description="behaviour of the component while happen an external call">
+        <aura:attribute name="externalResearch" type="Object"/>
+    </aura:method>
+
+    <aura:attribute name="accountTableColunms" 
+        type="List" 
+        default="[{label: 'Cognome', fieldName: 'LastName', type: 'text'},
+                {label: 'Nome', fieldName: 'FirstName', type: 'text'},
+                {label: 'Nato il', fieldName: 'Data_Nascita__c', type: 'date' },
+                {label: 'Città Residenza', fieldName: 'BillingCity', type: 'text'},
+                {label: 'Codice Fiscale', fieldName: 'Codice_Fiscale__pc', type: 'text'},
+                {label: 'CIP Compass', fieldName: 'CIP_Compass', type: 'text'}]"
+    />
+    <c:SpinnerComponent aura:id="spinnerComponent"/>
+    <lightning:card>
+            <aura:set attribute="actions">
+                <lightning:button label="Cerca" variant="brand" onclick="{!c.searchAction}"/>
+            </aura:set>
+        <lightning:layout multipleRows="true">
+            <lightning:layoutItem padding="around-small" size="4">
+                <lightning:input name="Cognome" label="Cognome" value="{!v.searchLastName}"/>
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="around-small" size="4">
+                <lightning:input name="Nome" label="Nome" value="{!v.searchFirstName}"/>
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="around-small" size="4">
+                <lightning:input type="date" name="Data di Nascita" label="Data di Nascita" value="{!v.searchBornDate}"/>
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="around-small" size="4">
+                <lightning:input name="Codice Fiscale" label="Codice Fiscale" value="{!v.searchFiscalCode}"/>
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="around-small" size="4">
+                <lightning:input name="Numeri Telefonici" label="Numeri Telefonici" value="{!v.searchTelephoneNumber}"/>
+            </lightning:layoutItem>
+            <lightning:layoutItem padding="around-small" size="4">
+                <lightning:input name="CIP" label="CIP" value="{!v.searchCIP}"/>
+            </lightning:layoutItem>
+        </lightning:layout>
+
+        <aura:if isTrue="{!v.accountList.length!=0}">
+            <div>Clienti</div>
+            <lightning:datatable data="{!v.accountList }"
+                                            aura:id="accountTable"
+                                            columns="{!v.accountTableColunms}"
+                                            keyField="Id"
+                                            maxRowSelection="1"
+                                            selectedRows="{!v.idAccSelezionato}"
+                                            onrowselection="{!c.selectCliente}"
+                                            showRowNumberColumn="true"/>
+        </aura:if>
+    </lightning:card>
+</aura:component>

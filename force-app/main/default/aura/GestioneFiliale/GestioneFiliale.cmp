@@ -1,0 +1,16 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+	<lightning:tabset selectedTabId="1">
+                <lightning:tab label="Pianifica Slot" id="1">
+                    <c:PianificaSlot aura:id="PianificaSlot"/>
+                </lightning:tab>
+                <lightning:tab label="Zone" id="2">
+                    <c:GestioneZone aura:id="GestioneZone"/>
+                </lightning:tab>
+                <lightning:tab label="Cap Comune" id="3">
+                    <c:GestioneCapComune aura:id="GestioneCapComune"/>
+                </lightning:tab>
+                <lightning:tab label="Assenza Prolungata" id="4">
+                    <c:AssenzaProlungata aura:id="AssenzaProlungata"/>
+                </lightning:tab>
+    </lightning:tabset>
+</aura:component>

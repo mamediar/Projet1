@@ -1,0 +1,15 @@
+.THIS .slds-flexSolid{
+    display:flex;
+    align-items: center;
+}
+.THIS .slds-nowrap{white-space: nowrap;}
+.THIS .slds-button+.slds-button{margin-left: 0;}
+
+.THIS .side-content{
+	overflow: hidden;
+    white-space: nowrap;
+    -webkit-transition: width 300ms ease-in-out;
+    -moz-transition: width 300ms ease-in-out;    
+    -o-transition: width 300ms ease-in-out;    
+    transition: width 300ms ease-in-out;
+}

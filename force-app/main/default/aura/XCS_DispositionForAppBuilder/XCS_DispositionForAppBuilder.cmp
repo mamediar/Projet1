@@ -1,0 +1,202 @@
+<aura:component controller="XCS_DispositionForAppBuilderApex" implements="force:appHostable,force:hasRecordId,flexipage:availableForAllPageTypes" access="global">
+     <aura:registerEvent name="appEvent" type="c:eventTelemarketingForTab"/> 
+    <aura:registerEvent name="XCS_DispositionReady" type="c:XCS_DispositionReady"/> 
+    <aura:attribute name="observedAttribute" type="String"/> <!--attributo necessario all'aggiornamento -->
+    <aura:attribute name="rootExternalId" type="String"/>
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="disposition1Preselection" type="String" default=""/>
+    <aura:attribute name="disposition2Preselection" type="String" default=""/>
+    <aura:attribute name="disposition3Preselection" type="String" default=""/>
+    <aura:attribute name="disposition4Preselection" type="String" default=""/>
+    <aura:attribute name="disposition5Preselection" type="String" default=""/>
+    <aura:attribute name="disposition6Preselection" type="String" default=""/>
+    <lightning:workspaceAPI aura:id="workspace"/>
+
+    <aura:attribute name="hideLevel1" type="Boolean" default=""/>
+    <aura:attribute name="hideLevel2" type="Boolean" default=""/>
+    <aura:attribute name="hideLevel3" type="Boolean" default=""/>
+    <aura:attribute name="hideLevel4" type="Boolean" default=""/>
+    <aura:attribute name="hideLevel5" type="Boolean" default=""/>
+    <aura:attribute name="hideLevel6" type="Boolean" default=""/>
+
+    <aura:attribute name="listaDispositions1" type="List"/>
+    <aura:attribute name="listaDispositions2" type="List"/>
+    <aura:attribute name="listaDispositions3" type="List"/>
+    <aura:attribute name="listaDispositions4" type="List"/>
+    <aura:attribute name="listaDispositions5" type="List"/>
+    <aura:attribute name="listaDispositions6" type="List"/>
+    
+    <aura:attribute name="showListaDispositions2" type="Boolean" default=""/>
+    <aura:attribute name="showListaDispositions3" type="Boolean" default=""/>
+    <aura:attribute name="showListaDispositions4" type="Boolean" default=""/>
+    <aura:attribute name="showListaDispositions5" type="Boolean" default=""/>
+    <aura:attribute name="showListaDispositions6" type="Boolean" default=""/>
+    
+    <aura:attribute name="mapDispositions" type="Map"/>
+    <aura:attribute name="noteValue" type="String" default=""/>
+
+    <aura:attribute name="lastDispositionSelected" type="boolean" default="false"/>
+    
+    <aura:attribute name="dispositionSelezionatoIdLevel1" type="XCS_Disposition__c" default="{}"/>
+    <aura:attribute name="dispositionSelezionatoIdLevel2" type="XCS_Disposition__c" default="{}"/>
+    <aura:attribute name="dispositionSelezionatoIdLevel3" type="XCS_Disposition__c" default="{}"/>
+    <aura:attribute name="dispositionSelezionatoIdLevel4" type="XCS_Disposition__c" default="{}"/>
+    <aura:attribute name="dispositionSelezionatoIdLevel5" type="XCS_Disposition__c" default="{}"/>
+    <aura:attribute name="dispositionSelezionatoIdLevel6" type="XCS_Disposition__c" default="{}"/>
+    
+    <aura:attribute name="noteRequired" type="Boolean" default="false"/>
+    <aura:attribute name="doRefresh" type="Boolean" default="false"/>
+    <aura:attribute name="showScript" type="Boolean" default="false"/>
+    <aura:attribute name="options" type="List" default="[{'label': 'Refresh', 'value': true}]"/>
+    <aura:attribute name="lastDisposition" type="XCS_Disposition__c"/>
+    <aura:attribute name="onlyLeafDisposition" type="Boolean" default="true"/>
+
+    <aura:attribute name="showNote" type="Boolean" default="true"/>
+    <aura:attribute name="visibility" type="String"/>
+    <aura:attribute name="selectLabel1" type="String" default="Seleziona Esito"/>
+    <aura:attribute name="selectLabel2" type="String" default="Seleziona Esito"/>
+    <aura:attribute name="selectLabel3" type="String" default="Seleziona Esito"/>
+    <aura:attribute name="selectLabel4" type="String" default="Seleziona Esito"/>
+    <aura:attribute name="selectLabel5" type="String" default="Seleziona Esito"/>
+    <aura:attribute name="selectLabel6" type="String" default="Seleziona Esito"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+    <aura:handler name="change" value="{!v.observedAttribute}" action="{!c.refreshHandler}"/>
+    
+    <c:SpinnerComponent aura:id="spinnerComponent"/>
+    
+    <lightning:card class="slds-p-around_x-small" title="">
+        <lightning:layout multipleRows="true">
+            <aura:if isTrue="{! v.hideLevel1==false}">
+                <lightning:layoutItem padding="around-small" size="12">
+                    <lightning:layout>
+                        <lightning:layoutItem size="4">
+                            <lightning:select class="1" aura:id="risultatoChiamata1" title="Seleziona Esito" label="{!v.selectLabel1}"
+                                value="{!v.dispositionSelezionatoIdLevel1}" onchange="{!c.handleSelezionaDisposition}">
+                                <option text="" label="Seleziona un'opzione" value=""/>
+                                <aura:iteration items="{!v.listaDispositions1}" var="disposition" indexVar="key">                                
+                                    <option text="{!disposition.Name}" label="{!disposition.Name}" value="{!disposition.External_Id__c}" selected="{!disposition.External_Id__c==v.dispositionSelezionatoIdLevel1.External_Id__c}"/>
+                                </aura:iteration>
+                            </lightning:select>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </lightning:layoutItem>
+            </aura:if>
+
+            <aura:if isTrue="{!v.hideLevel2==false}">
+                <div class="{!v.showListaDispositions2 ? 'showClass' : 'hideClass'}">
+                    <lightning:layoutItem padding="around-small" size="12">
+                        <lightning:layout>
+                            <lightning:layoutItem size="4">
+                                <lightning:select class="2" aura:id="risultatoChiamata2" title="Seleziona Esito" label="{!v.selectLabel2}"
+                                    value="{!v.dispositionSelezionatoIdLevel2}" onchange="{!c.handleSelezionaDisposition}">
+                                    <option text="" label="Seleziona un'opzione" value=""/>
+                                    <aura:iteration items="{!v.listaDispositions2}" var="disposition" indexVar="key">
+                                        <option text="{!disposition.Name}" label="{!disposition.Name}" value="{!disposition.External_Id__c}" selected="{!disposition.External_Id__c==v.dispositionSelezionatoIdLevel2.External_Id__c}"/>
+                                    </aura:iteration>
+                                </lightning:select>
+                            </lightning:layoutItem>
+                        </lightning:layout>
+                    </lightning:layoutItem>
+                </div>
+            </aura:if>
+
+            <aura:if isTrue="{!v.hideLevel3==false}">
+                <div class="{!v.showListaDispositions3 ? 'showClass' : 'hideClass'}">
+                    <lightning:layoutItem padding="around-small" size="12">
+                        <lightning:layout>
+                            <lightning:layoutItem size="4">
+                                <lightning:select class="3" aura:id="risultatoChiamata3" title="Seleziona Esito" label="{!v.selectLabel3}"
+                                    value="{!v.dispositionSelezionatoIdLevel3}" onchange="{!c.handleSelezionaDisposition}">
+                                    <option text="" label="Seleziona un'opzione" value=""/>
+                                    <aura:iteration items="{!v.listaDispositions3}" var="disposition" indexVar="key">
+                                        <option text="{!disposition.Name}" label="{!disposition.Name}" value="{!disposition.External_Id__c}" selected="{!disposition.External_Id__c==v.dispositionSelezionatoIdLevel3.External_Id__c}"/>
+                                    </aura:iteration>
+                                </lightning:select>
+                            </lightning:layoutItem>
+                        </lightning:layout>
+                    </lightning:layoutItem>
+                </div>
+            </aura:if>
+            <aura:if isTrue="{!v.hideLevel4==false}">
+                <div class="{!v.showListaDispositions4 ? 'showClass' : 'hideClass'}">
+                    <lightning:layoutItem padding="around-small" size="12">
+                        <lightning:layout>
+                            <lightning:layoutItem size="4">
+                                <lightning:select class="4" aura:id="risultatoChiamata4" title="Seleziona Esito" label="{!v.selectLabel4}"
+                                    value="{!v.dispositionSelezionatoIdLevel4}" onchange="{!c.handleSelezionaDisposition}">
+                                    <option text="" label="Seleziona un'opzione" value=""/>
+                                    <aura:iteration items="{!v.listaDispositions4}" var="disposition" indexVar="key">
+                                        <option text="{!disposition.Name}" label="{!disposition.Name}" value="{!disposition.External_Id__c}" selected="{!disposition.External_Id__c==v.dispositionSelezionatoIdLevel4.External_Id__c}"/>
+                                    </aura:iteration>
+                                </lightning:select>
+                            </lightning:layoutItem>
+                        </lightning:layout>
+                    </lightning:layoutItem>
+                </div>
+            </aura:if>
+            <aura:if isTrue="{!v.hideLevel5==false}">
+                <div class="{!v.showListaDispositions5? 'showClass' : 'hideClass'}">
+                    <lightning:layoutItem padding="around-small" size="12">
+                        <lightning:layout>
+                            <lightning:layoutItem size="4">
+                                <lightning:select class="5" aura:id="risultatoChiamata5" title="Seleziona Esito" label="{!v.selectLabel5}"
+                                    value="{!v.dispositionSelezionatoIdLevel5}" onchange="{!c.handleSelezionaDisposition}">
+                                    <option text="" label="Seleziona un'opzione" value=""/>
+                                    <aura:iteration items="{!v.listaDispositions5}" var="disposition" indexVar="key">
+                                        <option text="{!disposition.Name}" label="{!disposition.Name}" value="{!disposition.External_Id__c}" selected="{!disposition.External_Id__c==v.dispositionSelezionatoIdLevel5.External_Id__c}"/>
+                                    </aura:iteration>
+                                </lightning:select>
+                            </lightning:layoutItem>
+                        </lightning:layout>
+                    </lightning:layoutItem>
+                </div>
+            </aura:if>
+            <aura:if isTrue="{!v.hideLevel6==false}">
+                <div class="{!v.showListaDispositions6 ? 'showClass' : 'hideClass'}">
+                    <lightning:layoutItem padding="around-small" size="12">
+                        <lightning:layout>
+                            <lightning:layoutItem size="4">
+                                <lightning:select class="6" aura:id="risultatoChiamata6" title="Seleziona Esito" label="{!v.selectLabel6}"
+                                    value="{!v.dispositionSelezionatoIdLevel6}" onchange="{!c.handleSelezionaDisposition}">
+                                    <option text="" label="Seleziona un'opzione" value=""/>
+                                    <aura:iteration items="{!v.listaDispositions6}" var="disposition" indexVar="key">
+                                        <option text="{!disposition.Name}" label="{!disposition.Name}" value="{!disposition.External_Id__c}" selected="{!disposition.External_Id__c==v.dispositionSelezionatoIdLevel6.External_Id__c}"/>
+                                    </aura:iteration>
+                                </lightning:select>
+                            </lightning:layoutItem>
+                        </lightning:layout>
+                    </lightning:layoutItem>
+                </div>
+            </aura:if>
+            <aura:if isTrue="{!v.showNote}">
+                <lightning:layoutItem padding="around-small" size="12">
+                    <lightning:textarea aura:id="noteTextarea" 
+                                        label="Note"
+                                        value="{!v.noteValue}"
+                                        required="{!v.noteRequired}"
+                                        maxlength="1000"/>
+                </lightning:layoutItem>
+                <aura:if isTrue="{!v.lastDisposition &amp;&amp; v.lastDisposition.DispositionScript__c &amp;&amp; v.showScript}">
+                    <lightning:layoutItem padding="around-small" size="12">
+                        <lightning:textarea aura:Id="scriptTextArea"
+                                            label="Script"
+                                            value="{!v.lastDisposition.DispositionScript__c}"
+                                            readonly="true"/>
+                    </lightning:layoutItem>
+                </aura:if>
+
+                <lightning:layoutItem padding="around-small" size="12">
+                    <lightning:button 
+                        disabled="{! ( !v.lastDispositionSelected &amp;&amp; v.onlyLeafDisposition ) || (v.noteRequired &amp;&amp; v.noteValue =='')}"
+                        variant="brand" 
+                        label="Conferma" 
+                        title="Conferma"
+                        onclick="{! c.handleClickConfirm }"
+                    />
+                </lightning:layoutItem>
+            </aura:if>
+        </lightning:layout>
+    </lightning:card>
+</aura:component>

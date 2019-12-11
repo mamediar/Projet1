@@ -1,0 +1,85 @@
+<aura:component controller="ConfirmLotReceiptController" implements="force:appHostable,flexipage:availableForAllPageTypes">
+    
+    <aura:attribute name="lotList" type="SFALotto__c[]"/>
+    <aura:attribute name="excelURL" type="String"/>
+    <aura:attribute name="filter" type="String"/>
+    <aura:attribute name="today" type="String" default=""/>
+    <aura:attribute name="today2" type="String" default=""/>
+    <aura:attribute name="disableInput" type="Boolean" default="true"/>
+    <aura:attribute name="required" type="Boolean" default="false"/>
+    <aura:attribute name="errorFlag" type="Boolean" default="false"/>
+    <aura:attribute name="textValue" type="String" default=""/>
+    <aura:attribute name="title" type="String" default="Custom Title"/>
+    <aura:attribute name="isExcelDisabled" type="Boolean" default="true"/>
+    <aura:attribute name="radioValue" type="String" default='TODAY'/>
+    <aura:attribute name="options" type="List" default="[{'label':'Today','value':'TODAY'},
+                                                        {'label':'Last Week','value':'LAST_N_DAYS:7'},
+                                                        {'label':'Last Month','value':'LAST_N_DAYS:30'},
+                                                        {'label':'Range','value':'range'}]"/>
+    
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/> 
+    <aura:handler name="barCodeEvent" event="c:BarCodeReady" action="{!c.barcodeAction}"/>
+    
+    <lightning:card class="container">
+        
+        <aura:set attribute="title">
+            <lightning:icon iconName="standard:case" size="small"/>
+            <b style="margin-left:10px;">{! v.title }</b>
+        </aura:set>
+        <aura:if isTrue="{!v.errorFlag}">                
+            <ui:message title="Attenzione" severity="warning" closable="false">                    
+                Il Barcode inserito non corrisponde ad alcun lotto da ricevere.
+            </ui:message>                                      
+        </aura:if>
+        
+        <div class="slds-m-left_small slds-m-right_small" style="position:relative;">
+            <c:BarCode inputIdContract="{!v.textValue}"
+                       placeholder="Scannerizza il barcode di un lotto da inviare"
+                       length="18"
+                       label="Barcode:"
+                       aura:id="1"/>
+        </div>
+        <div class="slds-box slds-m-top_xx-small slds-m-right_x-small slds-m-bottom_x-small slds-m-left_x-small">
+            <div>
+                <lightning:icon iconName="standard:case" size="small"/>
+                <b style="margin-left:10px;">Generazione Report</b>
+            </div>
+            <a id="a" href="{!v.excelURL}" target="_blank" style="position:absolute;z-index:1;margin-left:160px">
+                <lightning:button aura:id="excelButton"
+                                  variant="destructive"
+                                  disabled="{!v.isExcelDisabled}"
+                                  label="Scarica Report EXCEL" 
+                                  title="Scarica Report EXCEL" 
+                                  />
+            </a>
+            
+            <lightning:radioGroup class="slds-m-left_small slds-m-right_small"
+                                  name="filtriReport" 
+                                  label="Filtri Report"
+                                  options="{!v.options}"
+                                  value="{!v.radioValue}"
+                                  type="radio"
+                                  onchange="{!c.handleChange}"
+                                  />
+            
+            <lightning:input class="slds-m-left_small slds-m-right_medium" 
+                             aura:id="dal" 
+                             type="Date" 
+                             label="Dal" 
+                             disabled="{!v.disableInput}"
+                             required="{!v.required}"
+                             value="{!v.today}" 
+                             max="{!v.today2}"
+                             onchange="{!c.handleChange}"/>
+            <lightning:input class="slds-m-left_small slds-m-right_medium" 
+                             aura:id="al" 
+                             type="Date" 
+                             label="Al"
+                             disabled="{!v.disableInput}"
+                             required="{!v.required}"
+                             value="{!v.today2}" 
+                             min="{!v.today}"
+                             onchange="{!c.handleChange}"/>
+        </div>
+    </lightning:card>
+</aura:component>

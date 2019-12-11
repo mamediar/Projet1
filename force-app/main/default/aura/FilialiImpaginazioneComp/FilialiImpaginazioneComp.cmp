@@ -1,0 +1,192 @@
+<aura:component controller="ComodityApexClass"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+                access="global">
+     
+    <!--AURA ATTRIBUTI-->
+    <aura:attribute name="datafilialList" type="Account[]"/>
+    <aura:attribute name="paginationList" type="sObject[]" default='[]'/>
+    <aura:attribute name="objectList" type="sObject[]" default='[]'/>
+    <aura:attribute name='dataName' type='String' default=''/>
+    <aura:attribute name='codiceFiliale' type='String' default=''/>
+    <aura:attribute name='numeroPratiche' type='String' default=''/>
+    <aura:attribute name='chiusoConforme' type='String' default='' />
+    <aura:attribute name='chiusoNonConforme' type='String' default=''/>
+    <aura:attribute name="pageReference" type="Object"/>
+    
+    <!-- ATTRIBUTI RELATIVI ALLA PAGINAZIONE -->
+    <aura:attribute name="totalPage" type="Integer" default="1"/>
+    <aura:attribute name="currentPage" type="Integer" default="1"/>
+    <aura:attribute name="totalRecord" type="integer" default="0"/>
+    <aura:attribute name="pages" type="integer[]"/>
+    <aura:attribute name="pageSize" type="Integer" default="10"/>
+    <aura:attribute name="start" type="Integer" default="0"/>
+    <aura:attribute name="end" type="Integer" default="0"/>
+    <aura:attribute name="loadData" type="Boolean" default="true"/>
+    
+    <!-- ATTRIBUTI FOR SORT TABLE -->
+    <aura:attribute name="isAsc" type="boolean" default="true" description="boolean flag for pass sorting condition to apex class"/>
+    <aura:attribute name="arrowDirection" type="string" default="arrowup" description="Use for change arrow sign direction on header based on click"/>
+    <aura:attribute name="selectedTabsoft" type="string" default="numeroPratiche" description="Use for show/hide arraow sign on header based on conditions"/>
+    
+    <!-- register Event -->
+    <aura:registerEvent name="eventGetIntervista" type="c:eventGetIntervista" />
+    <aura:registerEvent name="eventNavigateToPraticheFiliali" type="c:eventNavigateToPraticheFiliali" />
+    
+    <!-- Handler Init -->
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+
+    <!-- SPINNER -->
+    <!--<aura:handler event="aura:waiting" action="{!c.showSpinner}"/>
+    <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}"/>
+    <aura:attribute name="toggleSpinner" type="boolean" default="false"/>
+    <aura:attribute name="SpinnerSearch" type="boolean" default="false"/>-->
+
+    <div style="">
+        <div class="slds-grid" style="">
+             <div class="slds-col slds-size_12-of-12 ">
+            <lightning:card variant="Narrow" title="Filiali" iconName="standard:account"></lightning:card>
+              <div class="slds-page-header">
+                <div class="slds-page-header__row">
+                  <div class="slds-page-header__col-title">
+                      <div class="slds-grid slds-gutters">
+                         <div class="slds-col slds-size_2-of-12">
+                              <lightning:input aura:id="codiceFiliale" name="codiceFiliale" onchange="{!c.setValueFilter}" value="{!v.codiceFiliale}"  placeholder="Codice dipendenza"/> <!-- label="Codice dipendenza" -->
+                         </div>
+                         <div class="slds-col slds-size_2-of-12">
+                              <lightning:input aura:id="namefiliale" name="name"  onchange="{!c.setValueFilter}" value="{!v.dataName}"  placeholder="Filiale"/> <!-- label="Filiale" -->
+                         </div>
+                         <div class="slds-col slds-size_2-of-12">
+                              <lightning:input aura:id="numeroPratiche" name="numeroPratiche"  onchange="{!c.setValueFilter}" value="{!v.numeroPratiche}" placeholder="Numero Pratiche"/> <!-- label="Numero Pratiche" -->
+                         </div>
+                         <div class="slds-col slds-size_2-of-12">
+                              <lightning:input aura:id="chiusoConforme" name="chiusoConforme"  onchange="{!c.setValueFilter}" value="{!v.chiusoConforme}" placeholder="Chiuso Conforme"/> <!-- label="Chiuso Conforme " -->
+                         </div>
+                         <div class="slds-col slds-size_2-of-12">
+                              <lightning:input aura:id="chiusoNonConforme" name="chiusoNonConforme"  onchange="{!c.setValueFilter}" value="{!v.chiusoNonConforme}" placeholder="Chiuso Non Conforme"/> <!-- label="Chiuso Non Conforme" -->
+                         </div>
+                         <div class="slds-col slds-size_2-of-12">
+                              <!--div style="margin-top: 3">
+                                    <button  class="slds-button slds-buttonbrand slds-m-leftsmall slds-m-top_large"  onclick="{!c.getRunSearch}">
+                                        <lightning:icon class="icon" iconName="utility:search" size="small"/>
+                                    </button>
+                              </div>-->
+                         </div>
+                      </div>
+                      <div class="slds-m-top_large">
+                           <button class="slds-button slds-button_success" onclick="{!c.downloadCsv}">
+                               <lightning:icon iconName="doctype:csv" size="small" />
+                               Esportare
+                           </button>
+                      </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="divTable" style="padding-bottom: 10px;padding-top: 10px;padding-left: 19px;">
+                <div style='font-size:13px;margin-top:20px;display:flex;'>
+                    <aura:if isTrue="{!v.SpinnerSearch}">
+                        <aura:if isTrue="{!v.toggleSpinner}">
+                            <div class="slds-spinner_container">
+                                <div class="slds-spinner slds-spinner_large slds-spinner_brand" role="alert">
+                                    <span class="slds-assistive-text">Loading</span>
+                                    <div class="slds-spinner__dot-a"></div>
+                                    <div class="slds-spinner__dot-b"></div>
+                                </div>
+                            </div>
+                        </aura:if>
+                    </aura:if>
+                </div>
+              </div>
+            
+              <!-- <div style="margin-left: 20px;margin-right: 20px;overflow-x: scroll;">-->
+              <div class="slds-container slds-p-left_large slds-p-right_large">
+                <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-max-medium-table--stacked-horizontal">
+                <!-- <table class="slds-table slds-table_cell-buffer slds-table_bordered">-->
+                     <thead>
+                         <tr class="slds-text-heading--label">
+                             <th  class="nobordertop" scope="col">
+                                  <span class="slds-truncate" title="">CODICE <br/> DIPENDENZA</span>
+                             </th>
+                             <th scope="col" class="nobordertop">
+                                  <span class="slds-truncate" title=""> FILIALE</span>
+                             </th>
+                             <th class="slds-is-sortable slds-text-title--caps nobordertop" scope="col" onclick="{!c.sortNumeroPratiche}">
+                                 <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                                    <span class="slds-assistive-text">Sort</span>
+                                    <span class="slds-truncate" title="">NUMERO <br/>PRATICHE</span>
+                                    <aura:if isTrue="{! and(v.arrowDirection == 'arrowdown', v.selectedTabsoft == 'numeroPratiche') }">&nbsp;  &#9660; </aura:if>
+                                    <aura:if isTrue="{! and(v.arrowDirection != 'arrowdown', v.selectedTabsoft == 'numeroPratiche') }"> &nbsp;  &#9650; </aura:if>
+                                 </a>
+                             </th>
+                             <th class="slds-is-sortable slds-text-title--caps nobordertop" scope="col" onclick="{!c.sortChiusoConforme}">
+                                 <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                                    <span class="slds-assistive-text">Sort</span>
+                                    <span class="slds-truncate" title="">CHIUSO<br/> CONFORME </span>
+                                    <aura:if isTrue="{! and(v.arrowDirection == 'arrowdown', v.selectedTabsoft == 'chiusoconforme') }">&nbsp;  &#9660; </aura:if>
+                                    <aura:if isTrue="{! and(v.arrowDirection != 'arrowdown', v.selectedTabsoft == 'chiusoconforme') }"> &nbsp;  &#9650; </aura:if>
+                                 </a>
+                             </th>
+                             <th class="slds-is-sortable slds-text-title--caps nobordertop" scope="col" onclick="{!c.sortChiusoNonConforme}" >
+                                 <a href="javascript:void(0);" class="slds-th__action slds-text-link--reset">
+                                    <span class="slds-assistive-text">Sort</span>
+                                    <span class="slds-truncate" title="">CHIUSO <br/>NON CONFORME</span>
+                                    <aura:if isTrue="{! and(v.arrowDirection == 'arrowdown', v.selectedTabsoft == 'chiusononconforme') }">&nbsp;  &#9660; </aura:if>
+                                    <aura:if isTrue="{! and(v.arrowDirection != 'arrowdown', v.selectedTabsoft == 'chiusononconforme') }"> &nbsp;  &#9650; </aura:if>
+                                 </a>
+                             </th>
+                         </tr>
+                     </thead>
+                     <tbody>
+                         <aura:iteration items="{!v.paginationList}" var="filiale" indexVar="index">
+                          <!--SS_Pagination-->
+                         <tr class="slds-hint-parent" >
+                            <th scope="row">
+                                <div class="slds-truncate" title="">{!filiale.CodiceClienteFilled__c}</div>
+                            </th>
+                            <th scope="row">
+                                <div class="slds-truncate" title=""><a href="" data-index="{!index}" onclick="{!c.getPratica}"> {!filiale.Name}</a></div>
+                            </th>
+                            <th scope="row">
+                                <div class="slds-truncate" title=" ">{!filiale.COM_Numero_Pratiche_Filiale__c}</div>
+                            </th>
+                            <th scope="row">
+                                <div class="slds-truncate" title=" ">{!filiale.COM_Numero_Pratiche_Conf_Filiale__c}</div>
+                            </th>
+                            <th scope="row">
+                                <div class="slds-truncate" title="">{!filiale.COM_Numero_Pratiche_NConf_Filiale__c}</div>
+                            </th>
+                         </tr>
+                         </aura:iteration>
+                     </tbody>
+                </table>
+              </div>
+              <br/>
+            
+              <!--SS_Pagination-->
+              <div class="slds-grid slds-wrap" style="margin-top: 2">
+                <div class="slds-size_1-of-2">
+                    <div class=" slds-text-align_center slds-m-around_x-small">
+                        <c:FilialiPagination objectList="{!v.objectList}" paginationList="{!v.paginationList}"
+                                             pageSize="{!v.pageSize}" start="{!v.start}"
+                                             end="{!v.end}" totalPage="{!v.totalPage}" currentPage="{!v.currentPage}"
+                                             totalRecord="{!v.totalRecord}"
+                                             pages="{!v.pages}"/>
+                    </div>
+                </div>
+                <div class="slds-size_1-of-2">
+                    <div class=" slds-text-align_right slds-m-around_x-small" style="margin-top: 16">
+                        <div class="slds-grid slds-wrap">
+                            <div class="slds-col slds-size_1-of-1 slds-large-size_3-of-3 " style="text-align:right;font-size:14px">
+                                <p class="slds-truncate">&nbsp;&nbsp;</p>
+                            </div>
+                            <div  style="width:100%!Important" class="slds-col slds-size_1-of-1 slds-large-size_3-of-3 stylePag">
+                                <button class="slds-button slds-button_brand" onclick="{!c.getIntervista}">Vai ai clienti >>></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              </div>
+          </div>
+        </div>
+    </div>
+</aura:component>

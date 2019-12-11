@@ -1,0 +1,6 @@
+<aura:component>
+    <aura:attribute type="Account" name="filiale" default=""/>
+    <aura:handler name="init" value="{!this}" action="{!c.handleManageContact}"/>
+
+    {!v.filiale.Name}
+</aura:component>	

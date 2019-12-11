@@ -1,0 +1,55 @@
+<aura:component controller='GestioneFaxRecallController' implements="flexipage:availableForAllPageTypes">
+    
+    <aura:attribute name="recordIdToChild" type="String" />
+    <aura:attribute name='configRecall' type='Double'/>
+    <aura:attribute name='dataRecall' type='DateTime'/> 
+    <aura:attribute name='contatoreRecall' type='Double'/>
+    <aura:attribute name='showRadioButton' type='Boolean' default='false'/>
+    <aura:attribute name='sceltaEsito' type='String'/>
+    <aura:attribute name="options" type="List" default="[{'label': 'Sì', 'value': 'valoreSi'},
+                                                        {'label': 'No', 'value': 'valoreNo'}
+                                                        ]"/>
+    <aura:attribute name="sceltaRadioButton" type="String" default=""/>
+    
+    <aura:handler name="init" value="{! this }" action="{!c.init}"/>
+    <aura:handler name='change' value='{!v.sceltaEsito}' action='{!c.launchRecall}'/> 
+    
+    <aura:if isTrue='{!v.showRadioButton}'>
+        <div aura:id="gestioneContainer" class="roll-content slds-m-top_small slds-m-bottom_small">
+            <lightning:card variant="Narrow" title="Recall" iconName="standard:poll">   
+                
+                <div class="slds-card__body_inner">
+                    <lightning:layout>
+                        
+                        <lightning:layoutItem>
+                            <div class="slds-col--padded" > 
+                                <p>Il cliente vuole essere ricontattato ad un orario specifico</p>
+                                <lightning:radioGroup name="radioGroup"
+                                                      options="{! v.options }"
+                                                      onchange='{!c.dataReset}'
+                                                      value="{! v.sceltaRadioButton }"
+                                                      type="radio"/>
+                            </div>
+                        </lightning:layoutItem>
+                        <lightning:layoutItem>
+                            <div class="{!if(v.sceltaRadioButton == 'valoreSi','slds-show slds-m-left_xx-large','slds-hide')}">
+                                <div class="slds-show_inline" > 
+                                    <p>Data Recall</p>
+                                    <lightning:input aura:id='dataOraRecall' 
+                                                     type="datetime" 
+                                                     name="inputData" 
+                                                     value='{!v.dataRecall}'
+                                                     onblur='{!c.setDateTime}'
+                                                     />
+                                </div>
+                            </div>
+                        </lightning:layoutItem>
+                        
+                    </lightning:layout>
+                    
+                </div>
+            </lightning:card> 
+        </div>
+    </aura:if>
+    
+</aura:component>

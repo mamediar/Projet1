@@ -1,0 +1,363 @@
+<aura:component controller="VenditaAssicurazioneGRController" implements="force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes">
+    
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="codCliente" type="String" /> 
+    <aura:attribute name="clientId" type="String" />
+    <aura:attribute name="formattedProfileName" type="String" />
+    <aura:attribute name="numeroPraticaOcs" type="String"/> <!-- Never Used -->
+    <aura:attribute name="interestValue" type="String" /> 
+    <aura:attribute name="NinterestValue" type="String" /> 
+    <aura:attribute name="SinterestValue" type="String" />  
+    <aura:attribute name="mezzoPagamValue" type="String" /> 
+    <aura:attribute name="freqPagamValue" type="String" />         
+    <aura:attribute name="valuesButtonInvio" type="String" />        
+    <aura:attribute name="valuesButtonPostaEmail" type="String" />
+    <aura:attribute name="schedulingButtonLabel" type="String" default="Schedula" />
+    <aura:attribute name="clientAddress" type="String" />
+    <aura:attribute name="clientFullName" type="String" />
+    <aura:attribute name="evoUrl" type="String" />
+    <aura:attribute name="evoOffice" type="String" />
+    <aura:attribute name="scriptTelefonataStretch" type="String" />
+    <!-- <aura:attribute name="nextButtonType" type="String" /> -->
+    <!-- <aura:attribute name="assicurazioniPosseduteTodayWarningMessage" type="String"/> -->
+    
+    <aura:attribute name="flagCartaDatiFinanziariError" type="Boolean" />
+    
+    <aura:attribute name="assicurazioniPosseduteData" type="Object" />
+    <aura:attribute name="cartePerPagamentoData" type="Object" />
+    <aura:attribute name="cartaDatiFinanziariData" type="Object" />
+    <aura:attribute name="movimentiViaggiantiData" type="Object" />
+    <aura:attribute name="autorizzazioniData" type="Object" />    
+    <aura:attribute name="ibanPerPagamentoData" type="Object" />
+    <aura:attribute name="assicurazioniPosseduteTodayData" type="Object" />
+    <aura:attribute name="iterationCurrentList" type="Object" />
+    
+    <aura:attribute name="assicurazioniPosseduteColumns" type="List"/>
+    <aura:attribute name="cartePerPagamentoColumns" type="List"/>
+    <aura:attribute name="cartaDatiFinanziariColumns" type="List"/>
+    <aura:attribute name="movimentiViaggiantiColumns" type="List"/>
+    <aura:attribute name="autorizzazioniColumns" type="List"/> 
+    <aura:attribute name="ibanPerPagamentoColumns" type="List"/>        
+    <aura:attribute name="assicurazioniPosseduteTodayColumns" type="List"/>
+    <aura:attribute name="interestOptions" type="List" />
+    <aura:attribute name="noInterestOptions" type="List" />
+    <aura:attribute name="productOptions" type="List" default="[]" />
+    <aura:attribute name="siInterest" type="List" />           
+    <aura:attribute name="mezzoPagam" type="List" />     
+    <aura:attribute name="freqPagam" type="List" /> 
+    <aura:attribute name="optionsButtonInvio" type="List"/>            
+    <aura:attribute name="optionsButtonPostaEmail" type="List" />
+    <aura:attribute name="cardList" type="List" />        
+    <aura:attribute name="productValue" type="List" />
+    
+    <aura:attribute name="dataCaricamento" type="Date"/>
+    
+    <aura:handler name="init" value="{! this }" action="{! c.init_1 }"/> 
+    
+    <!-- <lightning:workspaceAPI aura:id="workspace"/> -->
+    <lightning:navigation aura:id="navService"/>
+    
+    <lightning:layout horizontalAlign="spread" multipleRows="true" verticalAlign="center">    	            
+        <lightning:layoutItem > 
+            <lightning:button type="button"
+                              label="{!v.schedulingButtonLabel}"
+                              variant="destructive"                              
+                              onclick="{!c.schedulingDate}"/> 
+        </lightning:layoutItem>
+        <lightning:layoutItem padding="horizontal-small">
+            <div aura:id="salesSchedulingDateContainer" class="side-content" style="height:42px;">
+                <ui:inputDateTime aura:id="inputSchedulingDate" label=" " value="" displayDatePicker="true" />
+            </div> 
+        </lightning:layoutItem>
+        <lightning:layoutItem alignmentBump="left" padding="horizontal-small">
+            <a class="slds-show" href="{!$Resource.ScriptTelefonate + '/Assicurazione_Standalone_' + v.scriptTelefonataStretch + '.doc'}"  target="_blank">
+                <lightning:button aura:id=""
+                                  label="APRI SCRIPT TELEFONATA"
+                                  variant="destructive"  
+                                  type="button"/>                    
+            </a>
+        </lightning:layoutItem>
+        <lightning:layoutItem >            
+            <aura:if isTrue="{!v.evoOffice}">
+                <c:ApriSchermataEVO task="PTACLCAAS" codiceCliente="{!v.codCliente}" office="{!v.evoOffice}" />
+            </aura:if>
+        </lightning:layoutItem>
+    </lightning:layout>            
+    
+    <div class="slds-m-top_small" >    
+        <!-- <p class="slds-text-color_error">ASSICURAZIONI POSSEDUTE</p> -->
+        <div class="slds-box slds-text-align_center slds-text-color_error slds-theme_shade slds-text-heading_medium" >ASSICURAZIONI POSSEDUTE </div>
+        <aura:if aura:id="auraError" isTrue="{! empty(v.assicurazioniPosseduteData)}" >
+            <ui:message title=" " severity="warning" closable="false" class="slds-text-align_center">
+                Nessuna assicurazione da visualizzare.
+            </ui:message>             
+            <aura:set attribute="else">
+                <lightning:datatable aura:id="assicurazioniPossedute"
+                                     resizeColumnDisabled="false"
+                                     keyField="id"
+                                     data="{! v.assicurazioniPosseduteData }"
+                                     columns="{! v.assicurazioniPosseduteColumns }"
+                                     hideCheckboxColumn="true" />
+            </aura:set>
+        </aura:if>
+    </div>     
+    
+    <div class="slds-m-top_small" >            
+        <!--  <p class="slds-text-color_error">CARTE PER PAGAMENTO</p>-->
+        <div class="slds-box slds-text-align_center slds-text-color_error slds-theme_shade slds-text-heading_medium">CARTE PER PAGAMENTO</div>
+        <aura:if aura:id="auraError" isTrue="{! empty(v.cartePerPagamentoData)}" >
+            <ui:message title=" " severity="warning" closable="false" class="slds-text-align_center">
+                Nessuna carta da visualizzare.
+            </ui:message>             
+            <aura:set attribute="else">
+                <lightning:accordion aura:id="accordion" class="slds-box slds-box_small" onsectiontoggle="{!c.showCardDetails}" activeSectionName="">
+                    <aura:iteration items="{!v.cartePerPagamentoData}" var="item" indexVar="idx">
+                        <lightning:accordionSection name="{!item.numPratica}" label="{! 'No. Pratica: ' + item.numPratica}">                        
+                            <lightning:datatable resizeColumnDisabled="false"
+                                                 keyField="id"
+                                                 data="{! v.iterationCurrentList }"
+                                                 columns="{! v.cartePerPagamentoColumns }"
+                                                 hideCheckboxColumn="true" />
+                            
+                            <div class="slds-m-top_small" >                                
+                                
+                                <div class="slds-box slds-text-align_center slds-text-color_error slds-theme_shade slds-text-heading_medium">DATI FINANZIARI CARTA DI CREDITO</div>
+                                <aura:if aura:id="auraError" isTrue="{!v.flagCartaDatiFinanziariError}"> 
+                                    <ui:message title=" " severity="warning" closable="false" class="slds-text-align_center">
+                                        Nessun dato da visualizzare.
+                                    </ui:message>                   
+                                    <aura:set attribute="else">
+                                        <lightning:datatable aura:id="cartaDatiFinanziari"
+                                                             resizeColumnDisabled="false"
+                                                             keyField="id"
+                                                             data="{! v.cartaDatiFinanziariData }"
+                                                             columns="{! v.cartaDatiFinanziariColumns }"
+                                                             hideCheckboxColumn="true" />
+                                    </aura:set>
+                                </aura:if>
+                            </div>
+                            
+                            <div class="slds-m-top_small" >
+                                
+                                <div class="slds-box slds-text-align_center slds-text-color_error slds-theme_shade slds-text-heading_medium">MOVIMENTI VIAGGIANTI</div>                                
+                                <aura:if aura:id="auraError" isTrue="{! empty(v.movimentiViaggiantiData) }">
+                                    <ui:message title=" " severity="warning" closable="false" class="slds-text-align_center">
+                                        Nessun movimento da visualizzare.
+                                    </ui:message> 
+                                    <aura:set attribute="else" > 
+                                        <lightning:datatable aura:id="movimentiViaggianti"
+                                                             resizeColumnDisabled="false"
+                                                             keyField="id"
+                                                             data="{! v.movimentiViaggiantiData }"
+                                                             columns="{! v.movimentiViaggiantiColumns }"
+                                                             hideCheckboxColumn="true" />
+                                    </aura:set>
+                                </aura:if>
+                            </div>
+                            <div class="slds-m-top_small">
+                                
+                                <div class="slds-box slds-text-align_center slds-text-color_error slds-theme_shade slds-text-heading_medium">AUTORIZZAZIONI</div>
+                                <aura:if aura:id="auraError" isTrue="{! empty(v.autorizzazioniData) }">
+                                    <ui:message title=" " severity="warning" closable="false" class="slds-text-align_center">
+                                        Nessuna autorizzazione da visualizzare.
+                                    </ui:message> 
+                                    <aura:set attribute="else" > 
+                                        <lightning:datatable aura:id="autorizzazioni"
+                                                             resizeColumnDisabled="false"
+                                                             keyField="id"
+                                                             data="{! v.autorizzazioniData }"
+                                                             columns="{! v.autorizzazioniColumns }"
+                                                             hideCheckboxColumn="true" />
+                                    </aura:set>
+                                </aura:if>
+                            </div>
+                        </lightning:accordionSection>                
+                    </aura:iteration>            
+                </lightning:accordion>
+            </aura:set>
+        </aura:if>
+    </div>      
+    
+    <div class="slds-m-top_small">
+        
+        <div class="slds-box slds-text-align_center slds-text-color_error slds-theme_shade slds-text-heading_medium">IBAN PER PAGAMENTO</div>
+        <aura:if aura:id="auraError" isTrue="{! empty(v.ibanPerPagamentoData)}">
+            <ui:message title=" " severity="warning" closable="false" class="slds-text-align_center">
+                Nessun dato da visualizzare.
+            </ui:message>         
+            <aura:set attribute="else">
+                <lightning:datatable aura:id="ibanPerPagamento"
+                                     resizeColumnDisabled="false"
+                                     keyField="id"
+                                     data="{! v.ibanPerPagamentoData }"
+                                     columns="{! v.ibanPerPagamentoColumns}"
+                                     hideCheckboxColumn="true" />
+            </aura:set>
+        </aura:if>
+    </div>    
+    
+    <div class="slds-m-top_small" >                                        
+        <div class="slds-box slds-theme_shade ">
+            <lightning:layout horizontalAlign="spread" multipleRows="true" verticalAlign="center">    	            
+                <lightning:layoutItem size="4">
+                    
+                </lightning:layoutItem>
+                <lightning:layoutItem size="4" class="slds-align_absolute-center">                    
+                    <div class="slds-text-color_error slds-text-heading_medium ">PRATICHE OCS RIVELATE</div>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="4" class="slds-text-align_right">                    
+                    <lightning:button aura:id="leggiVendita"
+                                      label="Leggi vendita da OCS"
+                                      onclick="{!c.updateOCS}"/>
+                </lightning:layoutItem>
+            </lightning:layout>
+        </div>
+        <aura:if aura:id="auraError" isTrue="{! empty(v.assicurazioniPosseduteTodayData) }">
+            <ui:message title=" " severity="warning" closable="false" class="slds-text-align_center">
+                Nessuna assicurazione stipulata oggi da visuallizare. Premere 'Leggi vendita da OCS' per aggiornare la tabella.
+            </ui:message> 
+            <aura:set attribute="else" > 
+                <lightning:datatable resizeColumnDisabled="false"
+                                     keyField="id"
+                                     data="{! v.assicurazioniPosseduteTodayData }"
+                                     columns="{! v.assicurazioniPosseduteTodayColumns }"
+                                     hideCheckboxColumn="true" />
+            </aura:set>
+        </aura:if>
+    </div>
+    
+    <lightning:recordEditForm recordId="{!v.clientId}" objectApiName="Account" onsuccess="{!c.nextButton}">                            
+        <div class="slds-box slds-box_small slds-m-top_small"> 
+            <lightning:layout horizontalAlign="spread" multipleRows="true">    	            
+                <lightning:layoutItem size="6" class="slds-p-right_small">
+                    <lightning:combobox aura:id="checkInterest" variant="label-hidden" class="slds-dropdown-trigger" options="{!v.interestOptions}" placeholder="Il cliente è interessato?" value="{!v.interestValue}" onchange="{!c.resetComboboxOptions}"/>           
+                </lightning:layoutItem>
+                
+                <aura:if isTrue="{! equals(v.interestValue, 'non_interessato')}"> 
+                    <lightning:layoutItem size="6">                    
+                        <lightning:combobox aura:id="Ninterest" variant="label-hidden" class="slds-dropdown-trigger" options="{!v.noInterestOptions}" placeholder="Perchè il cliente non interessato?" value="{!v.NinterestValue}" />                               
+                    </lightning:layoutItem>
+                </aura:if>
+                
+                <aura:if isTrue="{! equals(v.interestValue, 'interessato')}">   
+                    <lightning:layoutItem size="6">
+                        <lightning:combobox aura:id="Sinterest" variant="label-hidden" class="slds-dropdown-trigger" options="{!v.siInterest}" placeholder="Seleziona un opzione pratica .."  value="{!v.SinterestValue}" onchange="{!c.resetRadioButtonOptions}" />           
+                    </lightning:layoutItem>
+                </aura:if>
+                
+                <aura:if isTrue="{! and( equals(v.interestValue, 'interessato'), equals(v.SinterestValue, 'Pratica caricata'))}">
+                    <lightning:layoutItem size="6">
+                        <div class="slds-m-top_small slds-p-right_small">
+                            <lightning:combobox aura:id="mezzoCarta" variant="label-hidden" class="slds-dropdown-trigger" options="{!v.mezzoPagam}" placeholder="Selezionare il mezzo di pagamenti"  value="{!v.mezzoPagamValue}" />           
+                        </div>
+                    </lightning:layoutItem>
+                    
+                    <lightning:layoutItem size="6" >
+                        <div class="slds-m-top_small ">
+                            <lightning:combobox aura:id="frequenza" variant="label-hidden" class="slds-dropdown-trigger" options="{!v.freqPagam}" placeholder="Selezionare la frequenza dei pagamenti"  value="{!v.freqPagamValue}" />           
+                        </div> 
+                    </lightning:layoutItem>
+                    
+                    <lightning:layoutItem size="6" class="slds-p-right_small slds-m-top_small">
+                        <div class="slds-box">
+                            <lightning:layout horizontalAlign="spread" verticalAlign="center">                        
+                                <lightning:layoutItem size="6">
+                                    <lightning:radioGroup aura:id ="modalitaInvioContratto_praticaCaricata"
+                                                          name="praticaCaricataRadio"
+                                                          label="Modalità invio contratto"
+                                                          options="{! v.optionsButtonInvio }"
+                                                          value="{! v.valuesButtonInvio }"
+                                                          type="radio"/>
+                                </lightning:layoutItem>
+                                
+                                <lightning:layoutItem size="6">
+                                    <lightning:fileUpload label="Carica file"
+                                                          name="CaricaFile"
+                                                          multiple="true"
+                                                          accept=".pdf, .png"
+                                                          recordId="{!v.recordId}"
+                                                          onuploadfinished="{!c.handleUploadFinished}" />
+                                </lightning:layoutItem>
+                                
+                            </lightning:layout>
+                        </div>
+                    </lightning:layoutItem>                                 
+                </aura:if>
+                
+                <aura:if isTrue="{! and( equals(v.interestValue, 'interessato'), equals(v.SinterestValue, 'Inviata doc precontrattuale'))}">    
+                    <lightning:layoutItem size="6" class="slds-p-right_small slds-m-top_small">                    
+                        <div class="slds-box slds-box_small">
+                            <lightning:layout horizontalAlign="spread" verticalAlign="center">                        
+                                <lightning:layoutItem size="6">
+                                    <lightning:radioGroup aura:id ="modalitaInvioContratto_inviataDocPrecontrattuale"
+                                                          name="inviataDocPrecontrattualeRadio"
+                                                          label="Modalità invio dell'informativa precontrattuale"
+                                                          options="{! v.optionsButtonPostaEmail }"
+                                                          value="{! v.valuesButtonPostaEmail }"
+                                                          type="radio"/>
+                                </lightning:layoutItem>
+                                
+                                <lightning:layoutItem size="6">
+                                    <lightning:fileUpload label="Carica file"
+                                                          name="CaricaFile"
+                                                          multiple="true"
+                                                          accept=".pdf, .png"
+                                                          recordId="{!v.recordId}"
+                                                          onuploadfinished="{!c.handleUploadFinished}" />
+                                </lightning:layoutItem>                            
+                            </lightning:layout>
+                        </div>                                                                               
+                    </lightning:layoutItem>
+                    
+                    <lightning:layoutItem size="6" class="slds-m-top_small"> 
+                        <lightning:layout horizontalAlign="spread" verticalAlign="center" multipleRows="true">
+                            <lightning:layoutItem size="12"> 
+                                <div class="slds-box slds-box_small">
+                                    <aura:if isTrue="{! !empty(!v.productOptions)}">
+                                        <lightning:checkboxGroup aura:id="products"
+                                                                 name="Prodotti"
+                                                                 label="Prodotti d'interesse (spuntare i prodotti dei quali il cliente richiede l'informativa, sarà inviata un E-mail/lettera per ciascun prodotto)"
+                                                                 value="{!v.productValue}"
+                                                                 options="{! v.productOptions }" />
+                                    </aura:if>
+                                </div>
+                            </lightning:layoutItem>  
+                            
+                            <lightning:layoutItem class="slds-m-right_small">    
+                                <div style="height:42px;">
+                                    <ui:inputDateTime aura:id="inputSchedulingDateLast" label=" " displayDatePicker="true" />   
+                                </div>
+                            </lightning:layoutItem>                                                                                   
+                            
+                        </lightning:layout>
+                    </lightning:layoutItem>
+                </aura:if>
+            </lightning:layout>
+            
+            <div class="slds-m-top_small">
+                <lightning:layout horizontalAlign="spread" multipleRows="true" verticalAlign="end">   
+                    <lightning:layoutItem size="6" class="slds-p-right_small">                        
+                        <div class="slds-form-element__label ">Indirizzo Postale</div>
+                        <div class="slds-box slds-box_x-small">
+                            <p>{!v.clientFullName}</p>
+                            <p>{!v.clientAddress}</p>
+                        </div>            
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="6">            
+                        <lightning:inputField fieldName="PersonEmail" />
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </div>
+        </div>
+        
+        <lightning:textarea aura:id="noteVendita" label=" " placeholder="Note (opzionale)"  variant="label-hidden" class="slds-m-top_small"  />        
+        <lightning:button aura:id="next"
+                          type="submit"                      
+                          class="slds-m-top_small" 
+                          label="Continua"
+                          variant="destructive" 
+                          iconName="utility:chevronright" 
+                          iconPosition="right" />
+        
+    </lightning:recordEditForm>
+</aura:component>

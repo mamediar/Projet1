@@ -1,0 +1,3 @@
+<aura:event type="APPLICATION" description="eventNavigateToFuturoImpaginazioneCompByAgente">
+     <aura:attribute name="agenteId" type="String"/>
+</aura:event>

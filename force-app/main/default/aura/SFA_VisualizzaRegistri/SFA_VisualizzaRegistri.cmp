@@ -1,0 +1,75 @@
+<aura:component implements="flexipage:availableForAllPageTypes" controller="SFA_VisualizzaRegistriClassApex">
+    <aura:attribute name="dataRegistri" type="Object"/>
+    <aura:attribute name="targa" type="String"/>
+    <aura:attribute name="datiRegistri" type="List"/>
+    <!--aura:attribute name="datiRegistri" type="Object"/-->
+    
+    <aura:attribute name="columnsRegistroB" type="List"/>
+    <aura:attribute name="columnsRegistroA" type="List"/>
+    <aura:attribute name="disableApproveButton" type="Boolean" default="true"/>
+    <aura:attribute name="actualUser" type="User"/> 
+    <aura:attribute name="profileUser" type="String"/>
+    
+
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+    <aura:handler event="force:refreshView" action="{!c.doInit}" />
+    <aura:handler event="ltng:sendMessage" action="{!c.sendMessageHandler}"/> 
+ 
+    <c:SpinnerComponent aura:id="spinnerComponent"/>
+    <lightning:card title="Visualizza Registri">
+        <aura:set attribute="actions">
+            <lightning:buttonIcon iconName="utility:refresh" onclick="{! c.doInit }" alternativeText="Refresh"/>
+        </aura:set>
+        <lightning:layout multipleRows="true">
+            <lightning:layoutItem size="12">
+                <lightning:layout>  
+                    <lightning:layoutItem size="2" class="slds-var-p-horizontal_x-small">
+                        <lightning:input type="date" name="data" label="Data" value="{!v.dataRegistri}" aura:id="searchParams"/>
+                        <!--lightning:select name="dataRegistriSelector" value="{!v.dataRegistri}"
+                        label="Periodo"/--> 
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="2" class="slds-var-p-horizontal_x-small">
+                        <lightning:input type="text" name="targa" value="{!v.targa}" label="Targa" aura:id="searchParams" onchange="{!c.upperCaseConverter}"
+                        pattern="(\b[A-Z][A-Z][0-9][0-9][0-9][A-Z][A-Z]\b)" messageWhenPatternMismatch="Targa inserita non valida"/>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="2" class="slds-var-p-around_x-small containerRow">
+                        <lightning:button name="cerca" label="Cerca" onclick="{!c.onClickButton}" class="elementRow"/>
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </lightning:card>
+    <lightning:card title="REGISTRO A - utilizzo auto in pool di filiale">
+        <lightning:layout>
+            <lightning:layoutItem size="12" padding="around-small">
+                <lightning:datatable
+                    keyField="Id"
+                    data="{!v.datiRegistri}"
+                    columns="{!v.columnsRegistroA}"
+                    onsave="{!c.handleSaveEdition }" 
+                    showRowNumberColumn ="false"               
+                    hideCheckboxColumn="true"/>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </lightning:card>
+    <lightning:card title="REGISTRO B - utilizzo auto in pool di filiale">
+        <lightning:layout multipleRows="true">
+            <lightning:layoutItem size="12" padding="around-small" >
+                <lightning:datatable
+                    keyField="Id"
+                    data="{!v.datiRegistri}"
+                    columns="{!v.columnsRegistroB}"
+                    onsave="{!c.handleSaveEdition }" 
+                    showRowNumberColumn ="false"
+                    hideCheckboxColumn="true"/>
+                    
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-var-p-around_x-small">
+                <lightning:button name="Genera_Excel" label="Genera Excel" onclick="{!c.excelGenerate}"/>
+            </lightning:layoutItem>
+            <lightning:layoutItem class="slds-var-p-around_x-small">
+                <lightning:button variant="brand" name="approva" label="Approva" onclick="{!c.doApprove}" disabled="{!v.disableApproveButton}" />
+            </lightning:layoutItem>
+        </lightning:layout>
+    </lightning:card>
+</aura:component>

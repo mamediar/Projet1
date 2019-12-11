@@ -1,0 +1,10 @@
+.THIS .myTable thead th span {
+  background-color: #000;
+  font-weight: bold;
+    color: white;
+}
+.THIS .myTable .slds-th__action .slds-th__action-button { display: none; }
+
+.THIS .myTable .slds-button_icon-bare{
+    display: none;
+}

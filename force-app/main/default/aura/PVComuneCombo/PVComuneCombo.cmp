@@ -1,0 +1,26 @@
+<aura:component controller='PVProvinciaLuogoController' implements="lightning:availableForFlowScreens,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" access="global" >
+    
+    <aura:handler name='init' value='{!this}' action='{!c.loadComuni}'/>
+    <!-- handler change per recepire la variazione della provincia per recuperare i luoghi-->
+    <aura:handler name="change" value="{!v.provinciaSelection}" action="{!c.onChangeProvincia}"/>
+    
+	<!-- da parent -->
+    <aura:attribute name='provinciaSelection' type='String'/>
+    <aura:attribute name='comuneSelection' type='String'/>
+    <aura:attribute name='comuniList' type='XCS_Town__c[]'/>
+    <aura:attribute name='label' type='String'/>
+    <aura:attribute name="required" type="Boolean"/>
+
+    <lightning:select   aura:id='comuniMenuId' 
+                        label='{!v.label}' 
+                        required='{!v.required}' 
+                        name='comuniMenu' 
+                        value='{!v.comuneSelection}'  
+                        class="slds-p-horizontal_medium">
+        <option text='Selezionare' value=''/>
+        <aura:iteration items='{!v.comuniList}' var='comuneVar'>
+            <option text='{!comuneVar.Comune__c}' value='{!comuneVar.Comune__c}' selected='{!comuneVar.Comune__c==v.comuneSelection}'/>
+        </aura:iteration>
+    </lightning:select> 
+    
+</aura:component>

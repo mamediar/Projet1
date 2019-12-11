@@ -1,0 +1,33 @@
+<aura:component implements="flexipage:availableForAllPageTypes" controller="GiustificaAttivitaNotaSpeseClass">
+    <aura:attribute name="data" type="List"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="branches" type="List"/>
+    <aura:attribute name="branchOCSExternalId" type="String"/>
+    <aura:attribute name="branchMap" type="Map"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler event="ltng:sendMessage" action="{!c.sendMessageHandler}"/> 
+
+	<lightning:card title="Visualizza Richieste">
+        <aura:set attribute="actions">
+            <lightning:buttonIcon iconName="utility:refresh" onclick="{! c.doInit }" alternativeText="Refresh"/>
+        </aura:set>
+        <c:SpinnerComponent aura:id="spinnerComponent"/> 
+        <lightning:layout multipleRows="true">
+            <lightning:layoutItem size="3" padding="around-small">
+                <lightning:select name="utr" aura:id="utrId" value="{!v.branchOCSExternalId}"  label="Filiale" onchange="{!c.changeNotaSpeseList}">
+                    <aura:iteration items="{!v.branches}" var="branch">
+                        <option text="{!branch.Name + ' ('+branch.TypeLabel+')'}" value="{!branch.OCS_External_Id__c}"/>
+                    </aura:iteration>  
+                </lightning:select>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="12" padding="around-small">
+                <lightning:datatable
+                    keyField="id"
+                    data="{!v.data}"
+                    columns="{!v.columns}"
+                    hideCheckboxColumn="true"/>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </lightning:card>
+</aura:component>

@@ -1,0 +1,10 @@
+.THIS .slds-table thead th {
+    background-color: rgb(159, 32, 28) !important;
+    color: rgb(255, 255, 255) !important;
+}
+.THIS .label-hidden > label {
+    display: none ;
+}
+.THIS .textnote textarea {
+    height: 365px !important;
+}

@@ -1,0 +1,89 @@
+<apex:page controller="EventRepport" renderAs="pdf" applyBodyTag="false" readOnly="true" showHeader="false" sidebar="false">
+    <h1>{!Title}</h1>
+    {!PDFData}
+    <p>{!message}</p>
+    	<table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped" >
+                  <thead>
+                    <tr class="slds-line-height_reset">
+                      <th
+                        style="text-align:center;background-color:#9f201c;color:#fff;"
+                        scope="col"
+                        colspan="4">
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Data/Ora:</b> </div>
+                      </td>
+                      <td>
+                        <div
+                          class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!data['ActivityDateTime']}</div>
+                      </td>
+                    </tr>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Tipologia:</b> </div>
+                      </td>
+                      <td>
+                        <div
+                          class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!data.Tipo_Occupazione__c}</div>
+                      </td>
+                    </tr>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Prodotto:</b> </div>
+                      </td>
+                      <td>
+                        <div
+                          class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!data.Product__r.Name}</div>
+                      </td>
+                    </tr>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Dettaglio Prodotto:</b> </div>
+                      </td>
+                      <td>
+                        <div
+                          class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!DataglioProductValues.Name}</div>
+                      </td>
+                    </tr>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Note:</b> </div>
+                      </td>
+                      <td>
+                        <div class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!data.Note__c}</div>
+                      </td>
+                    </tr>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>Filiale:</b> </div>
+                      </td>
+                      <td>
+                        <div
+                          class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!filialeEvent.Name}</div>
+                      </td>
+                    </tr>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>telefono:</b> </div>
+                      </td>
+                      <td>
+                      	<div class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!data.Customer__r.PersonMobilePhone}
+                          <br/>{!data.Customer__r.Phone}
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="slds-hint-parent">      
+                      <td>
+                        <div class="slds-p-around_small"><b>fotocopie de allegare:</b> </div>
+                      </td>
+                      <td>
+                      	<div class="slds-p-around_small  slds-text-heading_large slds-text-title_caps">{!fotocopieAllegare}</div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+</apex:page>

@@ -1,0 +1,122 @@
+<aura:component controller="XCS_Gestione_Desk_festivita_Apex">
+    <aura:attribute name="regionOptions" type="List"/>
+    <aura:attribute name="regionSelected" type="String"/>
+    <aura:attribute name="areaMap" type="Map"/>
+    <aura:attribute name="areaOptions" type="List"/>
+    <aura:attribute name="areaSelected" type="String"/>
+    <aura:attribute name="filialiOptions" type="List"/>
+    <aura:attribute name="filialiMap" type="Map"/>
+    <aura:attribute name="filialiValues" type="List"/>
+    <aura:attribute name="baseFestivita" type="XCS_Appointment__c"/>
+    <aura:attribute name="dateToday" type="Date"/>
+    <aura:attribute name="allFiliali" type="Boolean" default="false"/>
+    <aura:attribute name="allFestivities" type="List"/>
+    <aura:attribute name="unavailabilities" type="List"/>
+    <aura:attribute name="appointments" type="List"/>
+    <aura:attribute name="draftValues" type="Object"/>
+    <aura:attribute name="selectedRows" type="Object"/>
+    <aura:attribute name="sortedBy" type="String" />
+    <aura:attribute name="sortedDirection" type="Boolean" default="true"/>
+    <aura:attribute name="columns" type="List" default="[
+    {label: 'Data', fieldName: 'Date__c', type: 'date-local', editable: true, sortable : true},
+    {label: 'Filiale', fieldName: 'filiale', type: 'String', sortable : true},
+    {label: 'Ora inizio', fieldName: 'inizio', type: 'text', editable: true},
+    {label: 'Ora fine', fieldName: 'fine', type: 'text', editable: true},
+    {label: '', type: 'button',initialWidth:80, typeAttributes:{title: 'Cancella',name:'delete',iconName: 'utility:delete'}}]"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.onInit}"/>
+
+	<lightning:card title="Gestione festività per tutti i desk di tutte le filiali">
+        <c:SpinnerComponent aura:id="spinnerComponent"/>
+
+        <lightning:layout multipleRows="true">
+            <lightning:layoutItem size="6" padding="around-small">
+                <lightning:layout horizontalAlign="center" multipleRows="true">
+                    <lightning:layoutItem size="4" padding="around-large">
+                        <lightning:input type="checkbox" label="Tutte le filiali" name="allFiliali" onchange="{!c.changeAllFiliali}"/>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="2" padding="around-large">
+                        <lightning:select name="select1" label="Regione" value="{!v.regionSelected}" disabled="{!v.allFiliali}"
+                            onchange="{!c.changeRegion}">
+                            <aura:iteration items="{!v.regionOptions}" var="region">
+                                <option text="{!region}" value="{!region}" selected="{!v.regionSelected == region}"/>
+                            </aura:iteration>
+                        </lightning:select>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="2" padding="around-large">
+                        <lightning:select name="select1" label="Area" value="{!v.areaSelected}" disabled="{!v.allFiliali}"
+                            onchange="{!c.changeArea}">
+                            <aura:iteration items="{!v.areaOptions}" var="area">
+                                <option text="{!area}" value="{!area}" selected="{!v.areaSelected == area}"/>
+                            </aura:iteration>
+                        </lightning:select>
+                    </lightning:layoutItem>
+
+                    <lightning:layoutItem size="12" padding="around-small">
+                        <lightning:layout horizontalAlign="center">
+                            <lightning:layoutItem size="4" padding="around-small">
+                                <lightning:input type="date" name="DataFestivita" label="Data"
+                                required="true" value="{!v.baseFestivita.Date__c}" min="{!v.dateToday}" aura:id="requiredField"/>
+                            </lightning:layoutItem>
+                            <lightning:layoutItem size="2" padding="around-small">
+                                <lightning:input type="time" name="orarioInizioFestivita" label="Dalle" 
+                                required="true" value="{!v.baseFestivita.StartTime__c}" aura:id="requiredField" 
+                                min="09:00" max="18:00"/>
+                            </lightning:layoutItem>
+                            <lightning:layoutItem size="2" padding="around-small">
+                                <lightning:input type="time" name="orarioFineFestivita" label="Alle" 
+                                required="true" value="{!v.baseFestivita.EndTime__c}" min="09:00" 
+                                max="18:00" aura:id="requiredField"/>
+                            </lightning:layoutItem>
+                        </lightning:layout>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="12" >
+                        <lightning:layout horizontalAlign="center">
+                            <lightning:layoutItem size="12" padding="around-small">
+                                <lightning:layout horizontalAlign="end">
+                                    <lightning:layoutItem padding="around-small">
+                                        <lightning:button variant="Neutral" label="Crea Festivita" title="Crea Festivita" onclick="{! c.sendFestivityrecord}"/>
+                                    </lightning:layoutItem> 
+                                </lightning:layout>
+                            </lightning:layoutItem>
+                        </lightning:layout>
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </lightning:layoutItem>
+
+            <lightning:layoutItem size="6" padding="around-small">
+                <lightning:dualListbox name="festivities"  
+                label= "Seleziona filiali" 
+                sourceLabel="Available" 
+                selectedLabel="Selected" 
+                fieldLevelHelp="This is a dual listbox" 
+                options="{!v.filialiOptions}" 
+                value="{!v.filialiValues}"
+                disableReordering="true" 
+                disabled="{!v.allFiliali}"
+                onsave="{! c.handleSave }"/>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="12" padding="around-small">
+                <lightning:datatable
+                    aura:id="tabFestivita"
+                    keyField="Id"
+                    data="{! v.allFestivities}"
+                    columns="{! v.columns }"
+                    draftValues="{! v.draftValues }"
+                    onsave="{! c.handleSave }"
+                    onrowaction="{! c.handleRowAction }"
+                    onsort="{!c.updateColumnSorting}"
+                    sortedBy="{!v.sortedBy}"
+                    sortedDirection="{!v.sortedDirection}"/>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="12">
+                <lightning:layout horizontalAlign="end">
+                    <lightning:layoutItem padding="around-small">
+                        <lightning:button variant="brand" label="Elimina Festivita selezionate" title="Elimina Festivita selezionate" onclick="{! c.handleCancelMultiRow }"/>
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </lightning:layoutItem>
+        </lightning:layout>
+        
+    </lightning:card>
+</aura:component>

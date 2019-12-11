@@ -1,0 +1,59 @@
+.THIS .show{
+    display:none;
+}
+.THIS .test:hover{
+    background-color: trasparent;
+}
+.THIS .test:hover .toHover{
+    display:none;
+}
+.THIS .test:hover .show { 
+    display: block;
+    /*background-color:rgba(0,0,0,0.5);*/
+}
+.THIS .paddLeft0-5 {
+    padding-left: 1rem;
+}
+.THIS .color-red:hover{
+    -webkit-text-fill-color: #9F201C;
+}
+.THIS a{
+    text-decoration: none;
+    color: dimgrey;
+}
+.THIS .modal-width{
+    max-width: 750px;
+}
+.THIS .top-margin{
+    margin-top: 15px;
+}
+.THIS .align-center{
+    text-align: center;
+}
+.THIS .bk-color-green{
+    background-color: rgb(28, 218, 3);
+    text-align: center;
+    padding-left: 2px;
+    padding-right: 2px; 
+    -webkit-text-fill-color: white;
+}
+.THIS .bk-color-orange{
+    background-color: orange; 
+    text-align: center;
+    padding-left: 2px;
+    padding-right: 2px;
+    -webkit-text-fill-color: white;
+}
+.THIS .bk-color-red{
+    background-color: red;
+    text-align: center;
+    padding-left: 2px;
+    padding-right: 2px; 
+    -webkit-text-fill-color: white;
+}
+.THIS hr{
+    margin:2px 0px 25px 0px;
+}
+.THIS .font-class{
+    font-size: 12pt;
+}

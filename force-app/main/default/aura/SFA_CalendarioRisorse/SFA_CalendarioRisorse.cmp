@@ -1,0 +1,82 @@
+<aura:component controller="SFA_CalendarioRisorseController" implements="flexipage:availableForAllPageTypes">
+    
+    <aura:attribute name="today" type="Date"/>
+    <aura:attribute name="targetDate" type="Date"/>
+    <aura:attribute name="branchOCSExternalId" type="Object" />
+    <aura:attribute name="userSelectedID" type="Object"/>
+    <aura:attribute name="branch" type="Object" />
+    <aura:attribute name="filialistiPerFiliale" type="Map"/>
+    <aura:attribute name="slotList" type="SFA_Slot__c[]"/>
+    <aura:attribute name="assenzeProlungateList" type="SFA_Assenza_Prolungata__c[]"/>
+    <aura:attribute name="users" type="User[]"/>
+    <aura:attribute name="userSelected" type="String"/>
+    <aura:attribute name="branches" type="Account[]"/>
+    <aura:attribute name="zonePerFiliale" type="Map"/>
+    <aura:attribute name="TypeSelectOptions" type="Map"/>
+    <aura:attribute name="tabName" type="String"/>
+    <aura:attribute name="currentMonthWeekList" type="List"/>
+    <aura:attribute name="checkTipoCalendario" type="String" default="Calendario Personale"/>
+
+    <aura:handler name="init" action="{!c.init}" value="{!this}" />
+
+    <lightning:card title="{!v.tabName}">
+        <c:SpinnerComponent aura:id="spinnerComponent"/>
+        <lightning:layout verticalAlign="center" multipleRows="true">
+            <lightning:layoutItem size="12">
+                <lightning:layout horizontalAlign="center">  
+                    <lightning:layoutItem size="4" class="slds-var-p-around_x-small">
+                        <lightning:select name="utr" aura:id="utrId" value="{!v.branchOCSExternalId}"  label="Filiale" onchange="{!c.onChangeBranchSelect}" disabled="{!v.tabName == 'Calendario Personale'}">
+                            <aura:iteration items="{!v.branches}" var="branch">
+                                <option text="{!branch.Name + ' ('+branch.typeLabel+')'}" value="{!branch.OCS_External_Id__c}"  selected="{!branch.OCS_External_Id__c==v.branch.OCS_External_Id__c}"/>
+                            </aura:iteration>  
+                        </lightning:select>
+                        <lightning:layout verticalAlign="center" horizontalAlign="center" multipleRows="false">
+                            <lightning:layoutItem size="8">
+                                <lightning:input type="date" name="data" label="Data" value="{!v.targetDate}"/>
+                            </lightning:layoutItem>
+                            <lightning:layoutItem size="4">
+                                <lightning:button variant="brand" label="Cerca" title="Cerca" class="slds-m-left_x-small slds-m-top_large" onclick="{!c.submitNewTargetDate}"/>
+                            </lightning:layoutItem>
+                        </lightning:layout>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size='4' class="slds-var-p-around_x-small">
+                        <lightning:select name="utr" aura:id="utrId" value="{!v.userSelectedID}"  label="Utenti" onchange="{!c.onChangeUserSelect}" disabled="{!v.tabName == 'Calendario Personale'}">
+                            <aura:iteration items="{!v.users}" var="user">
+                                <option text="{!user.Name}" value="{!user.Id}"  selected="{!user.Id==v.userSelected.Id}"/>
+                            </aura:iteration>
+                        </lightning:select>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size='4'/>
+                </lightning:layout>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="12" padding="around-small">
+                <lightning:card class="" title="Addetto Filiale">
+                    <lightning:layout multipleRows="true">
+                        <aura:iteration items="{!v.currentMonthWeekList}" var="weekDays" indexVar="index">
+                            <lightning:layoutItem size="12" class="borderBottomSlots">
+                                <c:calendarBoxContainerComponent 
+                                    aura:id="CalendarBoxContainerFilialistiId"
+                                    assenzeProlungateList="{!v.assenzeProlungateList}"
+                                    weekDays="{!weekDays}" 
+                                    slotList="{!v.slotList}" 
+                                    user="{!v.userSelected}" 
+                                    branches="{!v.branches}"
+                                    branch="{!v.branch}"
+                                    zonePerFiliale="{!v.zonePerFiliale}"
+                                    TypeSelectOptions="{!v.TypeSelectOptions}"
+                                    showHeader="{!index==0}"
+                                    isFilialista="true"
+                                    trashSlotList="{!v.trashSlotList}"
+                                    unsavedAdd="{!v.unsavedAdd}"
+                                    today="{!v.today}"
+                                    filialeTab="false"
+                                    targhetDate="{!v.targetDate}"
+                                />
+                            </lightning:layoutItem>
+                        </aura:iteration>
+                    </lightning:layout>
+                </lightning:card>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </lightning:card>
+</aura:component>

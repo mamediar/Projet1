@@ -1,0 +1,6 @@
+.THIS [name=IdContract] {
+    max-width: 250px !important;
+}
+.THIS .slds-button_icon-bare{
+    display: none !important;
+}

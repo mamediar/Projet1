@@ -1,0 +1,12 @@
+<aura:component controller="IntegrativoPenetrazioneCnt" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global">
+        <div class="slds-card slds-m-top_x-medium slds-m-bottom_x-small lds-p-left_x-small slds-p-right_x-small ">
+                <div class="slds-card__body">
+                        <div class="slds-clearfix">
+                            <div class="slds-float_right">
+                                    <button class="slds-button slds-button_brand btn-blue" onclick="{!c.redirect}">Commodity Integr. Penetrazione</button>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        <c:CSVReader/>
+</aura:component>

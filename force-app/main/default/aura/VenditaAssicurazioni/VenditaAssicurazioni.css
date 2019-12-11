@@ -1,0 +1,49 @@
+.THIS textarea {
+    height:135px;
+    max-height: 255px;
+}
+
+.THIS .slds-pill__remove {
+    display: none;    
+}
+
+.THIS .pr{
+    background-color	: rgb(4, 132, 75);
+    border-radius		: 15rem;
+    color				: #fff;
+    font-size           : 10pt;
+    text-align			: center;
+    padding             : 3px;
+}
+
+.THIS .toggle-content {
+    display: none;
+    height: 0;
+    overflow: hidden;
+    -webkit-transition: height 350ms ease-in-out;
+    -moz-transition: height 350ms ease-in-out;    
+    -o-transition: height 350ms ease-in-out;    
+    transition: height 350ms ease-in-out;
+}
+.THIS .toggle-content.is-visible {
+	display: block;
+    height: auto;
+}
+
+.THIS .interest{
+    display:inline-block;
+}
+
+.THIS .side-content{
+	overflow:hidden;
+    white-space: nowrap;
+    width: 0;
+    -webkit-transition: width 350ms ease-in-out;
+    -moz-transition: width 350ms ease-in-out;    
+    -o-transition: width 350ms ease-in-out;    
+    transition: width 350ms ease-in-out;
+}
+
+ .THIS .side-content.visible{
+    width: 250PX;
+}

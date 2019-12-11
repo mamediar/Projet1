@@ -1,0 +1,38 @@
+<!--
+  @File Name          : PV1772DaCustomerServAFilialeGestione.cmp
+  @Description        : 
+  @Author             : Federico Negro
+  @Group              : 
+  @Last Modified By   : Federico Negro
+  @Last Modified On   : 31/10/2019, 16:52:34
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    28/10/2019   Federico Negro     Initial Version
+-->
+<aura:component access='global' controller='PV1772DaCustomerServAFilialeGestione'>
+
+    <aura:handler name='init' value='{!this}' action='{!c.doInit}' />
+    <aura:attribute name="parent" type="Aura.Component" required="true"
+        description="componente padre per accedere ai metodi comuni" />
+    <aura:method name="save" action="{!c.save}" description="Metodo richiamato dal bottone del componente padre">
+    </aura:method>
+
+    <!-- Attributi -->
+    <aura:attribute name="options" type="List" />
+
+    <aura:attribute name="value" type="String" default="Close" />
+
+    <!-- da parent -->
+    <aura:attribute name="theCase" type="Case" />
+    <aura:attribute name="userData" type="PVForm.UserData" default="null" />
+    <aura:attribute name="dispositionSelezionato" type="XCS_Disposition__c" />
+    <aura:attribute name='note' type='String' />
+    <aura:attribute name="allegati" type="Attachment[]" />
+    <aura:attribute name="newStatus" type="String" />
+
+    <!-- Attributi gestione-->
+    <aura:attribute name="messaggiErrore" type="String" access="Global" />
+
+    <!-- main --><!-- /main -->
+
+</aura:component>

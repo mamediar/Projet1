@@ -1,0 +1,125 @@
+<aura:component controller="Gua_ChiamataStandaloneOutboundCnt" implements="flexipage:availableForAllPageTypes" access="global">
+
+    <aura:attribute name="isModalOpen" type="boolean" default="false" />
+    <aura:attribute name="value" type="String" default="option1" />
+    <aura:attribute name="modalTitle" type="String" default="Chiusura Chiamata" />
+    <aura:attribute name="dispositionValues" type="List" />
+    <aura:attribute name="dispositionValuesSelect" type="List" />
+    <aura:attribute name="case" type="Case" default="{}" />
+    <aura:attribute name="description" type="String" default="" />
+    <aura:attribute name="campagn" type="Campaign" default="{}" />
+    <aura:attribute name="attivitaRichiestaEseguida" type="Boolean" default="false" />
+    <aura:attribute name="datiAggiuntivi" type="List" default="[]" />
+    <aura:attribute name="datiAgguintiviValue" type="String[]" default="[]" />
+    <aura:attribute name="loadingData" type="Boolean" default="false" />
+    <aura:attribute name="closedCase" type="Boolean" default="false" />
+
+    <aura:handler name='init' value='{!this}' action='{!c.doInit}' />
+    <aura:registerEvent name="GUA_RefreshViewEvent" type="c:GUA_RefreshViewEvent" />
+
+    <!--Use aura:if tag to display/hide popup based on isModalOpen value-->
+
+    <aura:if isTrue="{!v.isModalOpen}">
+        <div class="slds-m-around_xx-large">
+            <!-- Modal/Popup Box starts here-->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box Header Starts here-->
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon iconName="utility:close" onclick="{! c.closeModel }" alternativeText="close" variant="bare-inverse" class="slds-modal__close" />
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{!v.modalTitle}</h2>
+                    </header>
+                    <!--Modal/Popup Box Body Starts here-->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <div class="slds-grid slds-grid_pull-padded-medium">
+                            <div class="slds-col slds-p-horizontal_medium">
+                                <div class="slds-grid slds-gutters">
+                                    <div class="slds-col slds-size_2-of-3">
+                                        <lightning:select label="Esito chiamata" aura:id="selectedDisposition" onchange="{!c.onXCSSelectChange}">
+                                            <option value="">-Nessuna-</option>
+                                            <aura:iteration items="{!v.dispositionValues}" var="data">
+                                                <option value="{!data.Id}">{!data.Name}</option>
+                                            </aura:iteration>
+                                        </lightning:select>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-3">
+                                        <lightning:button class="slds-m-top_large" variant="brand" label="Aggiungi attività" onclick="{!c.addAttivita}" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <aura:if isTrue="{!v.loadingData}">
+                            <div class="slds-grid slds-grid_pull-padded-medium">
+                                <div class="slds-col slds-p-horizontal_x-small">
+                                    <div aura:id="uploadCard" class="slds-card__header" style="position:relative">
+                                        <div class="slds-form--compound">
+                                            <div class="slds-spinner_container" aura:id="uploadSpinner">
+                                                <div class="slds-spinner slds-spinner_brand slds-spinner--small" aria-hidden="false" role="alert">
+                                                    <div class="slds-spinner__dot-a"></div>
+                                                    <div class="slds-spinner__dot-b"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </aura:if>
+                        <aura:if isTrue="{!v.attivitaRichiestaEseguida}">
+                            <div class="slds-grid slds-size_1-of-3">
+                                <div class="slds-form--inline">
+                                    <p class="slds-text-heading_small agg">Dati Aggiuntivi</p>
+                                    <aura:iteration items="{!v.datiAggiuntivi}" var="agg">
+                                        <div class="slds-form-element slds-form-element_horizontal">
+                                            <div class="slds-form-element__control myInput">
+                                                <lightning:input value="{!agg.value}" label='{!agg.label}' type="text" id="" class="inputAggiuntivis" />
+                                            </div>
+                                        </div>
+                                    </aura:iteration>
+                                </div>
+                            </div>
+                        </aura:if>
+                        <aura:if isTrue="{! v.dispositionValuesSelect.length > 0}">
+                            <div class="slds-grid">
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                    <thead>
+                                        <tr class="slds-line-height_reset">
+                                            <th>Name</th>
+                                            <th>Categoria</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <aura:iteration items="{!v.dispositionValuesSelect}" var="dispo">
+                                            <tr class="slds-hint-parent">
+                                                <td>{! dispo.Name}</td>
+                                                <td>{! dispo.Categoria__c}</td>
+                                            </tr>
+                                        </aura:iteration>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </aura:if>
+
+
+                        <div class="slds-grid slds-grid_pull-padded-medium">
+                            <div class="slds-col slds-p-horizontal_medium">
+                                <lightning:inputRichText placeholder="Note" aura:id="note" value="{!v.description}" />
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-grid_pull-padded-medium">
+                            <div class="slds-col slds-p-horizontal_medium">
+                                <lightning:input class="risp-coretta" type="checkbox" aura:id="mygroupRisposta" value="Chiudi attività" label="Chiudi attività" onchange="{!c.closeCaseStatus}" />
+                            </div>
+                        </div>
+                    </div>
+                    <!--Modal/Popup Box Footer Starts here-->
+                    <footer class="slds-modal__footer">
+                        <lightning:button variant="neutral" label="Annulla" title="Annulla" onclick="{!c.closeModel }" />
+                        <lightning:button variant="brand" label="Imposta Esito E chiudi Chiamata" title="Imposta Esito E chiudi Chiamata" onclick="{!c.submitDetails}" />
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </aura:if>
+
+</aura:component>

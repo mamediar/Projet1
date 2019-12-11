@@ -1,0 +1,32 @@
+<aura:component controller="SFAConvenzBottoneAnnullaCntroller"
+                implements="force:appHostable,flexipage:availableForRecordHome,force:hasRecordId" access="global" >
+    
+    
+	
+    <!-- INPUT VALUES:: -->
+    <aura:attribute name="recordId" type="String"/>   
+    <aura:attribute name="disableButton" type="Boolean" default="false"/>
+    <aura:attribute name="buttonLabel" type="String" default="Annulla attività convenzionamento"/>   
+    <aura:attribute name="messageText" type="String" default=""/>
+    <aura:attribute name="nameListViewToNavigate" type="String" default=""/>
+	<aura:attribute name="cmp" type="String"/>
+    
+    <aura:attribute name="variant" type="String"/>
+    
+    <aura:attribute name="spinnerCounter" type="Integer" default="0"/>
+    <c:SpinnerComponent aura:id="spinnerComponent" spinnerCounter="{!v.spinnerCounter}"/>    
+    
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+	<lightning:button variant="destructive" label="{!v.buttonLabel}" onclick="{!c.openModal}" disabled="{!v.disableButton}"/>    
+    <br></br>
+    <ui:outputText value="{!v.messageText}"/>
+    
+    <c:Modal aura:id="modal"
+             variant="{!v.variant}"
+             component="Procedere con l'annullamento dell'attività di convenzionamento?" 
+             action="{!c.actionButton}"/>    
+        
+</aura:component>

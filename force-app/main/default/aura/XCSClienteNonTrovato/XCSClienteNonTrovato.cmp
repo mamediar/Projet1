@@ -1,0 +1,7 @@
+<aura:component controller="XCSClienteNonTrovatoController" implements="flexipage:availableForAllPageTypes,force:hasRecordId,lightning:availableForFlowScreens">
+	
+ 	<aura:attribute name="recordId" type="String"/>
+    <aura:registerEvent name="XCSClienteNonTrovatoAppEvent" type="c:XCSClienteNonTrovatoAppEvent"/>
+    
+    <lightning:button variant="destructive" label="Cliente Non Trovato" title="avanti" onclick="{! c.clienteNonTrovato }"/>
+</aura:component>

@@ -1,0 +1,42 @@
+<!--
+//- Component Name : CRMReclamiGestioneMittentiContainer
+//- Autor          : Fabio Giuliani(Lynx)
+//- Date           : 21/05/2019
+//- Description    : Component container per la selezione dei mittenti 
+//- 				quando si seleziona un reclamo esistente
+//- Version        : 1.0
+-->
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" access="global">
+    
+    
+    <!--Oggetti mittente, proprietà: da,nomeCognomeMittente,indirizzoMittente,
+ cittaMittente,provinciaMittente,capMittente-->
+    <aura:attribute name="mittentiList" type="XCS_Mittente__c[]"/>
+    <aura:attribute name="mittenteSelezionatoListaMitt" type="XCS_Mittente__c"/>
+    <aura:attribute name="aziendaSelezionata" type="String"/>
+    <aura:attribute name="stepInserimentoMittenti" type="String" default="main"/>
+    <aura:attribute name="clienteSelezionato" type="OCSCliente"/>
+    <aura:attribute name="clienteSelezionatoContainer" type="OCSCliente"/>
+    <aura:attribute name="praticaSelezionata" type="Object"/>
+    
+    <aura:if isTrue="{!v.stepInserimentoMittenti=='main'}">
+        Main Mittente
+        <c:CRMReclamiGestioneMittentiMain aziendaSelezionata="{!v.aziendaSelezionata}"
+                                             stepInserimentoMittenti="{!v.stepInserimentoMittenti}"
+                                             mittentiList="{!v.mittentiList}"
+                                             clienteSelezionato="{!v.clienteSelezionato}"
+                                             praticaSelezionata="{!v.praticaSelezionata}"
+                                             mittenteSelezionatoListaMitt="{!v.mittenteSelezionatoListaMitt}"
+                                             />
+        <aura:set attribute="else">
+        Inserimento Nuovo Mittente
+              <div class="slds-p-right_xx-small">
+            <c:CRMReclamiGestioneMittentiNuovo mittenteSelezionatoListaMitt="{!v.mittenteSelezionatoListaMitt}"
+                                                  aziendaSelezionata="{!v.aziendaSelezionata}"
+                                                  stepInserimentoMittenti="{!v.stepInserimentoMittenti}"
+                                                  mittentiList="{!v.mittentiList}"
+                                                  />
+            </div>
+        </aura:set>
+    </aura:if>
+</aura:component>

@@ -1,0 +1,25 @@
+.THIS .nonRispondeAlTelefono {
+    background-color:#F3A333;
+    border:1px solid #F3A333;
+}
+.THIS .Irreperibile {
+    background-color:#CB4E4A;
+    border:1px solid #CB4E4A;
+}
+.THIS .question {
+  background-color:#E6E6E6;
+    padding:2%;
+    border-left:4px solid #9F201C;
+}
+.THIS .question h2,.THIS .riposta h2{
+  font-weight:bold;
+}
+.THIS .slds-table th, .THIS .slds-table td {
+    white-space: normal !important;
+}
+.THIS .text_underline {
+    text-decoration: underline;
+}
+.THIS .slds-box-btn {
+    padding: 1rem;
+}

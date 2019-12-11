@@ -1,0 +1,45 @@
+<aura:component controller="CRMReclamiInserimentoFeedItemController"
+                implements="flexipage:availableForAllPageTypes" 
+                access="global" 
+                >
+    
+    <aura:attribute name="ident" type="String"/> 
+    <aura:attribute name="feedData" type="Reclami_Timestamp__c[]"/>
+    <aura:method name="refresh" action="{!c.init}"/>
+    
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    <aura:if isTrue="{!not(empty(v.feedData))}">
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Data Evento">Data Evento</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Evento">Evento</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Nome Utente">Nome Utente</div>
+                    </th>
+                </tr>
+            </thead>    
+            <tbody>
+                <aura:iteration var="temp" items="{!v.feedData}">
+                    <tr>
+                        <td><lightning:formattedDateTime year="numeric" month="numeric" day="numeric" hour="2-digit"
+                                                         minute="2-digit" value="{!temp.Data__c}"/></td>
+                        <td>{!temp.Evento__c}</td>
+                        <td>{!temp.Utente__r.Name}</td>
+                    </tr>
+                </aura:iteration>
+                
+            </tbody>
+        </table>
+        <aura:set attribute="else">
+            <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+                <h2>Non ci sono Eventi da mostrare</h2>
+            </div>
+        </aura:set>
+    </aura:if>
+</aura:component>

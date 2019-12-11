@@ -1,0 +1,130 @@
+<aura:component controller="GD_ElencoAttestatoRicevuto" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global">
+    <aura:attribute name="courses" type="IVASS_Dealer_courses_Iscritti__c[]" default="[]" />
+    <aura:attribute name="attachments" type="IVASS_Dealer_courses_attachments__c[]" default="[]" />
+    <aura:attribute name="iscritto" type="IVASS_Dealer_courses_Iscritti__c" default="{'sObjectType':'IVASS_Dealer_courses_Iscritti__c',
+                                                        'Name':'',
+                                                        'Ragione_Sociale__c':'',
+                                                        'Dealer__r':'',
+                                                        'Cognome__c':'',
+                                                        'Nome__c':'',
+                                                        'Stato_Corso__c':'',
+                                                        'Note__c':'',
+                                                        'Codice_Intermediario__c':''}" />
+    <aura:attribute name="pickListValuesList" type="String[]" default="[]" />
+    <aura:attribute name="selectedStatus" type="String" default="" />
+    <lightning:layout>
+        <lightning:layoutItem padding="around-small" size="7">
+            <div class="slds-page-header slds-grid">
+                <div class="slds-grid">
+                    <h2 class="slds-page-header__title slds-m-right_small slds-align-middle slds-truncate">Attestati del referente selezionato</h2>
+                </div>
+                <div class="slds-grid slds-grid_vertical-align-center slds-col_bump-left">
+                    <lightning:button onclick="{!c.updateStatus}" variant="success" label="Aggiorna Attestati" />
+                </div>
+            </div>
+            <div class="slds-m-bottom_x-small slds-p-left_x-small slds-p-right_x-small slds-p-top_small">
+                <div class="slds-scrollable_y slds-scrollable--x">
+                    <table class="slds-table slds-table--bordered slds-table--cell-buffer slds-max-medium-table--stacked-horizontal">
+                        <tbody>
+                            <aura:iteration items="{!v.attachments}" var="attachment" indexVar="index">
+                                <tr aria-selected="false" class="slds-hint-parent">
+                                    <td scope="row">
+                                        <div class="slds-truncate">
+                                            <!-- <a href="{!attachment.Link_Documento__c}" target="_blank" rel="noopener noreferrer">{!attachment.Link_Documento__c}</a> -->
+                                            <a href="{!attachment.Link_Documento__c}" target="_blank" rel="noopener noreferrer">{!attachment.ContentDocumentLinks[0].ContentDocument.Title}</a>
+                                        </div>
+                                    </td>
+                                    <td scope="row">
+                                        <div class="slds-truncate"> </div>
+                                    </td>
+                                    <td scope="row">
+                                        <div class="slds-truncate">
+                                            <div class="slds-form-element">
+                                                <div class="slds-form-element__control">
+                                                    <div class="slds-select_container">
+                                                        <select class="slds-select" data-index="{!index}" id="select-01" onchange="{!c.selectStatus}" value="{!attachment.Status__c}">
+                              <aura:if isTrue="{!attachment.Status__c}">
+                                <option value="true" selected="selected"
+                                  >Attivo</option
+                                >
+                                <option value="false">Disattivo</option>
+                                <aura:set attribute="else">
+                                  <option value="true">Attivo</option>
+                                  <option value="false" selected="selected"
+                                    >Disattivo</option
+                                  >
+                                </aura:set>
+                              </aura:if>
+                            </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </aura:iteration>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </lightning:layoutItem>
+        <lightning:layoutItem padding="around-small" size="5">
+            <div class="slds-page-header slds-grid">
+                <div class="slds-grid">
+                    <h2 class="slds-page-header__title slds-m-right_small slds-align-middle slds-truncate">Corsi del Referente </h2>
+                </div>
+            </div>
+            <div class="slds-m-bottom_x-small slds-p-left_x-small slds-p-right_x-small slds-p-top_small">
+                <div class="slds-scrollable_y slds-scrollable--x">
+                    <table aria-multiselectable="true" class="slds-table slds-table--bordered slds-table--cell-buffer slds-max-medium-table--stacked-horizontal">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="nobordertop">
+                                    <span class="slds-truncate"> Corso</span>
+                                </th>
+                                <th scope="col" class="nobordertop">
+                                    <span class="slds-truncate"> Stato</span>
+                                </th>
+                                <th scope="col" class="nobordertop">
+                                    <span class="slds-truncate"> Descrizione</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <aura:iteration items="{!v.courses}" var="course" indexVar="index">
+                                <tr aria-selected="false" class="slds-hint-parent">
+                                    <th scope="row">
+                                        <div class="slds-truncate"> {!course.Corso__r.Name}</div>
+                                    </th>
+                                    <th scope="row">
+                                        <div class="slds-truncate"> {!course.Stato_Corso__c}</div>
+                                    </th>
+                                    <th scope="row">
+                                        <div class="slds-truncate">
+                                            {!course.Corso__r.Descrizione_Corso__c}</div>
+                                    </th>
+                                </tr>
+                            </aura:iteration>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </lightning:layoutItem>
+    </lightning:layout>
+    <lightning:layout>
+        <lightning:layoutItem padding="around-small" size="6">
+            <lightning:card>
+                <lightning:select name="esito" label="Esito:" onchange="{!c.setStatus}">
+                    <option value=""></option>
+                    <aura:iteration items="{!v.pickListValuesList}" var="option">
+                        <option text="{!option}" value="{!option}" />
+                    </aura:iteration>
+                </lightning:select>
+                <lightning:textarea name="esitoNote" label="Note Esito" value="{!v.iscritto.Note__c}" />
+                <div class="slds-grid slds-grid_vertical-align-center slds-col_bump-left">
+                    <lightning:button onclick="{!c.updateIscritto}" variant="success" label="Conferma Esito" />
+                </div>
+            </lightning:card>
+        </lightning:layoutItem>
+    </lightning:layout>
+</aura:component>

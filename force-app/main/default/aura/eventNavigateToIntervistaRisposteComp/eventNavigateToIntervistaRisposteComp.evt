@@ -1,0 +1,6 @@
+<!--
+ - Created by Salimata on 17/03/2019.
+ -->
+<aura:event type="APPLICATION" description="eventNavigateToIntervistaRisposteComp">
+    <aura:attribute name="riposta" type="Risposte__c" description="object risposta"/> 
+</aura:event>

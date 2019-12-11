@@ -1,0 +1,117 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" 
+access="global" controller="SchedaVerificaFilialeVisElencoPratCtrl">
+    <aura:attribute name="data" type="Object"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="showList" type="Boolean" default="false"/>
+    <aura:attribute name="showTable" type="Boolean" default="false"/>
+    <aura:attribute name="showAddButton" type="Boolean" default="false"/>
+    
+	<!--se altri componenti effettuano una refresh view, viene effettuata anche su questo componente-->
+       
+    <aura:attribute name="codOcsDealer" type="String"/>
+    <aura:attribute name="paAuto" type="String" default="0"/>
+    <aura:attribute name="pfMobili" type="String" default="0"/>
+    <aura:attribute name="ppRete" type="String" default="0"/>
+    <aura:attribute name="ppPoste" type="String" default="0"/>
+    <aura:attribute name="ppBanche" type="String" default="0"/>
+    <aura:attribute name="ppAgeAss" type="String" default="0"/>
+    <aura:attribute name="pfNoMobili" type="String" default="0"/>
+    <aura:attribute name="dataLiquidazioneDa" type="Date"/>
+    <aura:attribute name="dataLiquidazioneA" type="Date"/>
+    <aura:attribute  name="showSpinner" type="Boolean" default="false"  />
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="simpleRecord" type="Object"/>
+    <aura:attribute name="fields" type="String[]" default="['Filiale__r.CodiceClienteFilled__c','Stato__c']"/>
+    <force:recordData aura:id="recordLoader"
+        recordId="{!v.recordId}"
+        mode="EDIT"
+        fields="{!v.fields}"
+        targetFields="{!v.simpleRecord}"
+        targetError="{!v.error}"/>
+
+    <c:Spinner visible="{!v.showSpinner}"/>
+    <c:TestBarraTelefonicaComponent/>
+	   
+<aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    
+    <!--Mostra per stati diverso da Chiusa-->
+    <aura:if isTrue="{!v.simpleRecord.Stato__c != null}">
+        <aura:if isTrue="{!or(v.simpleRecord.Stato__c == '1',v.simpleRecord.Stato__c == '3')}">
+            <aura:if isTrue="{!!(v.showList)}">
+                <lightning:button label="Visualizza Elenco Pratiche" title="Neutral action" onclick="{! c.visualizzaElenco }"/>
+            <aura:set attribute="else">
+                <lightning:button label="Nascondi Elenco Pratiche" title="Neutral action" onclick="{! c.nascondiElenco }"/>
+            </aura:set>
+        </aura:if>
+        </aura:if>
+        <aura:if isTrue="{!or(v.simpleRecord.Stato__c == '4',v.simpleRecord.Stato__c == '2')}">
+        	<lightning:button label="Stampa Pratiche" title="Neutral action" onclick="{! c.stampaPratiche }" class="floatRight"/>
+    	</aura:if>
+    </aura:if>
+    
+    
+    
+    
+    <aura:if isTrue="{!v.showList}">
+        
+        <div class="c-container">
+            <lightning:layout multipleRows="true">
+                <lightning:layoutItem size="2" padding="around-small">
+                    <div class="custom-box"><lightning:input value="{!v.codOcsDealer}" label="cod. ocs dealer" /></div>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="1" padding="around-small">
+                    <div class="custom-box"><lightning:input type="number" min="0" value="{!v.paAuto}"  label="pa auto" /></div>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="1" padding="around-small">
+                    <div class="custom-box"><lightning:input type="number" min="0" value="{!v.pfMobili}" label="pf mobili"/></div>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="1" padding="around-small">
+                    <div class="custom-box"><lightning:input type="number" min="0" value="{!v.ppRete}" label="pp rete"/></div>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="1" padding="around-small">
+                    <div class="custom-box"><lightning:input type="number" min="0" value="{!v.ppPoste}" label="pp poste" /></div>
+                </lightning:layoutItem>
+                
+                <lightning:layoutItem size="1" padding="around-small">
+                    <div class="custom-box"><lightning:input type="number" min="0" value="{!v.ppBanche}" label="pp banche" /></div>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="1" padding="around-small">
+                    <div class="custom-box"><lightning:input type="number" min="0" value="{!v.ppAgeAss}" label="pp age ass" /></div>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="1" padding="around-small">
+                    <div class="custom-box"><lightning:input type="number" min="0" value="{!v.pfNoMobili}" label="pf no mobili"/></div>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="3" padding="around-small">
+                    <div class="custom-box"></div>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="2" padding="around-small">
+                    <div class="custom-box"><lightning:input type="date" value="{!v.dataLiquidazioneDa}" label="Data Liquidazione Da:" />
+        </div>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="2" padding="around-small">
+                    <div class="custom-box"><lightning:input type="date" value="{!v.dataLiquidazioneA}" label="Data Liquidazione A:" /></div>
+                </lightning:layoutItem>
+            </lightning:layout>
+        </div>
+        <br/>
+        <lightning:button label="Filtra" title="Filtra" onclick="{! c.callRestService }"/>
+        
+        <aura:if isTrue="{!v.showAddButton}">
+            <lightning:button label="Usa Pratiche" title="Aggiungi" onclick="{! c.aggiungiSelezionati }"/>
+        </aura:if>
+
+
+        <aura:if isTrue="{!v.showTable}">
+                <br/>
+                <br/>
+            <div >
+                <lightning:datatable
+                        keyField="id"
+                        data="{! v.data }"
+                        columns="{! v.columns }"
+                        aura:id="table"
+                        onrowselection = "{!c.enableAddButton}"/>
+            </div>
+        </aura:if>
+    </aura:if>
+</aura:component>

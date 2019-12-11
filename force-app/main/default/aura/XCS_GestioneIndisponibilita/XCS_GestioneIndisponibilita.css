@@ -1,0 +1,11 @@
+.THIS table .slds-th__action-button.slds-dropdown-trigger.slds-dropdown-trigger_click {
+     display : none;
+}
+
+.THIS table .deleteButton button{
+    visibility: hidden;
+}
+
+.THIS .sizePopUp{
+    max-width: 30rem !important;
+}

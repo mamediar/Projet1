@@ -1,0 +1,72 @@
+<!--
+  @File Name          : PV3257VariazioneModInvioEC.cmp
+  @Description        : 
+  @Author             : Federico Negro
+  @Group              : 
+  @Last Modified By   : Federico Negro
+  @Last Modified On   : 18/10/2019, 16:55:58
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    8/10/2019   Federico Negro     Initial Version
+-->
+
+<aura:component extends="c:PVSubComponentBase" controller="PV3257VariazioneModInvioECInserimento" access="global">
+
+    <!-- Info Carta -->
+    <aura:attribute name="infoCartaData" type="OCSRecuperaInfoCartaResponse.RecuperaInfoCartaResponse" />
+
+    <!-- Opzioni ComboBox Modalita di invio -->
+    <aura:attribute name="options" type="List" default="[
+    {'label': '-', 'value': '-'},
+    {'label': 'E-Mail', 'value': 'M'},
+    {'label': 'Internet', 'value': 'I'},
+    {'label': 'Cartaceo', 'value': 'C'},]" />
+
+    <lightning:card class='slds-form_stacked'>
+
+        <lightning:layout class="slds-wrap slds-form" multipleRows="true">
+
+            <lightning:layoutItem padding="horizontal-small" size="6">
+
+                <lightning:input type="text" name="address" label="Indirizzo" value="{!v.PVForm.cliente.indirizzo}"
+                    disabled="true" />
+
+            </lightning:layoutItem>
+
+            <lightning:layoutItem padding="horizontal-small" size="6" class="slds-p-top_large">
+
+                <lightning:button name="bottone_copia" label="Copia da email su anagrafica"
+                    onclick="{!c.copiaMailAnagrafica}" />
+
+            </lightning:layoutItem>
+
+            <lightning:layoutItem padding="horizontal-small" size="6">
+
+                <lightning:input type="text" name="mail_anagrafica" label="Email su anagrafica: "
+                    value="{!v.PVForm.cliente.email}" disabled="true" />
+
+                <lightning:input type="number" name="commissioni" label="Commissioni attuali: "
+                    value="{!v.infoCartaData.commInvioEC/100}" disabled="true" step="0.01" />
+
+            </lightning:layoutItem>
+
+            <lightning:layoutItem padding="horizontal-small" size="6">
+
+                <lightning:input type="text" name="mail_carta" aura:id="mail_carta"
+                    label="Email su carta (usata per l'invio E/C): " value="{!v.infoCartaData.emailCarta}"
+                    disabled="true" required='true' />
+
+                <lightning:select name="mod_invio" aura:id="mod_invio" label="Modalià di invio: " required="true">
+                    <option value=""></option>
+                    <option value="M">E-Mail</option>
+                    <option value="I">Internet</option>
+                    <option value="C">Cartaceo</option>
+                </lightning:select>
+
+            </lightning:layoutItem>
+
+        </lightning:layout>
+
+    </lightning:card>
+
+</aura:component>

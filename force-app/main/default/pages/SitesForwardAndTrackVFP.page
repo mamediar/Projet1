@@ -1,0 +1,58 @@
+<apex:page controller="SitesForwardAndTrackCn" lightningStyleSheets="true" showHeader="false" standardStylesheets="false" sidebar="false" docType="html-5.0">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+        <apex:slds />
+        <apex:includeLightning />
+        
+        <div class="slds-scope slds-card slds-p-around_medium">
+            <apex:outputPanel >
+                <apex:outputPanel rendered="{!tokenStatus=='ok'}">
+                    
+                    <div id="lightning" />                   
+                    
+                 
+                    
+                    <script>
+                    
+                    function visualForceFunction(parameters) {
+                        var x = JSON.stringify(parameters);
+                        
+                        if(parameters.getParam('channel')=='toVisualForcePage' && parameters.getParam('message')=='Finish'){
+                            
+                            finishActionFunction();
+                        }
+                    }
+                    
+                    $Lightning.use("{!componentApp}", function() {
+                        $Lightning.createComponent("{!componentName}",
+                                                   {"objectId":"{!objectId}"},
+                                                   "lightning", 
+                                                   function(cmp) {
+                                                       
+                                                       $A.eventService.addHandler({ "event": "ltng:sendMessage", "handler" : visualForceFunction});
+                                                   });                    
+                    } ); 
+                    </script>
+                    <apex:form >
+                        <apex:actionFunction name="finishActionFunction" action="{!Confirm}"/>
+                    </apex:form>
+                    
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!tokenStatus!='ok'}">
+                    <div  style="text-align:center;">
+                        <h1 style="font-weight:bold;">
+                            Accesso alla pagina non valido
+                        </h1>
+                    </div>
+                    
+                </apex:outputPanel>
+                
+                <!-- <apex:outputPanel rendered="{!OR(tokenStatus=='finish',tokenStatus=='partialFinish') }">
+Operazione completata! <!-- To Do Confirm Message -->
+                <!-- </apex:outputPanel>
+<apex:outputPanel rendered="{!tokenStatus=='expired'}">
+expired! <!-- To Do Expired Message -->
+                <!-- </apex:outputPanel>-->
+            </apex:outputPanel>
+        </div>
+    </html>
+</apex:page>

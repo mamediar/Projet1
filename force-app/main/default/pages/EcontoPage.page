@@ -1,0 +1,12 @@
+<apex:page standardController="Case">
+ 
+  <apex:sectionHeader title="Nuovo processo PV"/>
+  <apex:image value="{!$Resource.CompassLogo}"  width="350" height="200"/>
+    <apex:form >
+      <apex:pageBlock title="Customer Information" mode="edit">
+
+       
+       
+    </apex:pageBlock>
+  </apex:form>
+</apex:page>

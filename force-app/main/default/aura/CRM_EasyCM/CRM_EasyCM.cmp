@@ -1,0 +1,57 @@
+<aura:component controller="EasyCMClass" implements="flexipage:availableForAllPageTypes,force:hasRecordId">
+<aura:attribute name="CaseRecord" type="Case"/>
+<aura:attribute name="spinnerCounter" type="Integer" default="0"/>
+<aura:attribute name="accountSelezionato" type="Account"/>
+<aura:attribute name="CaseError" type="String"/>
+<aura:attribute name="accordionSectionName" type="String" />
+<aura:attribute name="fidoMessage" type="String[]"/>
+<aura:attribute name="initWrapper" type="Object"/>    
+<lightning:workspaceAPI aura:id="workspace" />
+
+<aura:handler name="change" value="{!v.accountSelezionato}" action="{!c.onChangeAccount}"/>
+<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+        <lightning:card title="Easy CM">
+                <c:SpinnerComponent aura:id="spinnerComponent" spinnerCounter="{!v.spinnerCounter}"/>
+        <lightning:accordion allowMultipleSectionsOpen="true" aura:id="accordion" activeSectionName="{!v.accordionSectionName}">
+        <lightning:accordionSection name="InformazioniPratiche" label="Informazioni Pratiche">
+                        <aura:iteration items="{!v.fidoMessage}" var="message" indexVar="index">
+                              <div class="{!message.colore}">
+                                {!message.descrizione}
+                              </div>
+                                
+                                   
+                        </aura:iteration> 
+        </lightning:accordionSection>
+        <lightning:accordionSection name="Ricerca" label="Ricerca Cliente">
+                <c:CRM_EasyCM_Research aura:id="easyCmResearch" accountSelezionato="{!v.accountSelezionato}" />
+        </lightning:accordionSection>
+        <lightning:accordionSection name="Dati" label="Dati Anagrafici"> 
+        <aura:set attribute="actions">  
+            <lightning:buttonIcon iconName="utility:refresh" alternativeText="Refresh" onclick="{!c.doInit}"/>
+        </aura:set> 
+        <lightning:layout> 
+                <lightning:layoutItem class="slds-var-p-around_xx-small" size="4">
+                        <c:DatiClienteEasyCM datiCliente='{!v.initWrapper.datiCliente}' account='{!v.initWrapper.account}' />
+                </lightning:layoutItem>
+                <lightning:layoutItem class="slds-var-p-around_xx-small" size="4">
+                        <c:DatiCommerciali datiCommerciali="{!v.initWrapper.datiCommerciali}"/> 
+                        <c:CardDataTable privacyList='{!v.initWrapper.privacyList}'/>
+                </lightning:layoutItem> 
+                <lightning:layoutItem class="slds-var-p-around_xx-small" size="4">
+                        <c:StoricoChiamate CaseRecord="{!v.CaseRecord}" storicoChiamate='{!v.initWrapper.storicoChiamate}'/> 
+                        <c:PostVenditaShortcut buttonWrapperList='{!v.initWrapper.buttonList}' datiCliente='{!v.initWrapper.datiCliente}' numTelefono="{!v.initWrapper.telephoneNumber}" account="{!v.initWrapper.account}" recordId="{!v.recordId}"/>        
+                        <c:FissaAppuntamentoButton account="{!v.initWrapper.account}"/>
+                </lightning:layoutItem>
+        </lightning:layout>
+        <lightning:layout>
+                <aura:if isTrue="{!v.initWrapper.praticheList.length > 0}">
+                        <lightning:layoutItem class="slds-var-p-around_xx-small" size="12">
+                                <c:DettaglioPratiche aura:id='dettaglioPraticheId' praticheList="{!v.initWrapper.praticheList}"/>    
+                        </lightning:layoutItem>
+                </aura:if>        
+        </lightning:layout>
+        </lightning:accordionSection>
+        </lightning:accordion> 
+    </lightning:card> 
+</aura:component>

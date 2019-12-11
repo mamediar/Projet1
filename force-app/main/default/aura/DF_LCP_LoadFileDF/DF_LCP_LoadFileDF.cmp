@@ -1,0 +1,60 @@
+<!--
+  @Component Name     : DF_LCP_LoadFileDF.cmp
+  @Description        : 
+  @Author             : CISSE Ahmet
+  @Group              : 
+  @Last Modified By   : CISSE Ahmet
+  @Last Modified On   : 07/08/2019 à 22:52:22
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    31/07/2019 à 13:48:44   CISSE Ahmet     Initial Version
+-->
+<aura:component controller="DF_LCP_LoadFileDFController" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens">
+	<aura:attribute type="String[]" name="headers" />
+    <aura:attribute type="String[]" name="dataToSave" />
+    <aura:attribute type="String[]" name="linesWithErrors" />
+    <aura:attribute type="String[]" name="codiceOcsInCSVfile" />
+    <aura:attribute type="List" name="data" />
+    <aura:attribute type="Boolean" name="fileTypeError" default="false" />
+    
+    <!-- <lightning:card> -->
+    <div class="slds-m-around_x-small ">
+        <div class="slds-m-around_x-small"> 
+        <input type="file" class="file" aura:id="file" accept=".csv, .CSV" />
+        <lightning:button variant="brand" label="Upload" onclick="{! c.handleUpload }" />
+        <lightning:button variant="success" aura:id="btn-escluso" disabled="true" label="Salvo Escluso" onclick="{! c.handleSave }" />
+        </div>
+    
+        <aura:if isTrue="{!v.fileTypeError == true}">
+            Wrong file type!
+            <aura:set attribute="else">
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                    <thead>
+                    <tr class="slds-text-heading--label slds-line-height_reset">
+                        <aura:iteration items="{!v.headers}" var="h">
+                        <th>
+                            {!h}
+                        </th>
+                        </aura:iteration>
+                    </tr> 
+                    </thead>
+                    <tbody>
+                        <aura:iteration items="{!v.data}" var="row">
+                            <tr class="slds-text-heading--label slds-line-height_reset">
+                                <aura:iteration items="{!row}" var="cell">
+                                    <td class="slds-is-sortable slds-text-title--caps">
+                                        {!cell}
+                                    </td>
+                                </aura:iteration>
+                            </tr>            
+                        </aura:iteration>
+                    </tbody>
+                </table>
+            </aura:set>
+        </aura:if>
+    </div>
+    <!-- </lightning:card> -->
+    <lightning:spinner aura:id="csvSpinner" class="slds-hide" variant="brand" size="small"/>
+</aura:component>

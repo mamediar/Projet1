@@ -1,0 +1,53 @@
+<!--
+  @File Name          : PV1766CancellazionePraticaGestione.cmp
+  @Description        : 
+  @Author             : sabrina vitali
+  @Group              : 
+  @Last Modified By   : sabrina vitali
+  @Last Modified On   : 24/10/2019, 15:48:47
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    25/9/2019   sabrina vitali     Initial Version
+-->
+<aura:component controller='PV1766CancellazionePraticaGestione' access='global'>
+    <aura:handler name='init' value='{!this}' action='{!c.doInit}' />
+    <aura:attribute name="parent" type="Aura.Component" required="true" description="componente padre per accedere ai metodi comuni"/>
+    <aura:method name="save" action="{!c.save}" description="Metodo richiamato dal bottone del componente padre"></aura:method>    
+    
+    <!-- Attributi -->
+
+    <!-- da parent -->
+    <aura:attribute name="theCase" type="Case" />
+    <aura:attribute name="dispositionSelezionato" type="XCS_Disposition__c"/>
+    <aura:attribute name='note' type='String' />    
+    <aura:attribute name="allegati" type="Attachment[]"/>
+    <aura:attribute name="newStatus" type="String"/>   
+    
+    <!--<aura:attribute name="userData" type="PVForm.UserData" default="null" />-->
+    <aura:attribute name="Branch_Or_Office__c" type="String" default="" />
+    <aura:attribute name="esito" type="String" default="" />
+
+    <!-- popolamento combo -->
+    <aura:attribute name="optionsOK" type="List" default="[                                                                                                                      
+                                                                     {'label': 'OK', 'value': 'OK'},                                                                                  
+                                                                     {'label': 'KO', 'value': 'KO'},                                                                                  
+                                                             ]" />
+
+    <!-- main --> 
+    <lightning:card class='slds-form_stacked'>
+        <div class="slds-grid slds-container_medium slds-align_left slds-wrap">
+            *{!v.theCase.Step_PV__c}*{v.theCase.Step_PV__c}*
+
+
+            <aura:if isTrue="{!v.Branch_Or_Office__c == 'DCRAV'}">
+                    
+            <div class="slds-size_6-of-12"><span>
+                <lightning:combobox label="Esito" name="esito"
+                    placeholder="Seleziona" value="{!v.esito}" variant="standard"
+                    dropdownAlignment="Left" options="{!v.optionsOK}" />
+                </span>
+            </div>
+            </aura:if>
+        </div>
+    </lightning:card> <!-- /main -->
+</aura:component>

@@ -1,0 +1,29 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" controller="SinistriAssicurativiCtrl">
+    
+    <aura:attribute name="isAlico" type="Boolean" default="false"/>
+    <aura:attribute name="spinner" type="Boolean" default="false"/>
+    
+    <aura:handler name='init' value="{!this}" action="{!c.doInit}"/>
+    
+    <aura:if isTrue="{!v.spinner}">
+        <lightning:spinner alternativeText="Loading" size="large" />
+    </aura:if>
+    
+    <lightning:tabset selectedTabId="one">
+        <div class="margine">
+            <lightning:tab label="Inserimento Sinistri" id="one">
+                <c:CRMGestioneSinistriAssicurativi_Details_InserimentoSinistri/>
+            </lightning:tab>
+            <lightning:tab label="Elenco Sinistri" id="two">
+                <c:CRMGestioneSinistriAssicurativi_Details_ElencoSinistri/>
+            </lightning:tab>
+            <aura:if isTrue="{!not(v.isAlico)}">
+                <lightning:tab label="Chiusura Sinistri" id="three">
+                    <c:CRMGestioneSinistriAssicurativi_Details_ChiusuraSinistri/>
+                </lightning:tab>
+            </aura:if>
+        </div>
+    </lightning:tabset>
+    
+    
+</aura:component>

@@ -1,0 +1,51 @@
+<aura:component controller="SFAConvenzBottoniAvantiIndietroCntroller"
+                implements="force:appHostable,flexipage:availableForRecordHome,force:hasRecordId" access="global" >
+
+    <!-- INPUT VALUES:: -->   
+    <aura:attribute name="recordId" type="String"/>    
+    <aura:attribute name="newStepAvanti" type="String" default=""/>
+    <aura:attribute name="newStepIndietro" type="String" default=""/>
+    <aura:attribute name="newActivityTypeAvanti" type="String" default=""/> 
+    <aura:attribute name="newActivityTypeIndietro" type="String" default=""/> 
+    <aura:attribute name="newDispositionExternalIdInietro" type="String" default=""/> 
+    <aura:attribute name="newDispositionExternalIdAvanti" type="String" default=""/>     
+	<aura:attribute name="isBottoneAvantiVisible" type="Boolean" default="true"/>
+    <aura:attribute name="isBottoneIndietroVisible" type="Boolean" default="true"/>
+    <aura:attribute name="buttonAvantiDisabled" type="Boolean" default="false"/>
+    <aura:attribute name="buttonIndietroDisabled" type="Boolean" default="false"/>
+    <aura:attribute name="assignCaseInButtonAvanti" type="Boolean" default="false"/>
+    <aura:attribute name="assignCaseInButtonIndietro" type="Boolean" default="false"/>
+    <aura:attribute name="queueToAssignCase" type="String" default=""/>   
+    <aura:attribute name="newCategoriaAvanti" type="String" default=""/>    
+    <aura:attribute name="newCategoriaIndietro" type="String" default=""/>
+    <aura:attribute name="newOggettoAvanti" type="String" default=""/>
+    <aura:attribute name="newOggettoIndietro" type="String" default=""/>
+    <aura:attribute name="ifNavigate" type="Boolean" default="false"/>
+    
+    <aura:attribute name="spinnerCounter" type="Integer" default="0"/>
+    <c:SpinnerComponent aura:id="spinnerComponent" spinnerCounter="{!v.spinnerCounter}"/>     
+    
+    <aura:registerEvent name="ChangeCaseStepEvent" type="c:ChangeCaseStepEvent"/> 
+    <lightning:layout horizontalAlign="left">
+        <lightning:layoutItem size="4">
+            <aura:if isTrue="{!v.isBottoneIndietroVisible}">
+                <lightning:button label="Indietro" 
+                                  variant="destructive"
+                                  class="slds-m-top_medium"
+                                  onclick="{!c.actionButtonIndietro}"
+                                  disabled="{!v.buttonIndietroDisabled}"/> 
+            </aura:if>            
+            <aura:if isTrue="{!v.isBottoneAvantiVisible}">
+                <lightning:button label="Avanti"  
+                                  variant="destructive"
+                                  class="slds-m-top_medium"
+                                  onclick="{!c.actionButtonAvanti}"
+                                  disabled="{!v.buttonAvantiDisabled}"/>  
+			</aura:if>                
+        </lightning:layoutItem>
+    </lightning:layout>     
+    
+    
+    
+    
+</aura:component>

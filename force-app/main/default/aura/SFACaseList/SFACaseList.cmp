@@ -1,0 +1,34 @@
+<aura:component controller="SFACaseListController" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes">
+
+  <aura:attribute name="caseList" type="Case[]" default="[]" />
+  <aura:attribute name="columns" type="List"/>
+
+  <aura:attribute name="colonne" type="String" />
+  <aura:attribute name="stato" type="String"/>
+  <aura:attribute name="recordId" type="String" />
+
+  <aura:attribute name="selectedRows" type="List"/>
+
+  <aura:attribute name="selectedCaseIds" type="List"/>
+
+  <aura:attribute name="errorTableFlag" type="Boolean" default="false" />
+  <aura:attribute name="severity" type="String" default="error" />
+  <aura:attribute name="caseTableFlag" type="Boolean" default="false" />
+    
+  <aura:attribute name="caseListSize" type="Integer" />
+
+  <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+  <aura:handler event="force:refreshView" value="{! this }" action="{! c.init }"/>
+
+  <!--<aura:if isTrue="{!v.caseTableFlag}">-->
+    <lightning:datatable aura:id="listaCase"
+                       resizeColumnDisabled = "true"
+                       isLoading = "false"
+                       keyField="Id"
+                       data="{! v.caseList }"
+                       columns="{! v.columns }"
+                       onrowselection="{! c.handleRowSelection }"
+                       hideCheckboxColumn="true"
+                       selectedRows="{!v.selectedRows}"/>
+  <!--</aura:if>-->
+</aura:component>

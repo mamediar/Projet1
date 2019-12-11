@@ -1,0 +1,492 @@
+<aura:component controller="SFAConvenz_NDA_FormVerificaAnagCtrller" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes,force:hasSObjectName">
+    
+    <aura:attribute name="recordId" type="String" />        
+    
+    
+    <aura:attribute name="citta" type="String" default="" /> 
+    <aura:attribute name="CAP" type="String" />
+    <aura:attribute name="indirizzo" type="String" />        
+    <aura:attribute name="provincia" type="String" default="" />   
+    <aura:attribute name="provinciaCollegato" type="String"/>    
+    <aura:attribute name="cittaCollegato" type="String"/>
+    <aura:attribute name="messagePIVA_CF_Required" type="String" default=""/>
+    <aura:attribute name="erroreSalvataggioDatiMancanti" type="Boolean" default="false"/>
+    <aura:attribute name="PIVAeCFrequired" type="Boolean" default="true"/>
+    <aura:attribute name="messageDatiMancanti" type="List" default=""/>
+    <aura:attribute name="dealerAcquisitionId" type="String" default=""/>     
+    <aura:attribute name="selectedcontactRelationId" type="String" />
+    <aura:attribute name="contactDiRiferimentoId" type="String" />  
+    <aura:attribute name="selectedRow" type="Object" />
+    <aura:attribute name="OCSExternalFiliale" type="String" />  
+    <aura:attribute name="reportCervedId" type="String" />    
+    <aura:attribute name="collegatiList" type="Contact[]" />    
+    <aura:attribute name="showCollegatoDetails" type="Boolean" default="false"/>
+    <aura:attribute name="responsePrimoServizio" type="Object"/>
+    <aura:attribute name="isChiamataOCSNotOK" type="Boolean" default="false"/>
+    <aura:attribute name="errorMessagesOCS" type="List" default=""/>
+    
+    <!-- attributes -->
+    <aura:attribute name="data" type="Object"/>
+    <aura:attribute name="collegati" type="Object"/>
+    <aura:attribute name="columns" type="List"/>   
+    <aura:attribute name="selectedAccount" type="Object"/>
+    <aura:attribute name="selectedAccountId" type="String"/>
+    <aura:attribute name="isOpen" type="boolean" default="false"/>       
+    <aura:attribute name="isCollegatoFirmatario" type="boolean" default="false"/> 
+    <aura:attribute name="isCollegatoRappresentante" type="boolean" default="false"/> 
+    <aura:attribute name="isCollegatoSelezionatoGiuridico" type="boolean" default="false"/>    
+    <aura:attribute name="showButtonTravasaSuOCS" type="boolean" default="false"/>
+    <aura:attribute name="tipoIntermediario" type="String"/>   
+    <aura:attribute name="optionsTipoIntermediario2" type="List"/>   
+    <aura:attribute name="tipoIntermediario2Selezionato" type="String"/>  
+    <aura:attribute name="indirizziList" type="List"/>  
+    <aura:attribute name="indirizziDealerList" type="List"/>
+    <aura:attribute name="columnsIndirizzo" type="List"/>  
+    <aura:attribute name="showTableMutipleAddressesCollegati" type="Boolean" default="false"/>    
+    <aura:attribute name="provinciaNascitaCollegato" type="String"/>
+    <aura:attribute name="cittaNascitaCollegato" type="String"/>
+    <aura:attribute name="disableButtonAggiornaDatiCollegati" type="Boolean" default="false"/>   
+    <aura:attribute name="selectedIndirizzoCollegati" type="Object"/>       
+    <aura:attribute name="selectedIndirizzoDealer" type="Object"/> 
+    <aura:attribute name="openModaleIndirizzoDealer" type="Boolean" default="false"/> 
+    <aura:attribute name="disableButtonChiudiModaleIndirizzoDealer" type="Boolean" default="true"/>
+    <aura:attribute name="showSpinner" type="Boolean" default="false"/> 
+    <!--aura:attribute name="showSpinnerModale" type="Boolean" default="false"/--> 
+    
+    <aura:registerEvent name="ChangeCaseStepEvent" type="c:ChangeCaseStepEvent"/>  
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    
+    <aura:attribute name="spinnerCounter" type="Integer" default="0"/>
+  
+    
+    <lightning:card variant="Narrow" title="Verifica Anagrafica e Collegati" iconName="action:new_task" footer=" ">
+        <p class="slds-p-horizontal_small">     
+            <c:SpinnerComponent aura:id="spinnerComponent"
+                                spinnerCounter="{!v.spinnerCounter}"/>                 
+            <lightning:card footer=" " title=" ">  
+                <div class="slds-p-left_small">
+                    <ui:message title="Informazione" severity="info" closable="false">
+                        <ui:outputText value="Verifica ed eventualmente correggi i dati per questo dealer. Premendo il pulsante ''Salva e Continua'' le modifiche verranno salvate e se tutti gli errori sono stati corretti il dealer sarà trasferito su OCS tramite batch."/> 
+                    </ui:message>
+                </div>
+                <lightning:card variant="Narrow" title="Convenzionato" iconName="standard:account" footer=" ">
+                    <p class="slds-p-horizontal_small">    
+                        
+                        <lightning:recordEditForm aura:id="FormDealer1" recordId="{!v.dealerAcquisitionId}" objectApiName="Account" onerror="{!c.handleError}" >
+                            
+                            <lightning:layout horizontalAlign="spread" multipleRows="true">
+                                
+                                <label for="ragioneSociale" class="slds-form-element__label slds-no-flex">Ragione Sociale</label>
+                                <lightning:layoutItem flexibility="grow" size="12">
+                                    <lightning:inputField aura:id="ragioneSociale" fieldName="Name" variant="label-hidden" class="hidelabel"/>
+                                </lightning:layoutItem>
+                                
+                                <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                                    <lightning:inputField aura:id="ShippingStreet"  fieldName="ShippingStreet"/>
+                                </lightning:layoutItem>   
+                                
+                                <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                                    <lightning:inputField aura:id="ShippingPostalCode"  fieldName="ShippingPostalCode"/>
+                                </lightning:layoutItem>                     
+                                
+                                
+                                
+                            </lightning:layout>
+                        </lightning:recordEditForm>    
+                        
+                        
+                        <table class="slds-m-top--medium"> 
+                            <c:XCSProvinceComuniPicklist aura:id="ProvincePicklistDealer"
+                                                         labelProvincia="Provincia"
+                                                         labelCitta="Località"
+                                                         enabledProvincia="true"
+                                                         provinciaSelezionata="{!v.provincia}"
+                                                         cittaSelezionata="{!v.citta}"
+                                                         />       
+                        </table>   
+                        
+                        <lightning:recordEditForm aura:id="FormDealer2" recordId="{!v.dealerAcquisitionId}" objectApiName="Account" onerror="{!c.handleError}" >
+                            
+                            <lightning:layout horizontalAlign="spread" multipleRows="true">
+                                
+                                <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                                    <lightning:inputField aura:id="Partita_IVA__c" fieldName="Partita_IVA__c" />
+                                </lightning:layoutItem>            
+                                
+                                <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                                    <lightning:inputField aura:id="Codice_Fiscale__c" fieldName="Codice_Fiscale__c"/>
+                                </lightning:layoutItem>
+                                
+                                <lightning:layoutItem flexibility="grow" size="12">                        
+                                    <aura:if isTrue="{!v.PIVAeCFrequired}" >
+                                        <div class="slds-p-left_small messageBox">
+                                            <ui:message title=" " severity="error" closable="false">
+                                                <ui:outputText value= "{!v.messagePIVA_CF_Required}"/> 
+                                            </ui:message>
+                                        </div>     
+                                    </aura:if>
+                                </lightning:layoutItem>
+                                
+                                <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                                    <lightning:outputField fieldName="Tipo_Intermediario__c" />
+                                </lightning:layoutItem>            
+                                
+                                <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                                    <lightning:outputField fieldName="Type_Anag__c" />
+                                </lightning:layoutItem> 
+                                
+                                
+                            </lightning:layout>
+                        </lightning:recordEditForm>            
+                        
+                        
+                    </p>
+                </lightning:card>    
+                
+                <lightning:card variant="Narrow" title="Contatti" iconName="standard:contact" footer=" ">
+                    <p class="slds-p-horizontal_small">    
+                        
+                        <lightning:recordEditForm aura:id="FormContactDiRiferimento" recordId="{!v.contactDiRiferimentoId}" objectApiName="Contact" onerror="{!c.handleError}" >
+                            
+                            <lightning:layout horizontalAlign="spread" multipleRows="true">
+                                
+                                
+                                <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                                    <lightning:inputField aura:id="Phone" fieldName="Phone" />
+                                </lightning:layoutItem>            
+                                
+                                <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                                    <lightning:inputField aura:id="MobilePhone" fieldName="MobilePhone" />
+                                </lightning:layoutItem>   
+                                
+                                
+                                
+                                <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                                    <lightning:inputField fieldName="Email" />
+                                </lightning:layoutItem>            
+                                
+                                
+                                <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                                    <lightning:inputField fieldName="Fax" />
+                                </lightning:layoutItem>            
+                                
+                            </lightning:layout>
+                        </lightning:recordEditForm>    
+                        
+                    </p>
+                </lightning:card> 
+                
+                
+                
+                
+                <lightning:card variant="Narrow" title="Collegati" iconName="standard:contact" footer=" ">        
+                    
+                    <!-- the container element determine the height of the datatable -->
+                        <p class="slds-p-horizontal_small">  
+                            <lightning:datatable
+                                                 keyField="id"
+                                                 data="{! v.collegati }"
+                                                 columns="{! v.columns }"
+                                                 hideCheckboxColumn="true"
+                                                 onrowaction="{! c.handleRowAction}"/>
+                        </p>                 
+                    
+                    <!--aura:if isTrue="{!v.selectedAccountId}"-->
+                    <aura:if isTrue="{!v.isOpen}">
+                        
+                        <div class="slds-modal slds-fade-in-open">
+                            <div class="slds-modal__container">
+                                <div class="slds-modal__header">
+                                    <h2 class="title slds-text-heading--medium">Aggiorna dati del collegato</h2>
+                                </div>
+                                <div class="slds-modal__content slds-p-around--medium">
+                                    
+                                    <!--aura:if isTrue="{!v.selectedcontactRelationId}">
+                                      <lightning:recordViewForm aura:id="FormRelationCollegato" recordId="{!v.selectedcontactRelationId}" objectApiName="AccountContactRelation" >
+                                            <lightning:layout horizontalAlign="spread" multipleRows="true">
+                                                <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                                                    <lightning:outputField fieldName="Roles" />
+                                                </lightning:layoutItem> 
+                                                <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                                                    <lightning:inputField fieldName="IsDeleted" />
+                                                </lightning:layoutItem>                                    
+                                            </lightning:layout>   
+                                      </lightning:recordViewForm>                                    
+                                  </aura:if-->  
+                                    
+                                    
+                                    Ruolo: <ui:outputText value="{!v.selectedRow.Roles}" /> 
+                                    <br></br><br></br>
+                                    <ui:inputCheckbox aura:id="checkbox" label="Firmatario" value="{!v.isCollegatoFirmatario}"/>
+                                    <ui:inputCheckbox aura:id="checkbox" label="Rappresentante" value="{!v.isCollegatoRappresentante}"/> 
+                                    <br></br>
+                                    
+                                    <lightning:recordEditForm aura:id="FormCollegato" recordId="{! v.selectedAccountId}" objectApiName="Contact" onerror="{!c.handleError}" >
+                                        
+                                        <lightning:layout horizontalAlign="spread" multipleRows="true">
+                                            
+                                            <aura:if isTrue="{! not(v.isCollegatoSelezionatoGiuridico)}">
+                                                <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                                                    <lightning:inputField aura:id="LastName" fieldName="LastName"/>
+                                                </lightning:layoutItem>            
+                                                
+                                                
+                                                <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                                                    <lightning:inputField aura:id="FirstName" fieldName="FirstName" />
+                                                </lightning:layoutItem>
+                                                
+                                                <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                                                    <lightning:inputField fieldName="Codice_Fiscale__c" />
+                                                </lightning:layoutItem>                                                
+                                                
+                                                
+                                                <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                                                    <lightning:inputField fieldName="Birthdate" />
+                                                </lightning:layoutItem>  
+                                                
+                                                    
+                                                
+                                                    <table class="slds-m-top--medium"> 
+                                                        <c:XCSProvinceComuniPicklist 
+                                                                                     aura:id="ProvinceNascitaPicklistCollegato"
+                                                                                     labelCitta="Città Nascita"    
+                                                                                     labelProvincia="Provincia Nascita"
+                                                                                     enabledProvincia="true"
+                                                                                     provinciaSelezionata="{!v.provinciaNascitaCollegato}"
+                                                                                     cittaSelezionata="{!v.cittaNascitaCollegato}"
+                                                                                     /> 
+                                                    </table>
+                                                
+                                                    <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                                                        <lightning:inputField fieldName="Sesso__c" />
+                                                    </lightning:layoutItem>            
+                                                    
+                                                    <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                                                        <lightning:inputField fieldName="Email" />
+                                                    </lightning:layoutItem>  
+                                                
+                                                 <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                                                        <lightning:inputField fieldName="Partita_IVA__c" />
+                                                    </lightning:layoutItem>  
+                                                
+                                                
+                                                <aura:set attribute="else">
+                                                    
+                                                    <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                                                        <lightning:inputField fieldName="RagioneSociale__c" />
+                                                    </lightning:layoutItem>    
+                                                    
+                                                    <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                                                        <lightning:inputField fieldName="Email" />
+                                                    </lightning:layoutItem>                                                    
+                                                    
+                                                    <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                                                        <lightning:inputField fieldName="DataInizioAttivita__c" />
+                                                    </lightning:layoutItem> 
+                                                    
+                                                    <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                                                        <lightning:inputField fieldName="CittaSede__c" />
+                                                    </lightning:layoutItem>  
+                                                    
+                                                    <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                                                        <lightning:inputField fieldName="Codice_Fiscale__c" />
+                                                    </lightning:layoutItem>            
+                                                    
+                                                    <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                                                        <lightning:inputField fieldName="Partita_IVA__c" />
+                                                    </lightning:layoutItem>                                                    
+                                                    
+                                                </aura:set>
+                                            </aura:if>                                            
+                                           
+                                            
+                                            
+                                            <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                                                <lightning:inputField aura:id="MailingStreet" fieldName="MailingStreet" />
+                                            </lightning:layoutItem>            
+                                            
+                                            
+                                            <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                                                <lightning:inputField aura:id="MailingPostalCode" fieldName="MailingPostalCode" />
+                                            </lightning:layoutItem> 
+                                         
+                                            
+                                            <br></br><br></br><br></br><br></br><!-- Utilizzare il css per creare il margine-->
+                                            <table class="slds-m-top--medium">
+                                                <c:XCSProvinceComuniPicklist 
+                                                                             aura:id="ProvincePicklistCollegato"
+                                                                             labelProvincia="Provincia"
+                                                                             labelCitta="Località"
+                                                                             enabledProvincia="true"
+                                                                             provinciaSelezionata="{!v.provinciaCollegato}"
+                                                                             cittaSelezionata="{!v.cittaCollegato}"
+                                                                             />   
+                                            </table>                                         
+                                            
+                                            <lightning:layout horizontalAlign="center">
+                                                <lightning:layoutitem padding="around-small">
+                                                    <lightning:button label="Aggiorna Dati Collegato"  
+                                                                      variant="destructive"
+                                                                      class="slds-m-top_medium"
+                                                                      disabled="{!v.disableButtonAggiornaDatiCollegati}"
+                                                                      onclick="{!c.salvaDatiCollegato}"/>                                             
+                                                    
+                                                </lightning:layoutitem>
+                                            </lightning:layout>
+                                                                                         
+                                            
+                                        </lightning:layout>  
+                                        
+                                        
+                                        
+                                    </lightning:recordEditForm>
+                                    
+                                    
+                                </div>
+                                <div class="slds-modal__footer">
+                                    <lightning:button variant="neutral" iconName="utility:close" label="Chiudi"
+                                                      onclick="{!c.closeModel}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-backdrop slds-backdrop_open"></div>
+                    </aura:if>              
+                    
+                    <aura:if isTrue="{!v.showTableMutipleAddressesCollegati}">
+                        <div class="slds-modal slds-fade-in-open">
+                            <div class="slds-modal__container">
+                                <div class="slds-modal__header">
+                                    <h2 class="title slds-text-heading--medium">Seleziona un indirizzo di residenza corretto per il collegato</h2>
+                                </div>
+                                <div class="slds-modal__content slds-p-around--medium">                                                  
+                                    <lightning:datatable
+                                                         keyField="id"
+                                                         data="{! v.indirizziList }"
+                                                         columns="{! v.columnsIndirizzo}"
+                                                         maxRowSelection="1"
+                                                         selectedRows="{!v.selectedIndirizzoCollegati}"   
+                                                         onrowselection="{!c.handleSelectionIndirizzoCollegati}"/>                                                          
+                                    
+                                </div>
+                                <div class="slds-modal__footer">
+                                    <lightning:button variant="neutral" iconName="utility:close" label="Chiudi"
+                                                      onclick="{!c.closeModelIndirizzoCollegato}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-backdrop slds-backdrop_open"></div>
+                    </aura:if>                                                                                      
+                    
+                    
+                    
+                </lightning:card>
+                
+                
+                
+                
+                <br></br>
+                <lightning:layout horizontalAlign="left">
+                    <lightning:layoutItem size="4">
+                        <ui:inputSelect aura:id="risultatoChiamata" 
+                                        value="{!v.tipoIntermediario2Selezionato}">
+                            <ui:inputSelectOption text="" label="Selezionare un'opzione aggiuntiva con cui salvare il convenzionato su OCS" value="true"/>
+                            <aura:iteration items="{!v.optionsTipoIntermediario2}" var="cus">
+                                <ui:inputSelectOption text="{!cus}" label="{!cus}" value="false"/>
+                            </aura:iteration>                
+                        </ui:inputSelect>  
+                    </lightning:layoutItem>    
+                </lightning:layout> 
+                
+                
+                <aura:if isTrue="{!v.erroreSalvataggioDatiMancanti}" >
+                    <div class="slds-p-left_small">
+                        <ui:message title="Attenzione, fornire i seguenti dati obbligatori mancanti:" severity="error" closable="false">
+                            <ui:outputText value="{!v.messageDatiMancanti}"/> 
+                            <aura:iteration items="{!v.messageDatiMancanti}" var="me">
+                                {!me}
+                                <br></br>
+                            </aura:iteration>                     
+                        </ui:message>
+                    </div>    
+                </aura:if>                
+                
+                
+                <lightning:layout horizontalAlign="left">
+                    <lightning:layoutItem size="1">
+                        <c:SFAConvenzionamentoBottoniAvantiIndietro isBottoneAvantiVisible="false"
+                                                                    newStepIndietro="NewDealerAcquisition_CompletaInfoEControlli1"   
+                                                                    recordId="{!v.recordId}"/>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="2">
+
+                        <lightning:button label="Salva e Continua"  
+                                          variant="destructive"
+                                          class="slds-m-top_medium"
+                                          onclick="{!c.actionButtonSalvaEContinua}"
+                                          disabled="{!v.buttonsDisabled}"/>                  
+                    </lightning:layoutItem>
+                </lightning:layout> 
+                
+                
+                
+                
+                
+                <!--aura:if isTrue="{!v.showButtonTravasaSuOCS}"--> 
+                
+                <aura:if isTrue="{!v.isChiamataOCSNotOK}" >
+                    <div class="slds-p-left_small">
+                        <ui:message title="Attenzione, travaso informazioni su OCS non andato a buon fine per i seguenti motivi:" severity="error" closable="false">
+                            <ui:outputText value="{!v.errorMessagesOCS}"/> 
+                            <aura:iteration items="{!v.errorMessagesOCS}" var="me">
+                                {!me}
+                                <br></br>
+                            </aura:iteration>                     
+                        </ui:message>
+                    </div>    
+                </aura:if>    
+                
+                
+                <aura:if isTrue="{!v.showButtonTravasaSuOCS}">   
+                    
+                    <!--SALVA INDIRIZZO DEALER-->
+                    <aura:if isTrue="{!v.openModaleIndirizzoDealer}" >           
+                        <div class="slds-modal slds-fade-in-open">
+                            <div class="slds-modal__container">
+                                <div class="slds-modal__header">
+                                    <h2 class="title slds-text-heading--medium">Aggiorna dati indirizzo convenzionato</h2>
+                                </div>
+                                <div class="slds-modal__content slds-p-around--medium">                                  
+                                    
+                                    
+                                    <lightning:datatable
+                                                         keyField="id"
+                                                         data="{! v.indirizziDealerList }"
+                                                         columns="{! v.columnsIndirizzo}"
+                                                         maxRowSelection="1"
+                                                         selectedRows="{!v.selectedIndirizzoDealer}"   
+                                                         onrowselection="{!c.handleSelectionIndirizzoDealer}"/>                                                          
+                                    
+                                </div>
+                                <div class="slds-modal__footer">
+                                    <lightning:button variant="neutral" iconName="utility:close" label="Chiudi" disabled="{!v.disableButtonChiudiModaleIndirizzoDealer}"
+                                                      onclick="{!c.closeModelIndirizzoDealer}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-backdrop slds-backdrop_open"></div>
+                    </aura:if>                    
+                    
+                    <!--TRAVASA SU OCS-->
+                    <lightning:button label="Travasa Convenzionato su OCS"  
+                                      variant="destructive"
+                                      class="slds-m-top_medium"
+                                      onclick="{!c.actionButtonTravasaSuOCS}"/> <br></br><br></br> 
+                </aura:if>    
+                
+            </lightning:card>  
+            
+        </p>
+    </lightning:card>
+    
+</aura:component>

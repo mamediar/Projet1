@@ -1,0 +1,217 @@
+<!--  @component : CaricamentoCorso
+       @description: 
+       @author: Mady COLY
+       @dateCreated: 30/07/2019
+       @authorLastModified: Mady COLY
+       @dateLastModified: 05/07/2019 -->
+
+<aura:component controller="GD_CaricamentoCorsoController" implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global">
+    <aura:handler name="init" value="this" action="{!c.doInit}" />
+    <aura:attribute name="IDQueueIVASS" type="String" default="" />
+    <aura:attribute name="aggiungiCorsoList" type="IVASS_Dealer_Courses__c[]" />
+    <aura:attribute name="tipologiaCorsoList" type="IVASS_Dealer_courses_type__c[]" />
+    <aura:attribute name="dealerCoursesList" type="IVASS_Dealer_Courses__c[]" />
+    <aura:attribute name="annoRiferimento" type="List" />
+    <aura:attribute name="labelTipologiaCorso" type="String" default="" />
+    <aura:attribute name="nuovoCorso" type="Boolean" default="true" />
+    <aura:attribute name="showRequired" type="Boolean" default="true" />
+    <aura:attribute name="batchIsFinish" type="Boolean" />
+    <aura:attribute name="dealerCorso" type="IVASS_Dealer_Courses__c" default="{'sobjectype':'IVASS_Dealer_Courses__c',
+                                                                                'Name':'',
+                                                                                'Anno_di_Riferimento__c':'',
+                                                                                'Attivo__c':'',
+                                                                                'Caricate__c':'',
+                                                                                'Codice_Assofin__c':'',
+                                                                                'Descrizione_Corso__c':'',
+                                                                                'Percentuale_Terminata__c':'',
+                                                                                'Tipo_Corso__c':'',
+                                                                                'OwnerId':''
+                                                                                }" />
+
+    <aura:attribute name="toastMsg" type="String" />
+    <aura:attribute name="TargetFileName" type="String" description="Name of the file" />
+    <aura:attribute name="TargetFileNameCorsi" type="String" description="Name of the file Corsi" />
+    <aura:attribute name="tableheaders" type="Object[]" />
+    <aura:attribute name="fileContentData" type="String" />
+    <aura:attribute name="datenow" type="String" />
+    <aura:attribute name="showSpinner" type="Boolean" default="false" />
+    <aura:attribute name="errorFile" type="Boolean" default="true" />
+    <aura:attribute name="statusBatch" type="String" />
+    <aura:attribute name="erroMsg" type="String" />
+    <aura:attribute name="errorMsgContentFile" type="String" />
+    <aura:attribute name="selectAnnoRiferimento" type="String" />
+
+    <!-- It will display 100 records . Change for your requirement-->
+    <aura:attribute name="NumOfRecords" type="Integer" default="400" />
+    <aura:attribute name="showMain" type="Boolean" default="false" />
+    <aura:attribute name="showMainCorsi" type="Boolean" default="false" />
+
+    <aura:attribute name="fileToBeUploaded" type="Object[]" />
+    <aura:attribute name="fileCorsi" type="Object[]" />
+
+    <!--Campi per il report dopo il caricamento -->
+    <aura:attribute name="data" type="Object" />
+    <aura:attribute name="columns" type="List" />
+
+    <aura:attribute name="myRecordId" type="String" description="Record to which the files should be attached" />
+    <aura:attribute name="fileName" type="String" default="No File Selected.." />
+    <article class="slds-card">
+        <div class="slds-card__header">
+            <div class="row">
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col">
+                        <aura:if isTrue="{!v.nuovoCorso}">
+                            <lightning:input aura:id="caricamentoCorso" name="Corso" label="Corso : " placeholder="Corso" value="{!v.dealerCorso.Name}" required="{!v.showRequired}" messageWhenValueMissing="Il Campo è obbligatorio!" />
+                            <aura:set attribute="else">
+                                <div style="margin-top: 2em">
+                                    Corso :
+                                    <ui:outputText value="{!v.dealerCorso.Name}" />
+                                </div>
+                            </aura:set>
+                        </aura:if>
+                    </div>
+                    <div class="slds-col">
+                        <lightning:select aura:id="caricamentoCorso" name="agguingiCorso" label="Agguingi al corso" onchange="{!c.fetchSelectAggiguinti}" messageWhenValueMissing="Il Campo è obbligatorio!">
+                            <option value="Nuovo corso"> -- Nuovo corso --</option>
+                            <aura:iteration items="{!v.aggiungiCorsoList}" var="item">
+                                <option value="{!item.Id}">{!item.Name}</option>
+                            </aura:iteration>
+                        </lightning:select>
+                    </div>
+                    <div class="slds-col">
+                        <lightning:input aura:id="caricamentoCorso" type="date" name="dateScadenza" label="Data di scadenza" placeholder="Data di scadenza" messageWhenValueMissing="Il Campo è obbligatorio!" />
+                    </div>
+                </div>
+            </div>
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-2">
+                    <aura:if isTrue="{!v.nuovoCorso}">
+                        <lightning:input aura:id="caricamentoCorso" name="CodAssofin" label="Cod Assofin: " placeholder="Cod Assofin" value="{!v.dealerCorso.Codice_Assofin__c}" required="{!v.showRequired}" messageWhenValueMissing="Il Campo è obbligatorio!" />
+                        <aura:set attribute="else">
+                            <div style="margin-top: 1.5em; margin-bottom: 1.5em">
+                                Cod Assofin:
+                                <ui:outputText value="{!v.dealerCorso.Codice_Assofin__c}" />
+                            </div>
+                        </aura:set>
+                    </aura:if>
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <aura:if isTrue="{!v.nuovoCorso}">
+                        <lightning:textarea aura:id="caricamentoCorso" name="descCorso" label="Descr. corso" placeholder="Descrizione de corso" value="{!v.dealerCorso.Descrizione_Corso__c}" />
+                        <aura:set attribute="else">
+                            <div style="margin-top: 1.5em">
+                                Descr. corso:
+                                <ui:outputText value="{!v.dealerCorso.Descrizione_Corso__c}" />
+                            </div>
+                        </aura:set>
+                    </aura:if>
+                </div>
+            </div>
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-2">
+                    <aura:if isTrue="{!v.nuovoCorso}">
+                        <lightning:select aura:id="caricamentoCorso" name="tipoligiaCorso" label="Tipologia corso :" value="{!v.labelTipologiaCorso}" onchange="{!c.fetchSelectTipologia}" required="{!v.showRequired}" messageWhenValueMissing="Seleziona un elemento">
+                            <option value="">-- --</option>
+                            <aura:iteration items="{!v.tipologiaCorsoList}" var="item">
+                                <option value="{!item.Id}">{!item.Type_Course_Name__c}</option>
+                            </aura:iteration>
+                        </lightning:select>
+                        <aura:set attribute="else">
+                            <div style="margin-top: 1.5em">
+                                Tipologia corso :
+                                <ui:outputText value="{!v.dealerCorso.Tipo_Corso__r.Type_Course_Name__c}" />
+                            </div>
+                        </aura:set>
+                    </aura:if>
+
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+
+                    <aura:if isTrue="{!v.nuovoCorso}">
+                        <lightning:select aura:id="caricamentoCorso" name="annoRiferimento" label="Anno di Riferimento :" value="{!v.selectAnnoRiferimento}" onchange="{!c.fetchSelectAnnoRiferimento}" messageWhenValueMissing="Seleziona un elemento">
+                            <aura:iteration items="{!v.annoRiferimento}" var="item">
+                                <option value="{!item}">{!item}</option>
+                            </aura:iteration>
+                        </lightning:select>
+                        <aura:set attribute="else">
+                            <div style="margin-top: 1.5em">
+                                Anno di Riferimento :
+                                <ui:outputText value="{!v.dealerCorso.Anno_di_Riferimento__c}" />
+                            </div>
+                        </aura:set>
+                    </aura:if>
+
+                </div>
+            </div>
+            <div class="row">
+                <!--                
+            <lightning:layoutItem padding="horizontal-small">
+            <div class="page-section page-header">
+            </div>
+            <lightning:input aura:id="file" 
+                             onchange="{!c.handleFilesChange}" 
+                             type="file" 
+                             name="file" 
+                             accept=".csv"
+                             multiple="false"/>
+            <div style="margin-top:10px;" class="slds-text-body_middle slds-text-color_blue">{!v.fileName} </div>
+            <button style="margin-top:10px;" class="slds-button slds-button_brand" onclick="{!c.CreateRecord}">CSV</button>
+            </lightning:layoutItem>  -->
+                <lightning:input aura:id="caricamentoCorso" type="file" files="{!v.fileToBeUploaded}" onchange="{!c.onFileUploaded}" accept=".csv" label="File da caricare" name="file" multiple="true" required="true" />
+                <aura:if isTrue="{!v.showMainCorsi}">
+                    <ui:outputRichText class="uiOutputRichText slds-m-around--large" value="{!v.TargetFileNameCorsi}" />
+                    <aura:if isTrue="{!v.errorFile}">
+                        <div class="slds-text-color_destructive slds-align_absolute-center">
+                            <ui:outputRichText class="uiOutputRichText slds-m-around--large" value="{!v.erroMsg}" />
+                        </div>
+                    </aura:if>
+                    <aura:if isTrue="{!not(empty(v.errorMsgContentFile))}">
+                        <div class="slds-text-color_destructive slds-align_absolute-center">
+                            <ui:outputRichText class="uiOutputRichText" value="{!v.errorMsgContentFile}" />
+                        </div>
+                    </aura:if>
+                </aura:if>
+            </div>
+        </div>
+        <footer class="slds-card__footer">
+            <div class="row slds-align_absolute-center">
+                <lightning:button variant="destructive" label="Avvia Caricamento" onclick="{! c.avviaCaricamento }" disabled="{!v.errorFile}" />
+            </div>
+        </footer>
+    </article>
+    <!--     <article class="slds-card">   
+        <div class="slds-card__header">
+            <div class="row">
+                <lightning:verticalNavigation selectedItem="recent">
+                    <lightning:verticalNavigationSection label="">
+                        <lightning:verticalNavigationItem label="Caricamento Corsi" name="recent"/>
+                    </lightning:verticalNavigationSection>
+                </lightning:verticalNavigation>
+            </div>
+            <lightning:input aura:id="caricamentoCorsi" type="file"
+                             files="{!v.fileCorsi}"
+                             onchange="{!c.onFileUploadCorsi}"
+                             accept=".csv"
+                             label="File da caricare"
+                             name="file" multiple="true"
+                             required="true" />
+             <aura:if isTrue="{!v.showMainCorsi}">
+                 <ui:outputRichText class="uiOutputRichText slds-m-aroundlarge" value="{!v.TargetFileNameCorsi}"/> 
+                    <aura:if isTrue="{!v.errorFile}">
+                            <div class="slds-text-color_destructive slds-align_absolute-center">
+                            <ui:outputRichText class="uiOutputRichText slds-m-aroundlarge" value="{!v.erroMsg}"/> 
+                            </div>
+                    </aura:if>
+                    <aura:if isTrue="{!not(empty(v.errorMsgContentFile))}">
+                            <div class="slds-text-color_destructive slds-align_absolute-center">
+                            <ui:outputRichText class="uiOutputRichText" value="{!v.errorMsgContentFile}"/> 
+                            </div>
+                    </aura:if>
+                </aura:if>
+             <div class="row slds-align_absolute-center">
+                <lightning:button variant="destructive"  label="Save" onclick="{! c.saveCorsi }"  disabled = "{!v.errorFile}"/>
+            </div>
+        </div>
+        
+    </article> -->
+</aura:component>

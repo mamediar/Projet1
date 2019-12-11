@@ -1,0 +1,10 @@
+<aura:event type="APPLICATION" description="Event template">
+	<aura:attribute
+                    type="Event"
+                    name="appuntamento"
+                    default=""/>
+    <aura:attribute
+                    type="String"
+                    name="nameDetaglioProdotto"
+                    default=""/>
+</aura:event>

@@ -1,0 +1,15 @@
+<aura:component controller="PicklistChangeProfileController" implements="lightning:availableForFlowScreens,flexipage:availableForRecordHome,force:hasRecordId" >
+   	
+    <aura:attribute name="ProfiloSelezionato" type="String"/>
+    <aura:attribute name="Lista_Profili" type="List" default="[]"/>
+    <aura:handler name="init" value="{! this }" action="{! c.loadOptions }"/>
+     
+      
+     
+    <lightning:combobox aura:id="selectItem" name="Profile" label="Profile"
+                                                placeholder="Seleziona"
+                        						variant="standard"
+                                                dropdownAlignment="Left"                                            
+                        						onchange="{!c.changeProf}"  
+                        						options="{!v.Lista_Profili}"/>
+</aura:component>

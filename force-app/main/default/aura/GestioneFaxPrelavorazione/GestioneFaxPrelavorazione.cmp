@@ -1,0 +1,148 @@
+<aura:component controller="GestioneFaxPrelavorazioneController" implements="lightning:availableForFlowScreens,flexipage:availableForAllPageTypes,force:hasRecordId">
+    <aura:attribute name='categoriaOptions' type='List[]'/>
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="esitoOptions" type="Object[]" />
+    <aura:attribute name='prodottiOptions' type='Object[]'/>
+    <aura:attribute name="inoltroOptions" type="Object[]" />
+    <aura:attribute name='loadedCategorie' type='CRM_Gestione_Fax_Azioni__mdt[]'/>
+    <aura:attribute name='loadedConfig' type='CRM_Gestione_Fax_Config__mdt[]'/>
+    <aura:attribute name='prodottoSelezionato' type='String'/>
+    <aura:attribute name='categoriaSelezionata' type='String'/>
+    <aura:attribute name='pratica' type='OCSPratica'/>
+    <aura:attribute name='idProdottoSelezionato' type='Integer'/>
+    <aura:attribute name='idCategoriaSelezionata' type='Integer'/>
+    <aura:attribute name='labelProdottoSelezionato' type='String'/>
+    <aura:attribute name='labelCategoriaSelezionata' type='String'/>
+    <aura:attribute name='isSelectionDisabled' type='Boolean'/>
+    <aura:attribute name="esitoSize" type="String" />
+    <aura:attribute name="esitoValue" type="String" />
+    <aura:attribute name="inoltroValue" type="String" />
+    <aura:attribute name="inoltroFlag" type="Boolean" />    
+    <aura:attribute name="isButtonDisabled" type="Boolean" /> 
+    <aura:attribute name='isPrelavorazioneDisabled' type='Boolean' />
+    <aura:attribute name="presaVisioneValue" type="Boolean" />
+    <aura:attribute name="isTaskDuplicated" type='Boolean' default='false'/>
+    <aura:attribute name="runCheckDuplicated" type="Boolean" default="false"/>
+    <aura:attribute name='isLoading' type='Boolean' default='false'/>
+    <aura:attribute name="notUniqueLabel" type="String"/>
+    <aura:attribute name="filtroTipoPratica" type="String" default=""/>
+    <aura:attribute name="clienteSelezionato" type="OCSCliente" default=""/>
+    <aura:attribute name="spinnerCounter" type="Integer" default="0"/>
+    
+    <lightning:navigation aura:id="navService"/>
+    <lightning:workspaceAPI aura:id="workspace"/>
+
+    <!--  <aura:attribute name='isPostvendita' type='Boolean' default='true'/>
+    <aura:attribute name='showClienti' type='Boolean' default='true'/> -->
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    <aura:handler name='change' value='{!v.presaVisioneValue}' action='{!c.handleText}'/>
+    <aura:handler name="change" value="{!v.prodottoSelezionato}" action="{!c.getFiltroPratica}"/>
+    
+    
+    <aura:if isTrue='{!!v.isPrelavorazioneDisabled}'>
+    <lightning:card variant="Narrow" title="Prelavorazione" iconName="standard:process">
+            <div class="slds-card__body_inner">
+                <c:SpinnerComponent aura:id="spinnerComponent" spinnerCounter="{!v.spinnerCounter}"></c:SpinnerComponent>
+                <lightning:layout multipleRows="true" class="slds-p-bottom_x-small">
+                    <lightning:layoutItem class="slds-m-right_small" size="{!v.esitoSize}">
+                        <lightning:combobox aura:id="esitoItem"
+                                            label="Esito"
+                                            options="{! v.esitoOptions }"
+                                            value="{!v.esitoValue}"
+                                            variant="label-hidden"
+                                            disabled='{!v.isSelectionDisabled}'
+                                            placeholder="Selezionare un esito .." 
+                                            onchange="{!c.outcomeHandler}"
+                                            />
+                    </lightning:layoutItem>
+                    <!--<div aura:id="inoltroContainer" class="side-content filled slds-m-right_small">                        
+                        <lightning:combobox label="Inoltro a"
+                                            options="{! v.inoltroOptions }"
+                                            value="{!v.inoltroValue}"
+                                            variant="label-hidden"
+                                            placeholder="Seleziona un indirizzo .." 
+                                            onchange="{!c.showButton}"/>
+                    </div>-->                                                        
+                    <lightning:layoutItem size="4">
+                        <div aura:id="confermaSmistamentoButtonContainer" class="side-content">
+                            <lightning:button type="button" 
+                                              disabled="{!v.isButtonDisabled}"
+                                              label="Conferma"
+                                              variant="brand"
+                                              onclick="{!c.upshot}"/>
+                        </div>
+                    </lightning:layoutItem>  
+                </lightning:layout>
+            </div>
+        </lightning:card>
+    </aura:if> 
+    
+    <div class="{!if(v.isLoading==true, 'slds-show', 'slds-hide')}">
+        <div class="slds-spinner_container" style="height: 6rem;">
+            <div class="slds-spinner_brand slds-spinner slds-spinner_large" 
+                 style="position: fixed; top: 50%; left: 50%" role="alert">
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div aura:id="gestioneContainer" class="roll-content slds-m-top_small">
+        <lightning:card variant="Narrow" title="Gestione" iconName="standard:poll">
+            <div class="slds-card__body_inner">  
+                <lightning:layout multipleRows="true" class="slds-m-bottom_x-large" verticalAlign="center">
+                    
+                    <lightning:layoutItem size="4" class="slds-m-right_small">
+                        <lightning:select onchange='{!c.loadCategorie}' aura:id="prodotti" value="{!v.prodottoSelezionato}" label="Prodotti" > 
+                            <option value="">Seleziona un prodotto...</option>
+                            <aura:iteration items='{!v.prodottiOptions}' var='option'>
+                                <option text='{!option.MasterLabel}' value='{!option.MasterLabel}' selected='{!option.selected}'/>            
+                            </aura:iteration>
+                        </lightning:select>                     
+                    </lightning:layoutItem>
+                    
+                    <lightning:layoutItem size="4" class="slds-m-right_small">
+                        <lightning:select aura:id="categoria" value='{!v.categoriaSelezionata}' label="Categoria" >
+                            <option value="">Seleziona una categoria...</option>
+                            <aura:iteration items='{!v.categoriaOptions}' var='option'>
+                                <option text='{!option}' value='{!option}' selected='{!option.selected}'/>            
+                            </aura:iteration>
+                        </lightning:select>
+                    </lightning:layoutItem>
+                    
+                    <lightning:layoutItem>
+                        <div class="slds-flexSolid slds-m-top_medium">
+                            <ui:inputCheckbox aura:id="presaVisione" class="slds-m-right_xx-small " value="{!v.presaVisioneValue}"/>
+                            <span aura:id="presaVisioneText" class="slds-text-color_weak errorEnable">Dichiaro di aver letto il Fax</span>
+                        </div>
+                    </lightning:layoutItem>
+                    
+                    
+                </lightning:layout>
+                
+                
+                <c:OCSRecuperaDatiPostvendita showPratiche='true'
+                                              praticaSelezionata='{!v.pratica}'
+                                              filtroTipoPratica='{!v.filtroTipoPratica}'
+                                              OCSClienteSelezionato="{!v.clienteSelezionato}"
+                                              isPostVendita="true"
+                                              showDefaultToast="true"
+                                              
+                                              />      
+                
+                <lightning:button type='button'
+                                  class='slds-m-top_x-small'
+                                label='Aggiungi Attivita'
+                                  variant='brand'
+                                  disabled='{!v.isLoading}'
+                                  onclick='{!c.createTask}' />    
+                
+            </div>
+        </lightning:card>
+        
+    </div>
+    
+    
+</aura:component>

@@ -1,0 +1,489 @@
+<aura:component controller="ComodityApexClass"
+    implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+    access="global">
+    <aura:attribute name="nuovaIntervista" type="COM_Intervista__c" default="{'sobjectype':'COM_Intervista__c',
+                                                                                'COM_NomeCliente__c':'',
+                                                                                'Name':'',
+                                                                                'COM_N_Telefono_Cel__c':'',
+                                                                                'COM_NTelefono1__c':'',
+                                                                                'COM_CSER_Descrizione1__c':'',
+                                                                                'COM_CSER_Descrizione3__c':'',
+                                                                                'COM_Esito__c':'',
+                                                                                'COM_CRMRichiamare_il__c':'',
+                                                                                'COM_Filiale__c':'',
+                                                                                'COM_D_Carico__c':'',
+                                                                                'COM_Stato_Avanzamento_Intervista__c':'',
+                                                                                'COM_N_Telefono2__c':'',
+                                                                                'COM_CSER_Descrizione2__c':'',
+                                                                                'COM_CSER_Descrizione4__c':'',
+                                                                                'COM_Data_Esito__c':'',
+                                                                                'COM_D_liquid__c':'',
+                                                                                'COM_Status__c':'',
+                                                                                'COM_Status_ASS__c':'',
+                                                                                'Valutazione__c':'',
+                                                                                'COM_interview_accepted__c':'',
+                                                                                'COM_Intervista_Accettata__c':'',
+                                                                                'COM_C_prod__c':'',
+                                                                                'COM_Interview_Utils__c':'',
+                                                                                'COM_Intervista_Non_Utile__c':'',
+                                                                                'COM_CSER_DESCRIZIONE5__c':'',
+                                                                                'COM_MD_Filiale__c':'',
+                                                                                'COM_count_non_risp__c':'',
+                                                                                'COM_count_richiama__c':'',
+                                                                                'Ritiro_Doc__c':''
+                                                                                }" />
+    <aura:attribute name="Id" type="String" description="Id of innterview corresponding to client" />
+    <aura:attribute name="Richiamare" type="Boolean" default="false" />
+    <aura:attribute name="NonAccetta" type="Boolean" default="false" />
+    <aura:attribute name="Conclusa" type="Boolean" default="false" />
+
+    <aura:attribute name="Nuova" type="Boolean" default="true" />
+    <aura:attribute name="dataList" type="sObject[]" />
+    <aura:attribute name="numNonRisponde" type="Integer" default="1" />
+    <aura:attribute name="responde" type="Boolean" default="false" />
+    <aura:attribute name="isrispondeSi" type="Boolean" default="false" />
+    <aura:attribute name="isrispondeNo" type="Boolean" default="false" />
+    <aura:attribute name="risposta" type="Risposte__c" default="{'sobjectType':'Risposte__c',
+                                                                          'Contratto1__c':'',
+                                                                          'Secci1__c':'',
+                                                                          'Precontratto1__c':'',
+                                                                          'Questionario_assicurativo1__c':'',
+                                                                          'Contratto_Assicurazione__c':'',
+                                                                          'Documenti_Assicurazione1__c':'',
+                                                                          'Soddisfazione_Cliente1__c':'',
+                                                                          'Count_Negativi__c':'0',
+                                                                          'Count_Positivi__c':'0',
+                                                                          'Intervista__c':'',
+                                                                          'COM_Note_Contratto__c':'',
+                                                                          'COM_Note_Secci__c':'',
+                                                                          'COM_Note_Precontratto__c':'',
+                                                                          'COM_Note_Questionario_Assicurativo__c':'',
+                                                                          'COM_Note_Contratto_Assicurazione__c':'',
+                                                                          'COM_Note_Documenti_Assicurazione__c':'',
+                                                                          'COM_Note_Soddisfazione_Cliente__c':''}" />
+    <aura:attribute name="isRispostaExist" type="Boolean" default="false" />
+    <aura:attribute name="nonRisposta" type="Boolean" default="true" />
+    <aura:attribute name="showRisposta" type="Boolean" default="false" />
+    <aura:attribute name="isupdateResponse" type="Boolean" default="false" />
+    <aura:handler name="init" value="{!this}" action="{!c.getIntervistaDettagli}" />
+    <aura:handler event="c:eventNavigateToIntervistaRisposteComp" action="{!c.refreshResponse}" />
+    <aura:registerEvent name="eventNavigateToApputamentoTelephonico" type="c:eventNavigateToApputamentoTelephonico" />
+    <aura:handler event="c:eventShowSpinnerDomanda" action="{!c.showSpinnerDomanda}" />
+    <aura:handler event="c:eventNavigateToModificaDomanda" action="{!c.modificaDomanda}" />
+    <aura:attribute name="toggleSpinner" type="boolean" default="true" />
+    <aura:attribute name="SpinnerSearch" type="boolean" default="false" />
+
+    <aura:attribute name="ButtonModificaFlag" type="boolean" default="false" />
+    <aura:attribute name="ProductTypeEV" type="boolean" default="false" />
+    <aura:attribute name="isDomandaTrattDati" type="boolean" default="false"/>
+    
+    <aura:attribute name="BooleanCounterAppointment" type="boolean" default="false"/>
+    
+    
+    <!--start SpinnerSearch-->
+    <div class="divTable" style="padding-bottom: 10px;padding-top: 10px;padding-left: 19px;">
+        <div style='font-size:13px;margin-top:20px;display:flex;'>
+            <aura:if isTrue="{!v.SpinnerSearch}">
+                <aura:if isTrue="{!v.toggleSpinner}">
+                    <div class="slds-spinner_container">
+                        <div class="slds-spinner slds-spinner_large slds-spinner_brand" role="alert">
+                            <span class="slds-assistive-text">Loading</span>
+                            <div class="slds-spinner__dot-a"></div>
+                            <div class="slds-spinner__dot-b"></div>
+                        </div>
+                    </div>
+                </aura:if>
+            </aura:if>
+        </div>
+    </div>
+    <!--end SpinnerSearch-->
+    <div>
+        <div class="slds-grid">
+            <!--
+            <div class="slds-col slds-size_2-of-12 ">
+            </div> -->
+            <div class="slds-col slds-size_12-of-12 ">
+                <!-- PAGE HEADER -->
+                <lightning:layout class="slds-page-header slds-page-header--object-home">
+                    <lightning:layoutItem>
+                        <lightning:icon iconName="standard:scan_card" alternativeText="My Expenses" />
+                    </lightning:layoutItem>
+                    <lightning:layoutItem padding="horizontal-small">
+                        <div class="page-section page-header">
+                            <h1 class="slds-text-heading--label">Pratica</h1>
+                            <h2 class="slds-text-heading--medium">Dettagli Pratica</h2>
+                        </div>
+                    </lightning:layoutItem>
+                </lightning:layout>
+                <!-- / PAGE HEADER -->
+                <lightning:layout>
+                    <lightning:layoutItem padding="around-medium" class="around-medium-li">
+                        <!-- CREATE NEW EXPENSE -->
+                        <div aria-labelledby="IntervistaForm" class="arealabel-div">
+                            <!-- BOXED AREA -->
+                            <fieldset class="slds-box slds-theme--default ">
+                                <form class="slds-form--stacked slds-form_horizontal">
+                                    <div class="slds-grid">
+                                        <div class="slds-size--1-of-2">
+                                            <!-- style="font-size:12pt;"> -->
+                                            <div class="slds-m-bottom_large"><b>Nome Cliente:</b>&nbsp;&nbsp;&nbsp;
+                                                <ui:outputText aura:id="NomeCliente" title="Nome Cliente"
+                                                    value="{!v.nuovaIntervista.COM_NomeCliente__r.Name}" />
+                                            </div>
+                                            <div class="slds-m-bottom_large"><b>Data Carico:</b>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                <ui:outputDate format="dd/MM/yyyy" aura:id="DataCarico"
+                                                    value="{!v.nuovaIntervista.COM_D_Carico__c}" />
+                                            </div>
+                                            <div class="slds-m-bottom_large"><b>Numero Cellulare:</b> &nbsp;&nbsp;&nbsp;
+                                                <ui:outputText aura:id="NumeroTelefonoCel" title="NumeroTelefonoCel"
+                                                    value="{!v.nuovaIntervista.COM_N_Telefono_Cel__c}" />
+                                            </div>
+                                            <div class="slds-m-bottom_large"><b>Recapito Telefono 2:</b>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                <ui:outputText aura:id="RecapitoTelefono2"
+                                                    value="{!v.nuovaIntervista.COM_N_Telefono2__c}" />
+                                            </div>
+                                            <aura:if isTrue="{!v.nuovaIntervista.COM_cin_z_calc__c=='R'}">
+                                                <div class="slds-m-bottom_large">
+                                                    <b>Codice/Descrizione Assicurazione 1:</b> &nbsp;&nbsp;&nbsp;
+                                                    <aura:if isTrue="{!v.nuovaIntervista.COM_CSER_Descrizione1__c}">
+                                                        <span class="slds-badge" style="background-color: rgb(221, 168, 168);">
+                                                            <ui:outputText aura:id="CodiceDescrizione1"
+                                                                           title="Codice Desc Assicurazione 1:"
+                                                                           value="{!v.nuovaIntervista.COM_CSER_Descrizione1__c}" />
+                                                        </span>
+                                                    </aura:if>
+                                                </div>
+                                                <div class="slds-m-bottom_large">
+                                                    <b>Codice/Descrizione Assicurazione 3:</b>&nbsp;&nbsp;&nbsp;
+                                                    <aura:if isTrue="{!v.nuovaIntervista.COM_CSER_Descrizione3__c}">
+                                                        <span class="slds-badge" style="background-color: rgb(221, 168, 168);">
+                                                            <ui:outputText aura:id="CodiceDescrizione3"
+                                                                           title="Codice Desc Assicurazione 3:"
+                                                                           value="{!v.nuovaIntervista.COM_CSER_Descrizione3__c}" />
+                                                        </span>
+                                                    </aura:if>
+                                                </div>
+                                            </aura:if>
+                                            <aura:if isTrue="{!v.nuovaIntervista.COM_cin_z_calc__c=='G'}">
+                                                <div class="slds-m-bottom_large">
+                                                    <b>Codice/Descrizione Assicurazione 1:</b>
+                                                    &nbsp;&nbsp;&nbsp;
+                                                    <aura:if isTrue="{!v.nuovaIntervista.COM_CSER_Descrizione1__c}">
+                                                        <span class="slds-badge" style="background-color: yellow;">
+                                                            <ui:outputText aura:id="CodiceDescrizione1"
+                                                                           title="Codice Desc Assicurazione 1:"
+                                                                           value="{!v.nuovaIntervista.COM_CSER_Descrizione1__c}" />
+                                                        </span>
+                                                    </aura:if>
+                                                </div>
+                                                <div class="slds-m-bottom_large">
+                                                    <b>Codice/Descrizione Assicurazione 3:</b>&nbsp;&nbsp;&nbsp;
+                                                    <aura:if isTrue="{!v.nuovaIntervista.COM_CSER_Descrizione3__c}">
+                                                        <span class="slds-badge" style="background-color: yellow;">
+                                                            <ui:outputText aura:id="CodiceDescrizione3"
+                                                                           title="Codice Desc Assicurazione 3:"
+                                                                           value="{!v.nuovaIntervista.COM_CSER_Descrizione3__c}" />
+                                                        </span>
+                                                    </aura:if>
+                                                </div>
+                                            </aura:if>
+                                            <aura:if isTrue="{!v.nuovaIntervista.COM_cin_z_calc__c=='V'}">
+                                                <div class="slds-m-bottom_large">
+                                                    <b>Codice/Descrizione Assicurazione 1:</b> &nbsp;&nbsp;&nbsp;
+                                                    <aura:if isTrue="{!v.nuovaIntervista.COM_CSER_Descrizione1__c}">
+                                                        <span class="slds-badge" style="background-color: rgb(139, 233, 139);">
+                                                            <ui:outputText aura:id="CodiceDescrizione1"
+                                                                           title="Codice Desc Assicurazione 1:"
+                                                                           value="{!v.nuovaIntervista.COM_CSER_Descrizione1__c}" />
+                                                        </span>
+                                                    </aura:if>
+                                                </div>
+                                                <div class="slds-m-bottom_large">
+                                                    <b>Codice/Descrizione Assicurazione 3:</b>&nbsp;&nbsp;&nbsp;
+                                                    <aura:if isTrue="{!v.nuovaIntervista.COM_CSER_Descrizione3__c}">
+                                                        <span class="slds-badge" style="background-color: rgb(139, 233, 139);">
+                                                            <ui:outputText aura:id="CodiceDescrizione3"
+                                                                           title="Codice Desc Assicurazione 3:"
+                                                                           value="{!v.nuovaIntervista.COM_CSER_Descrizione3__c}" />
+                                                        </span>
+                                                    </aura:if>
+                                                </div>
+                                            </aura:if>
+                                            <div class="slds-m-bottom_large"><b>Codice Pratica:</b>&nbsp;&nbsp;&nbsp;
+                                                <ui:outputText aura:id="CodicePratica" title="Codice Pratica"
+                                                    value="{!v.nuovaIntervista.Name}" />
+                                            </div>
+                                            <div class="slds-m-bottom_large"><b>Ultimo Esito:</b> &nbsp;&nbsp;&nbsp;
+                                                <ui:outputText aura:id="UltimoEsito" title="Ultimo Esito"
+                                                    value="{!v.nuovaIntervista.COM_Ultimo_Esito_FIL__c}" />
+                                            </div>
+                                            <div class="slds-m-bottom_large"><b>Num. Non Risponde:</b>
+                                                &nbsp;&nbsp;&nbsp;
+                                                <aura:if isTrue="{!not(empty(v.nuovaIntervista.COM_count_non_risp__c))}">
+                                                    <ui:outputText aura:id="NumNonRisponde" title="NumNonRisponde" value="{!v.nuovaIntervista.COM_count_non_risp__c}" />
+                                                    <aura:set attribute="else">
+                                                        <ui:outputText aura:id="NumNonRisponde" title="NumNonRisponde" value="0" />
+                                                    </aura:set>
+                                                </aura:if>
+                                                <!--
+                                                <ui:outputText aura:id="NumNonRisponde" title="NumNonRisponde"
+                                                    value="{!v.nuovaIntervista.COM_count_non_risp__c}" /> -->
+                                            </div>
+                                        </div>
+                                        <div class="slds-size--1-of-2">
+                                            <div class="slds-m-bottom_large"><BR /></div>
+                                            <div class="slds-m-bottom_large"><b>Data
+                                                    Liquidazione:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                <ui:outputDate format="dd/MM/yyyy" aura:id="Dataliquidazione"
+                                                    value="{!v.nuovaIntervista.COM_D_liquid__c}" />
+                                            </div>
+                                            <div class="slds-m-bottom_large"><b>Recapito Telefono 1:</b>
+                                                &nbsp;&nbsp;&nbsp;
+                                                <ui:outputText aura:id="RecapitoTelefono1" title="Recapito Telefono 1:"
+                                                    value="{!v.nuovaIntervista.COM_NTelefono1__c}" />
+                                            </div>
+                                            <div class="slds-m-bottom_large"><b>Filiale:</b>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                <ui:outputText aura:id="Filiale"
+                                                    value="{!v.nuovaIntervista.COM_MD_Filiale__r.Name}" />
+                                            </div>
+                                            <aura:if isTrue="{!v.nuovaIntervista.COM_cin_z_calc__c=='R'}">
+                                                <div class="slds-m-bottom_large">
+                                                    <b>Codice/Descrizione
+                                                        Assicurazione2:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <aura:if isTrue="{!v.nuovaIntervista.COM_CSER_Descrizione2__c}">
+                                                        <span style="background-color:#ff9999">
+                                                             <ui:outputText aura:id="CodiceDescrizione2"
+                                                                           value="{!v.nuovaIntervista.COM_CSER_Descrizione2__c}" />
+                                                        </span>
+                                                        <!--
+                                                        <span class="slds-badge" style="background-color: rgb(221, 168, 168);">
+                                                            <ui:outputText aura:id="CodiceDescrizione2"
+                                                                           value="{!v.nuovaIntervista.COM_CSER_Descrizione2__c}" />
+                                                        </span> -->
+                                                    </aura:if>
+                                                </div>
+                                                <div class="slds-m-bottom_large">
+                                                    <b>Codice/Descrizione Assicurazione
+                                                        4:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <aura:if isTrue="{!v.nuovaIntervista.COM_CSER_Descrizione4__c}">
+                                                        <span class="slds-badge" style="background-color: rgb(221, 168, 168);">
+                                                            <ui:outputText aura:id="CodiceDescrizione4"
+                                                                           value="{!v.nuovaIntervista.COM_CSER_Descrizione4__c}" />
+                                                        </span>
+                                                    </aura:if>
+                                                </div>
+                                            </aura:if>
+                                            <aura:if isTrue="{!v.nuovaIntervista.COM_cin_z_calc__c=='G'}">
+                                                <div class="slds-m-bottom_large">
+                                                    <b>Codice/Descrizione Assicurazione 2:</b>
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <aura:if isTrue="{!v.nuovaIntervista.COM_CSER_Descrizione2__c}">
+                                                        <span class="slds-badge" style="background-color: yellow;">
+                                                            
+                                                            <ui:outputText aura:id="CodiceDescrizione2"
+                                                                           value="{!v.nuovaIntervista.COM_CSER_Descrizione2__c}" />
+                                                        </span>
+                                                    </aura:if>
+                                                </div>
+                                                <div class="slds-m-bottom_large">
+                                                    <b>Codice/Descrizione Assicurazione
+                                                        4:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <aura:if isTrue="{!v.nuovaIntervista.COM_CSER_Descrizione4__c}">
+                                                        <span class="slds-badge" style="background-color: yellow;">
+                                                            <ui:outputText aura:id="CodiceDescrizione4"
+                                                                           value="{!v.nuovaIntervista.COM_CSER_Descrizione4__c}" />
+                                                        </span>
+                                                    </aura:if>
+                                                </div>
+                                            </aura:if>
+                                            <aura:if isTrue="{!v.nuovaIntervista.COM_cin_z_calc__c=='V'}">
+                                                <div class="slds-m-bottom_large">
+                                                    <b>Codice/Descrizione Assicurazione 2:</b>
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <aura:if isTrue="{!v.nuovaIntervista.COM_CSER_Descrizione2__c}">
+                                                        <span class="slds-badge" style="background-color: rgb(139, 233, 139);">
+                                                            <ui:outputText aura:id="CodiceDescrizione2"
+                                                                           value="{!v.nuovaIntervista.COM_CSER_Descrizione2__c}" />
+                                                        </span>
+                                                    </aura:if>
+                                                </div>
+                                                <div class="slds-m-bottom_large">
+                                                    <b>Codice/Descrizione Assicurazione
+                                                        4:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    <aura:if isTrue="{!v.nuovaIntervista.COM_CSER_Descrizione4__c}">
+                                                        <span class="slds-badge" style="background-color: rgb(139, 233, 139);">
+                                                            <ui:outputText aura:id="CodiceDescrizione4"
+                                                                           value="{!v.nuovaIntervista.COM_CSER_Descrizione4__c}" />
+                                                        </span>
+                                                    </aura:if>
+                                                </div>
+                                            </aura:if>
+                                            <div class="slds-m-bottom_large"><b>Stato Intervista:</b>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                <ui:outputText aura:id="StatoIntervista"
+                                                    value="{!v.nuovaIntervista.COM_Stato_Avanzamento_Intervista__c}" />
+                                            </div>
+                                            <div class="slds-m-bottom_large"><b>Data
+                                                    Esito:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                <ui:outputDate format="dd/MM/yyyy" aura:id="UltimoEsito"
+                                                    value="{!v.nuovaIntervista.COM_Data_Esito__c}" />
+                                            </div>
+                                            <!--<div class="slds-m-bottom_large"><b>Num. Richiamare:</b> &nbsp;&nbsp;&nbsp;<ui:outputDate format="dd/MM/yyyy" aura:id="Richiamareil" value="{!v.nuovaIntervista.COM_CRMRichiamare_il__c}"/></div>-->
+                                            <div class="slds-m-bottom_large"><b>Num. Richiamare:</b> 
+                                                &nbsp;&nbsp;&nbsp;
+                                                <aura:if isTrue="{!not(empty(v.nuovaIntervista.COM_count_richiama__c))}">
+                                                    <ui:outputText aura:id="NumRichiamare" title="NumRichiamare" value="{!v.nuovaIntervista.COM_count_richiama__c}" />
+                                                    <aura:set attribute="else">
+                                                        <ui:outputText aura:id="NumRichiamare" title="NumRichiamare" value="0" />
+                                                    </aura:set>
+                                                </aura:if>
+                                                
+                                                <!--
+                                                <ui:outputText aura:id="NumRichiama" title="NumRichiama"
+                                                    value="{!v.nuovaIntervista.COM_count_richiama__c}" /> -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- start footer-->
+                                    
+                                    <lightning:button label="Indietro" onclick="{!c.redirect}"
+                                        class="slds-m-top--medium" />
+                                    <aura:if isTrue="{!and( v.nonRisposta , v.Nuova )}">
+                                        <lightning:button label="Non risponde al telefono"
+                                            class="slds-m-top--medium slds-float_right" variant="brand"
+                                            onclick="{!c.nonRisponde}" />
+                                        <lightning:button label="Irreperibile"
+                                            class="slds-m-top--medium slds-float_right" variant="brand"
+                                            onclick="{!c.irreperibile}" />
+                                        <lightning:button label="Non accetta intervista"
+                                            class="slds-m-top--medium slds-float_right" variant="brand"
+                                            onclick="{!c.nonAccetta}" />
+                                        <br /><br /><br /><br />
+                                        <div class="slds-col slds-size_4-of-4 ">
+                                            <p>Buongiorno, sig./sig.ra {!v.nuovaIntervista.COM_NomeCliente__r.Name} sono
+                                                [nome operatore] e la contatto dall'Italia</p><br />
+                                            <p>la chiamo su incarico di Compass per testare la qualità del servizio
+                                                offerto dalla nostra filiale di
+                                                {!v.nuovaIntervista.COM_MD_Filiale__r.Name},
+                                                per questo motivo le faro alcune domande sul prestito personale
+                                                stipulato in data
+                                                <ui:outputDate format="dd/MM/yyyy" aura:id="DataCarico"
+                                                    value="{!v.nuovaIntervista.COM_D_Carico__c}" />. </p><br />
+                                            <p>In questo momento ha a sua disposizione tutti i documenti che la Filiale
+                                                le ha consegnato?</p><br />
+                                            <lightning:input type="radio" name="risponse" label="Si" value="Si"
+                                                onchange="{!c.setDomandaTrattDati}" />
+                                            <lightning:input type="radio" name="risponse" label="No" value="No"
+                                                onchange="{!c.setDomandaTrattDati}" />
+
+                                        </div>
+                                        <!-- Domanda Trattamento Dati -->
+                                        <aura:if isTrue="{!v.isDomandaTrattDati}">
+                                              <br /><br /><br /><br />
+                                              <div class="slds-col slds-size_4-of-4">
+                                                  <p>
+                                                     Bene sig. {!v.nuovaIntervista.COM_NomeCliente__r.Name}, prima di cominciare l’intervista 
+                                                     le leggo un breve trafiletto inerente il trattamento dei suoi dati
+                                                  </p><br/>
+                                                  <p>
+                                                  "Le ricordiamo che i suoi dati personali verranno trattati conformemente a quanto previsto dal REGOLAMENTO UE 2016/679 E DELLA NORMATIVA NAZIONALE VIGENTE IN MATERIA DI PROTEZIONE DEI DATI PERSONALI, 
+                                                      informativa da lei sottoscritta in fase di richiesta del prestito personale e consultabile anche sul sito <a href="http://www.compass.it/" target="_blank">www.compass.it</a>"
+                                                  </p><br/>
+                                                  <lightning:button label="Iniziare Intervista"
+                                                                      class="slds-m-top--medium slds-float_left" variant="brand"
+                                                                      onclick="{!c.getIntervistaDomande}" />
+                                                  <!--
+                                                  <lightning:input type="radio" name="risponse" label="Si" value="Si"
+                                                                   onchange="{!c.getIntervistaDomande}" />
+                                                  <lightning:input type="radio" name="risponse" label="No" value="No"
+                                                                   onchange="{!c.getIntervistaDomande}" /> -->
+                                              </div>
+                                        </aura:if>
+                                        
+                                        
+                                        
+                                    </aura:if>
+                                    <!-- end footer-->
+                                    <br />
+                                    <br />
+                                    
+                                    <aura:if isTrue="{!v.isrispondeSi}">
+                                        <aura:if isTrue="{!v.ProductTypeEV}">
+                                            <div class="cmp-intDom slds-grid">
+                                                <c:IntervistaDomandeCompEV nuovaIntervista="{!v.nuovaIntervista}"
+                                                    nuovaIntervistaDomandeComp="{!v.nuovaIntervista}"
+                                                    risposta="{!v.risposta}" ParentAttributeOfChild="{!v.nonRisposta}"
+                                                    ParentAttributeOfChild1="{!v.isrispondeSi}" TypeOfDML="INSERT" />
+                                            </div>
+                                            <aura:set attribute="else">
+                                                <div class="cmp-intDom slds-grid">
+                                                    <c:IntervistaDomandeComp nuovaIntervista="{!v.nuovaIntervista}"
+                                                        nuovaIntervistaDomandeComp="{!v.nuovaIntervista}"
+                                                        risposta="{!v.risposta}" IsRispostaSi="{!v.isrispondeSi}"
+                                                        ParentAttributeOfChild="{!v.nonRisposta}" TypeOfDML="INSERT" ParentAttributeOfChild2="{!v.isDomandaTrattDati}"/>
+                                                </div>
+                                            </aura:set>
+                                        </aura:if>
+                                    </aura:if>
+                                    <aura:if isTrue="{!and(v.isupdateResponse, not(v.isRispostaExist))}">
+                                        <aura:if isTrue="{!v.ProductTypeEV}">
+                                            <div class="cmp-intDom slds-grid">
+                                                <c:IntervistaDomandeCompEV isRispostaEx="{!v.isRispostaExist}"
+                                                    UpdateResponse="{!v.isupdateResponse}"
+                                                    nuovaIntervista="{!v.nuovaIntervista}"
+                                                    nuovaIntervistaDomandeComp="{!v.nuovaIntervista}"
+                                                    risposta="{!v.risposta}" ParentAttributeOfChild="{!v.nonRisposta}"
+                                                    ParentAttributeOfChild1="{!v.isrispondeSi}" TypeOfDML="UPDATE" />
+                                            </div>
+                                            <aura:set attribute="else">
+                                                <div class="cmp-intDom slds-grid">
+                                                    <c:IntervistaDomandeComp isRispostaEx="{!v.isRispostaExist}"
+                                                        UpdateResponse="{!v.isupdateResponse}"
+                                                        nuovaIntervista="{!v.nuovaIntervista}"
+                                                        nuovaIntervistaDomandeComp="{!v.nuovaIntervista}"
+                                                        risposta="{!v.risposta}" TypeOfDML="UPDATE" />
+                                                </div>
+                                            </aura:set>
+                                        </aura:if>
+                                    </aura:if>
+                                    <aura:if isTrue="{!v.isrispondeNo}">
+                                        <div class="cmp-intApput slds-grid">
+                                                <c:ApputamentoTelephonico nuovaIntervista="{!v.nuovaIntervista}"
+                                                ParentAttributeOfChild="{!v.nonRisposta}"
+                                                ParentAttributeOfChild1="{!v.isrispondeNo}"
+                                                ParentAttributeOfChild2="{!v.responde}" 
+                                                ParentAttributeOfChild3="{!v.BooleanCounterAppointment}" />
+                                        </div>
+                                    </aura:if>
+                                </form>
+                            </fieldset>
+                            
+                            <aura:if isTrue="{!v.isRispostaExist}">
+                                <aura:if isTrue="{!v.ProductTypeEV}">
+                                    <div class="cmp-intDom slds-grid">
+                                        <c:IntervisteRisposteCompEV risposta="{!v.risposta}"
+                                            Valutazione="{!v.risposta.Valutazione__c}"
+                                            modificaRisposta="{!v.ButtonModificaFlag}" />
+                                    </div>
+                                    <aura:set attribute="else">
+                                        <div class="cmp-intDom slds-grid">
+                                            <c:intervisteRisposteComp risposta="{!v.risposta}"
+                                                Valutazione="{!v.risposta.Valutazione__c}"
+                                                modificaRisposta="{!v.ButtonModificaFlag}" />
+                                        </div>
+                                    </aura:set>
+                                </aura:if>
+                            </aura:if>
+                        </div>
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </div>
+            <!--
+            <div class="slds-col slds-size_2-of-12 ">
+            </div> -->
+        </div>
+    </div>
+</aura:component>

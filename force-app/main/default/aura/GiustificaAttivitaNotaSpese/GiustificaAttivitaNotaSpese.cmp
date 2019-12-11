@@ -1,0 +1,46 @@
+<aura:component controller="GiustificaAttivitaNotaSpeseClass" implements="flexipage:availableForAllPageTypes">
+    
+    <aura:attribute name="data" type="List"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="notaSpeseSelected" type="SFA_NotaSpese__c"/>
+    <aura:attribute name="giorniNotaSpeseMap" type="Map"/>
+    <aura:attribute name="step" type="String" default="step0"/> 
+    <!--    step0 -> Giustifica nota spese
+            step1 -> Dealer Pianificati  
+            setp2 -> Giustifica Uscita
+    -->
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="change" value="{!v.step}" action="{!c.stepChange}"/>
+
+    <aura:if isTrue="{!v.step == 'step0'}">
+    <lightning:card title="Giustifica le attività fuori sede" iconName="custom:custom31">
+        <aura:set attribute="actions">
+            <lightning:buttonIcon iconName="utility:refresh" variant="border-filled" onclick="{!c.doInit}"/>
+        </aura:set>
+        <c:SpinnerComponent aura:id="spinnerComponent"/> 
+        <lightning:layout>
+            <lightning:layoutItem size="12" padding="around-small">
+                <lightning:layout>
+                    <lightning:layoutItem padding="around-small" size="8">
+                        <lightning:layout multipleRows="false">
+                            <lightning:datatable
+                                keyField="id"
+                                data="{!v.data}"
+                                columns="{!v.columns}"
+                                onrowaction="{!c.handleRowAction}"
+                                hideCheckboxColumn="true"/>
+                        </lightning:layout>
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </lightning:layoutItem>
+        </lightning:layout>
+    </lightning:card>
+    </aura:if>
+    <aura:if isTrue="{!v.step == 'step1'}">
+        <c:DealerPianificatiNotaSpese notaSpeseSelected="{!v.notaSpeseSelected}" step="{!v.step}"/>
+    </aura:if>
+     <aura:if isTrue="{!v.step == 'step2'}">
+        <c:GiustificaUscitaNotaSpese notaSpese="{!v.notaSpeseSelected}" step="{!v.step}"/>
+    </aura:if>
+</aura:component>

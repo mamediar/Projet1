@@ -1,0 +1,8 @@
+<aura:component implements="force:appHostable,force:hasRecordId,flexipage:availableForAllPageTypes,lightning:isUrlAddressable,force:lightningQuickAction" access="global">
+    <force:recordData aura:id="case" recordUpdated="{!c.init}" recordId="{!v.recordId}" 
+    fields="Account.getCodice_Cliente__c, NumeroPratica__c" 
+    targetFields="{!v.CaseRecord}" targetError="{!v.recordLoadError}" />    
+    <aura:attribute name="CaseRecord" type="Object" />
+    <aura:attribute name="recordId" type="String"/>
+    
+</aura:component>

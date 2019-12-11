@@ -1,0 +1,21 @@
+{
+    "resultCode": 0,
+    "resultMessage": "Ok",
+    "censimentoTitolareConvenzionatoResponse": {
+  	"elenco": [{
+  		"partimestp":"",
+		"primaria":"12154545",
+		"secondaria":"8755787",
+		"tipoSecondaria":"T",
+		"tipoLegame":"",
+		"assenzaLegame":"",
+		"dataInserimento":"0",
+		"dataChiusura":"0",
+		"dataAnnullo":"0",
+		"cert":"",
+		"dataFineCert":"",
+		"notaCert":"",
+		"segnala":""
+  	}]
+  }
+}

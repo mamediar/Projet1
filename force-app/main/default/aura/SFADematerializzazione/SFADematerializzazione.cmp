@@ -1,0 +1,75 @@
+<aura:component  controller="SFADematerializzazioneController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global">
+
+    <aura:attribute name="recordId" type="String"/> 
+    <aura:attribute name="dematerializzazioneSelected" type="Object"/>
+    <aura:attribute name="dealerSelectedId" type="String"/>  
+    <aura:attribute name="msg" type="String" />
+    <aura:attribute name="errormsg" type="String" />    
+    <aura:attribute name="disabledProsegui" type="Boolean" default="true"/>
+    <aura:attribute name="senzaEsito" type="Boolean" default="true"/>
+    <aura:attribute name="disableCompleta" type="Boolean" default="false"/>
+
+    <lightning:notificationsLibrary aura:id="notifLib"/> 
+
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+
+    <div class="slds-box slds-theme_default slds-m-bottom_small">
+ 
+        <lightning:card  title="Comunicazione Utenze" footer=""> 
+
+                    <!--HEADER TITLE -->
+                    <aura:set attribute="title">                           
+                    <center><h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Lista Attivita' Dematerializzazione</h2></center>
+                    </aura:set>
+                    <!--END HEADER TITLE-->
+   
+
+                        <!--BODY -->
+                        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1" style="height: 20%">                            
+                            <!--SENZA ESITO-->
+                            <aura:if isTrue="{!v.senzaEsito}">
+                                <div class="slds-grid">
+                                    <div class="slds-col slds-size_1-of-2"> Formazione effettuata:</div> 
+                                    <div class="slds-col slds-size_1-of-2">
+                                        <ui:inputCheckbox aura:id="flagFormazione" label="" change="{!c.flag}"/>
+                                    </div>  
+                                </div>
+                            </aura:if>
+                            <!--CON ESITO-->
+                            <aura:if isTrue="{!not(v.senzaEsito)}">
+                                <div class="slds-grid">
+                                    <div class="slds-col slds-size_1-of-2" align="right"> Esito Dematerializzazione:&nbsp;&nbsp;</div> 
+                                    <div class="slds-col slds-size_1-of-2">
+                                        {!v.dematerializzazioneSelected.Description}
+                                    </div>  
+                                </div>
+                                <br/>
+                            </aura:if>
+                        </div>
+                        <!--END BODY -->
+
+
+                        <aura:set attribute="footer">
+                                <!--SENZA ESITO-->
+                                <aura:if isTrue="{!v.senzaEsito}">
+                                        <div class="slds-grid">   
+                                                <div class="slds-col slds-size_1-of-1">
+                                                    <button class="slds-button slds-button_brand" onclick="{!c.inserimentoDem}" disabled="{!v.disabledProsegui}">Prosegui</button>
+                                                </div>
+                                        </div>
+                                </aura:if>
+                                <!--CON ESITO-->
+                                 <aura:if isTrue="{!not(v.senzaEsito)}">
+                                        <div class="slds-grid">   
+                                                <div class="slds-col slds-size_1-of-1">
+                                                    <button class="slds-button slds-button_brand"  disabled="{!v.disableCompleta}" onclick="{!c.processActivity}">Completa Attivita'</button>
+                                                </div>
+                                        </div>
+                                </aura:if>
+                       </aura:set>
+                                      
+        </lightning:card>
+   
+    </div>
+
+</aura:component>

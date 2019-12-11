@@ -1,0 +1,46 @@
+<aura:component controller="XCSGestioneEsitoCase"
+                implements="force:appHostable,flexipage:availableForRecordHome,force:hasRecordId" access="global" >
+    
+    <aura:attribute name="listaEsiti" type="String"/>
+    <aura:attribute name="esitoSelezionato" type="String" default=""/>
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="noteValue" type="String" default=""/>
+    <aura:attribute name="label" type="String" default="Selezionare Esito"/>
+    
+    <aura:attribute name="saveCase" type="Boolean" default="false"/>
+    
+    <aura:registerEvent name="XCSSceltaEsitoEvent" type="c:EsitoReady"/>
+    
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <div class="slds-grid slds-wrap">
+        <div class="slds-size_1-of-3 slds-p-top--small slds-p-right--medium">
+            <ui:inputSelect aura:id="risultatoChiamata" 
+                            value="{!v.esitoSelezionato}"
+                            label="{!v.label}">
+                <ui:inputSelectOption text=""/>
+                <aura:iteration items="{!v.listaEsiti}" var="esito">
+                    <ui:inputSelectOption text="{!esito}"/>
+                </aura:iteration>
+            </ui:inputSelect>
+        </div>
+        <div class="slds-size_2-of-3 ">
+            <lightning:textarea aura:id="noteTextarea" 
+                                label="Note"
+                                value="{!v.noteValue}"
+                                required="false"
+                                maxlength="1000"/>
+        </div>
+    </div>
+    
+    <div class="slds-m-top_medium">
+        <lightning:button disabled="{!v.esitoSelezionato == ''}"
+                          variant="destructive" 
+                          label="Conferma" 
+                          title="Conferma" 
+                          onclick="{! c.handleClick }"/>
+    </div>
+    
+</aura:component>

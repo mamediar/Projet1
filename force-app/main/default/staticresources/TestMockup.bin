@@ -1,0 +1,3 @@
+Name;EndPoint__c;Method__c;Mock__c;Password__c;Test_Request__c;Test_Response__c;User__c
+ricerca.ocs.recuperaStato;https://richiestaonlinesvi.compassonline.it/B2BSOAP/rest/B2BREST/execute;POST;false;P00FLSDC;{“serviceId”:”recuperaStatoPratica”,“companyType:{“value”:”COMPASS”},“numPratica”:”19098265”};"{“resultCode”: 0,
+“resultMessage”:”Ok”,”statoPratica”: “30RE”}";CDSLF00

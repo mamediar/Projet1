@@ -1,0 +1,56 @@
+<aura:component controller="ComodityApexClass"
+    implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+    access="global">
+    <!--AURA ATTRIBUTI-->
+    <aura:attribute name="nuovaIntervista" type="COM_Intervista__c" />
+    <aura:attribute name="ParentAttributeOfChild" type="String" />
+    <aura:attribute name="ParentAttributeOfChild1" type="String" />
+    <aura:attribute name="ParentAttributeOfChild2" type="String" />
+    <aura:attribute name="quezione" type="String" />
+    <aura:attribute name="note" type="String" default="" />
+    <aura:attribute name="disponibileNonAdesso" type="boolean" default="true" />
+    <aura:attribute name="userDate" type="Date" />
+    <aura:attribute name="userTime" type="Time" />
+    <aura:attribute name="showSave" type="boolean" default="true" />
+    <aura:attribute name="numNonRispondeAppTelAss" type="Integer"/>
+
+    <aura:if isTrue="{!v.disponibileNonAdesso}">
+        <fieldset class="slds-box slds-theme--default slds-container--medium">
+            <div class="container">
+                <div class="content">
+                    <div class="apputamento_quezione">{!v.quezione}</div>
+                    <form class="slds-form--stacked">
+                        <div class=" slds-form-element__control slds-grid">
+                            <label>Date Time</label>
+                            <lightning:input aura:id="idDate" type="date" name="date" label="" required="true" variant="label-hidden" class="date"
+                            messageWhenValueMissing="Il Campo è obbligatorio!" value="{!v.userDate}" />
+                            <lightning:input aura:id="idDate" type="time" name="time" label="" required="true" variant="label-hidden" class="time"
+                            messageWhenValueMissing="Il Campo è obbligatorio!" value="{!v.userTime}" />
+    
+                        </div>
+                        <div class="slds-form-element__control slds-grid textarea">
+                            <div
+                                class="slds-form-element slds-form-element_horizontal textarea-content slds-is-editing slds-grid">
+                                <!--
+                            <label class="slds-col slds-size_1-of-12" aura:id="telephonicoform"
+                                   for="textarea-id-01">Note: </label> -->
+                                <lightning:textarea aura:id="idDate" name="input1" label="Note" value="{!v.note}" required="true" messageWhenValueMissing="Il Campo è obbligatorio!"/>
+                                <!--
+                            <textarea class="slds-textarea slds-col slds-size_11-of-12" aura:id="idtelephonicoNote"
+                                      id="textarea-id-01"></textarea> -->
+                            </div>
+                        </div>
+                        <div style="width:100%!Important"
+                            class="slds-col slds-size_1-of-1 slds-large-size_3-of-3 stylePag">
+                            <lightning:button class="slds-button slds-button_brand buttonPage" onclick="{!c.Cancella}"
+                                label="Cancella" />
+                            <lightning:button class="slds-button slds-button_brand buttonPage"
+                                onclick="{!c.clickCreate}" label="Salva Appuntamento"/>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </fieldset>
+    </aura:if>
+
+</aura:component>

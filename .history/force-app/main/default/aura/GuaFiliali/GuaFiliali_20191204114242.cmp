@@ -1,0 +1,182 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:lightningQuickAction,force:hasRecordId" access="global" controller="GUA_Dettaglio_FilialeCnt">
+
+    <aura:attribute name="recordId" type="String" default="" />
+    <aura:attribute name="filialeCase" type="Case" />
+    <aura:attribute type="Account" name="filiale" />
+    <aura:attribute type="Boolean" name="modalActif" default="false" />
+    <aura:attribute type="List" name="userDealerList" default="[]" />
+ 
+    <!-- PAGINATION -->
+    <aura:attribute name="totalPage" type="Integer" default="1" />
+    <aura:attribute name="currentPage" type="Integer" default="1" />
+    <aura:attribute name="totalRecord" type="integer" default="0" />
+    <aura:attribute name="onInit" type="boolean" default="true" />
+    <aura:attribute name="pages" type="integer[]" />
+    <aura:attribute name="pageSize" type="Integer" default="5" />
+    <aura:attribute name="start" type="Integer" default="0" />
+    <aura:attribute name="end" type="Integer" default="0" />
+    <aura:attribute name="objectList" type="List" />
+    <aura:attribute name="paginationList" type="List" default="[]" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    <aura:handler name="GUA_RefreshViewEvent" event="c:GUA_RefreshViewEvent" action="{!c.refreshViewDetail}" />
+
+
+
+    <!-- <aura:if isTrue="{!v.filiale.Id!=null}"> -->
+
+    <lightning:card title="Riepilogo" variant="base">
+        <div class="slds-card__body_inner">
+            <lightning:layout>
+                <lightning:layoutItem size="4" class="slds-m-around_xxx-small">
+                    <div class="slds-p-around_xxx-small slds-text-heading_medium slds-m-bottom_small" style="text-align:center;background-color:#9f201c;color:#fff;">
+                        Dati Chiamata
+                    </div>
+                    <lightning:layout>
+                        <lightning:layoutItem size="6">
+                            <div class="slds-form-element   "><span class="slds-form-element__label">Numero
+                                    Chiamato:</span>
+                                <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.filialeCase.CTI_DNIS__c}</span></div>
+                            </div>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                    <lightning:layout>
+                        <lightning:layoutItem size="6">
+                            <div class="slds-form-element   "><span class="slds-form-element__label">Numero
+                                    Chiamante:</span>
+                                <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.filialeCase.CTI_ANI__c}</span></div>
+                            </div>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                    <lightning:layout>
+                        <lightning:layoutItem size="6">
+                            <div class="slds-form-element   "><span class="slds-form-element__label">Codice
+                                    Digitato:</span>
+                                <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.filialeCase.CTI_CALL_ID__c}</span></div>
+                            </div>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                    <lightning:layout>
+                        <lightning:layoutItem size="6">
+                            <div class="slds-form-element   "><span class="slds-form-element__label">Navigazione
+                                    IVR:</span>
+                                <div class="slds-form-element__control"><span class="slds-form-element__static"></span>
+                                </div>
+                            </div>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="4" class="slds-m-around_xxx-small">
+                    <div class="slds-p-around_xxx-small slds-text-heading_medium slds-m-bottom_small" style="text-align:center;background-color:#9f201c;color:#fff;">
+                        Informazioni Filiale
+                    </div>
+                    <div class="slds-form-element   "><span class="slds-form-element__label">Filiale:</span>
+                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.filiale.Name}</span></div>
+                    </div>
+                    <div class="slds-form-element   "><span class="slds-form-element__label">Area:</span>
+                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.filiale.OCSAreaId__c}</span></div>
+                    </div>
+                    <div class="slds-form-element   "><span class="slds-form-element__label">Regione:</span>
+                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.filiale.Region_Name__c}</span></div>
+                    </div>
+                    <div class="slds-form-element   "><span class="slds-form-element__label">Capo Filiale:</span>
+                        <div class="slds-form-element__control"><span class="slds-form-element__static"></span></div>
+                    </div>
+                    <div class="slds-form-element   "><span class="slds-form-element__label">Coordinatore:</span>
+                        <div class="slds-form-element__control"><span class="slds-form-element__static"></span></div>
+                    </div>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="4" class="slds-m-around_xxx-small">
+                    <div class="slds-p-around_xxx-small slds-text-heading_medium slds-m-bottom_small" style="text-align:center;background-color:#9f201c;color:#fff;">
+                        Recapiti
+                    </div>
+                    <div class="slds-form-element   "><span class="slds-form-element__label">Filiale di
+                            Riferimento:</span>
+                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.filiale.Name}</span></div>
+                    </div>
+                    <div class="slds-form-element   "><span class="slds-form-element__label">Indirizzo:</span>
+                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.filiale.Address_Abbr_Sms__c}</span></div>
+                    </div>
+                    <div class="slds-form-element   "><span class="slds-form-element__label">Tefeno:</span>
+                        <div class="slds-form-element__control">
+                            <lightning:clickToDial value="{!v.filiale.Phone}">{!v.filiale.Phone}</lightning:clickToDial>
+                        </div>
+                    </div>
+                    <div class="slds-form-element   "><span class="slds-form-element__label">Fax:</span>
+                        <div class="slds-form-element__control">
+                            <lightning:clickToDial value="{!v.filiale.Fax}">{!v.filiale.Fax}</lightning:clickToDial>
+                        </div>
+                    </div>
+                    <div class="slds-form-element   "><span class="slds-form-element__label">Email:</span>
+                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.filiale.PersonEmail}</span></div>
+                    </div>
+
+                    <div class="slds-form-element   "><span class="slds-form-element__label">Unità Affari:</span>
+                        <div class="slds-form-element__control"><span class="slds-form-element__static">{!v.filiale.Name}</span></div>
+                    </div>
+                </lightning:layoutItem>
+            </lightning:layout>
+        </div>
+    </lightning:card>
+
+    <lightning:card class="slds-m-top_medium slds-m-bottom_medium">
+        <div class="slds-card__body_inner">
+            <lightning:tabset selectedTabId="one">
+                <lightning:tab label="Ultime Chiamate" id="one" onactive="">
+                    <c:GUA_UltimeChiamataCmp accountId="{!v.filialeCAase.AccountId}" />
+                </lightning:tab>
+                <lightning:tab label="Componenti" id="two" onactive="{!c.getUtente}">
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Tipo Utente</th>
+                                <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Matricola</th>
+                                <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Cognome</th>
+                                <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Nome</th>
+                                <th style="text-align:center;background-color:#0c0c0c;color:#fff;">Email</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <aura:iteration items="{!v.paginationList}" var="userDealer">
+                                <tr>
+                                    <td>{!userDealer.UserType}</td>
+                                    <td>{!userDealer.EmployeeNumber}</td>
+                                    <td>{!userDealer.FirstName}</td>
+                                    <td>{!userDealer.LastName}</td>
+                                    <td>{!userDealer.Email}</td>
+                                </tr>
+                            </aura:iteration>
+                        </tbody>
+                    </table>
+
+                    <!--Pagination-->
+                    <div class="slds-grid slds-wrap" style="margin-top: 1%">
+                        <div class="slds-size_1-of-3">
+                            <div class="padding-top" style="margin-top: 1%">
+                                <p class="slds-truncate">&nbsp;&nbsp;</p>
+                            </div>
+                        </div>
+                        <div class="slds-size_1-of-3">
+                            <div class=" slds-text-align_center slds-m-around_x-small">
+                                <c:FilialiPagination objectList="{!v.userDealerList}" paginationList="{!v.paginationList}" pageSize="{!v.pageSize}" start="{!v.start}" end="{!v.end}" totalPage="{!v.totalPage}" currentPage="{!v.currentPage}" totalRecord="{!v.totalRecord}" pages="{!v.pages}"
+                                />
+                            </div>
+                        </div>
+                        <div class="slds-size_1-of-3">
+                        </div>
+                    </div>
+                </lightning:tab>
+                <lightning:tab label="FAQ" id="three" onactive="">
+                    FAQ
+                </lightning:tab>
+                <lightning:tab label="Chiudi Chiamata" id="four" onactive="{!c.showChiamata}">
+                    <!--<c:GUA_chiudichiamataCmp isModalOpen="{!v.modalActif}" case="{!v.filialeCase}"/> -->
+                    <c:Gua_ChiudiChiamataInboundCmp isModalOpen="{!v.modalActif}" case="{!v.filialeCase}" />
+                </lightning:tab>
+            </lightning:tabset>
+        </div>
+    </lightning:card>
+
+
+    <!-- </aura:if> -->
+</aura:component>

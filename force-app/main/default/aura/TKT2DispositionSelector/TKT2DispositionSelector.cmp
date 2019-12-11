@@ -1,0 +1,12 @@
+<aura:component controller="CaseCloserController" implements="force:appHostable,force:hasRecordId,flexipage:availableForAllPageTypes,lightning:isUrlAddressable,force:lightningQuickAction" access="global">
+    <aura:attribute name="recordId" type="String" />
+
+    <c:XCS_DispositionForAppBuilder 
+        recordId="{!v.recordId}" 
+        rootExternalId="DP1925" 
+        showScript="false"
+    />
+
+    <aura:handler event="c:XCS_DispositionReady" action="{!c.closeCaseFunc}"/>
+
+</aura:component>

@@ -1,0 +1,39 @@
+<!--
+  @File Name          : PVLinkEvo.cmp
+  @Description        : 
+  @Author             : Andrea Vanelli
+  @Group              : 
+  @Last Modified By   : Andrea Vanelli
+  @Last Modified On   : 3/10/2019, 16:39:16
+  @Modification Log   : 
+  Ver       Date            Author      		    Modification
+  1.0    3/10/2019   Andrea Vanelli     Initial Version
+-->
+<aura:component controller="LinkEvoController" implements="flexipage:availableForAllPageTypes">
+    
+
+    <aura:attribute name="btn_icon" type="String" default=""/>
+    <aura:attribute name="btn_variant" type="String" default="neutral"/>
+    <aura:attribute name="btn_label" type="String" default="Apri schermata EVO"/>
+
+
+    <aura:attribute name="evoUrl" type="String" />
+    
+    <aura:attribute name="task" type="String" default=""/>
+    <aura:attribute name="linkage" type="String" default="DEFAULT"/>
+    <aura:attribute name="urlritorno" type="String" default="closewindow"/>
+    <aura:attribute name="codiceCliente" type="String" default =""/>
+    <aura:attribute name="numeroPratica" type="String" default ="" />
+    <aura:attribute name="office" type="String" />
+    <aura:attribute name="infoPre" type="String" default=""/>
+    <aura:attribute name="infoPost" type="String" default=""/>
+    <aura:attribute name="force" type="boolean" default= "false" />
+    
+    <lightning:button aura:id="apriSchermataEVOButton"
+                      label="{!v.btn_label}"
+                      variant="{!v.btn_variant}"
+                      onclick="{!c.navigate}"
+                      iconName="{!v.btn_icon}" iconPosition="right"
+                      />
+    
+</aura:component>

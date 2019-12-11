@@ -1,0 +1,156 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" controller="SinistriAssicurativiCtrl" >
+    <aura:html tag="style">.toastMessage.forceActionsText{
+        white-space : pre-line !important;
+        }
+    </aura:html>
+    <aura:attribute name="elencoPratiche" type="List"/>
+    <aura:attribute name="pratica" type="Object"/>
+    <aura:attribute name="numeroPratica" type="String" />
+    <aura:attribute name="tipologiaSinistro" type="String" />
+    <aura:attribute name="note" type="String" />
+    <aura:attribute name="dataSinistro" type="Date" />
+    
+    
+    <aura:attribute name="spinner" type="Boolean" default="false"/>
+    <aura:attribute name="isPraticaFound" type="boolean" default="true"/>
+    
+    
+    <aura:attribute name="sinistriRisultatiTableColunms" type="List" default=""/>
+    
+    
+    <aura:if isTrue="{!v.spinner}">
+        <lightning:spinner alternativeText="Loading" size="large" />
+    </aura:if>
+    
+    
+    
+    <h1>Ricerca Cliente / Pratica</h1>    	
+    <div class="slds-grid slds-gutters slds-m-bottom--medium">
+        <div class="slds-col">
+            <lightning:input aura:id="lastName" type="string" label="Cognome" name="lastName" value=""/>
+            <lightning:input aura:id="fiscalCod" type="string" label="Codice Fiscale" name="fiscalCod" value=""/>
+        </div>
+        <div class="slds-col">
+            <lightning:input aura:id="firstName" type="string" label="Nome" name="firstName" value=""/>
+            <lightning:input aura:id="clientCod" type="String" label="Codice Cliente" name="clientCode" value=""/>
+        </div>
+        <div class="slds-col">
+            <lightning:input aura:id="birthDate" type="Date" label="Data di nascita" name="birthDate" />
+            <lightning:input aura:id="numPratica" type="string" label="Numero Pratica" name="numPratica" value=""/>
+        </div>
+        <div class="slds-col">
+            <lightning:input aura:id="ragioneSociale" type="string" label="Ragione Sociale" name="ragiorneSociale" value=""/>
+            <lightning:input aura:id="pan" type="string" label="PAN" name="pan" value=""/>
+        </div>
+        
+    </div>
+    <div class="slds-p-top_x-small slds-p-bottom_x-small slds-align_absolute-center">
+        <lightning:button label="Ricerca"  variant="brand" onclick="{! c.recuperaAnagrafica}"/> 
+    </div>
+    <br/>
+    <aura:if isTrue="{!not(empty(v.elencoPratiche))}">
+        
+        <div class="slds-grid">
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                <thead>
+                    <tr class="slds-text-heading--label">
+                        <th class="" scope="col">Sel</th>
+                        <th class="" scope="col">DENOMINAZIONE</th>
+                        <th class="" scope="col">DATA DI NASCITA</th>
+                        <th class="" scope="col">LUOGO DI NASCITA</th>
+                        <th class="" scope="col">CODICE FISCALE</th>
+                        <th class="" scope="col">NUMERO PRATICA</th>
+                        <th class="" scope="col">TIPO PRATICA</th>
+                        <th class="" scope="col">ASSICURAZIONE</th>
+                        <th class="" scope="col">NOTE ASSICURAZIONE</th>
+                        <th class="" scope="col">INIZIO COPERTURA</th>
+                        <th class="" scope="col">FINE COPERTURA</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <aura:iteration items="{!v.elencoPratiche}" var="elem" indexVar="index">
+                        <tr class="slds-line-height_reset"  >
+                            <td class="" scope="col"><input aura:id="radio{!index}" onclick="{!c.selectedPratica}" name="index" type="radio" value="{!index}" checked="{!v.elencoPratiche.length == 1}" /></td>
+                            <td class="" scope="col">{!elem.denominazione}</td>
+                            <td class="" scope="col">{!elem.dataNascita}</td>
+                            <td class="" scope="col">{!elem.luogoNascita}</td>
+                            <td class="" scope="col">{!elem.codFiscale}</td>
+                            <td class="" scope="col">{!elem.numPratica}</td>
+                            <td class="" scope="col">{!elem.tipoPratica}</td>
+                            <td class="" scope="col">{!elem.assicurazione}</td>
+                            <td class="" scope="col">{!elem.noteAssicurazione}</td>
+                            <td class="" scope="col">{!elem.dataInizioCopertura}</td>
+                            <td class="" scope="col">{!elem.dataFineCopertura}</td>
+                        </tr> 
+                    </aura:iteration>
+                </tbody>
+            </table>
+        </div>
+        
+        <aura:if isTrue="{!v.pratica.scaduto}">
+            
+            
+            <br/>
+            <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+                
+                <h2>Non è possibile inserire un sinistro su questa pratica.</h2>
+                <div class="slds-notify__close">
+                    
+                </div>
+            </div>
+            <br/>
+            
+        </aura:if>
+        
+        <aura:if isTrue="{!and(v.pratica, not(v.pratica.scaduto =='true' ))}">
+            <div class="slds-grid slds-gutters slds-m-bottom--medium" >
+                <div class="slds-col" >
+                    <br/>
+                    <div class="slds-grid">
+                        <div class="slds-col">
+                            <div class="slds-box slds-box--small slds-theme--shade slds-text-align--center">
+                                <label>Pratica {!v.pratica.numPratica}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-grid">
+                        <div class="slds-col">
+                            <lightning:input aura:id="date" type="Date" label="Data Sinistro" name="dataSinistro" value="{!v.dataSinistro}" dateStyle="short"/>
+                        </div>
+                        <div class="slds-col">
+                            <lightning:select label = "Tipologia Sinistro" value = "{!v.tipologiaSinistro}">
+                                <option value = "">Seleziona</option>
+                                <option value="PII">PII</option>
+                                <option value="ITT">ITT</option>
+                                <option value="IPT">IPT</option>
+                                <option value="DC">DC</option>
+                                <option value="MG">MG</option>
+                                <option value="RO">RO</option>
+                            </lightning:select>
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="slds-grid">
+                        <div class="slds-col">
+                            <lightning:textarea aura:id="Note" type="string" label="Note" name="Note" value="{!v.note}"/> 
+                        </div>
+                        
+                    </div>
+                    
+                    <br/>
+                    <div class="slds-col">
+                        <div class="slds-p-bottom_x-small slds-align_absolute-center" >
+                            <lightning:button label="Inserisci"  variant="brand" onclick="{!c.inserisci}"/>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+            </div>
+        </aura:if>
+    </aura:if>
+    
+    
+    
+</aura:component>

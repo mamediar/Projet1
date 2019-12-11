@@ -1,0 +1,272 @@
+<aura:component controller="SFAConvenz_NDA_RecupInserisciTitCtroller" implements="force:hasRecordId,force:appHostable,lightning:availableForFlowScreens,flexipage:availableForAllPageTypes,forceCommunity:searchInterface" access="global">
+    
+        
+    <aura:attribute name="recordId" type="String" /> 
+    <aura:attribute name="titolareId" type="String"/> 
+    <aura:attribute name="contactRecuperatoId" type="String"/> 
+    <aura:attribute name="recordIDDocId" type="String"/>        
+    <aura:attribute name="dealerAcquisitionId" type="String"/>
+    <aura:attribute name="showFormInserisciNuovaAnagrafica" type="Boolean" default="false" />  
+    <aura:attribute name="chiamataOCSCensimNuovoTitEffettuataKO" type="Boolean" default="false" />      
+    <aura:attribute name="chiamataOCSCensimNuovoTitOK" type="Boolean" default="false" />   
+    <aura:attribute name="chiamataOCSCensimRuoloTitEffettuataKO" type="Boolean" default="false" />      
+    <aura:attribute name="chiamataOCSCensimRuoloTitOK" type="Boolean" default="false" />   
+    <aura:attribute name="cercaTitolarePerOCS" type="String" />    
+    <aura:attribute name="cercaTitolarePerCF" type="String" />
+    <aura:attribute name="titolariTrovatiDatabase" type="List" />
+    <aura:attribute name="messageNessunTitolareTrovato" type="String"/>   
+    <aura:attribute name="isTitolariTrovatiDatabase" type="Boolean" default="false"/>
+    <aura:attribute name="isRicercaEffettuataENessunTitTrovato" type="Boolean" default="false"/>
+    <aura:attribute name="titolareTrovatoSelezionato" type="String" default=""/>       
+    <aura:attribute name="disableButtonDocID" type="Boolean" default="true"/>       
+    <aura:attribute name="provinciaResidenzaTitolare" type="String" default=""/> 
+    <aura:attribute name="cittaResidenzaTitolare" type="String" default=""/>
+    <aura:attribute name="provinciaRilascioDocumento" type="String" default=""/>
+    <aura:attribute name="cittaRilascioDocumento" type="String" default=""/>
+    <aura:attribute name="provinciaNascitaTitolare" type="String" default=""/>
+    <aura:attribute name="cittaNascitaTitolare" type="String" default=""/>   
+    <aura:attribute name="disableButtonAvanti" type="Boolean" default="true"/>
+        
+        <aura:registerEvent name="ChangeCaseStepEvent" type="c:ChangeCaseStepEvent"/> 
+        <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+    
+        <aura:attribute name="spinnerCounter" type="Integer" default="0"/>
+        <c:SpinnerComponent aura:id="spinnerComponent" spinnerCounter="{!v.spinnerCounter}"/>     
+        
+        <lightning:card variant="Narrow" title="Intese e Documenti" iconName="utility:search" footer=" ">
+            <p class="slds-p-horizontal_small">
+                
+                <ui:message title="Attenzione:" severity="error" closable="false">
+                    <ui:outputText value= "Per proseguire occorre inserire il titolare effettivo con documento valido."/> 
+                </ui:message>   
+                
+                <!-- SEZIONE RICERCA CONTATTO NEL DATABASE -->   <!-- inserisci componente per ricerca contatto a sistema -->
+                <lightning:card variant="Narrow" title="Ricerca contatto da inserire come titolare oppure inserire una nuova anagrafica" iconName="standard:contact" footer=" ">
+                    <p class="slds-p-horizontal_small">            	
+                        <aura:if isTrue="{! !v.showFormInserisciNuovaAnagrafica}">
+                        <div class="slds-form-element slds-lookup" data-select="single">
+                          <div class="slds-form-element__control">
+                            <div class="slds-input-has-icon slds-input-has-icon--right">
+                                <lightning:layout horizontalAlign="spread" multipleRows="false">
+                                    <lightning:layoutItem size="5">
+                                       <ui:inputText value="{!v.cercaTitolarePerCF}" label="CF" class="slds-lookup__search-input slds-input" placeholder="Search" />
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="5">
+                                       <ui:inputText value="{!v.cercaTitolarePerOCS}" label="CIP" class="slds-lookup__search-input slds-input" placeholder="Search" />
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem size="2">
+                                      <lightning:buttonIcon iconName="utility:search" variant="bare" onclick="{! c.handleRicercaTitolare }" alternativeText="Search" class="slds-input__icon" />
+                                    </lightning:layoutItem>                                
+                                </lightning:layout>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <!-- RADIO GROUP PER VISUALIZZARE I CONTATTI RECUPERATI-->
+                        <aura:if isTrue="{!v.isTitolariTrovatiDatabase}">
+                                <lightning:radioGroup name="radioGroup"
+                                                      label="Selezionare il contatto trovato oppure inserire una nuova anagrafica"
+                                                      options="{! v.titolariTrovatiDatabase }"
+                                                      value="{! v.titolareTrovatoSelezionato }"
+                                                      type="radio"/>
+                            
+                                <lightning:layout horizontalAlign="left">
+                                    <lightning:layoutitem padding="around-small">
+                                        <lightning:button label="Salva Titolare" 
+                                                          disabled="{!v.titolareTrovatoSelezionato == ''}"
+                                                          variant="destructive"
+                                                          class="slds-m-top_medium"
+                                                          onclick="{!c.actionButtonSalvaTitolareTrovato}"/>                                             
+                                        
+                                    </lightning:layoutitem>
+                                </lightning:layout>                        
+                            
+                        </aura:if>
+                    
+                        <aura:if isTrue="{! v.isRicercaEffettuataENessunTitTrovato &amp;&amp; !v.isTitolariTrovatiDatabase}">
+                            <ui:message title="" severity="error" closable="false" >
+                                <ui:outputText value="{!v.messageNessunTitolareTrovato}"/>
+                            </ui:message>
+                        </aura:if>
+                    
+                        <div align="left">
+                            <aura:if isTrue="{! v.chiamataOCSCensimRuoloTitOK &amp;&amp; !v.chiamataOCSCensimRuoloTitEffettuataKO  &amp;&amp; !v.isRicercaEffettuataENessunTitTrovato  &amp;&amp; v.isTitolariTrovatiDatabase &amp;&amp; v.titolareTrovatoSelezionato!=''}"> 
+                                <ui:message title=" " severity="info" closable="false">
+                                    <ui:outputText value= "Inserire i dati relativi al documento d'identià per il nuovo titolare censito."/> 
+                                </ui:message >                               
+                            </aura:if>                            
+                        </div>                      
+    
+                    </aura:if>
+                    </p>
+                    <!-- SEZIONE INSERISCI NUOVA ANAGRAFICA -->
+                    <lightning:layoutItem size="4">
+                        <lightning:button label="Inserisci nuova anagrafica"  
+                                          variant="destructive"
+                                          class="slds-m-top_medium"
+                                          onclick="{!c.actionButtonInserisciNuovaAnagrafica}"
+                                          disabled="{!v.buttonsDisabled}"/>  
+                    </lightning:layoutItem>                
+                </lightning:card>
+                
+                 
+                <!-- SEZIONE INSERISCI NUOVA ANAGRAFICA -->
+                <aura:if isTrue="{!v.showFormInserisciNuovaAnagrafica }">   
+                             
+                    <lightning:recordEditForm aura:id="FormNewTitolare" recordId="{! v.titolareId}" objectApiName="Contact" onsuccess="{!c.handleSuccess}" onerror="{!c.handleError}" >                         
+                            <lightning:layout horizontalAlign="spread" multipleRows="true">
+            
+                                <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                                    <lightning:inputField aura:id="LastName" fieldName="LastName"/>
+                                </lightning:layoutItem>                                        
+                                
+                                <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                                    <lightning:inputField aura:id="FirstName" fieldName="FirstName" />
+                                </lightning:layoutItem>   
+                                                            
+                                <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                                    <lightning:inputField aura:id="Codice_Fiscale__c" fieldName="Codice_Fiscale__c" />
+                                </lightning:layoutItem>                             
+                                
+                                <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                                    <lightning:inputField aura:id="Birthdate" fieldName="Birthdate" />
+                                </lightning:layoutItem>   
+                                 
+                                
+                                <table class="slds-m-top--medium"> 
+                                    <c:XCSProvinceComuniPicklist enabledIndirizzo="false"
+                                                                 enabledProvincia="true"
+                                                                 provinciaSelezionata="{!v.provinciaNascitaTitolare}"
+                                                                 cittaSelezionata="{!v.cittaNascitaTitolare}"
+                                                                 labelCitta="Luogo Nascita"
+                                                                 labelProvincia="Provincia Nascita"
+                                                                 />     
+                                </table>                          
+                                
+                                <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                                    <lightning:inputField aura:id="Sesso__c" fieldName="Sesso__c" />
+                                </lightning:layoutItem> 
+                                
+                                <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                                    <lightning:inputField aura:id="Email" fieldName="Email" />
+                                </lightning:layoutItem>                                                                                
+                                
+                                <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                                    <lightning:inputField aura:id="MailingStreet" fieldName="MailingStreet" />
+                                </lightning:layoutItem>            
+                                
+                                <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                                    <lightning:inputField aura:id="MailingPostalCode" fieldName="MailingPostalCode" />
+                                </lightning:layoutItem> 
+                                
+                                <!--lightning:layoutItem flexibility="grow" size="12"-->
+                                <table class="slds-m-top--medium"> 
+                                    <c:XCSProvinceComuniPicklist enabledIndirizzo="false"
+                                                                 enabledProvincia="true"
+                                                                 provinciaSelezionata="{!v.provinciaResidenzaTitolare}"
+                                                                 cittaSelezionata="{!v.cittaResidenzaTitolare}"
+                                                                 labelCitta="Località"
+                                                                 labelProvincia="Provincia"
+                                                                 />     
+                                </table>
+    
+                                
+                                
+                                <!--/lightning:layoutItem-->                             
+                                
+                                <br></br><br></br><br></br><br></br>
+    
+                                
+                                <lightning:layout horizontalAlign="center">
+                                                            <lightning:layoutitem padding="around-small">
+                                                                <lightning:button label="Salva Titolare"  
+                                                                                  variant="destructive"
+                                                                                  class="slds-m-top_medium"
+                                                                                  onclick="{!c.actionButtonSalvaTitolare}"/>                                             
+                                                                
+                                                            </lightning:layoutitem>
+                                </lightning:layout>
+                           
+                                          
+                            </lightning:layout>                                                                                                                    
+                    </lightning:recordEditForm>
+                
+                                    
+                    
+                </aura:if>
+               
+                
+                <!-- SEZIONE FORM DOCUMENTO IDENTITà -->
+                <aura:if isTrue="{! !v.showFormInserisciNuovaAnagrafica || v.chiamataOCSCensimNuovoTitOK}">  
+                    <lightning:card variant="Narrow" title="Inserire o aggiornare il documento di identità valido" iconName="action:update_status" footer=" ">
+                        <p class="slds-p-horizontal_small">                
+                        <lightning:recordEditForm aura:id="FormID" recordId="{! v.titolareId}" objectApiName="Contact" onerror="{!c.handleError}" >
+                             
+                             <lightning:layout horizontalAlign="spread" multipleRows="true">
+                                             
+                                 <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="12">
+                                     <lightning:inputField fieldName="Tipo_Documento__c" />
+                                 </lightning:layoutItem>            
+                                 
+                                 <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                                     <lightning:inputField fieldName="Numero_Documento__c" />
+                                 </lightning:layoutItem>   
+                                 
+                                 <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                                     <lightning:inputField fieldName="Ente_Doc_ID__c" />
+                                 </lightning:layoutItem>            
+                                 
+                                 
+                                 <table class="slds-m-top--medium"> 
+                                     <c:XCSProvinceComuniPicklist aura:id="provinciaRilascioDocumento"
+                                                                  enabledIndirizzo="false"
+                                                                  enabledProvincia="true"
+                                                                  provinciaSelezionata="{!v.provinciaRilascioDocumento}"
+                                                                  cittaSelezionata="{!v.cittaRilascioDocumento}"
+                                                                  labelCitta="Luogo di rilascio"
+                                                                  labelProvincia="Provincia di rilascio"
+                                                                  />  
+                                 </table>
+                               
+                                 
+                                 <lightning:layoutItem class="slds-m-top_x-small" flexibility="grow" size="6">
+                                     <lightning:inputField fieldName="Data_Rilascio__c" />
+                                 </lightning:layoutItem> 
+                                 
+                                 <lightning:layoutItem class="slds-m-top_x-small slds-p-right_small" flexibility="grow" size="6">
+                                     <lightning:inputField fieldName="Data_Scadenza__c" />
+                                 </lightning:layoutItem> 
+                                 
+                                 <lightning:layout horizontalAlign="left">
+                                     <lightning:layoutitem padding="around-small">
+                                         <lightning:button label="Aggiorna dati"
+                                                           disabled="{!v.disableButtonDocID}"
+                                                           variant="destructive"
+                                                           class="slds-m-top_medium"
+                                                           onclick="{!c.salvaDatiIDTitolare}"/>                                             
+                                         
+                                     </lightning:layoutitem>
+                                 </lightning:layout>                                          
+                                             
+                             </lightning:layout>
+                                                                                                                     
+                         </lightning:recordEditForm>
+                        </p>
+                        <lightning:layout horizontalAlign="left">
+                            <lightning:layoutitem padding="around-small">
+                                <lightning:button label="Avanti"
+                                                  disabled="{!v.disableButtonAvanti}"
+                                                  variant="destructive"
+                                                  class="slds-m-top_medium"
+                                                  onclick="{!c.actionButtonAvanti}"/>                                             
+                                
+                            </lightning:layoutitem>
+                        </lightning:layout>                    
+                    </lightning:card>
+                </aura:if>
+            </p>
+        </lightning:card>
+    
+        
+        
+</aura:component>

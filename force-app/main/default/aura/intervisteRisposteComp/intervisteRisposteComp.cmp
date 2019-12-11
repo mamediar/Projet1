@@ -1,0 +1,101 @@
+<!--
+ - Created by Salimata NGOM on 16/03/2019.
+ -->
+<aura:component description="intervisteRisposteComp">
+    <aura:attribute name="risposta" type="Risposte__c"/>
+    <aura:attribute name="modificaRisposta" type="boolean" default="false"/>
+    <aura:attribute name="Valutazione" type="String" />
+   
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+
+    <div class="slds-table slds-scrollable--x" style="width:150%; display:inline;" >
+        <div class="slds-scrollable--x">
+                <table  class="slds-table slds-table_cell-buffer slds-table_bordered slds-max-medium-table_stacked" style="width:150%">
+                    <thead>
+                    <tr class="slds-text-heading--label slds-line-height_reset">
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="Contratto">Contratto</div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="Secci">Secci</div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="Precontratto">Precontratto</div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="Questionario assicurativo">Questionario assicurativo</div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="Contratto Assicurazione">Contratto Assicurazione</div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="Documenti Assicurazione">Documenti Assicurazione</div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="Soddisfazione Cliente">Soddisfazione Cliente</div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="">Count Positivi</div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="">Count Negativi</div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="">Valutazione</div>
+                        </th>
+                     </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="slds-hint-parent">
+                        <th data-label="Opportunity Name" scope="row">
+                            <div class="slds-truncate" title="{!v.risposta.Contratto__c}">{!v.risposta.Contratto1__c}</div>
+                        </th>
+                        <th data-label="Account Name" scope="row">
+                            <div class="slds-truncate" title="{!v.risposta.Secci1__c}">{!v.risposta.Secci1__c}</div>
+                        </th>
+                        <th data-label="Close Date" scope="row">
+                            <div class="slds-truncate" title="{!v.risposta.Precontratto1__c}">{!v.risposta.Precontratto1__c}</div>
+                        </th>
+                        <th data-label="Prospecting" scope="row">
+                            <div class="slds-truncate" title="{!v.risposta.Questionario_assicurativo1__c}">{!v.risposta.Questionario_assicurativo1__c}</div>
+                        </th>
+                        <th data-label="Confidence" scope="row">
+                            <div class="slds-truncate" title="{!v.risposta.Contratto_Assicurazione__c}">{!v.risposta.Contratto_Assicurazione__c}</div>
+                        </th>
+                       <th data-label="Amount" scope="row" >
+                            <div class="slds-truncate" title="{!v.risposta.Documenti_Assicurazione1__c}">{!v.risposta.Documenti_Assicurazione1__c}</div>
+                        </th>
+                        <th data-label="Contact" scope="row">
+                            <div class="slds-truncate" title="{!v.risposta.Soddisfazione_Cliente1__c}">{!v.risposta.Soddisfazione_Cliente1__c}</div>
+                        </th>
+                        <th data-label="Contact" scope="row">
+                            <div class="slds-truncate" title="{!v.risposta.Count_Positivi__c}">{!v.risposta.Count_Positivi__c}</div>
+                        </th>
+                        <th data-label="Contact" scope="row">
+                            <div class="slds-truncate" title="{!v.risposta.Count_Negativi__c}">{!v.risposta.Count_Negativi__c}</div>
+                        </th>
+                        
+                        <th data-label="Valutazione" scope="row">
+                            <div class="slds-truncate" title="{!v.Valutazione}">{!v.risposta.Valutazione__c}</div>
+                        </th>
+                    </tr>
+                    </tbody>
+                </table>
+
+        </div>
+        <aura:if isTrue="{!v.modificaRisposta}">
+           <div style="display:flex;">
+             <div style="float:right; margin-left:1%;">
+                  <lightning:button label="Modifica"
+                                      class="slds-m-top--medium"
+                                      variant="brand"
+                                      onclick="{!c.modificaDomanda}"/>
+                </div>
+            </div>
+        </aura:if>
+
+    </div>
+
+
+
+</aura:component>

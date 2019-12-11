@@ -1,0 +1,48 @@
+<aura:component implements="flexipage:availableForAllPageTypes" controller="IntegrativoPenetrazioneCnt">
+    <aura:attribute type="String[]" name="headers" />
+    <aura:attribute type="String[]" name="dataToSave" />
+    <aura:attribute type="List" name="data" />
+    <aura:attribute type="Boolean" name="fileTypeError" default="false" />
+    
+    <!-- <lightning:card> -->
+    <div class="slds-m-around_x-small ">
+        <div class="slds-m-around_x-small">
+
+        <input type="file" class="file" aura:id="file" accept=".csv, .CSV" />
+        <lightning:button variant="brand" label="Upload" onclick="{! c.handleUpload }" />
+        <lightning:button variant="success" aura:id="btn-escluso" disabled="true" label="Salva" onclick="{! c.handleSave }" />
+        </div>
+    
+        <aura:if isTrue="{!v.fileTypeError == true}">
+            Tipo di file errato!
+            <aura:set attribute="else">
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                    <thead>
+                    <tr class="slds-text-heading--label slds-line-height_reset">
+                        <aura:iteration items="{!v.headers}" var="h">
+                        <th>
+                            {!h}
+                        </th>
+                        </aura:iteration>
+                    </tr> 
+                    </thead>
+                    <tbody>
+                        <aura:iteration items="{!v.data}" var="row">
+                            <tr class="slds-text-heading--label slds-line-height_reset">
+                                <aura:iteration items="{!row}" var="cell">
+                                    <td class="slds-is-sortable slds-text-title--caps">
+                                        {!cell}
+                                    </td>
+                                </aura:iteration>
+                            </tr>            
+                        </aura:iteration>
+                    </tbody>
+                </table>
+            </aura:set>
+        </aura:if>
+    </div>
+    <!-- </lightning:card> -->
+
+    <lightning:spinner aura:id="csvSpinner" class="slds-hide" variant="brand" size="small"/>
+
+</aura:component>

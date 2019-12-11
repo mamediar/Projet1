@@ -1,0 +1,62 @@
+<aura:component controller="GestioneZoneClass" implements="flexipage:availableForAllPageTypes">
+    <aura:attribute name="branchFromEvent" type="String"/>
+    
+    <aura:attribute name="branchSel" type="String" />
+    <aura:attribute name="data" type="Object"/>
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="branches" type="List"/>
+    <aura:attribute name="branch" type="Account"/>
+    <aura:attribute name="branchOCSExternalId" type="String" />
+    <aura:attribute name="ZonePerFiliale" type="Map" />
+    <aura:attribute name="draftValues" type="Object"/>
+    <aura:attribute name="listaZoneToDelete" type="List" default="[]"/>
+    <aura:attribute name="newZoneName" type="String"/> 
+    <aura:handler name="init" value="{! this }" action="{!c.init}"/> 
+    <aura:handler name="change" value="{!v.branchSel}" action="{!c.init}"/>
+    
+    <!--aura:handler event="c:GestioneFilialeEvent" action="{!c.handleApplicationEvent}"/-->
+	
+            <lightning:card title="Gestione Zone">
+                <c:SpinnerComponent aura:id="spinnerComponent"/>
+                <lightning:layout multipleRows="true" >
+                        <lightning:layoutItem size="12" padding="around-small"> 
+                        <lightning:layout>
+                            <lightning:layoutItem size="3">
+                                <!--ui:outputText value="{!v.branchFromEvent}"/ -->
+                                <lightning:select name="utr" aura:id="utrId" value="{!v.branchOCSExternalId}"  label="Filiale" onchange="{!c.onChangeBranchSelect}">
+                                    <aura:iteration items="{!v.branches}" var="branch">
+                                        <option text="{!branch.Name + ' ('+branch.TypeLabel+')'}" value="{!branch.OCS_External_Id__c}" selected="{!v.branchOCSExternalId == branch.OCS_External_Id__c}" />
+                                    </aura:iteration>  
+                                </lightning:select>
+                            </lightning:layoutItem>
+                        </lightning:layout> 
+                    </lightning:layoutItem>
+                    <lightning:layoutItem padding="around-small" size ="12">
+                        <lightning:layout multipleRows="false">
+                            <lightning:layoutItem padding="around-small" size ="5">
+                                <lightning:datatable
+                                        keyField="Id"
+                                        data="{! v.data }"
+                                        columns="{! v.columns }"
+                                        hideCheckboxColumn="true"
+                                        onrowaction="{! c.handleRowAction }"
+                                        draftValues="{! v.draftValues }"
+                                        onsave="{! c.handleSave }"
+                                        suppressBottomBar ="false"/>
+                            </lightning:layoutItem>
+                        </lightning:layout>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem padding="around-small" size="12">
+                        <lightning:layout multipleRows="false">
+                                    <lightning:layoutItem padding="around-small">
+                                        <lightning:input aura:id ="inputAddZone" value="{!v.newZoneName}" name="addZona" label="Aggiungi Zona" required="true"/>
+                                    </lightning:layoutItem>
+                                    <lightning:layoutItem class="slds-align-bottom" padding="around-small">
+                                        <lightning:buttonIcon iconName="utility:add" onclick ="{!c.addZone}"  alternativeText="Aggiungi"/>
+                                    </lightning:layoutItem>
+                        </lightning:layout>
+                    </lightning:layoutItem>
+                </lightning:layout> 
+            </lightning:card>
+
+</aura:component>

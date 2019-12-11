@@ -1,0 +1,10 @@
+<aura:component controller="GD_Mail_ReportCnt" implements="flexipage:availableForAllPageTypes,force:appHostable,lightning:actionOverride,force:hasRecordId" access="global">
+    <aura:attribute name="recordId" type="String" default="" />
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum fugit aliquid minus obcaecati laboriosam suscipit velit et incidunt.
+    </p>
+    <p>
+        Ipsa atque labore commodi! Suscipit quia distinctio aliquid consequuntur. Neque, temporibus exercitationem.
+    </p>
+</aura:component>

@@ -1,0 +1,728 @@
+<aura:component
+                implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+                access="global" controller="DinieghiSDDCtrl">
+    
+    <aura:attribute name="elencoDinieghi" type="List" />
+    <aura:attribute name="elencoDinieghiIniziale" type="List" />
+    <aura:attribute name="mapDinieghi" type="Object" />
+    <aura:attribute name="mapUser" type="Object"/>
+    <aura:attribute name="msg" type="String" />
+    <aura:attribute name="test" type="String" default="TEST" />
+    <aura:attribute name="showSpinner" type="Integer" default="0" />
+    <aura:attribute name="showModal" type="Boolean" default="false" />
+    <aura:attribute name="showDiniegoNotFound" type="Boolean" default="false" />
+    <aura:attribute name="selectedDiniego" type="Object" />
+    <aura:attribute name="selectedAccount" type="List" />
+    <aura:attribute name="selectedContact" type="List" />
+    <aura:attribute name="selectedContatto" type="String" />
+    <aura:attribute name="selectedFiliale" type="List" />
+    <aura:attribute name="disposition" type="String" />
+    <aura:attribute name="codiceCliente" type="String" />
+    <aura:attribute name="codiceABI" type="String" />
+    <aura:attribute name="codiceCAB" type="String" />
+    <aura:attribute name="numeroT" type="Integer" default="0" />
+    <aura:attribute name="recallDataTime" type="DateTime" />
+    <aura:attribute name="userIsBO" type="Boolean" default="true"/>
+    <aura:attribute name="stringaTelefono" type="String"/>
+    <aura:attribute name="listUser" type="List" default="[]"/>
+    <aura:attribute name="riassegnato" type="Boolean"/>
+    <aura:attribute name="userId" type="String"/>
+    <aura:attribute name="userProfile" type="String"/>
+    <aura:attribute name="userFiliale" type="String"/>
+    <aura:attribute name="dinFiliale" type="Integer" default="0"/>
+    
+    <!-- ALLEGATI -->
+    <aura:attribute name="file" type="Object"/>
+    <aura:attribute name="accept" type="List" default="['.csv']"/>
+    <aura:attribute name="multiple" type="Boolean" default="true"/>
+    <aura:attribute name="disabled" type="Boolean" default="false"/>
+    <aura:attribute name="elencoFile" type="List" />
+    
+    
+    <!--Altri Attributi-->
+     <aura:attribute name="nonTrovatoValue" type="String" default="selezionare"/>
+    <aura:attribute name="optDinRisValue" type="String" default="selezionare"/>
+    <aura:attribute name="optDinNonRisValue" type="String" default="selezionare"/>
+    <aura:attribute name="elencoNote" type="List"/>
+    <aura:attribute name="visibilityOption" type="String" default=""/>
+    <aura:attribute name="altroValue" type="String" default=""/>
+    <aura:attribute name="dataRientro" type="String"/>
+    <aura:attribute name="refresh" type="Boolean" default="true"/>
+    <aura:attribute name="labelButton" type="String" default="Assegnate a me"/>
+    
+    
+    <aura:attribute name="interlocutoreOptions" type="List" default="[
+                                                                     {'label': 'Selezionare', 'value': 'selezionare'},
+                                                                     {'label': 'Cliente', 'value': 'cliente'},
+                                                                     {'label': 'Banca', 'value': 'banca'},
+                                                                     {'label': 'Filiale', 'value': 'filiale'},
+                                                                     {'label': 'Nessun interlocutore', 'value': 'nessunInterlocutore'},
+                                                                     {'label': 'Altro', 'value': 'altro'}
+                                                                     ]"/>
+    <aura:attribute name="interlocutoreValue" type="String" default="selezionare"/>
+    <aura:attribute name="esitoTelefonataOptions" type="List" default="[
+                                                                       {'label': 'Selezionare', 'value': 'selezionare'},
+                                                                       {'label': 'OK contatto avvenuto', 'value': 'contattoAvvenuto'},
+                                                                       {'label': 'KO non trovato / non fornisce informazioni / necessario contattare altro interlocutore', 'value': 'nonTrovato'},
+                                                                       {'label': 'Chiede di essere richiamato', 'value': 'richiamare'},
+                                                                       {'label': 'Nessuna telefonata necessaria', 'value': 'nonChiamare'}
+                                                                       ]"/>
+    <aura:attribute name="esitoTelefonataValue" type="String" default="selezionare"/>
+    <aura:attribute name="contAvvenutoOptions" type="List" default="[
+                                                                    {'label': 'Selezionare', 'value': 'selezionare'},
+                                                                    {'label': 'Diniego Risolto', 'value': 'risolto'},
+                                                                    {'label': 'Diniego NON Risolto', 'value': 'nonRisolto'}
+                                                                    ]"/>
+    <aura:attribute name="contAvvenutoValue" type="String" default="selezionare"/>
+    <aura:attribute name="nonTrovatoOptions" type="List" default="[
+                                                                  {'label': 'Selezionare', 'value': 'selezionare'},
+                                                                  {'label': 'Nessun recapito', 'value': 'noRecapito'},
+                                                                  {'label': 'Numero errato', 'value': 'numErrato'},
+                                                                  {'label': 'Non risponde al telefono', 'value': 'nonRisponde'},
+                                                                  {'label': 'Irraggiungibile', 'value': 'irraggiungibile'},
+                                                                  {'label': 'Non fornisce informazioni', 'value': 'noInfo'}
+                                                                  ]"/>
+    <aura:attribute name="optDiniegoRisolto" type="List" default="[
+                                                                  {'label': 'Selezionare', 'value': 'selezionare'},
+                                                                  {'label': 'Variato ABI', 'value': 'variatoAbi'},
+                                                                  {'label': 'Variato CAB', 'value': 'variatoCab'},
+                                                                  {'label': 'Variato CC', 'value': 'variatoCc'},
+                                                                  {'label': 'Variato Intestatario', 'value': 'variatoInt'},
+                                                                  {'label': 'Variato IBAN', 'value': 'variatoIban'},
+                                                                  {'label': 'Inviato nuovo mandato', 'value': 'inviatoNuoMan'},
+                                                                  {'label': 'Attivato Stato Mandato', 'value': 'attivatoStatoMan'},
+                                                                  {'label': 'Gestito da altro utente', 'value': 'gestitoAltroUte'},
+                                                                  {'label': 'Altro', 'value': 'altro'},
+                                                                  ]"/>
+    <aura:attribute name="optDiniegoNonRisolto" type="List" default="[
+                                                                     {'label': 'Selezionare', 'value': 'selezionare'},
+                                                                     {'label': 'Chiusura/Variazione BP', 'value': 'chiuVarBP'},
+                                                                     {'label': 'Verifiche Filiale', 'value': 'verificheFil'},
+                                                                     ]"/>
+    
+   
+    
+    <!-- METODO PER REFRESH -->
+    <aura:method name="refr" action="{!c.showModal}" description="Refresh"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    <lightning:notificationsLibrary aura:id="notifLib" />
+   
+    <aura:if isTrue="{!not(v.showSpinner == 0)}">
+        <lightning:spinner />
+    </aura:if>
+
+    <aura:if isTrue="{!v.userIsBO}">
+        <div>
+            <lightning:button variant="destructive" label="{!v.labelButton}" title="Success action" onclick="{! c.filtraLista}"/>
+        </div>
+    </aura:if>
+
+    <br/>
+
+    <aura:if isTrue="{!v.userIsBO}">
+<!--- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+<!-- SEZIONE LISTA DINIEGHI VISTA BACKOFFICE --> 
+<!--- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+        <div class="slds-box slds-theme_default" style="height: 600px; overflow-y: auto;">
+            <aura:if isTrue="{!empty(v.elencoDinieghi)}">
+                <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning" role="alert">
+                    <h2 style="font-weight: bold;">Non sono presenti dinieghi</h2>
+                </div>
+                <aura:set attribute="else">
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                        <thead>
+                            <tr class="slds-text-heading--label">
+                                <!--<th class="" scope="col">Sel</th>-->
+                                <th class="" scope="col">N. di riferimento</th>
+                                <th class="" scope="col">Cognome</th>
+                                <th class="" scope="col">Nome</th>
+                                <th class="" scope="col">CIP Compass</th>
+                                <th class="" scope="col">ABI</th>
+                                <th class="" scope="col">CAB</th>
+                                <th class="" scope="col">Causale</th>
+                                <th class="" scope="col">Num Pratica</th>
+                                <th class="" scope="col">Scadenza risposta iniziale</th>
+                                <th class="" scope="col">Account assegnato</th>
+                                <th class="" scope="col">Ultimo esito</th>
+                                <th class="" scope="col">Data aggiornamento</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <aura:iteration items="{!v.elencoDinieghi}" var="elem" indexVar="index">
+                                
+                                <tr class="{!('slds-line-height_reset clickable '+ ((index+1) % 2 == 0 ? 'even-row' : 'odd-row'))}" onclick="{!c.showModal}" data-index="{!index}">
+                                    
+                                    <!--<td class="" scope="col"><input aura:id="radio{!index}" onclick="{!c.selectedPratica}" name="index" type="radio" value="{!index}" checked="{!v.elencoPratiche.length == 1}" /></td>-->
+                                    <td class="" scope="col">{!elem.ProgreMan__c} - {!elem.Progressivo__c}</td>
+                                    <td class="" scope="col">{!elem.Codice_Cliente__r.LastName}</td>
+                                    <td class="" scope="col">{!elem.Codice_Cliente__r.FirstName}</td>
+                                    <td class="" scope="col">{!elem.Codice_Cliente__r.CodiceClienteFilled__c}</td>
+                                    <td class="" scope="col">{!elem.Abi__c}</td>
+                                    <td class="" scope="col">{!elem.Cab__c}</td>
+                                    <td class="" scope="col">{!elem.Motivo_Diniego__c}</td>
+                                    <td class="" scope="col">{!elem.PraticaNum__c}</td>
+                                    <td class="" scope="col">
+                                        <lightning:formattedDateTime value="{!elem.CreatedDate}" year="numeric" month="numeric" day="numeric" hour="2-digit"
+                                                                     minute="2-digit" hour12="false"/>
+                                    </td>
+                                    <td class="" scope="col">{!elem.Caseid__r.Owner_User__r.Name}</td>
+                                    <td class="" scope="col">{!elem.Disposition__r.Name}</td>
+                                    
+
+                                    <td class="" scope="col"><lightning:formattedDateTime value="{!elem.LastModifiedDate}" year="numeric" month="numeric" day="numeric" hour="2-digit"
+                                        minute="2-digit" hour12="false"/></td>
+                                    
+                                </tr>
+                            </aura:iteration>
+                            <aura:if isTrue="{!v.showDiniegoNotFound}">
+                                <tr>
+                            <td class="slds-text-heading_medium" colspan="12">Nessun Diniego Trovato</td>
+                        </tr>
+                    </aura:if>
+                </tbody>
+            </table>
+                </aura:set>
+                </aura:if>
+        </div>
+        <aura:set attribute="else">
+                <!--- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+                <!-- SEZIONE LISTA DINIEGHI VISTA SFA --> 
+                <!--- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+            <div class="slds-box slds-theme_default" style="height: 600px; overflow-y: auto;">
+                
+            <aura:if isTrue="{!empty(v.elencoDinieghi)}">
+                <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning" role="alert">
+                    <h2 style="font-weight: bold;">Non sono presenti dinieghi</h2>
+                </div>
+                <aura:set attribute="else">
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                    <thead>
+                        <tr class="slds-text-heading--label">
+                            <!--<th class="" scope="col">Sel</th>-->
+                            <th class="" scope="col">Dinieghi Mandati SDD - Mandato Num.</th>
+                            <th class="" scope="col">N. di riferimento</th>
+                            <th class="" scope="col">Num Pratica</th>
+                            <th class="" scope="col">Scadenza risposta iniziale</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <aura:iteration items="{!v.elencoDinieghi}" var="elem" indexVar="index">
+                            
+                            <tr class="{!('slds-line-height_reset clickable '+ ((index+1) % 2 == 0 ? 'even-row' : 'odd-row'))}" onclick="{!c.showModal}" data-index="{!index}">
+                                <td class="" scope="col">{!elem.Mandato__c}</td>
+                                <td class="" scope="col">{!elem.ProgreMan__c} - {!elem.Progressivo__c}</td>
+                                <td class="" scope="col">{!elem.PraticaNum__c}</td>
+                                <td class="" scope="col">
+                                    <lightning:formattedDateTime value="{!elem.CreatedDate}" year="numeric" month="numeric" day="numeric" hour="2-digit"
+                                                                minute="2-digit" hour12="false"/>
+                                </td>
+                            </tr>
+                        </aura:iteration>
+                        <aura:if isTrue="{!v.showDiniegoNotFound}">
+                            <tr>
+                                <td class="slds-text-heading_medium" colspan="12">Nessun Diniego Trovato</td>
+                            </tr>
+                        </aura:if>
+                    </tbody>
+                    </table>
+                </aura:set>
+                </aura:if>
+            </div>
+        </aura:set>
+    </aura:if>
+    
+    
+    
+    <aura:if isTrue="{!v.showModal}">
+        <div aura:id="modalDiv" >
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open" >
+                <div class="slds-modal__container slds-is-relative ">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="{!c.hideModal}">
+                            <lightning:icon iconName="utility:close" size="small" alternativeText="Close" variant="inverse" />
+                        </button>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">DINIEGO NUMERO {!v.selectedDiniego.ProgreMan__c} - {!v.selectedDiniego.Progressivo__c}</h2>
+                    </header>
+                    <!-- INIZIO SEZIONE RECORD SUMMARY --> 
+                    <div class="slds-modal__content slds-p-around_large" id="modal-content-id-1">
+                        <div class="slds-grid">
+<!--                                <div class="slds-size_1-of-4 bold slds-col slds-box slds-box_x-small slds-text-align_center slds-m-around_x-small">-->
+                                <div class="bold slds-size_1-of-12 slds-col box-grigio">
+                                    <lightning:formattedText value="{!'N. Rif.'}"/>
+                                </div>
+                                <div class="slds-size_2-of-12 slds-col box-grigiochiaro">
+                                    <lightning:formattedText value="{!v.selectedDiniego.ProgreMan__c + ' - ' + v.selectedDiniego.Progressivo__c}"/>
+                                </div>
+                                <div class="slds-size_1-of-12 bold slds-col box-grigio">
+                                    <lightning:formattedText value="{!'Oggetto '}"/>
+                                </div>
+                                <div class="slds-size_2-of-12 slds-col box-grigiochiaro">
+                                    <lightning:formattedText value="{!'Dinieghi mandati SDD'}"/>
+                                </div>
+                        </div>
+                        <div class="slds-grid">
+                                <div class="slds-size_1-of-12 bold slds-col box-grigio">
+                                    <lightning:formattedText value="{!'Contatto'}"/>
+                                </div>
+                                <div class="slds-size_2-of-12 slds-col box-grigiochiaro">
+                                    <lightning:formattedText value="{!v.selectedContatto}"/>
+                                </div>
+                                <div class="slds-size_1-of-12 bold slds-col box-grigio">
+                                    <lightning:formattedText value="{!'Stato'}"/>
+                                </div>
+                                <div class="slds-size_2-of-12 slds-col box-grigiochiaro">
+                                    <lightning:formattedText value="{!v.selectedDiniego.Caseid__r.Status}"/>
+                                </div>
+                            
+                        </div>
+                        
+                        <div class="slds-grid">
+                                <div class="slds-size_1-of-12 bold slds-col box-grigio">
+                                    <lightning:formattedText value="{!'Categoria'}"/>
+                                </div>
+                                <div class="slds-size_2-of-12 slds-col box-grigiochiaro">
+                                    <lightning:formattedText value="{!'Dinieghi Mandati SDD'}"/>
+                                </div>
+                                <div class="slds-size_1-of-12 bold slds-col box-grigio">
+                                    <lightning:formattedText value="{!'Coda'}"/>
+                                </div>
+                                <div class="slds-size_2-of-12 slds-col box-grigiochiaro">
+<!--                                    <lightning:formattedText value="{!'Dinieghi Mandati SDD'}"/>-->
+                                    <lightning:formattedText value="{!v.selectedDiniego.Caseid__r.Owner.Name}"/>
+                                </div>
+                            
+                        </div>
+                        <div class="slds-grid">
+                                <div class="slds-size_1-of-12 bold slds-col box-grigio">
+                                    <lightning:formattedText value="{!'Assegnato'}"/>
+                                </div>
+                                <div class="slds-size_2-of-12 slds-col box-grigiochiaro">
+                                    <lightning:formattedText value="{!v.selectedDiniego.Caseid__r.Owner_User__r.Name}"/>
+                                </div>
+                                <div class="slds-size_1-of-12 bold slds-col box-grigio">
+                                    <lightning:formattedText value="{!'N. Pratica OCS'}"/>
+                                </div>
+                                <div class="slds-size_2-of-12 slds-col box-grigiochiaro">
+                                    <lightning:formattedText value="{!v.selectedDiniego.PraticaNum__c}"/>
+                                </div>
+                            
+                        </div>
+
+                        <aura:if isTrue="{!v.userIsBO}">
+                            <div class="slds-size_1-of-6 clickable" style="display: inline-block;"><lightning:combobox class="slds-col " name="general" placeholder="- Seleziona un utente -" options="{!v.listUser}" value="{!v.userId}" onchange="{!c.handleAssegna }" disabled="{!v.selectedDiniego.Caseid__r.Status == 'Gestito'}"/></div>&nbsp;
+                            <aura:if isTrue="{!not(v.selectedDiniego.Caseid__r.Status == 'Gestito')}">
+                                <lightning:button class="slds-button" variant="brand" label="Riassegna" onclick="{!c.riassegna}"/>
+                            </aura:if>
+                        </aura:if>
+                        
+
+                        <!-- INIZIO SEZIONE RECORD DETAIL -->
+                        <lightning:tabset>
+                            <lightning:tab label="Gestione">
+                                
+                                <lightning:recordViewForm recordId="{!v.selectedDiniego.Id}" objectApiName="Mandati_SDD__c" density="compact">
+                                    <div class="slds-grid">
+                                        <div class="slds-col slds-size_1-of-4 bold"> 
+                                            <!--                                            <lightning:formattedText value="{!'Dinieghi Mandati SDD - BO/Outsourcer - Mandato num. ' + v.selectedDiniego.Mandato__c}"/>-->
+                                            <lightning:formattedText value="{!'Dinieghi Mandati SDD - BO/Outsourcer - Mandato num. '}"/>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-4 "> 
+                                            <lightning:formattedText value="{!v.selectedDiniego.Mandato__c}"/>
+                                        </div>
+                                    </div>
+                                    <br/>
+                                    <aura:if isTrue="{!v.userIsBO}">
+                                        <div class="slds-grid">
+                                            <div class="slds-col slds-size_2-of-12">
+                                                <lightning:formattedText value="Richiesta CRM"/>
+                                            </div>
+                                            <div class="slds-col slds-size_10-of-12"> 
+                                                <lightning:formattedText value="{!v.selectedDiniego.ProgreMan__c + ' - ' + v.selectedDiniego.Progressivo__c}"/>
+                                            </div>
+                                        </div>
+                                    </aura:if>
+                                    <div class="slds-grid">
+                                        <div class="slds-col slds-size_2-of-12">
+                                            <lightning:formattedText value="Pratica"/>
+                                        </div>
+                                        <div class="slds-col slds-size_10-of-12">
+                                            <lightning:formattedText value="{!v.selectedDiniego.Tipo_Messaggio__c + ' - ' + v.selectedDiniego.PraticaNum__c}"/>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="slds-grid">
+                                        <div class="slds-col slds-size_2-of-12">
+                                            <lightning:formattedText value="Cliente"/>
+                                        </div>
+                                        <div class="slds-col slds-size_10-of-12">
+                                            <lightning:formattedText value="{!v.codiceCliente + ' - ' + v.selectedDiniego.Ragione_Sociale_Cliente__c}"/>
+                                        </div>
+                                    </div>
+                                    <div class="slds-grid">
+                                        <div class="slds-col slds-size_2-of-12">
+                                            <lightning:formattedText value="Codice Fiscale Cliente"/>
+                                        </div>
+                                        <div class="slds-col slds-size_10-of-12">
+                                            <lightning:formattedText value="{!v.selectedAccount[0].Codice_Fiscale__pc}"/>
+                                        </div>
+                                    </div>
+                                    <div class="slds-grid">
+                                        <div class="slds-col slds-size_2-of-12">
+                                            <lightning:formattedText value="Telefono Cliente"/>
+                                        </div>
+                                        <div class="slds-col slds-size_10-of-12">
+                                            <!--                                            <lightning:formattedText value="{!'1: ' + v.selectedAccount[0].Telefono_Casa__c + ' - Cell. ' + v.selectedAccount[0].Telefono_Cellulare__c}"/>-->
+                                            <lightning:formattedText value="{!v.stringaTelefono}"/>
+                                        </div>
+                                    </div>
+                                    <div class="slds-grid">
+                                        <div class="slds-col slds-size_2-of-12">
+                                            <lightning:formattedText value="Intestatario C/C"/>
+                                        </div>
+                                        <div class="slds-col slds-size_10-of-12">
+                                            <lightning:formattedText value="{!v.selectedDiniego.Intestatario_cc__c}"/>
+                                        </div>
+                                    </div>
+                                    <div class="slds-grid">
+                                        <div class="slds-col slds-size_2-of-12">
+                                            <lightning:formattedText value="ABI"/>
+                                        </div>
+                                        <div class="slds-col slds-size_10-of-12">
+                                            <lightning:formattedText value="{!v.codiceABI + ' - ' + v.selectedDiniego.Denominazione_Banca__c + ' ' + v.selectedDiniego.Gruppo__c}"/>
+                                        </div>
+                                    </div>
+                                    <div class="slds-grid">
+                                        <div class="slds-col slds-size_2-of-12">
+                                            <lightning:formattedText value="CAB"/>
+                                        </div>
+                                        <div class="slds-col slds-size_10-of-12">
+                                            <lightning:formattedText value="{!v.codiceCAB}"/>
+                                        </div>
+                                    </div>
+                                    <div class="slds-grid">
+                                        <div class="slds-col slds-size_2-of-12">
+                                            <lightning:formattedText value="Telefono Banca"/>
+                                        </div>
+                                        <div class="slds-col slds-size_10-of-12">
+                                            <lightning:formattedText value="{!v.selectedDiniego.Telefono_Banca__c}"/>
+                                        </div>
+                                    </div>
+                                    <br/>
+                           
+                                    <aura:if isTrue="{!not(v.selectedDiniego.Caseid__r.Status == 'Gestito')}">
+                                        <aura:if isTrue="{!v.userIsBO}">
+                                            Per aggiornare il telefono inserirlo qui &nbsp;<div class="slds-size_1-of-6" style="display: inline-block;"><lightning:input aura:id="nuovo-telefono" type="tel" variant="label-hidden"/></div>&nbsp; e premere aggiorna &nbsp;<lightning:button variant="brand" label="Aggiorna" onclick="{!c.aggiornaTelefono}"/>
+                                        </aura:if>
+                                    </aura:if>
+                                    <br/>
+                                    <br/>
+                                    <div class="slds-grid">
+                                        <div class="slds-col slds-size_2-of-12">
+                                            <lightning:formattedText value="Numero C/C"/>
+                                        </div>
+                                        <div class="slds-col slds-size_10-of-12">
+                                            <lightning:formattedText value="{!v.selectedDiniego.ContoCorrente__c}"/>
+                                        </div>
+                                    </div>
+                                    <div class="slds-grid">
+                                        <div class="slds-col slds-size_2-of-12">
+                                            <lightning:formattedText value="IBAN"/>
+                                        </div>
+                                        <div class="slds-col slds-size_10-of-12">
+                                            <lightning:formattedText value="{!v.selectedDiniego.Iban__c}"/>
+                                        </div>
+                                    </div>
+                                    <div class="slds-grid">
+                                        <div class="slds-col slds-size_2-of-12">
+                                            <lightning:formattedText value="Causale"/>
+                                        </div>
+                                        <div class="slds-col slds-size_10-of-12">
+                                            <lightning:formattedText value="{!v.selectedDiniego.Motivo_Diniego__c}"/>
+                                        </div>
+                                    </div>
+                                    <aura:if isTrue="{!v.userIsBO}">
+                                        <div class="slds-grid">
+                                            <div class="slds-col slds-size_2-of-12">
+                                                <lightning:formattedText value="Filiale"/>
+                                            </div>
+                                            <div class="slds-col slds-size_10-of-12">
+                                                <lightning:formattedText value="{!v.selectedFiliale[0].CodiceClienteFilled__c + ' ' + 
+                                                                                v.selectedFiliale[0].ShippingCity + ' - ' + 
+                                                                                v.selectedFiliale[0].ShippingStreet + ' ' +  
+                                                                                v.selectedFiliale[0].ShippingPostalCode + ' ' + 
+                                                                                v.selectedFiliale[0].ShippingCity + ' ' +
+                                                                                v.selectedFiliale[0].ShippingCountry + ' ' +
+                                                                                v.selectedFiliale[0].Phone}"/>
+                                            </div>
+                                        </div>
+                                    </aura:if>
+                                    <div class="slds-grid">
+                                        <div class="slds-col slds-size_2-of-12">
+                                            <lightning:formattedText value="Data Rientro"/>
+                                        </div>
+                                        <div class="slds-col slds-size_10-of-12">
+                                            <!--                                            <lightning:formattedText value="{!v.selectedDiniego.Data_Rientro__c}"/>-->
+                                            <lightning:formattedText value="{!v.dataRientro}"/>
+                                        </div>
+                                    </div>
+                                    <aura:if isTrue="{!v.userIsBO}">
+                                        <div class="slds-grid">
+                                            <div class="slds-col slds-size_2-of-12">
+                                                <lightning:formattedText value="N° Tentativo Chiamata"/>
+                                            </div>
+                                            <div class="slds-col slds-size_10-of-12">
+                                                {!v.numeroT}
+                                            </div>
+                                        </div>
+                                        <div class="slds-grid">
+                                            <div class="slds-col slds-size_2-of-12">
+                                                <lightning:formattedText value="Ultimo Interlocutore"/>
+                                            </div>
+                                            <div class="slds-col slds-size_10-of-12">
+                                                <lightning:formattedText value="{!v.selectedDiniego.Ultimo_Contatto__c}"/>
+                                            </div>
+                                        </div>
+                                    </aura:if>
+                                    
+                                </lightning:recordViewForm>
+                                
+                                <!-- FINE SEZIONE RECORD DETAIL -->
+                                
+                                <br/>
+                                
+                                <!-- INIZIO NOTE -->
+                                <!--  TOLGO LE NOTE PER PROVARE TAB                                
+                                <aura:if isTrue="{!v.elencoNote.length > 0}">
+                                    <br/>
+                                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                                        <thead>
+                                            <div class="slds-grid ">
+                                                <div class="slds-col slds-box slds-theme_shade slds-size_3-of-4">Nota</div>
+                                                <div class="slds-col slds-box slds-theme_shade slds-size_1-of-4">Data</div>
+                                            </div>
+                                        </thead>
+                                        <tbody>
+                                            <aura:iteration items="{!v.elencoNote}" var="elem" indexVar="index">
+                                                <div class="slds-grid ">
+                                                    <div class="slds-col slds-box slds-size_3-of-4">{!elem.TextPreview}</div>
+                                                    <div class="slds-col slds-box slds-size_1-of-4">{!elem.CreatedDate}</div>
+                                                </div>
+                                            </aura:iteration>
+                                        </tbody>
+                                    </table>
+                                </aura:if>
+                                &nbsp;
+-->                                
+                                <aura:if isTrue="{!v.disposition == 'DP3502'}">
+                                    <div class="slds-text-color_destructive">Il diniego è in carica alla filiale. Attendere l'esito della filiale.</div>
+                                </aura:if>
+                                <aura:if isTrue="{!v.disposition == 'DP3491'}">
+                                    <div class="slds-text-color_destructive">Il diniego è stato risolto.</div>
+                                </aura:if>
+                                <aura:if isTrue="{!or(v.disposition == '', v.disposition == null)}">
+                                    <div class="slds-text-color_destructive">Risolvere Diniego.</div>
+                                </aura:if>
+                                
+                                &nbsp;
+                                
+                                <!-- FINE NOTE -->
+                                
+                                <br/>
+                                
+                                <!-- INIZIO SEZIONE RISOLVI DINIEGO -->
+                                
+                                <!-- TODO: sostituire i radio group con XCS_DispositionForAppBuilder -->
+                                <aura:if isTrue="{!v.userIsBO}">
+                                    <lightning:radioGroup aura:id="interlocutore" name="interlocutore" label="Interlocutore" options="{!v.interlocutoreOptions}"
+                                                          value="{!v.interlocutoreValue}" type="radio" onchange="{!c.changeInterlocutore}" disabled="{!v.selectedDiniego.Caseid__r.Status == 'Gestito'}"/>
+                                    
+                                    <aura:if isTrue="{!v.interlocutoreValue == 'altro'}">
+                                        <lightning:input aura:id="altro-input" name="altro-input" value="{!v.altroValue}" class="slds-size_1-of-3"/>
+                                    </aura:if>
+                                </aura:if>
+                                <br/>
+                                <aura:if isTrue="{!v.userIsBO}">
+                                    <lightning:radioGroup aura:id="esito-telefonata" name="esito-telefonata" label="Esito Telefonata"  options="{! v.esitoTelefonataOptions }"
+                                                          value="{! v.esitoTelefonataValue }" type="radio" onchange="{!c.changeEsitoTelefonata}" disabled="{!v.selectedDiniego.Caseid__r.Status == 'Gestito'}"/>
+                                    
+                                    <aura:if isTrue="{!or(v.esitoTelefonataValue == 'nonChiamare', v.esitoTelefonataValue == 'contattoAvvenuto')}">
+                                        <br/>
+                                        <lightning:radioGroup aura:id="contatto-avvenuto" name="contatto-avvenuto" label="OK contatto avvenuto" options="{!v.contAvvenutoOptions }"
+                                                              value="{!v.contAvvenutoValue }" type="radio" disabled="{!v.selectedDiniego.Caseid__r.Status == 'Gestito'}"/>
+                                    </aura:if>
+                                    
+                                    <aura:if isTrue="{!v.contAvvenutoValue=='risolto'}">
+                                        <br/>
+                                        <div class="slds-col slds-size_1-of-3">
+                                            <lightning:combobox name="diniegoRisolto" 
+                                                                label="Esito" 
+                                                                value="{!v.optDinRisValue}" 
+                                                                options="{!v.optDiniegoRisolto}" 
+                                                                onchange="{!c.handleDinRis }" disabled="{!v.selectedDiniego.Caseid__r.Status == 'Gestito'}"/>
+                                        </div>
+                                    </aura:if>
+                                    <aura:if isTrue="{!v.contAvvenutoValue=='nonRisolto'}">
+                                        <br/>
+                                        <div class="slds-col slds-size_1-of-3">
+                                            <lightning:combobox name="diniegoNonRisolto" 
+                                                                label="Sono necessarie verifiche con la filiale?" 
+                                                                value="{!v.optDinNonRisValue}"
+                                                                options="{!v.optDiniegoNonRisolto}" 
+                                                                onchange="{!c.handleNonDinRis }" disabled="{!v.selectedDiniego.Caseid__r.Status == 'Gestito'}"/>
+                                        </div>
+                                    </aura:if>
+                                    <aura:if isTrue="{!v.esitoTelefonataValue == 'nonTrovato'}">
+                                        <br/>
+                                        <lightning:radioGroup aura:id="non-trovato"
+                                                              name="non-trovato"
+                                                              label="KO non trovato"
+                                                              options="{!v.nonTrovatoOptions }"
+                                                              value="{!v.nonTrovatoValue }"
+                                                              type="radio" readonly="{!v.selectedDiniego.Caseid__r.Status == 'Gestito'}"/>
+                                    </aura:if>
+                                    <aura:if isTrue="{!v.esitoTelefonataValue == 'richiamare'}">
+                                        <br/>
+                                        <!--<lightning:input type="datetime" aura:id="dateTimeInput" name="dateTimeInput" class="slds-size_1-of-2" label="Selezionare data e ora e premere continua" />-->
+                                        <label class="slds-form-element__label">Selezionare data e ora e premere continua</label>
+                                        <div class="slds-grid">
+                                            <div class="slds-col slds-size_1-of-4 slds-m-right_medium">
+                                                <lightning:input aura:id="date-input" dateStyle="short" name="date-input" variant="label-hidden" type="datetime" value="{!v.recallDataTime}" readonly="{!v.selectedDiniego.Caseid__r.Status == 'Gestito'}"/>
+                                            </div>
+                                        </div>
+                                    </aura:if>
+                                </aura:if>
+                                <br/>
+                                
+                                <aura:if isTrue="{!not(v.userIsBO)}">
+                                    <div class="slds-col slds-size_1-of-3">
+                                        <lightning:combobox name="diniego" 
+                                                            label="Effettuare le opportune verifiche ed esitare" 
+                                                            value="{!v.contAvvenutoValue}" 
+                                                            options="{!v.contAvvenutoOptions}" disabled="{!v.selectedDiniego.Caseid__r.Status == 'Gestito'}"/> 
+                                    </div>
+                                </aura:if>
+                                
+                                <lightning:textarea aura:id="note" name="note" label="Note" class="slds-size_2-of-3" disabled="{!v.selectedDiniego.Caseid__r.Status == 'Gestito'}" />
+                                <!-- FINE SEZIONE RISOLVI DINIEGO -->
+                                
+                                
+                            </lightning:tab>
+                            <lightning:tab label="Messaggi">
+                                <!-- INIZIO NOTE -->
+                                <aura:if isTrue="{!v.elencoNote.length > 0}">
+                                    <br/>
+                                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                                        <thead>
+                                            <div class="slds-grid">
+                                                <div class="slds-col slds-box slds-theme_shade slds-size_3-of-4">Nota</div>
+                                                <div class="slds-col slds-box slds-theme_shade slds-size_1-of-4">Data</div>
+                                            </div>
+                                        </thead>
+                                        <tbody>
+                                            <aura:iteration items="{!v.elencoNote}" var="elem" indexVar="index">
+                                                <div class="slds-grid slds-line-height_reset" >
+                                                    <div class="slds-col slds-box slds-size_3-of-4">{!elem.TextPreview}</div>
+                                                    <div class="slds-col slds-box slds-size_1-of-4"><lightning:formattedDateTime value="{!elem.CreatedDate}" year="numeric" month="numeric" day="numeric" hour="2-digit"
+                                                        minute="2-digit" hour12="false"/></div>
+                                                </div>
+                                            </aura:iteration>
+                                        </tbody>
+                                    </table>
+                                </aura:if>
+                                &nbsp;
+                                
+                            </lightning:tab>
+                            <lightning:tab label="Allegati">
+                                <aura:if isTrue="{!not(v.selectedDiniego.Caseid__r.Status == 'Gestito')}">
+                                    
+                                    <div style="text-align:center">
+                                        <lightning:fileUpload  name="fileUploader"
+                                                              label= "Carica File"
+                                                              disabled="{!v.disabled}"
+                                                              recordId="{!v.selectedDiniego.Caseid__c}"
+                                                              onuploadfinished="{! c.handleUploadFinished }"/>
+                                    </div>
+                                     <hr/>
+                                </aura:if>
+                               
+                                <aura:if isTrue="{!not(empty(v.elencoFile))}">
+                                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                                        <thead>
+                                            <tr class="slds-line-height_reset">
+                                                <th>Download</th>
+                                                <th>Nome File</th>
+                                                <th>Data Inserimento</th>
+                                                <aura:if isTrue="{!not(v.selectedDiniego.Caseid__r.Status == 'Gestito')}">
+                                                    <th>Elimina</th>
+                                                </aura:if>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <aura:if isTrue="{!v.refresh}">
+                                                
+                                                <aura:iteration items="{!v.elencoFile}" var="item" indexVar="index" >
+                                                    <tr>
+                                                        <td>
+                                                            <span class="slds-icon_container slds-icon-utility-arrowdown clickable" onclick="{!c.downloadfile}" data-id="{!item.ContentDocumentId}">
+                                                                <lightning:icon iconName="action:download" alternativeText="Download" size="x-small"/>
+                                                            </span>
+                                                        </td>
+                                                        <td>{!item.ContentDocument.Title}</td>
+                                                        <td>
+                                                            <p><lightning:formattedDateTime value="{!item.ContentDocument.CreatedDate}" year="numeric" month="numeric" day="numeric" hour="2-digit" minute="2-digit" hour12="false"/></p>
+                                                            </td>
+                                                        <aura:if isTrue="{!not(v.selectedDiniego.Caseid__r.Status == 'Gestito')}">
+                                                            <td> 
+                                                                <span class="slds-icon_container slds-icon-utility-arrowdown clickable" onclick="{!c.cancellafile}" data-id="{!item.ContentDocumentId}">
+                                                                    <lightning:icon iconName="action:close" alternativeText="Elimina" size="x-small"/>
+                                                                </span>
+                                                            </td>
+                                                        </aura:if>
+                                                    </tr>    
+                                                </aura:iteration>
+                                                
+                                            </aura:if>
+                                            
+                                        </tbody>
+                                    </table>
+                                    <aura:set attribute="else">
+                                      <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_info" role="alert">
+                                                    <h2>Non sono presenti allegati</h2>
+                                        </div>
+                                    </aura:set>
+                                </aura:if>
+                                
+                            </lightning:tab>
+                            
+                            <!--                            <lightning:tab label="Registro di Controllo">
+                                 Registro di Controllo
+                            </lightning:tab>-->
+                        </lightning:tabset>
+                        
+                    </div>
+                    <aura:if isTrue="{!v.userIsBO}">
+                        <footer class="slds-modal__footer">
+                            <aura:if isTrue="{!not(v.selectedDiniego.Caseid__r.Status == 'Gestito')}">
+                                <button class="slds-button slds-button_neutral" onclick="{!c.hideModal}">Annulla</button>
+                                <button class="slds-button slds-button_brand" onclick="{!c.aggiornaDiniego}">Salva</button>
+                            <aura:set attribute="else">
+                                <button class="slds-button slds-button_neutral" onclick="{!c.hideModal}">Chiudi</button>
+
+                                </aura:set>
+                            </aura:if>
+                            </footer>
+                        <aura:set attribute="else">
+                            <footer class="slds-modal__footer">
+                                <button class="slds-button slds-button_neutral" onclick="{!c.hideModal}">Chiudi</button>
+                                <button class="slds-button slds-button_brand" onclick="{!c.aggiornaDiniego}">Completa attività</button>
+                            </footer>
+                        </aura:set>
+                    </aura:if>
+                    
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </aura:if>
+</aura:component>

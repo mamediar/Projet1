@@ -1,0 +1,42 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" 
+                access="global" 
+                >
+    
+    <!--Oggetti mittente, proprietà: da,nomeCognomeMittente,indirizzoMittente,
+ cittaMittente,provinciaMittente,capMittente-->
+    <aura:attribute name="mittentiList" type="XCS_Mittente__c[]"/>
+    <aura:attribute name="mittenteSelezionatoListaMitt" type="XCS_Mittente__c"/>
+    <aura:attribute name="aziendaSelezionata" type="String"/>
+    <aura:attribute name="stepInserimentoMittenti" type="String" default="main"/>
+    <aura:attribute name="clienteSelezionato" type="OCSCliente"/>
+    <aura:attribute name="clienteSelezionatoContainer" type="OCSCliente"/>
+    <aura:attribute name="praticaSelezionata" type="Object"/>
+    <aura:attribute name="case" type="Case"/>
+    
+
+    <!--<div style="margin-bottom:15px;margin-left:15px;">-->
+    <aura:if isTrue="{!v.stepInserimentoMittenti=='main'}">
+        
+        <c:CRMReclamiInserimentoMittentiMain aziendaSelezionata="{!v.aziendaSelezionata}"
+                                             stepInserimentoMittenti="{!v.stepInserimentoMittenti}"
+                                             mittentiList="{!v.mittentiList}"
+                                             clienteSelezionato="{!v.clienteSelezionato}"
+                                             praticaSelezionata="{!v.praticaSelezionata}"
+                                             mittenteSelezionatoListaMitt="{!v.mittenteSelezionatoListaMitt}"
+                                             CaseEsistente="{!v.case}"/>
+                                             />
+        <aura:set attribute="else">
+            <!--Inserimento Nuovo Mittente-->
+            <div style="font-weight:bold;font-size: 150%;margin-top:17px;margin-bottom:15px;margin-left:13px;">Inserimento Nuovo Mittente</div>
+            <div class="slds-p-right_xx-small">
+            <c:CRMReclamiInserimentoMittentiNuovo mittenteSelezionatoListaMitt="{!v.mittenteSelezionatoListaMitt}"
+                                                  aziendaSelezionata="{!v.aziendaSelezionata}"
+                                                  stepInserimentoMittenti="{!v.stepInserimentoMittenti}"
+                                                  mittentiList="{!v.mittentiList}"
+                                                  />
+            </div>
+        </aura:set>
+    
+    </aura:if>
+<!--</div>-->
+</aura:component>

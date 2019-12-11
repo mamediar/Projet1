@@ -1,0 +1,23 @@
+.THIS .margin-top {
+    margin-top: 25px;
+}
+
+.THIS .slds-nowrap {
+    flex: 1 1 auto;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    margin-top: 25px;
+}
+
+.THIS .slds-col.slds-size_1-of-4 button {
+    margin-left: 20px;
+    margin-top: 16%;
+}
+
+.THIS input#input-41 {
+    margin-top: -4px;
+}
+
+.THIS .slds-form-element__control.slds-grow input {
+    margin-right: 60px;
+}

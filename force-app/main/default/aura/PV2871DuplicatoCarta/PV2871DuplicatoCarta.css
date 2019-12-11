@@ -1,0 +1,17 @@
+.THIS .display-inline {display: inline-block;}
+
+.THIS .text-uppercase {text-transform: uppercase;}
+
+.THIS .text-red {color: red;}
+
+.THIS .border-top-gray {
+    border-top: 1px solid rgb(169, 169, 169);
+}
+
+.THIS .border-bottom-gray {
+    border-bottom: 1px solid rgb(169, 169, 169);
+}
+
+.THIS .inline-radio .slds-form-element__control .slds-radio, .THIS .inline-radio .slds-form-element__control .slds-checkbox {
+    display: inline-block;
+}

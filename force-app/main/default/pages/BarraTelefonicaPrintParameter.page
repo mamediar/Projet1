@@ -1,0 +1,16 @@
+<apex:page controller="BarraTelefonicaPrintParameter" action="{!createCase}" >
+        <apex:pageMessage severity="Error" />
+    <!--
+    <apex:pageBlock >
+     <apex:pageBlockSection columns="3" collapsible="true">-->
+                
+            <apex:repeat value="{!mapParameters}" var="item" >
+                    
+                    <apex:repeat value="{!mapParameters[item]}" var="itemvalue" >     
+                        <br />
+                    <apex:outputText value="{!item+' '+itemvalue}" />
+                    </apex:repeat>
+            </apex:repeat>   
+        <!--    </apex:pageBlockSection>
+        </apex:pageBlock>-->
+</apex:page>

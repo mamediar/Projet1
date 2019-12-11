@@ -1,0 +1,33 @@
+<aura:component controller="CRMReclamiInserimentoDettagliCategCtrl"
+                implements="force:appHostable,flexipage:availableForAllPageTypes" 
+                access="global" 
+                >
+    
+    
+    <!--Boris Inizio -->
+    <!--<aura:attribute name="categoriaDettagli" type = "XCS_Categoria__c" />-->
+    <aura:attribute name="categoriaDettagli" type = "XCS_Categoria__c" access="public"/>
+    <aura:attribute name="items" type="Object"/> 
+    <aura:attribute name="aziendaSelezionata" type="String"/>
+    <aura:attribute name="isGrave" type = "Boolean" default = "false"/>
+
+    <aura:attribute name="codaDettagli" type="String"/>
+    <aura:attribute name="codaSelezionata" type="CodaXSocieta__mdt"/>
+
+    <aura:attribute name="tipoDettagli" type="String"/>
+    <aura:attribute name="delegaPresente" type="Boolean"/>
+    <aura:attribute name="listaCodeFiltrata" type="CodaXSocieta__mdt[]"/>
+    <aura:attribute name="descrizioneTipo" type="String" default=" "/>
+    <aura:attribute name="status" type="String"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    
+    
+    <lightning:tree items="{!v.items }" header="Categorie" onselect="{!c.seleziona}"/>
+    
+    <lightning:input aura:id="selected" name="selectedItem" value="{!v.categoriaDettagli.Name}" label="Categoria Selezionata" readonly="true"/>
+    
+    
+    
+    
+</aura:component>

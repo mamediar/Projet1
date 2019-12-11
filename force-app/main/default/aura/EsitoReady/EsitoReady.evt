@@ -1,0 +1,4 @@
+<aura:event type="APPLICATION" description="Event template">
+    <aura:attribute name="esito" type="String"/>
+    <aura:attribute name="note" type="String"/>
+</aura:event>

@@ -1,0 +1,278 @@
+<aura:component controller='CRMRetentionCarteInboundController' implements="force:appHostable,flexipage:availableForAllPageTypes,force:hasRecordId,lightning:availableForFlowScreens">
+    
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="checkMessaggeVisibility" type="boolean" default='false'/>
+    <aura:attribute name="retentionList" type="CRM_Retention__c[]" />
+    <aura:attribute name="scriptList" type="XCS_Script__c[]" />
+    <aura:attribute name="selectedCard" type="CRM_Retention__c" />
+    <aura:attribute name="nameSelected" type="String" />
+    <aura:attribute name="selectedRow" type="CRM_Retention__c" />
+    <aura:attribute name="checkRetentionWorkable" type="boolean"/>
+    <aura:attribute name="scriptToView" type="XCS_Script__c"/>
+    <aura:attribute name="scriptAlert" type="XCS_Script__c" />
+    <aura:attribute name="scriptGenericName" type="String" />
+    <aura:attribute name="customer" type="Account" />
+    <aura:attribute name="customerEmail" type="String"/>
+    <aura:attribute name="customerCellulare" type="String"/>
+    <aura:attribute name="fasciaSelezionata" type="String" />
+    <aura:attribute name="listaFasciaOraria" type="List" />
+    <aura:attribute name="noteValue" type="String" />
+    <aura:attribute name="dispositionVisibility" type="String" default="null"/>
+    <aura:attribute name="dataTableFlag" type="boolean" default='true' />
+    <aura:attribute name="cardVisibility" type="String" />
+    
+    <aura:attribute name="radioGroupOptionValue" type="String" />
+    <aura:attribute name="radioGroupOptionRevocaValue" type="String" />
+    <aura:attribute name="radioGroupOptionRatealeValue" type="String" />
+    <aura:attribute name="radioGroupOptionPrivacyValue" type="String" />
+    <aura:attribute name="radioGroupOptionConsensoValue" type="String" />
+    
+    <aura:attribute name="radioGroupOption" type="List"/>
+    <aura:attribute name="radioGroupOptionRevoca" type="List"/>
+    <aura:attribute name="radioGroupOptionRateale" type="List"/>
+    <aura:attribute name="radioGroupOptionConsenso" type="List"/>
+    
+    <aura:attribute name="retentionTableColumns" type="List" />
+    <aura:attribute name="retentionMaxRowSelection" type="Integer" default="1"/>
+    
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+    <aura:handler event="c:XCS_DispositionReady" action="{!c.saveSelection}"/>
+    <lightning:workspaceAPI aura:id="workspace"/>
+
+    
+    <aura:if isTrue="{!v.checkMessaggeVisibility}">
+        <br/>
+        <p style="text-align:center; wiht:100%;">
+            <span class="message">
+                Le carte hanno una retention <b>KO</b>. Non è possibile fissare un appuntamento con il cliente.
+            </span>
+        </p>
+    </aura:if>
+    <br/>
+    
+    <!-- Carica la tabella con l'elenco dell carte -->
+    <aura:if isTrue="{! v.dataTableFlag}" >
+    <div>
+        <lightning:datatable
+                             class= "slds-cell-wrap"
+                             id="DatatableId"
+                             columns="{! v.retentionTableColumns }"
+                             data="{! v.retentionList }"
+                             keyField="id"
+                             maxRowSelection="{! v.retentionMaxRowSelection }"
+                             onrowselection="{! c.getCard}"
+                             />
+    </div>
+    <br/>
+    </aura:if>
+    <!-- Carica gli elementi decisionali -->
+    <aura:if isTrue="{! not(empty(v.selectedCard))}">
+        <!-- Numero Carta-->
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_2-of-12 "></div> <!-- spazio  -->
+            <div class="slds-col slds-size_2-of-12 tx-right"><span class="label">Numero Carta: </span></div>
+            <div class="slds-col slds-size_6-of-12 tx-left"><span class="value title">{!v.selectedCard.LoanNumber__c}</span></div>
+            <div class="slds-col slds-size_2-of-12"></div> <!-- spazio  -->
+        </div>
+        <hr/>
+        <!-- Flag richiesta carta -->
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_2-of-12"></div> <!-- spazio  -->
+            <div class="slds-col slds-size_2-of-12 tx-right"><span  class="label">Selezionare la carta come parte della richiesta ?</span></div>
+            <div class="slds-col slds-size_6-of-12 tx-left">
+                <lightning:radioGroup name="radioButtonGroup" 
+                                      default="false" 
+                                      options="{! v.radioGroupOption}" 
+                                      value= "{! v.radioGroupOptionValue }" 
+                                      onchange="{! c.changeSelection}"
+                                      required="false" 
+                                      type="Button"/>
+                <br/><br/>
+                <p style="width:100%;">
+                    <span class="message">
+                        Per la revoca della carta è necessaria la registrazione telefonica / ricezione di un fax.
+                    </span>
+                </p>
+                <br/>
+            </div>
+            <div class="slds-col slds-size_2-of-12"></div> <!-- colonna spazio  -->
+        </div>
+        <!-- Flag Cliente revoca -->
+        <aura:if isTrue="{! and(v.radioGroupOptionValue == 'true',or(v.selectedCard.Action__c == 'KO',v.selectedCard.Action__c == ''))}">
+            <div class="slds-grid slds-gutters slds-gutters__c" >
+                <div class="slds-col slds-size_2-of-12"></div> <!-- colonna spazio  -->
+                <div class="slds-col slds-size_2-of-12 tx-right"><span class="label">Il Cliente Revoca ?</span></div>
+                <div class="slds-col slds-size_6-of-12 txt-left">
+                    <lightning:radioGroup name="radioButtonGroupRevoca" 
+                                          default="false" 
+                                          options="{! v.radioGroupOptionRevoca}" 
+                                          value="{! v.radioGroupOptionRevocaValue}" 
+                                          required="false" 
+                                          onchange="{! c.changeSelectionRevoca}" 
+                                          type="Button" />
+                </div>
+                <div class="slds-col slds-size_2-of-12"></div>  <!-- colonna spazio  -->
+            </div>
+            
+            <!-- Pagamento A SALDO o RATEALE-->
+            <aura:if isTrue="{! or(v.radioGroupOptionRevocaValue=='A SALDO',or(v.radioGroupOptionRevocaValue=='RATEALE NULLO',v.radioGroupOptionRevocaValue=='RATEALE POSITIVO'))}" >
+                <hr/>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_2-of-12"></div> 
+                    <div class="slds-col slds-size_8-of-12">
+                        <lightning:formattedRichText class="tx-script" 
+                                                     value="{! v.scriptToView.Text__c }"/>
+                    </div>
+                    <div class="slds-col slds-size_2-of-12 tx-right"></div>
+                </div>
+                <br/>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_2-of-12 tx-right"></div>
+                    <div class="slds-col slds-size_8-of-12">
+                        <lightning:formattedRichText class="tx-script message" 
+                                                     value="{! v.scriptAlert.Text__c }"/>
+                    </div>
+                    <div class="slds-col slds-size_2-of-12 tx-right"></div>
+                </div>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_2-of-12 tx-right"></div>
+                    <div class="slds-col slds-size_8-of-12">
+                        <lightning:radioGroup name="radioButtonGroupRegistrazione" 
+                                              label="E' stata fatta la registrazione?" 
+                                              default="false" 
+                                              options="{! v.radioGroupOption}" 
+                                              value="{! v.radioGroupOptionPrivacyValue}" 
+                                              required="false" 
+                                              type="Button" />
+                    </div>
+                </div>    
+            </aura:if>
+            
+            <!-- Pagamento NO -->
+            <aura:if isTrue="{! or(v.radioGroupOptionRevocaValue == 'NO', or(and(v.radioGroupOptionRevocaValue == 'A SALDO',v.radioGroupOptionPrivacyValue == 'true'), and(v.radioGroupOptionPrivacyValue == 'true',or(v.radioGroupOptionRevocaValue == 'RATEALE NULLO',v.radioGroupOptionRevocaValue == 'RATEALE POSITIVO')))) }">
+                <hr/>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_2-of-12"></div> 
+                    <div class="slds-col slds-size_2-of-12 tx-right"></div>
+                    <div class="slds-size_6-of-12">
+                        <c:LinkEvo task="TK00000364" infoPre="{! v.selectedCard.LoanType__c + 'CAR' }" infoPost="REV00000000000      000000000000000000000000000" numeroPratica= "{!v.selectedCard.LoanNumber__c}"/>
+                        <c:XCS_Disposition saveCase="false" 
+                                           visibilityOption="{! v.radioGroupOptionRevocaValue}" 
+                                           activateNoteField="false"
+                                           parentExternalId="DP2853"
+                                           />
+                    </div>
+                    <div class="slds-col slds-size_2-of-12"></div>
+                </div>
+            </aura:if>
+        </aura:if>
+        <hr/>
+        <!-- Altri campi -->
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_2-of-12"></div> <!-- colonna spazio  -->
+            <div class="slds-col slds-size_2-of-12 tx-right"><span class="label">Esito Gestione:</span></div>
+            <div class="slds-col slds-size_6-of-12 tx-left"><span  class="value">{! v.selectedCard.Gestione_temp }</span></div> 
+            <div class="slds-col slds-size_2-of-12"></div> <!-- colonna spazio  -->
+        </div>                
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_2-of-12"></div> <!-- colonna spazio  -->
+            <div class="slds-col slds-size_2-of-12 tx-right"><span class="label">Esito Retention:</span></div>
+            <div class="slds-col slds-size_6-of-12 tx-left"><span class="value">{! v.selectedCard.Action__c + ' ' + v.selectedCard.RetentionValue__c }</span></div>
+            <div class="slds-col slds-size_2-of-12"></div> <!-- colonna spazio  -->
+        </div>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_2-of-12"></div> <!-- colonna spazio  -->
+            <div class="slds-col slds-size_2-of-12 tx-right"><span class="label">Prodotto Attribuito:</span></div>
+            <div class="slds-col slds-size_6-of-12 tx-left"><span class="value">{! v.selectedCard.ProductDescription__c }</span></div>
+            <div class="slds-col slds-size_2-of-12"></div> <!-- colonna spazio  -->
+        </div>
+
+        <hr/>
+
+        <!-- Richiama il componente carta dati fiunanziari che viene utilizzato anche in altri componenti -->
+        <c:CRMRetentionCartaDatiFinanziari codicePratica="{!v.cardVisibility}" />
+		<!-- END -->        
+    </aura:if>
+
+    <br/>
+
+    <aura:if isTrue="{! ! v.checkMessaggeVisibility}">
+        <hr/>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_2-of-12 tx-right"></div>
+            <div class="slds-col slds-size_8-of-12 tx-script">
+                <span>Sig. {!v.customer.lastName} ci autorizza ad utilizzare il suo numero di cellulare e l'indirizzo e-mail 
+                    per comunicarLe lo stato di gestione e di evazione della richiesta ? </span>
+            </div>
+            <div class="slds-col slds-size_2-of-12 tx-right"></div>
+        </div>
+        <br/>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_2-of-12 tx-right"></div>
+            <div class="slds-col slds-size_2-of-12">
+                <lightning:input type="String" name="email" label="Email" value="{! v.customerEmail}"/>
+            </div>
+            <div class="slds-col slds-size_8-of-12 tx-right"></div>
+        </div>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_2-of-12 tx-right"></div>
+            <div class="slds-col slds-size_2-of-12">
+                <lightning:input type="tel" name="cellulare" label="Cellulare" minlength="5" maxlength="14" value="{! v.customerCellulare}" pattern="\d{5,14}"/>
+            </div>
+            <div class="slds-col slds-size_8-of-12 tx-right"></div>
+        </div>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_2-of-12 tx-right"></div>
+            <div class="slds-col slds-size_2-of-12">
+                <lightning:radioGroup label="Presta il Consenso ?"
+                                      name="radioButtonGroupConsenso" 
+                                      default="false" 
+                                      options="{! v.radioGroupOptionConsenso}" 
+                                      value="{! v.radioGroupOptionConsensoValue}" 
+                                      required="false" 
+                                      type="Button" />
+                
+            </div>
+            <div class="slds-col slds-size_8-of-12 tx-right"></div>
+        </div>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_2-of-12 tx-right"></div>
+            <div class="slds-col slds-size_2-of-12">
+                <lightning:select onchange="{!c.handleSelezionaFascia}" aura:id ="fasciaOrariaSelezione" label="Fascia Oraria Ricontatto" required="true">
+                    <option value="">Seleziona un opzione...</option>
+                    <aura:iteration items="{!v.listaFasciaOraria}" var="fascia">
+                        <option value="{!fascia.value}">{!fascia.label}</option>
+                    </aura:iteration>    
+                </lightning:select>     
+            </div>
+            
+            <div class="slds-col slds-size_8-of-12 tx-right"></div>
+        </div>  
+    </aura:if>
+    <br/>
+    <div class="slds-grid slds-gutters">
+        <div class="slds-col slds-size_2-of-12 tx-left"></div>
+        <div class="slds-col slds-size_4-of-12 tx-right">
+            <lightning:textarea aura:id="noteTextarea" 
+                                label="Note"
+                                value="{!v.noteValue}"
+                                required="false"
+                                maxlength="1000"/> 
+        </div>
+        <div class="slds-col slds-size_6-of-12 tx-right"></div>
+    </div>
+    <div class="slds-grid slds-gutters">
+        <div class="slds-col slds-size_2-of-12 tx-left"></div>
+        <div class="slds-col slds-size_4-of-12 tx-left">
+            <lightning:button variant="destructive" label="Annulla Richiesta" title="annulla" onclick="{! c.annullaAttivita }"/>
+        </div>
+        <div class="slds-col slds-size_6-of-12 tx-right"></div>
+    </div>
+    <div class="slds-grid slds-gutters">
+        <div class="slds-col slds-size_2-of-12 tx-left"></div>
+        <div class="slds-col slds-size_4-of-12 tx-left">
+            <lightning:button variant="destructive" label="Continua" title="avanti" onclick="{! c.completaAttivita }"/>
+        </div>
+        <div class="slds-col slds-size_6-of-12 tx-right"></div>
+    </div>
+</aura:component>

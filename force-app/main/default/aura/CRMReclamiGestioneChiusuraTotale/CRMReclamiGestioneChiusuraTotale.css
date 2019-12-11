@@ -1,0 +1,14 @@
+.THIS .customRadioCls .slds-form-element__control .slds-radio{
+    display:inline-block !important;
+}
+/*customRadioCls slds-form-element
+.THIS.customRadioCls .slds-form-element__control .slds-radio{
+    display:inline-block !important;
+}*/
+
+.THIS .slds-dueling-list__column_responsive {
+    min-width: 47%;
+}
+.THIS .slds-dueling-list__column_responsive .slds-dueling-list__options {
+    min-width: 100%;
+}

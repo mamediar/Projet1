@@ -1,0 +1,12 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+                access="global">
+    <lightning:textarea name="input1" label="Text Area 1" />
+    <lightning:textarea name="input2" label="Text Area 2" />
+    <lightning:textarea name="input3" label="Text Area 3" />
+    <div class="slds-align_absolute-center">
+        <lightning:button variant="brand" label="Sospendi "  />
+        <lightning:button variant="destructive" label="Annulla"/>
+        <lightning:button variant="success" label="Completa "/>
+    </div>
+    
+</aura:component>

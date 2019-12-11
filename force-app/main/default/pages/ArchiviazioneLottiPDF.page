@@ -1,0 +1,109 @@
+<apex:page renderAs="PDF"
+           standardController="Case"
+           extensions="ArchiviazioneLottiPDFController"
+           action="{!init}"
+           applyBodyTag="false"
+           >
+	<head>
+        <style>
+            body { font-family: 'Arial Unicode MS'; }
+            .underlined{
+            	color: james-brown;
+            	border-bottom:0.5px solid black;
+            }
+            .toContainer {
+            position:absolute;
+            padding-left:60%;
+            }
+            .copyCounterContainer{
+            padding-left:45%;
+            padding-top:50px;
+            }
+            .idsTable{
+            width:100%;
+            }
+            .idsTable>tr{
+            width:100%;
+            }
+        </style>
+    </head>
+
+    <body>        
+        <apex:repeat value="{!copyCounter}" var="i">
+            <apex:image value="{!$Resource.CompassLogo}" width="350" height="200" />	
+            <div class="infoLotContainer">
+                ID Lotto:<apex:outputText styleClass="underlined" value="{!Case.SFALotto__r.OCSLottoId__c}"/><br/>
+                Numero Scatole:<apex:outputText styleClass="underlined" value="1"/><br/>
+                Data Invio:<apex:outputText styleClass="underlined" value="{!shipDate}"/><br/>
+            </div><br/>
+            <div class="fromContainer">
+                DA:<br/>
+                <apex:outputText value="{!Case.Branch__r.Name}"/>
+            </div>
+            <div class="fromInfoContainer">
+                ID Filiale:<apex:outputText styleClass="underlined" value="{!Case.Branch__r.ShippingCity}"/><br/>
+                Indirizzo:<apex:outputText styleClass="underlined" value="{!Case.Branch__r.ShippingStreet}"/><br/>
+                Città:<apex:outputText styleClass="underlined" value="{!Case.Branch__r.ShippingCity}"/><br/>
+                Provincia:<apex:outputText styleClass="underlined" value="{!Case.Branch__r.ShippingState}"/><br/>
+                CAP:<apex:outputText styleClass="underlined" value="{!Case.Branch__r.ShippingPostalCode}"/>            
+            </div>
+            <br/><br/><br/><br/><br/><br/><br/>
+            <div class="toContainer">
+                A:<br/>
+                IDM Group<br/>
+                Via Pietro Mascagni 5/a 20884<br/>
+                Sulbiate (MB)<br/>
+                c/o Reparto Sala Produzione<br/>
+                RIF.Compass (CPS1181)
+            </div>
+            <div class="contractsSummaryContainer">
+                RIEPILOGO CONTRATTI<br/><br/>
+                -LIQUIDATI (<apex:outputText value="{!liquidati}"/>)<br/>
+                -RESPINTI/RITIRATI/STORNATI (<apex:outputText value="{!respintiRitiratiStornati}"/>)<br/><br/>
+                TOTALE (<apex:outputText value="{!tot}"/>)
+            </div>
+            <br/>
+            <div class="barcodeContainer">
+                <BarcodeZone:ACBarcodeZone Value="{!Case.SFALotto__r.LotBarcode__c}"
+ 					BrcdType="code128"
+ 					BrcdHeight="40"
+ 					BarsWidth="3"
+ 				/>
+            </div>
+            <div class="copyCounterContainer" style="page-break-after:always">
+                Copia {!i} di 2
+            </div>
+        </apex:repeat>
+        <apex:image id="compassLogo3" value="{!$Resource.CompassLogo}" width="350" height="200" />
+        <div class="liquidatiDetailContainer" style="page-break-after:always">
+            <div class="underlined">LIQUIDATI (<apex:outputText value="{!liquidati}"/>)</div>
+            <table class="idsTable">
+                <tbody>
+                    <apex:repeat value="{!idLiquidati}" var="list">
+                    	<tr>
+                            <apex:repeat value="{!list}" var="string">
+                                <td><apex:outputText value="{!string}"/></td>
+                            </apex:repeat>
+                        </tr>
+                	</apex:repeat>
+                </tbody>
+            </table>
+        </div>
+        
+        <apex:image id="compassLogo4" value="{!$Resource.CompassLogo}" width="350" height="200" />
+        <div class="resRitStorDetailContainer">
+            <div class="underlined">RESPINTI/RITIRATI/STORNATI (<apex:outputText value="{!respintiRitiratiStornati}"/>)</div>
+            <table class="idsTable">
+                <tbody>
+                    <apex:repeat value="{!idResRitStor}" var="list">
+                    	<tr>
+                            <apex:repeat value="{!list}" var="string">
+                                <td><apex:outputText value="{!string}"/></td>
+                            </apex:repeat>
+                        </tr>
+                	</apex:repeat>
+                </tbody>
+            </table>
+        </div>
+	</body>
+</apex:page>

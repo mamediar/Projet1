@@ -1,0 +1,22 @@
+<aura:component controller="CaseCloserController" implements="lightning:availableForFlowScreens,force:lightningQuickAction,flexipage:availableForRecordHome,force:hasRecordId">
+
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="isDisabled" type="Boolean" />
+    <aura:attribute name="checkAttachments" type="Boolean" default="false" />
+    <aura:attribute name="label" type="String" default="Completa Attività" />
+    <aura:attribute name="variant" type="String" default="destructive" />
+    <aura:attribute name="style" type="String"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+
+    <div style="{!v.style}">
+        <lightning:button variant="{!v.variant}"
+                          label="{!v.label}"
+                          onclick="{!c.handleClick }"
+                          disabled="{!v.isDisabled}"
+                          />
+    </div>
+
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    
+</aura:component>
